@@ -10,13 +10,16 @@ import Cocoa
 
 class ViewController: NSViewController {
     @IBOutlet weak var installButton: NSButton?
-
+    @IBOutlet weak var progressWheel: NSProgressIndicator?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         if FileManager.default.fileExists(atPath: "/Volumes/Install macOS High Sierra") {
             installButton?.isEnabled = true
+            progressWheel?.isHidden = true
         }
-
+        progressWheel?.startAnimation(self)
+        
         NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(didMount(_:)), name: NSWorkspace.didMountNotification, object: nil)
         NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(didUnmount(_:)), name: NSWorkspace.didUnmountNotification, object: nil)
         // Do any additional setup after loading the view.
@@ -59,6 +62,7 @@ class ViewController: NSViewController {
     @objc func didMount(_ notification: NSNotification) {
         if let devicePath = notification.userInfo!["NSDevicePath"] as? String {
             if (devicePath.contains("Install macOS High Sierra")) {
+                progressWheel?.isHidden = true
                 installButton?.isEnabled = true
             }
         }
@@ -67,6 +71,7 @@ class ViewController: NSViewController {
     @objc func didUnmount(_ notification: NSNotification) {
         if let devicePath = notification.userInfo!["NSDevicePath"] as? String {
             if (devicePath.contains("Install macOS High Sierra")) {
+                progressWheel?.isHidden = false
                 installButton?.isEnabled = false
             }
         }

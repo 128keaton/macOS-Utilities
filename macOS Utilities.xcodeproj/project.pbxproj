@@ -48,6 +48,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8A47DECE2108DBD7003F5CC3 /* Icons */ = {
+			isa = PBXGroup;
+			children = (
+				8ACB65E6210641EA004B9C5A /* disk-utility.icns */,
+				8ACB65EC2106426A004B9C5A /* heaven.icns */,
+				8ACB65EE2106429C004B9C5A /* print-label.icns */,
+				8ACB65EA21064238004B9C5A /* prime95.icns */,
+				8ACB65E82106421A004B9C5A /* terminal.icns */,
+				8ACB65E421063F8E004B9C5A /* safari.icns */,
+			);
+			name = Icons;
+			sourceTree = "<group>";
+		};
 		8ACB65C821063E6F004B9C5A = {
 			isa = PBXGroup;
 			children = (
@@ -67,19 +80,14 @@
 		8ACB65D321063E6F004B9C5A /* macOS Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				8ACB65D821063E6F004B9C5A /* Assets.xcassets */,
 				8ACB65D421063E6F004B9C5A /* AppDelegate.swift */,
 				8ACB65D621063E6F004B9C5A /* ViewController.swift */,
-				8ACB65D821063E6F004B9C5A /* Assets.xcassets */,
-				8ACB65E6210641EA004B9C5A /* disk-utility.icns */,
 				8ACB65DA21063E6F004B9C5A /* Main.storyboard */,
-				8ACB65EC2106426A004B9C5A /* heaven.icns */,
-				8ACB65EE2106429C004B9C5A /* print-label.icns */,
-				8ACB65EA21064238004B9C5A /* prime95.icns */,
 				8ACB65DD21063E6F004B9C5A /* Info.plist */,
-				8ACB65DE21063E6F004B9C5A /* macOS_Utilities.entitlements */,
-				8ACB65E82106421A004B9C5A /* terminal.icns */,
-				8ACB65E421063F8E004B9C5A /* safari.icns */,
+				8A47DECE2108DBD7003F5CC3 /* Icons */,
 				8ACB65F021067A81004B9C5A /* WindowClass.swift */,
+				8ACB65DE21063E6F004B9C5A /* macOS_Utilities.entitlements */,
 			);
 			path = "macOS Utilities";
 			sourceTree = "<group>";

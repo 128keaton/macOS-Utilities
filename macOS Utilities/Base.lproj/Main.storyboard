@@ -307,6 +307,10 @@
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="zo0-tw-2Z3">
+                                <rect key="frame" x="319" y="18" width="16" height="16"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            </progressIndicator>
                         </subviews>
                         <constraints>
                             <constraint firstItem="Rnr-xL-iqY" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="20" symbolic="YES" id="74S-en-UOj"/>
@@ -322,6 +326,7 @@
                     </view>
                     <connections>
                         <outlet property="installButton" destination="yh1-MX-AlL" id="Upk-IA-YSv"/>
+                        <outlet property="progressWheel" destination="zo0-tw-2Z3" id="8JE-pN-DCx"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
