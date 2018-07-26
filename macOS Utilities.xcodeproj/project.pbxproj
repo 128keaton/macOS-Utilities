@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		8A47DED7210A2393003F5CC3 /* com.er2.applications.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8A47DED6210A2393003F5CC3 /* com.er2.applications.plist */; };
+		8A47DED9210A2D30003F5CC3 /* NSCollectionAppCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */; };
+		8A47DEDB210A3418003F5CC3 /* NSCollectionAppCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */; };
 		8ACB65D521063E6F004B9C5A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ACB65D421063E6F004B9C5A /* AppDelegate.swift */; };
 		8ACB65D721063E6F004B9C5A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ACB65D621063E6F004B9C5A /* ViewController.swift */; };
 		8ACB65D921063E6F004B9C5A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8ACB65D821063E6F004B9C5A /* Assets.xcassets */; };
@@ -23,6 +25,8 @@
 
 /* Begin PBXFileReference section */
 		8A47DED6210A2393003F5CC3 /* com.er2.applications.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = com.er2.applications.plist; path = ../../../Downloads/com.er2.applications.plist; sourceTree = "<group>"; };
+		8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSCollectionAppCell.swift; sourceTree = "<group>"; };
+		8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NSCollectionAppCell.xib; sourceTree = "<group>"; };
 		8ACB65D121063E6F004B9C5A /* macOS Utilities.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "macOS Utilities.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8ACB65D421063E6F004B9C5A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8ACB65D621063E6F004B9C5A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -91,6 +95,8 @@
 				8A47DECE2108DBD7003F5CC3 /* Icons */,
 				8ACB65F021067A81004B9C5A /* WindowClass.swift */,
 				8ACB65DE21063E6F004B9C5A /* macOS_Utilities.entitlements */,
+				8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */,
+				8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */,
 			);
 			path = "macOS Utilities";
 			sourceTree = "<group>";
@@ -156,6 +162,7 @@
 			files = (
 				8ACB65D921063E6F004B9C5A /* Assets.xcassets in Resources */,
 				8ACB65EF2106429C004B9C5A /* print-label.icns in Resources */,
+				8A47DEDB210A3418003F5CC3 /* NSCollectionAppCell.xib in Resources */,
 				8ACB65EB21064238004B9C5A /* prime95.icns in Resources */,
 				8A47DED7210A2393003F5CC3 /* com.er2.applications.plist in Resources */,
 				8ACB65E7210641EA004B9C5A /* disk-utility.icns in Resources */,
@@ -175,6 +182,7 @@
 			files = (
 				8ACB65D721063E6F004B9C5A /* ViewController.swift in Sources */,
 				8ACB65F121067A81004B9C5A /* WindowClass.swift in Sources */,
+				8A47DED9210A2D30003F5CC3 /* NSCollectionAppCell.swift in Sources */,
 				8ACB65D521063E6F004B9C5A /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

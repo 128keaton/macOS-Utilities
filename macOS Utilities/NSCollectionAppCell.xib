@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner"/>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <view id="o2S-uG-gT8">
+            <rect key="frame" x="0.0" y="0.0" width="100" height="125"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <subviews>
+                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="gzM-Dz-wwk">
+                    <rect key="frame" x="5" y="35" width="90" height="90"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="90" id="gBk-Fv-ukl"/>
+                        <constraint firstAttribute="width" constant="90" id="oRb-KD-ZB3"/>
+                    </constraints>
+                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="vJq-LD-afc"/>
+                </imageView>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gs5-ZP-wAf">
+                    <rect key="frame" x="3" y="0.0" width="94" height="27"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="27" id="VPF-eW-bFm"/>
+                    </constraints>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Label" id="oKJ-ZF-bC0">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+            </subviews>
+            <constraints>
+                <constraint firstItem="gzM-Dz-wwk" firstAttribute="centerX" secondItem="o2S-uG-gT8" secondAttribute="centerX" id="1mR-jn-k5n"/>
+                <constraint firstItem="gzM-Dz-wwk" firstAttribute="top" secondItem="o2S-uG-gT8" secondAttribute="top" id="ICN-Dx-UZ1"/>
+                <constraint firstItem="gzM-Dz-wwk" firstAttribute="leading" secondItem="gs5-ZP-wAf" secondAttribute="leading" id="OcD-ba-UHd"/>
+                <constraint firstItem="gzM-Dz-wwk" firstAttribute="trailing" secondItem="gs5-ZP-wAf" secondAttribute="trailing" id="WaR-8Q-7YV"/>
+                <constraint firstAttribute="bottom" secondItem="gs5-ZP-wAf" secondAttribute="bottom" id="ic7-23-oki"/>
+                <constraint firstItem="gzM-Dz-wwk" firstAttribute="leading" secondItem="o2S-uG-gT8" secondAttribute="leading" constant="5" id="mes-ag-nER"/>
+                <constraint firstItem="gs5-ZP-wAf" firstAttribute="top" secondItem="gzM-Dz-wwk" secondAttribute="bottom" constant="8" symbolic="YES" id="rmE-UW-ZY9"/>
+            </constraints>
+            <point key="canvasLocation" x="139" y="168.5"/>
+        </view>
+        <collectionViewItem id="tl3-tm-gU8" customClass="NSCollectionAppCell" customModule="macOS_Utilities" customModuleProvider="target">
+            <connections>
+                <outlet property="icon" destination="gzM-Dz-wwk" id="VWm-C3-Jlw"/>
+                <outlet property="sourceItemView" destination="o2S-uG-gT8" id="l6Q-qF-ccL"/>
+                <outlet property="titleLabel" destination="gs5-ZP-wAf" id="GNm-Ri-Jz6"/>
+                <outlet property="view" destination="o2S-uG-gT8" id="Z7T-jg-am0"/>
+            </connections>
+        </collectionViewItem>
+    </objects>
+</document>
