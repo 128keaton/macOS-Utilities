@@ -7,6 +7,8 @@
 //
 
 import Cocoa
+import AppFolder
+import os
 
 class ViewController: NSViewController, NSCollectionViewDelegate {
     @IBOutlet weak var installButton: NSButton?
@@ -15,16 +17,24 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
 
     private var sections: [Int: Int] = [:]
     private var applications: [String: [String: String]] = [:]
+    private var macOSVolume = "/Volumes/Install macOS High Sierra"
+    private var macOSVersion = "10.13"
+
+    private let libraryFolder = AppFolder.Library
 
     override func viewDidLoad() {
         super.viewDidLoad()
-                configureCollectionView()
-        progressWheel?.startAnimation(self)
         createLibraryFolder()
+        configureCollectionView()
+        progressWheel?.startAnimation(self)
         readPreferences()
+        registerForNotifications()
+        os_log("Launched macOS Utilities")
+    }
+
+    func registerForNotifications() {
         NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(didMount(_:)), name: NSWorkspace.didMountNotification, object: nil)
         NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(didUnmount(_:)), name: NSWorkspace.didUnmountNotification, object: nil)
-        // Do any additional setup after loading the view.
     }
 
     func readPreferences() {
@@ -38,9 +48,12 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
                 return
         }
 
-        var macOSPath = "/Volumes/Install macOS High Sierra"
-        if let newPath = preferences["macOS Volume"] {
-            macOSPath = newPath as! String
+        if let path = preferences["macOS Volume"] {
+            macOSVolume = path as! String
+        }
+
+        if let version = preferences["macOS Version"] {
+            macOSVersion = "\(version)"
         }
 
         guard let localSections = preferences["Applications"] as? [String: Any]
@@ -52,32 +65,40 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
             applications[title] = listing as? [String: String]
         }
 
-        if FileManager.default.fileExists(atPath: macOSPath) {
+        if FileManager.default.fileExists(atPath: macOSVolume) {
             installButton?.isEnabled = true
             progressWheel?.isHidden = true
         }
-
-        print(applications)
         self.collectionView.reloadData()
-    }
-
-    override var representedObject: Any? {
-        didSet {
-            // Update the view, if already loaded.
-        }
+        os_log("Successfully loaded plist into dictionary")
     }
 
     func openApplication(atPath path: String) {
+        os_log("Opening application")
+        print("Opening application at: \(path)")
         NSWorkspace.shared.open(URL(fileURLWithPath: path))
     }
-    
+
     @IBAction func startOSInstall(sender: NSButton) {
-        NSWorkspace.shared.open(URL(fileURLWithPath: "/Applications/Install 10.13.app"))
+        let filePath = "/Applications/Install \(macOSVersion).app"
+
+        if FileManager.default.fileExists(atPath: filePath) {
+            os_log("Starting macOS Install")
+            NSWorkspace.shared.open(URL(fileURLWithPath: "/Applications/Install \(macOSVersion).app"))
+        } else {
+            os_log("Unable to start macOS Install. Missing kickstart application")
+            let alert: NSAlert = NSAlert()
+            alert.messageText = "Unable to start macOS Install"
+            alert.informativeText = "macOS Utilities was unable find application \n \(filePath)"
+            alert.alertStyle = .critical
+            alert.addButton(withTitle: "OK")
+            alert.runModal()
+        }
     }
 
     @objc func didMount(_ notification: NSNotification) {
         if let devicePath = notification.userInfo!["NSDevicePath"] as? String {
-            if (devicePath.contains("Install macOS High Sierra")) {
+            if (devicePath.contains(macOSVolume)) {
                 progressWheel?.isHidden = true
                 installButton?.isEnabled = true
             }
@@ -86,7 +107,7 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
 
     @objc func didUnmount(_ notification: NSNotification) {
         if let devicePath = notification.userInfo!["NSDevicePath"] as? String {
-            if (devicePath.contains("Install macOS High Sierra")) {
+            if (devicePath.contains(macOSVolume)) {
                 progressWheel?.isHidden = false
                 installButton?.isEnabled = false
             }
@@ -99,69 +120,52 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
         flowLayout.sectionInset = NSEdgeInsets(top: 10.0, left: 20.0, bottom: 10.0, right: 20.0)
         flowLayout.minimumInteritemSpacing = 20.0
         flowLayout.minimumLineSpacing = 20.0
- 
+
         collectionView.collectionViewLayout = flowLayout
         view.wantsLayer = true
         collectionView.layer?.cornerRadius = 12
     }
 
-    func getPropertyList() -> URL? {
-        let path = NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true)[0] as String
-        let url = NSURL(fileURLWithPath: path)
-        if let pathComponent = url.appendingPathComponent("ER2") {
-            let filePath = pathComponent.path
-            let fileManager = FileManager.default
-            if fileManager.fileExists(atPath: filePath) {
-                let pathComponent = pathComponent.appendingPathComponent("com.er2.applications.plist")
-                let filePath = pathComponent.path
-                if fileManager.fileExists(atPath: filePath) {
-                    return pathComponent
-                } else {
-                    return copyPlist()
-                }
-
-            } else {
-                return copyPlist()
-            }
-        } else {
-            print("Unable to access library folder")
-        }
-
-        return nil
+    fileprivate func createLibraryFolder() {
+        let url = libraryFolder.url
+        let fileManager = FileManager.default
+        let pathComponent = url.appendingPathComponent("ER2")
+        try! fileManager.createDirectory(atPath: pathComponent.path, withIntermediateDirectories: true, attributes: nil)
     }
 
-    func copyPlist() -> URL! {
-        let path = NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true)[0] as String
-        let url = NSURL(fileURLWithPath: path)
-        if let pathComponent = url.appendingPathComponent("ER2")?.appendingPathComponent("com.er2.applications.plist") {
+    fileprivate func getPropertyList() -> URL? {
+        let url = libraryFolder.url
+        let pathComponent = url.appendingPathComponent("ER2")
+        let filePath = pathComponent.path
+        let fileManager = FileManager.default
+        if fileManager.fileExists(atPath: filePath) {
+            let pathComponent = pathComponent.appendingPathComponent("com.er2.applications.plist")
             let filePath = pathComponent.path
-            let fileManager = FileManager.default
-            if !fileManager.fileExists(atPath: filePath) {
-                let defaultPlist = Bundle.main.path(forResource: "com.er2.applications", ofType: "plist")
-                try! fileManager.copyItem(atPath: defaultPlist!, toPath: filePath)
+            if fileManager.fileExists(atPath: filePath) {
                 return pathComponent
             } else {
-                return pathComponent
+                createLibraryFolder()
+                return copyPlist()
             }
+
         } else {
-            createLibraryFolder()
             return copyPlist()
         }
     }
 
-    func createLibraryFolder() {
-        let path = NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true)[0] as String
-        let url = NSURL(fileURLWithPath: path)
-        if let pathComponent = url.appendingPathComponent("ER2") {
-            let filePath = pathComponent.path
-            let fileManager = FileManager.default
-            print(filePath)
-            if !fileManager.fileExists(atPath: filePath) {
-                try! FileManager.default.createDirectory(at: pathComponent, withIntermediateDirectories: true)
-            }
+    fileprivate func copyPlist() -> URL! {
+        let url = libraryFolder.url
+        let pathComponent = url.appendingPathComponent("ER2").appendingPathComponent("com.er2.applications.plist")
+        let filePath = pathComponent.path
+        let fileManager = FileManager.default
+        if !fileManager.fileExists(atPath: filePath) {
+            let defaultPlist = Bundle.main.path(forResource: "com.er2.applications", ofType: "plist")
+            try! fileManager.copyItem(atPath: defaultPlist!, toPath: filePath)
+            return pathComponent
         } else {
-            print("Unable to access library folder")
+            return pathComponent
         }
+
     }
 }
 extension ViewController: NSCollectionViewDataSource {
@@ -171,13 +175,13 @@ extension ViewController: NSCollectionViewDataSource {
         let appList = applications[key]
         let appName = Array(appList!.keys)[indexPath.item]
         let appPath = appList![appName]
-        
+
         openApplication(atPath: appPath!)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.06) {
-               collectionView.deselectItems(at: indexPaths)
+            collectionView.deselectItems(at: indexPaths)
         }
     }
-    
+
     func numberOfSections(in collectionView: NSCollectionView) -> Int {
         return applications.keys.count
     }
@@ -198,14 +202,13 @@ extension ViewController: NSCollectionViewDataSource {
         let appName = Array(appList!.keys)[indexPath.item]
         let appPath = appList![appName]
 
-        print(appName)
-        collectionViewItem.titleLabel?.stringValue = appName
-
         if let image = findIconFor(applicationPath: appPath!) {
             collectionViewItem.icon?.image = image
             collectionViewItem.regularImage = image
-            collectionViewItem.darkenedImage = generateDarkenedImage(fromImage: image)
+            collectionViewItem.darkenedImage = image.darkened()
+            collectionViewItem.titleLabel?.stringValue = appName
         }
+    
         return item
     }
 
@@ -213,24 +216,7 @@ extension ViewController: NSCollectionViewDataSource {
         let path = applicationPath + "/Contents/Info.plist"
         let infoDictionary = NSDictionary(contentsOfFile: path)
         let imagePath = "\(applicationPath)/Contents/Resources/\(infoDictionary!["CFBundleIconFile"]!).icns"
-        
+
         return NSImage(contentsOfFile: imagePath)
     }
-    
-    func generateDarkenedImage(fromImage image: NSImage) -> NSImage{
-        let size = image.size
-        let rect = NSRect(x: 0, y: 0, width: size.width, height: size.height)
-        let newImage = image.copy() as! NSImage
-        newImage.lockFocus()
-        NSColor(calibratedWhite: 0, alpha: 0.33).set()
-        rect.fill(using: NSCompositingOperation.sourceAtop)
-        newImage.unlockFocus()
-        newImage.draw(in: rect, from: rect, operation: .sourceOver, fraction: 0.75)
-        
-        return newImage
-    }
-
-
 }
-
-
