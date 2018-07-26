@@ -11,18 +11,41 @@ import Cocoa
 class ViewController: NSViewController {
     @IBOutlet weak var installButton: NSButton?
     @IBOutlet weak var progressWheel: NSProgressIndicator?
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        if FileManager.default.fileExists(atPath: "/Volumes/Install macOS High Sierra") {
-            installButton?.isEnabled = true
-            progressWheel?.isHidden = true
-        }
-        progressWheel?.startAnimation(self)
         
+        progressWheel?.startAnimation(self)
+        createLibraryFolder()
+        readPreferences()
         NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(didMount(_:)), name: NSWorkspace.didMountNotification, object: nil)
         NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(didUnmount(_:)), name: NSWorkspace.didUnmountNotification, object: nil)
         // Do any additional setup after loading the view.
+    }
+
+    func readPreferences() {
+        guard let plistPath = self.getPropertyList()
+            else {
+                return
+        }
+
+        guard let preferences = NSDictionary(contentsOf: plistPath)
+            else {
+                return
+        }
+        
+        var macOSPath = "/Volumes/Install macOS High Sierra"
+        if let newPath = preferences["macOS Volume"] {
+                macOSPath = newPath as! String
+        }
+
+        
+        if FileManager.default.fileExists(atPath: macOSPath) {
+            installButton?.isEnabled = true
+            progressWheel?.isHidden = true
+        }
+        
+        print(preferences)
     }
 
     override var representedObject: Any? {
@@ -67,13 +90,72 @@ class ViewController: NSViewController {
             }
         }
     }
-    
+
     @objc func didUnmount(_ notification: NSNotification) {
         if let devicePath = notification.userInfo!["NSDevicePath"] as? String {
             if (devicePath.contains("Install macOS High Sierra")) {
                 progressWheel?.isHidden = false
                 installButton?.isEnabled = false
             }
+        }
+    }
+    
+    func getPropertyList() -> URL? {
+        let path = NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true)[0] as String
+        let url = NSURL(fileURLWithPath: path)
+        if let pathComponent = url.appendingPathComponent("ER2") {
+            let filePath = pathComponent.path
+            let fileManager = FileManager.default
+            if fileManager.fileExists(atPath: filePath) {
+                let pathComponent = pathComponent.appendingPathComponent("com.er2.applications.plist")
+                let filePath = pathComponent.path
+                if fileManager.fileExists(atPath: filePath) {
+                    return pathComponent
+                } else {
+                    return copyPlist()
+                }
+                
+            } else {
+                return copyPlist()
+            }
+        } else {
+            print("Unable to access library folder")
+        }
+        
+        return nil
+    }
+    
+    func copyPlist() -> URL! {
+        let path = NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true)[0] as String
+        let url = NSURL(fileURLWithPath: path)
+        if let pathComponent = url.appendingPathComponent("ER2")?.appendingPathComponent("com.er2.applications.plist") {
+            let filePath = pathComponent.path
+            let fileManager = FileManager.default
+            if !fileManager.fileExists(atPath: filePath) {
+                let defaultPlist = Bundle.main.path(forResource: "com.er2.applications", ofType: "plist")
+                try! fileManager.copyItem(atPath: defaultPlist!, toPath: filePath)
+                return pathComponent
+            } else {
+                return pathComponent
+            }
+        } else {
+            createLibraryFolder()
+            return copyPlist()
+        }
+    }
+    
+    func createLibraryFolder() {
+        let path = NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true)[0] as String
+        let url = NSURL(fileURLWithPath: path)
+        if let pathComponent = url.appendingPathComponent("ER2") {
+            let filePath = pathComponent.path
+            let fileManager = FileManager.default
+            print(filePath)
+            if !fileManager.fileExists(atPath: filePath) {
+                try! FileManager.default.createDirectory(at: pathComponent, withIntermediateDirectories: true)
+            }
+        } else {
+            print("Unable to access library folder")
         }
     }
 }

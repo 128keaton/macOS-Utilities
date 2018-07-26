@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "macOS Utilities/ViewController.swift"
-            timestampString = "554229608.228395"
+            timestampString = "554313301.595419"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "81"
-            endingLineNumber = "81">
+            startingLineNumber = "163"
+            endingLineNumber = "163">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
