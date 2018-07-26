@@ -15,6 +15,7 @@ I'm lazy. Everything is hardcoded. It needed to be simple and easy for me to mak
 You can easily replace the labels, icons, and paths with whatever you need. Potentially in the future, a config could be pulled
 from a remote server, but for now, that is not the case.
 
-## 10.13 'Kickoff'
+## [10.13 'Kickoff'](https://github.com/128keaton/macOS-Installer-Kickoff)
 
 Currently, the software installation is kicked off by an AppleScript app that calls a bash script to erase the drive and open the High Sierra installer application. If you do not require the drive to be erased, you can replace the path string in the application yourself. 
+
