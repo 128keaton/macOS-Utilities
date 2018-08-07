@@ -48,6 +48,7 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
                 return
         }
 
+        print(preferences)
         if let path = preferences["macOS Volume"] {
             macOSVolume = path as! String
         }

@@ -2,27 +2,30 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>Applications</key>
+	<dict>
+		<key>Basic</key>
+		<dict>
+			<key>Prime95</key>
+			<string>/Applications/Prime95.app</string>
+			<key>Heaven</key>
+			<string>/Applications/Heaven.app</string>
+			<key>Print Label</key>
+			<string>/Applications/Print Label.app</string>
+		</dict>
+		<key>Utilities</key>
+		<dict>
+			<key>Safari</key>
+			<string>/Applications/Safari.app</string>
+			<key>Disk Utility</key>
+			<string>/Applications/Utilities/Disk Utility.app</string>
+			<key>Terminal</key>
+			<string>/Applications/Utilities/Terminal.app</string>
+		</dict>
+	</dict>
 	<key>macOS Volume</key>
 	<string>/Volumes/Install macOS High Sierra</string>
 	<key>macOS Version</key>
-	<real>10.13</real>
-	<key>Utilities</key>
-	<dict>
-		<key>Safari</key>
-		<string>/Applications/Safari.app</string>
-		<key>Disk Utility</key>
-		<string>/Applications/Utilities/Disk Utility.app</string>
-		<key>Terminal</key>
-		<string>/Applications/Utilities/Terminal.app</string>
-	</dict>
-	<key>Applications</key>
-	<dict>
-		<key>Prime95</key>
-		<string>/Applications/Prime95.app</string>
-		<key>Heaven</key>
-		<string>/Applications/Heaven.app</string>
-		<key>Print Label</key>
-		<string>/Applications/Print Label.app</string>
-	</dict>
+	<string>10.13</string>
 </dict>
 </plist>
