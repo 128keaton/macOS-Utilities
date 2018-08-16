@@ -6,6 +6,8 @@
 	<dict>
 		<key>Basic</key>
 		<dict>
+			<key>KillDisk</key>
+			<string>/Applications/KillDisk.app</string>
 			<key>Prime95</key>
 			<string>/Applications/Prime95.app</string>
 			<key>Heaven</key>
@@ -15,6 +17,8 @@
 		</dict>
 		<key>Utilities</key>
 		<dict>
+			<key>Photo Booth</key>
+			<string>/Applications/Photo Booth.app</string>
 			<key>Safari</key>
 			<string>/Applications/Safari.app</string>
 			<key>Disk Utility</key>
