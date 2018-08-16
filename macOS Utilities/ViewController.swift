@@ -14,9 +14,9 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
     @IBOutlet weak var installButton: NSButton?
     @IBOutlet weak var progressWheel: NSProgressIndicator?
     @IBOutlet weak var collectionView: NSCollectionView!
-
-    private var sections: [Int: Int] = [:]
-    private var applications: [String: [String: String]] = [:]
+    
+    private var sections: [String: [String: String]] = [:]
+    
     private var macOSVolume = "/Volumes/Install macOS High Sierra"
     private var macOSVersion = "10.13"
 
@@ -62,10 +62,18 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
                 return
         }
 
-        for (title, listing) in localSections {
-            applications[title] = listing as? [String: String]
+  
+        for (title, applications) in localSections {
+            let applicationList = (applications as? [String: String])?.sorted { $0 < $1 }
+            var applicationDictionary: [String:String] = [:]
+            
+            for application in applicationList! {
+                applicationDictionary[application.key] = application.value
+            }
+            
+            sections[title] = applicationDictionary
         }
-
+        
         if FileManager.default.fileExists(atPath: macOSVolume) {
             installButton?.isEnabled = true
             progressWheel?.isHidden = true
@@ -102,6 +110,7 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
             if (devicePath.contains(macOSVolume)) {
                 progressWheel?.isHidden = true
                 installButton?.isEnabled = true
+                os_log("macOS Installer Volume mounted -- macOS Install possible at this time")
             }
         }
     }
@@ -111,6 +120,7 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
             if (devicePath.contains(macOSVolume)) {
                 progressWheel?.isHidden = false
                 installButton?.isEnabled = false
+                os_log("macOS Installer Volume unmounted -- macOS Install impossible at this time")
             }
         }
     }
@@ -172,8 +182,11 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
 extension ViewController: NSCollectionViewDataSource {
     func collectionView(_ collectionView: NSCollectionView, didSelectItemsAt indexPaths: Set<IndexPath>) {
         let indexPath = indexPaths.first!
-        let key = Array(applications.keys)[indexPath.section]
-        let appList = applications[key]
+        
+        let sortedSectionTitles = Array(sections.keys).sorted { $0 < $1 }
+        
+        let sectionTitle = sortedSectionTitles[indexPath.section]
+        let appList = sections[sectionTitle]
         let appName = Array(appList!.keys)[indexPath.item]
         let appPath = appList![appName]
 
@@ -184,12 +197,12 @@ extension ViewController: NSCollectionViewDataSource {
     }
 
     func numberOfSections(in collectionView: NSCollectionView) -> Int {
-        return applications.keys.count
+        return sections.keys.count
     }
 
     func collectionView(_ collectionView: NSCollectionView, numberOfItemsInSection section: Int) -> Int {
-        let key = Array(applications.keys)[section]
-        return (applications[key])!.keys.count
+        let key = Array(sections.keys)[section]
+        return (sections[key])!.keys.count
     }
 
 
@@ -198,8 +211,11 @@ extension ViewController: NSCollectionViewDataSource {
         let item = collectionView.makeItem(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "NSCollectionAppCell"), for: indexPath)
         guard let collectionViewItem = item as? NSCollectionAppCell else { return item }
 
-        let key = Array(applications.keys)[indexPath.section]
-        let appList = applications[key]
+        let sortedSectionTitles = Array(sections.keys).sorted { $0 < $1 }
+        
+        let sectionTitle = sortedSectionTitles[indexPath.section]
+        
+        let appList = sections[sectionTitle]
         let appName = Array(appList!.keys)[indexPath.item]
         let appPath = appList![appName]
 
@@ -216,8 +232,15 @@ extension ViewController: NSCollectionViewDataSource {
     func findIconFor(applicationPath: String) -> NSImage? {
         let path = applicationPath + "/Contents/Info.plist"
         let infoDictionary = NSDictionary(contentsOfFile: path)
-        let imagePath = "\(applicationPath)/Contents/Resources/\(infoDictionary!["CFBundleIconFile"]!).icns"
+        
+        let imageName = (infoDictionary!["CFBundleIconFile"]! as! String)
 
+        var imagePath = "\(applicationPath)/Contents/Resources/\(infoDictionary!["CFBundleIconFile"]!)"
+        
+        if !imageName.contains(".icns") {
+           imagePath = imagePath + ".icns"
+        }
+        
         return NSImage(contentsOfFile: imagePath)
     }
 }

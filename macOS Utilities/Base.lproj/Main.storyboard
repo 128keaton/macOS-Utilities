@@ -75,11 +75,11 @@
             <objects>
                 <viewController id="XfG-lQ-9wD" customClass="ViewController" customModule="macOS_Utilities" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" wantsLayer="YES" id="m2S-Jp-Qdl">
-                        <rect key="frame" x="0.0" y="0.0" width="477" height="363"/>
+                        <rect key="frame" x="0.0" y="0.0" width="611" height="363"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="yh1-MX-AlL">
-                                <rect key="frame" x="337" y="9" width="123" height="32"/>
+                                <rect key="frame" x="471" y="9" width="123" height="32"/>
                                 <buttonCell key="cell" type="push" title="Install macOS" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="MZw-YG-wA3">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -89,7 +89,7 @@
                                 </connections>
                             </button>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="aNu-c2-KYv">
-                                <rect key="frame" x="18" y="18" width="281" height="17"/>
+                                <rect key="frame" x="21" y="16" width="281" height="17"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="277" id="zfB-Hw-7v8"/>
                                 </constraints>
@@ -99,19 +99,14 @@
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="zo0-tw-2Z3">
-                                <rect key="frame" x="319" y="18" width="16" height="16"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            </progressIndicator>
-                            <scrollView wantsLayer="YES" fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xpa-4y-FcX">
-                                <rect key="frame" x="20" y="57" width="437" height="286"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <clipView key="contentView" ambiguous="YES" drawsBackground="NO" id="Iev-67-nig">
-                                    <rect key="frame" x="1" y="1" width="435" height="284"/>
+                            <scrollView wantsLayer="YES" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xpa-4y-FcX">
+                                <rect key="frame" x="23" y="57" width="565" height="286"/>
+                                <clipView key="contentView" drawsBackground="NO" id="Iev-67-nig">
+                                    <rect key="frame" x="1" y="1" width="563" height="284"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <collectionView ambiguous="YES" selectable="YES" allowsEmptySelection="NO" id="B5a-58-y7F">
-                                            <rect key="frame" x="0.0" y="0.0" width="435" height="158"/>
+                                        <collectionView selectable="YES" allowsEmptySelection="NO" id="B5a-58-y7F">
+                                            <rect key="frame" x="0.0" y="0.0" width="563" height="158"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                             <collectionViewFlowLayout key="collectionViewLayout" minimumInteritemSpacing="10" minimumLineSpacing="10" scrollDirection="horizontal">
                                                 <size key="itemSize" width="50" height="50"/>
@@ -130,17 +125,25 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="XhQ-no-WJm">
-                                    <rect key="frame" x="-15" y="1" width="16" height="0.0"/>
+                                    <rect key="frame" x="-14" y="1" width="15" height="0.0"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>
+                            <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="zo0-tw-2Z3">
+                                <rect key="frame" x="427" y="19" width="16" height="16"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            </progressIndicator>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="yh1-MX-AlL" firstAttribute="centerY" secondItem="aNu-c2-KYv" secondAttribute="centerY" id="QHt-NL-MSp"/>
+                            <constraint firstItem="xpa-4y-FcX" firstAttribute="centerX" secondItem="m2S-Jp-Qdl" secondAttribute="centerX" id="8CG-lg-Ufa"/>
+                            <constraint firstItem="yh1-MX-AlL" firstAttribute="centerY" secondItem="aNu-c2-KYv" secondAttribute="centerY" constant="-2" id="QHt-NL-MSp"/>
                             <constraint firstItem="yh1-MX-AlL" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" symbolic="YES" id="TPM-qn-aGU"/>
                             <constraint firstAttribute="trailing" secondItem="yh1-MX-AlL" secondAttribute="trailing" constant="23" id="V7i-77-80x"/>
-                            <constraint firstItem="aNu-c2-KYv" firstAttribute="centerX" secondItem="m2S-Jp-Qdl" secondAttribute="centerX" constant="-80" id="WWH-GA-cb2"/>
-                            <constraint firstAttribute="bottom" secondItem="aNu-c2-KYv" secondAttribute="bottom" constant="18" id="Xa5-bM-Oi1"/>
+                            <constraint firstItem="aNu-c2-KYv" firstAttribute="centerX" secondItem="m2S-Jp-Qdl" secondAttribute="centerX" constant="-144" id="WWH-GA-cb2"/>
+                            <constraint firstAttribute="bottom" secondItem="aNu-c2-KYv" secondAttribute="bottom" constant="16" id="Xa5-bM-Oi1"/>
+                            <constraint firstItem="yh1-MX-AlL" firstAttribute="top" secondItem="xpa-4y-FcX" secondAttribute="bottom" constant="20" symbolic="YES" id="Yv0-Z4-45n"/>
+                            <constraint firstItem="xpa-4y-FcX" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="20" symbolic="YES" id="jiA-FX-wW4"/>
+                            <constraint firstItem="xpa-4y-FcX" firstAttribute="trailing" secondItem="yh1-MX-AlL" secondAttribute="trailing" id="tD7-cA-GM1"/>
                         </constraints>
                     </view>
                     <connections>
@@ -151,7 +154,7 @@
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="76.5" y="792.5"/>
+            <point key="canvasLocation" x="143.5" y="792.5"/>
         </scene>
     </scenes>
 </document>
