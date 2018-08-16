@@ -14,9 +14,9 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
     @IBOutlet weak var installButton: NSButton?
     @IBOutlet weak var progressWheel: NSProgressIndicator?
     @IBOutlet weak var collectionView: NSCollectionView!
-    
+
     private var sections: [String: [String: String]] = [:]
-    
+
     private var macOSVolume = "/Volumes/Install macOS High Sierra"
     private var macOSVersion = "10.13"
 
@@ -29,6 +29,12 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
         progressWheel?.startAnimation(self)
         readPreferences()
         registerForNotifications()
+
+        let longClickGesture = NSClickGestureRecognizer(target: self, action: #selector(startEasterEgg))
+
+        longClickGesture.numberOfClicksRequired = 3
+        self.collectionView.addGestureRecognizer(longClickGesture)
+
         os_log("Launched macOS Utilities")
     }
 
@@ -62,18 +68,10 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
                 return
         }
 
-  
         for (title, applications) in localSections {
-            let applicationList = (applications as? [String: String])?.sorted { $0 < $1 }
-            var applicationDictionary: [String:String] = [:]
-            
-            for application in applicationList! {
-                applicationDictionary[application.key] = application.value
-            }
-            
-            sections[title] = applicationDictionary
+            sections[title] = applications as? [String: String]
         }
-        
+
         if FileManager.default.fileExists(atPath: macOSVolume) {
             installButton?.isEnabled = true
             progressWheel?.isHidden = true
@@ -182,12 +180,12 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
 extension ViewController: NSCollectionViewDataSource {
     func collectionView(_ collectionView: NSCollectionView, didSelectItemsAt indexPaths: Set<IndexPath>) {
         let indexPath = indexPaths.first!
-        
+
         let sortedSectionTitles = Array(sections.keys).sorted { $0 < $1 }
-        
+
         let sectionTitle = sortedSectionTitles[indexPath.section]
         let appList = sections[sectionTitle]
-        let appName = Array(appList!.keys)[indexPath.item]
+        let appName = Array(appList!.keys).sorted { $0 < $1 }[indexPath.item]
         let appPath = appList![appName]
 
         openApplication(atPath: appPath!)
@@ -212,11 +210,12 @@ extension ViewController: NSCollectionViewDataSource {
         guard let collectionViewItem = item as? NSCollectionAppCell else { return item }
 
         let sortedSectionTitles = Array(sections.keys).sorted { $0 < $1 }
-        
+
         let sectionTitle = sortedSectionTitles[indexPath.section]
-        
+
         let appList = sections[sectionTitle]
-        let appName = Array(appList!.keys)[indexPath.item]
+
+        let appName = Array(appList!.keys).sorted { $0 < $1 }[indexPath.item]
         let appPath = appList![appName]
 
         if let image = findIconFor(applicationPath: appPath!) {
@@ -225,22 +224,58 @@ extension ViewController: NSCollectionViewDataSource {
             collectionViewItem.darkenedImage = image.darkened()
             collectionViewItem.titleLabel?.stringValue = appName
         }
-    
+
         return item
     }
 
     func findIconFor(applicationPath: String) -> NSImage? {
         let path = applicationPath + "/Contents/Info.plist"
         let infoDictionary = NSDictionary(contentsOfFile: path)
-        
+
         let imageName = (infoDictionary!["CFBundleIconFile"]! as! String)
 
         var imagePath = "\(applicationPath)/Contents/Resources/\(infoDictionary!["CFBundleIconFile"]!)"
-        
+
         if !imageName.contains(".icns") {
-           imagePath = imagePath + ".icns"
+            imagePath = imagePath + ".icns"
         }
-        
+
         return NSImage(contentsOfFile: imagePath)
+    }
+
+    @objc func startEasterEgg() {
+        for cell in self.collectionView.visibleItems() as! [NSCollectionAppCell] {
+            buildAnimation(view: (cell.icon)!)
+        }
+    }
+
+    func buildAnimation(view: NSView) {
+        let basicAnimation = CABasicAnimation(keyPath: "transform.rotation")
+        basicAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
+        basicAnimation.fromValue = (0 * (Double.pi / 180))
+        basicAnimation.toValue = (360 * (Double.pi / 180))
+        basicAnimation.duration = 1.0
+        basicAnimation.repeatCount = .infinity
+        
+        setAnchorPoint(anchorPoint: CGPoint(x: 0.5, y: 0.5), forView: view)
+        view.layer?.add(basicAnimation, forKey: "transform")
+    }
+    
+    func setAnchorPoint(anchorPoint: CGPoint, forView view: NSView) {
+        let newPoint = NSPoint(x: view.bounds.size.width * anchorPoint.x,  y: view.bounds.size.height * anchorPoint.y)
+        let oldPoint = NSPoint(x: view.bounds.size.width * (view.layer?.anchorPoint.x)!, y: view.bounds.size.height * (view.layer?.anchorPoint.y)!)
+        
+        newPoint.applying((view.layer?.affineTransform())!)
+        oldPoint.applying((view.layer?.affineTransform())!)
+        
+        var position = view.layer?.position
+        position?.x -= oldPoint.x
+        position?.x += newPoint.x
+        
+        position?.y -= oldPoint.y
+        position?.y += newPoint.y
+        
+        view.layer?.position = position!
+        view.layer?.anchorPoint = anchorPoint
     }
 }
