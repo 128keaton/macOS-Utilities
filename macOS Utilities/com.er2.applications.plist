@@ -7,7 +7,7 @@
 		<key>Basic</key>
 		<dict>
 			<key>KillDisk</key>
-			<string>/Applications/KillDisk.app</string>
+			<string>/Applications/KillDiskStart.app</string>
 			<key>Prime95</key>
 			<string>/Applications/Prime95.app</string>
 			<key>Heaven</key>

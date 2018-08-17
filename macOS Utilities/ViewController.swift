@@ -16,10 +16,12 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
     @IBOutlet weak var collectionView: NSCollectionView!
 
     private var sections: [String: [String: String]] = [:]
+    private var disabledPaths: [IndexPath] = []
 
     private var macOSVolume = "/Volumes/Install macOS High Sierra"
     private var macOSVersion = "10.13"
 
+    private let prohibatoryIcon = NSImage(named: NSImage.Name(rawValue: "stop"))
     private let libraryFolder = AppFolder.Library
 
     override func viewDidLoad() {
@@ -30,10 +32,10 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
         readPreferences()
         registerForNotifications()
 
-        let longClickGesture = NSClickGestureRecognizer(target: self, action: #selector(startEasterEgg))
+        let quintClickGesture = NSClickGestureRecognizer(target: self, action: #selector(startEasterEgg))
 
-        longClickGesture.numberOfClicksRequired = 3
-        self.collectionView.addGestureRecognizer(longClickGesture)
+        quintClickGesture.numberOfClicksRequired = 5
+        self.collectionView.addGestureRecognizer(quintClickGesture)
 
         os_log("Launched macOS Utilities")
     }
@@ -181,16 +183,18 @@ extension ViewController: NSCollectionViewDataSource {
     func collectionView(_ collectionView: NSCollectionView, didSelectItemsAt indexPaths: Set<IndexPath>) {
         let indexPath = indexPaths.first!
 
-        let sortedSectionTitles = Array(sections.keys).sorted { $0 < $1 }
+        if !disabledPaths.contains(indexPath) {
+            let sortedSectionTitles = Array(sections.keys).sorted { $0 < $1 }
 
-        let sectionTitle = sortedSectionTitles[indexPath.section]
-        let appList = sections[sectionTitle]
-        let appName = Array(appList!.keys).sorted { $0 < $1 }[indexPath.item]
-        let appPath = appList![appName]
+            let sectionTitle = sortedSectionTitles[indexPath.section]
+            let appList = sections[sectionTitle]
+            let appName = Array(appList!.keys).sorted { $0 < $1 }[indexPath.item]
+            let appPath = appList![appName]
 
-        openApplication(atPath: appPath!)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.06) {
-            collectionView.deselectItems(at: indexPaths)
+            openApplication(atPath: appPath!)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.06) {
+                collectionView.deselectItems(at: indexPaths)
+            }
         }
     }
 
@@ -223,6 +227,12 @@ extension ViewController: NSCollectionViewDataSource {
             collectionViewItem.regularImage = image
             collectionViewItem.darkenedImage = image.darkened()
             collectionViewItem.titleLabel?.stringValue = appName
+        } else {
+            collectionViewItem.titleLabel?.stringValue = "Invalid path"
+            collectionViewItem.icon?.image = prohibatoryIcon!
+            collectionViewItem.regularImage = prohibatoryIcon!
+            collectionViewItem.darkenedImage = prohibatoryIcon!.darkened()
+            disabledPaths.append(indexPath)
         }
 
         return item
@@ -230,11 +240,17 @@ extension ViewController: NSCollectionViewDataSource {
 
     func findIconFor(applicationPath: String) -> NSImage? {
         let path = applicationPath + "/Contents/Info.plist"
-        let infoDictionary = NSDictionary(contentsOfFile: path)
+        guard let infoDictionary = NSDictionary(contentsOfFile: path)
+            else {
+                return nil
+        }
 
-        let imageName = (infoDictionary!["CFBundleIconFile"]! as! String)
+        guard let imageName = (infoDictionary["CFBundleIconFile"] as? String)
+            else {
+                return nil
+        }
 
-        var imagePath = "\(applicationPath)/Contents/Resources/\(infoDictionary!["CFBundleIconFile"]!)"
+        var imagePath = "\(applicationPath)/Contents/Resources/\(imageName)"
 
         if !imageName.contains(".icns") {
             imagePath = imagePath + ".icns"
@@ -256,25 +272,25 @@ extension ViewController: NSCollectionViewDataSource {
         basicAnimation.toValue = (360 * (Double.pi / 180))
         basicAnimation.duration = 1.0
         basicAnimation.repeatCount = .infinity
-        
+
         setAnchorPoint(anchorPoint: CGPoint(x: 0.5, y: 0.5), forView: view)
         view.layer?.add(basicAnimation, forKey: "transform")
     }
-    
+
     func setAnchorPoint(anchorPoint: CGPoint, forView view: NSView) {
-        let newPoint = NSPoint(x: view.bounds.size.width * anchorPoint.x,  y: view.bounds.size.height * anchorPoint.y)
+        let newPoint = NSPoint(x: view.bounds.size.width * anchorPoint.x, y: view.bounds.size.height * anchorPoint.y)
         let oldPoint = NSPoint(x: view.bounds.size.width * (view.layer?.anchorPoint.x)!, y: view.bounds.size.height * (view.layer?.anchorPoint.y)!)
-        
+
         newPoint.applying((view.layer?.affineTransform())!)
         oldPoint.applying((view.layer?.affineTransform())!)
-        
+
         var position = view.layer?.position
         position?.x -= oldPoint.x
         position?.x += newPoint.x
-        
+
         position?.y -= oldPoint.y
         position?.y += newPoint.y
-        
+
         view.layer?.position = position!
         view.layer?.anchorPoint = anchorPoint
     }
