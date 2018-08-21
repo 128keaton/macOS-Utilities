@@ -10,8 +10,8 @@
 			<string>/Applications/KillDiskStart.app</string>
 			<key>Prime95</key>
 			<string>/Applications/Prime95.app</string>
-			<key>Heaven</key>
-			<string>/Applications/Heaven.app</string>
+			<key>FurMark</key>
+			<string>/Applications/FurMark.app</string>
 			<key>Print Label</key>
 			<string>/Applications/Print Label.app</string>
 		</dict>

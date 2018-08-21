@@ -178,6 +178,13 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
         }
 
     }
+    
+    @IBAction func ejectCDTray(_ sender: NSMenuItem){
+        let ejectProcess = Process()
+        ejectProcess.launchPath = "/usr/bin/drutil"
+        ejectProcess.arguments = ["tray", "eject"]
+        ejectProcess.launch()
+    }
 }
 extension ViewController: NSCollectionViewDataSource {
     func collectionView(_ collectionView: NSCollectionView, didSelectItemsAt indexPaths: Set<IndexPath>) {

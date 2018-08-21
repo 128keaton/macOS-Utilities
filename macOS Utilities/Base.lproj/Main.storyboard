@@ -23,6 +23,11 @@
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="kCx-OE-vgT"/>
+                                        <menuItem title="Eject ⏏" keyEquivalent="" id="myb-xu-JBl">
+                                            <connections>
+                                                <action selector="ejectCDTray:" target="bdE-iv-NZw" id="n4V-6F-4C0"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem title="Quit macOS Utilities" keyEquivalent="q" id="4sb-4s-VLi">
                                             <connections>
                                                 <action selector="terminate:" target="Ady-hI-5gd" id="Te7-pn-YzF"/>
@@ -47,6 +52,7 @@
                     </connections>
                 </customObject>
                 <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
+                <customObject id="bdE-iv-NZw" customClass="ViewController" customModule="macOS_Utilities" customModuleProvider="target"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="75" y="0.0"/>
