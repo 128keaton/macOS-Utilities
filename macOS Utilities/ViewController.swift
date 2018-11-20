@@ -62,8 +62,8 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
         print("Maximum macOS Version Determined: \(macOSInstallProperties)")
 
         macOSVersion = macOSInstallProperties.keys.first!.rawValue
-        macOSVolume = "/Volumes/\(macOSInstallProperties.keys.first!)"
-
+        macOSVolume = "/Volumes/\(String(describing: macOSInstallProperties[macOSInstallProperties.keys.first!]!.rawValue))"
+        print(macOSVolume)
         let taskQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.background)
         taskQueue.async {
             guard let error = self.mountInstallDisk()
