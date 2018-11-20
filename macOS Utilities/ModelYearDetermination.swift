@@ -58,10 +58,9 @@ class ModelYearDetermination {
         } else if modelIdentifier.contains("MacPro") {
             // Mac Pro
             let identifierDigits = getIdentifierDigitsFor("MacPro")
-            if(identifierDigits > 31) {
+            if(identifierDigits > 41){
                 return [InstallVersionNumber.mojave: InstallVersionName.mojave]
             }
-
             return nil
 
         } else if modelIdentifier.contains("iMac") {

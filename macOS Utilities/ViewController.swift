@@ -56,9 +56,10 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
     func getInstallVersion() {
         guard let macOSInstallProperties = ModelYearDetermination().determineInstallableVersion()
             else {
-                showErrorAlert(title: "Unable to image this machine", message: "This machine is too old to be imaged (\(ModelYearDetermination().modelIdentifier))")
+                showErrorAlert(title: "Unable to image this machine", message: "This machine is too old to be imaged (\(ModelYearDetermination().modelIdentifier)). If this is a MacPro4,1, you need to update the firmware first.")
                 return
         }
+        
         print("Maximum macOS Version Determined: \(macOSInstallProperties)")
 
         macOSVersion = macOSInstallProperties.keys.first!.rawValue
