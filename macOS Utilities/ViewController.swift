@@ -18,9 +18,13 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
     private var sections: [String: [String: String]] = [:]
     private var disabledPaths: [IndexPath] = []
 
-    private var macOSVolume = "/Volumes/Install macOS High Sierra"
+    private var macOSVolume = "/Volumes/Install macOS High Sierra" {
+        didSet {
+            writePreferences()
+        }
+    }
     private var macOSVersion = "10.13"
-    
+
     private var fallbackMacOSVolume = "/Volumes/Install macOS High Sierra"
     private var fallbackMacOSVersion = "10.13"
 
@@ -59,7 +63,7 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
                 showErrorAlert(title: "Unable to image this machine", message: "This machine is too old to be imaged (\(ModelYearDetermination().modelIdentifier)). If this is a MacPro4,1, you need to update the firmware first.")
                 return
         }
-        
+
         print("Maximum macOS Version Determined: \(macOSInstallProperties)")
 
         macOSVersion = macOSInstallProperties.keys.first!.rawValue
@@ -124,7 +128,7 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
             macOSVolume = fallbackMacOSVolume
             let _ = mountInstallDisk()
             return "Unable to find image /var/tmp/Installers/\(macOSVersion).dmg. Falling back on previous version"
-            
+
         }
         return nil
     }
@@ -143,6 +147,22 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
     func registerForNotifications() {
         NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(didMount(_:)), name: NSWorkspace.didMountNotification, object: nil)
         NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(didUnmount(_:)), name: NSWorkspace.didUnmountNotification, object: nil)
+    }
+
+    func writePreferences() {
+        guard let plistPath = self.getPropertyList()
+            else {
+                return
+        }
+        guard let preferences = NSMutableDictionary(contentsOf: plistPath)
+            else {
+                return
+        }
+
+        preferences["macOS Volume"] = macOSVolume
+        preferences["macOS Version"] = macOSVersion
+
+        preferences.write(to: plistPath, atomically: true)
     }
 
     func readPreferences() {
@@ -172,7 +192,7 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
             else {
                 return
         }
-        
+
         hostDiskPath = serverPath
         hostDiskServer = serverIP
 
@@ -195,11 +215,11 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
     }
 
     @IBAction func startOSInstall(sender: NSButton) {
-        let filePath = "/Applications/Install \(macOSVersion).app"
+        let filePath = "/Applications/Install macOS.app"
 
         if FileManager.default.fileExists(atPath: filePath) {
             os_log("Starting macOS Install")
-            NSWorkspace.shared.open(URL(fileURLWithPath: "/Applications/Install \(macOSVersion).app"))
+            NSWorkspace.shared.open(URL(fileURLWithPath: "/Applications/Install macOS.app"))
         } else {
             os_log("Unable to start macOS Install. Missing kickstart application")
             let alert: NSAlert = NSAlert()
