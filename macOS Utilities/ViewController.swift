@@ -20,6 +20,16 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
 
     private var macOSVolume = "/Volumes/Install macOS High Sierra"
     private var macOSVersion = "10.13"
+    
+    private var fallbackMacOSVolume = "/Volumes/Install macOS High Sierra"
+    private var fallbackMacOSVersion = "10.13"
+
+    private var hostDiskPath = "/Library/Server/Web/Data/Sites/Default/Installers"
+    private var hostDiskServer = "172.16.5.5" {
+        didSet {
+            getInstallVersion()
+        }
+    }
 
     private let prohibatoryIcon = NSImage(named: NSImage.Name(rawValue: "stop"))
     private let libraryFolder = AppFolder.Library
@@ -29,7 +39,6 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
         createLibraryFolder()
         configureCollectionView()
         progressWheel?.startAnimation(self)
-        readPreferences()
         registerForNotifications()
 
         let quintClickGesture = NSClickGestureRecognizer(target: self, action: #selector(startEasterEgg))
@@ -39,6 +48,96 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
 
         os_log("Launched macOS Utilities")
     }
+
+    override func viewDidAppear() {
+        readPreferences()
+    }
+
+    func getInstallVersion() {
+        guard let macOSInstallProperties = ModelYearDetermination().determineInstallableVersion()
+            else {
+                showErrorAlert(title: "Unable to image this machine", message: "This machine is too old to be imaged (\(ModelYearDetermination().modelIdentifier))")
+                return
+        }
+        print("Maximum macOS Version Determined: \(macOSInstallProperties)")
+
+        macOSVersion = macOSInstallProperties.keys.first!.rawValue
+        macOSVolume = "/Volumes/\(macOSInstallProperties.keys.first!)"
+
+        let taskQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.background)
+        taskQueue.async {
+            guard let error = self.mountInstallDisk()
+                else {
+                    return
+            }
+            DispatchQueue.main.async(execute: {
+                self.showErrorAlert(title: "Image mounting error", message: error)
+            })
+        }
+    }
+
+    func mountInstallDisk() -> String? {
+        var task = Process()
+        var pipe = Pipe()
+
+        task.launchPath = "/bin/mkdir"
+        task.arguments = ["/var/tmp/Installers"]
+        task.standardError = pipe
+        task.launch()
+        task.waitUntilExit()
+
+        var handle = pipe.fileHandleForReading
+        var data = handle.readDataToEndOfFile()
+        var printing = String (data: data, encoding: String.Encoding.utf8)
+
+        print(printing!)
+
+        task = Process()
+        pipe = Pipe()
+        task.launchPath = "/sbin/mount"
+        task.arguments = ["-t", "nfs", "-o", "soft,intr,rsize=8192,wsize=8192,timeo=900,retrans=3,proto=tcp", "\(hostDiskServer):\(hostDiskPath)", "/var/tmp/Installers"]
+        task.standardError = pipe
+        task.launch()
+        task.waitUntilExit()
+
+        handle = pipe.fileHandleForReading
+        data = handle.readDataToEndOfFile()
+        printing = String (data: data, encoding: String.Encoding.utf8)
+
+        print(printing!)
+
+        task = Process()
+        pipe = Pipe()
+        task.standardError = pipe
+        task.launchPath = "/usr/bin/hdiutil"
+        task.arguments = ["mount", "/var/tmp/Installers/\(macOSVersion).dmg"]
+        task.launch()
+        task.waitUntilExit()
+
+        handle = pipe.fileHandleForReading
+        data = handle.readDataToEndOfFile()
+        printing = String (data: data, encoding: String.Encoding.utf8)
+
+        if((printing?.contains("hdiutil: mount failed"))!) {
+            macOSVersion = fallbackMacOSVersion
+            macOSVolume = fallbackMacOSVolume
+            let _ = mountInstallDisk()
+            return "Unable to find image /var/tmp/Installers/\(macOSVersion).dmg. Falling back on previous version"
+            
+        }
+        return nil
+    }
+
+
+    func showErrorAlert(title: String, message: String) {
+        let alert: NSAlert = NSAlert()
+        alert.messageText = title
+        alert.informativeText = message
+        alert.alertStyle = .critical
+        alert.addButton(withTitle: "OK :(")
+        alert.runModal()
+    }
+
 
     func registerForNotifications() {
         NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(didMount(_:)), name: NSWorkspace.didMountNotification, object: nil)
@@ -57,18 +156,24 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
         }
 
         print(preferences)
-        if let path = preferences["macOS Volume"] {
-            macOSVolume = path as! String
-        }
-
-        if let version = preferences["macOS Version"] {
-            macOSVersion = "\(version)"
-        }
 
         guard let localSections = preferences["Applications"] as? [String: Any]
             else {
                 return
         }
+
+        guard let serverIP = preferences["Server IP"] as? String
+            else {
+                return
+        }
+
+        guard let serverPath = preferences["Server Path"] as? String
+            else {
+                return
+        }
+        
+        hostDiskPath = serverPath
+        hostDiskServer = serverIP
 
         for (title, applications) in localSections {
             sections[title] = applications as? [String: String]
@@ -178,8 +283,8 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
         }
 
     }
-    
-    @IBAction func ejectCDTray(_ sender: NSMenuItem){
+
+    @IBAction func ejectCDTray(_ sender: NSMenuItem) {
         let ejectProcess = Process()
         ejectProcess.launchPath = "/usr/bin/drutil"
         ejectProcess.arguments = ["tray", "eject"]
@@ -216,7 +321,7 @@ extension ViewController: NSCollectionViewDataSource {
 
 
     func collectionView(_ collectionView: NSCollectionView, itemForRepresentedObjectAt
-    indexPath: IndexPath) -> NSCollectionViewItem {
+        indexPath: IndexPath) -> NSCollectionViewItem {
         let item = collectionView.makeItem(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "NSCollectionAppCell"), for: indexPath)
         guard let collectionViewItem = item as? NSCollectionAppCell else { return item }
 

@@ -17,8 +17,8 @@
 		</dict>
 		<key>Utilities</key>
 		<dict>
-			<key>Photo Booth</key>
-			<string>/Applications/Photo Booth.app</string>
+			<key>AVTest</key>
+			<string>/Applications/AVTest.app</string>
 			<key>Safari</key>
 			<string>/Applications/Safari.app</string>
 			<key>Disk Utility</key>
@@ -27,9 +27,9 @@
 			<string>/Applications/Utilities/Terminal.app</string>
 		</dict>
 	</dict>
-	<key>macOS Volume</key>
-	<string>/Volumes/Install macOS High Sierra</string>
-	<key>macOS Version</key>
-	<string>10.13</string>
+	<key>Server Path</key>
+	<string>/Library/Server/Web/Data/Sites/Default/Installers</string>
+	<key>Server IP</key>
+	<string>172.16.5.5</string>
 </dict>
 </plist>
