@@ -12,44 +12,54 @@ import os
 
 class ViewController: NSViewController, NSCollectionViewDelegate {
     @IBOutlet weak var installButton: NSButton?
-    @IBOutlet weak var progressWheel: NSProgressIndicator?
     @IBOutlet weak var collectionView: NSCollectionView!
+    @IBOutlet weak var installPopupButton: NSPopUpButton?
+    @IBOutlet weak var progressSpinner: NSProgressIndicator?
+    @IBOutlet weak var metalStatus: NSButton!
+    @IBOutlet weak var memoryStatus: NSButton!
+    
+    private var compatibilityChecker: Compatibility = Compatibility()
+    private var versionNumbers: VersionNumbers = VersionNumbers()
+    private var diskAgent: MountDisk? = nil {
+        didSet {
+            diskAgent?.delegate = self
+        }
+    }
 
     private var sections: [String: [String: String]] = [:]
     private var disabledPaths: [IndexPath] = []
 
-    private var macOSVolume = "/Volumes/Install macOS High Sierra" {
-        didSet {
-            writePreferences()
-        }
-    }
-    private var macOSVersion = "10.13"
 
     private var fallbackMacOSVolume = "/Volumes/Install macOS High Sierra"
     private var fallbackMacOSVersion = "10.13"
 
     private var hostDiskPath = "/Library/Server/Web/Data/Sites/Default/Installers"
-    private var hostDiskServer = "172.16.5.5" {
-        didSet {
-            getInstallVersion()
-        }
-    }
+    private var hostDiskServer = "172.16.5.5"
 
     private let prohibatoryIcon = NSImage(named: NSImage.Name(rawValue: "stop"))
     private let libraryFolder = AppFolder.Library
+    private let taskQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.background)
 
     override func viewDidLoad() {
         super.viewDidLoad()
         createLibraryFolder()
         configureCollectionView()
-        progressWheel?.startAnimation(self)
-        registerForNotifications()
-
+        checkForMetal()
+        verifyMemoryAmount()
         let quintClickGesture = NSClickGestureRecognizer(target: self, action: #selector(startEasterEgg))
 
         quintClickGesture.numberOfClicksRequired = 5
         self.collectionView.addGestureRecognizer(quintClickGesture)
 
+        installPopupButton?.isEnabled = false
+        startSpinning()
+        
+        if #available(OSX 10.13, *) {
+            if let contentSize = self.collectionView.collectionViewLayout?.collectionViewContentSize {
+                self.collectionView.setFrameSize(contentSize)
+            }
+        }
+        
         os_log("Launched macOS Utilities")
     }
 
@@ -57,80 +67,68 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
         readPreferences()
     }
 
-    func getInstallVersion() {
-        guard let macOSInstallProperties = ModelYearDetermination().determineInstallableVersion()
-            else {
-                showErrorAlert(title: "Unable to image this machine", message: "This machine is too old to be imaged (\(ModelYearDetermination().modelIdentifier)). If this is a MacPro4,1, you need to update the firmware first.")
-                return
-        }
-
-        print("Maximum macOS Version Determined: \(macOSInstallProperties)")
-
-        macOSVersion = macOSInstallProperties.keys.first!.rawValue
-        macOSVolume = "/Volumes/\(String(describing: macOSInstallProperties[macOSInstallProperties.keys.first!]!.rawValue))"
-        print(macOSVolume)
-        let taskQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.background)
-        taskQueue.async {
-            guard let error = self.mountInstallDisk()
-                else {
-                    return
-            }
-            DispatchQueue.main.async(execute: {
-                self.showErrorAlert(title: "Image mounting error", message: error)
-            })
+    func checkForMetal(){
+        if compatibilityChecker.hasMetalGPU{
+            metalStatus.image = NSImage(named: NSImage.Name(rawValue: "SuccessIcon"))
+        }else{
+            metalStatus.image = NSImage(named: NSImage.Name(rawValue: "AlertIcon"))
         }
     }
-
-    func mountInstallDisk() -> String? {
-        var task = Process()
-        var pipe = Pipe()
-
-        task.launchPath = "/bin/mkdir"
-        task.arguments = ["/var/tmp/Installers"]
-        task.standardError = pipe
-        task.launch()
-        task.waitUntilExit()
-
-        var handle = pipe.fileHandleForReading
-        var data = handle.readDataToEndOfFile()
-        var printing = String (data: data, encoding: String.Encoding.utf8)
-
-        print(printing!)
-
-        task = Process()
-        pipe = Pipe()
-        task.launchPath = "/sbin/mount"
-        task.arguments = ["-t", "nfs", "-o", "soft,intr,rsize=8192,wsize=8192,timeo=900,retrans=3,proto=tcp", "\(hostDiskServer):\(hostDiskPath)", "/var/tmp/Installers"]
-        task.standardError = pipe
-        task.launch()
-        task.waitUntilExit()
-
-        handle = pipe.fileHandleForReading
-        data = handle.readDataToEndOfFile()
-        printing = String (data: data, encoding: String.Encoding.utf8)
-
-        print(printing!)
-
-        task = Process()
-        pipe = Pipe()
-        task.standardError = pipe
-        task.launchPath = "/usr/bin/hdiutil"
-        task.arguments = ["mount", "/var/tmp/Installers/\(macOSVersion).dmg"]
-        task.launch()
-        task.waitUntilExit()
-
-        handle = pipe.fileHandleForReading
-        data = handle.readDataToEndOfFile()
-        printing = String (data: data, encoding: String.Encoding.utf8)
-
-        if((printing?.contains("hdiutil: mount failed"))!) {
-            macOSVersion = fallbackMacOSVersion
-            macOSVolume = fallbackMacOSVolume
-            let _ = mountInstallDisk()
-            return "Unable to find image /var/tmp/Installers/\(macOSVersion).dmg. Falling back on previous version"
-
+    
+    func verifyMemoryAmount(){
+        if compatibilityChecker.hasEnoughMemory{
+            memoryStatus.image = NSImage(named: NSImage.Name(rawValue: "SuccessIcon"))
+        }else{
+            memoryStatus.image = NSImage(named: NSImage.Name(rawValue: "AlertIcon"))
         }
-        return nil
+    }
+    
+    @IBAction func showPopover(sender: NSButton){
+        let popoverController = storyboard?.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "InfoPopoverViewController")) as! InfoPopoverViewController
+        
+        if(sender == memoryStatus){
+            if(compatibilityChecker.hasEnoughMemory){
+                popoverController.message = "This machine has more than 8GB of RAM"
+            }else{
+                popoverController.message = "This machine has less than 8GB of RAM. You can install, but the machine's performance might be dismal."
+            }
+        }else{
+            if(compatibilityChecker.hasMetalGPU){
+                popoverController.message = "This machine has one Metal compatible GPU"
+            }else{
+                popoverController.message = "This machine has no Metal compatible GPUs. If you are installing anything below Mojave, you can safely ignore this warning."
+            }
+        }
+        
+        let popover = NSPopover()
+        popover.contentSize = NSSize(width: 216, height: 111)
+        popover.behavior = .transient
+        popover.animates = true
+        popover.contentViewController = popoverController
+        
+        let entryRect = sender.convert(sender.bounds, to: NSApp.mainWindow?.contentView)
+        popover.show(relativeTo: entryRect, of: (NSApp.mainWindow?.contentView)!, preferredEdge: .minY)
+    }
+    
+    func populatePopupButton() {
+        installPopupButton?.menu?.removeAllItems()
+
+        if(diskAgent != nil) {
+            let diskImages = diskAgent?.getInstallerDiskImages().sorted(by: { $0.0 > $1.0 })
+            for(version, name) in diskImages! {
+                if(compatibilityChecker.canInstall(version: version)) {
+                    installPopupButton?.addItem(withTitle: name)
+                }
+            }
+            if((installPopupButton?.menu?.items.count)! > 0) {
+                let recentVersion = installPopupButton?.menu?.items.first?.title
+                taskQueue.async {
+                    self.diskAgent?.mountInstallDisk(recentVersion!, "10.11")
+                }
+            } else {
+                showErrorAlert(title: "macOS Install Error", message: "There are no installable versions found on the server compatible with this machine")
+            }
+        }
     }
 
 
@@ -143,12 +141,6 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
         alert.runModal()
     }
 
-
-    func registerForNotifications() {
-        NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(didMount(_:)), name: NSWorkspace.didMountNotification, object: nil)
-        NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(didUnmount(_:)), name: NSWorkspace.didUnmountNotification, object: nil)
-    }
-
     func writePreferences() {
         guard let plistPath = self.getPropertyList()
             else {
@@ -158,9 +150,6 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
             else {
                 return
         }
-
-        preferences["macOS Volume"] = macOSVolume
-        preferences["macOS Version"] = macOSVersion
 
         preferences.write(to: plistPath, atomically: true)
     }
@@ -175,8 +164,6 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
             else {
                 return
         }
-
-        print(preferences)
 
         guard let localSections = preferences["Applications"] as? [String: Any]
             else {
@@ -196,59 +183,41 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
         hostDiskPath = serverPath
         hostDiskServer = serverIP
 
+        diskAgent = MountDisk(host: hostDiskServer, hostPath: hostDiskPath)
+
+        populatePopupButton()
+
         for (title, applications) in localSections {
             sections[title] = applications as? [String: String]
         }
 
-        if FileManager.default.fileExists(atPath: macOSVolume) {
-            installButton?.isEnabled = true
-            progressWheel?.isHidden = true
-        }
         self.collectionView.reloadData()
         os_log("Successfully loaded plist into dictionary")
     }
 
     func openApplication(atPath path: String) {
-        os_log("Opening application")
         print("Opening application at: \(path)")
         NSWorkspace.shared.open(URL(fileURLWithPath: path))
     }
 
-    @IBAction func startOSInstall(sender: NSButton) {
-        let filePath = "/Applications/Install macOS.app"
+    @IBAction func installPopupChanged(sender: NSPopUpButton) {
+        startSpinning()
+        diskAgent?.unmountActiveDisk()
+        sender.isEnabled = false
 
-        if FileManager.default.fileExists(atPath: filePath) {
-            os_log("Starting macOS Install")
-            NSWorkspace.shared.open(URL(fileURLWithPath: "/Applications/Install macOS.app"))
+        if((installPopupButton?.menu?.items.count)! > 0) {
+            let selectedVersion = installPopupButton?.selectedItem?.title
+            taskQueue.async {
+                self.diskAgent?.mountInstallDisk(selectedVersion!, "10.11")
+            }
         } else {
-            os_log("Unable to start macOS Install. Missing kickstart application")
-            let alert: NSAlert = NSAlert()
-            alert.messageText = "Unable to start macOS Install"
-            alert.informativeText = "macOS Utilities was unable find application \n \(filePath)"
-            alert.alertStyle = .critical
-            alert.addButton(withTitle: "OK")
-            alert.runModal()
+            showErrorAlert(title: "macOS Install Error", message: "There are no installable versions found on the server compatible with this machine")
         }
     }
 
-    @objc func didMount(_ notification: NSNotification) {
-        if let devicePath = notification.userInfo!["NSDevicePath"] as? String {
-            if (devicePath.contains(macOSVolume)) {
-                progressWheel?.isHidden = true
-                installButton?.isEnabled = true
-                os_log("macOS Installer Volume mounted -- macOS Install possible at this time")
-            }
-        }
-    }
 
-    @objc func didUnmount(_ notification: NSNotification) {
-        if let devicePath = notification.userInfo!["NSDevicePath"] as? String {
-            if (devicePath.contains(macOSVolume)) {
-                progressWheel?.isHidden = false
-                installButton?.isEnabled = false
-                os_log("macOS Installer Volume unmounted -- macOS Install impossible at this time")
-            }
-        }
+    @IBAction func startOSInstall(sender: NSButton) {
+        InstallOS.kickoffMacOSInstall()
     }
 
     fileprivate func configureCollectionView() {
@@ -259,7 +228,7 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
         flowLayout.minimumLineSpacing = 20.0
 
         collectionView.collectionViewLayout = flowLayout
-        view.wantsLayer = true
+        view.wantsLayer = false
         collectionView.layer?.cornerRadius = 12
     }
 
@@ -310,6 +279,16 @@ class ViewController: NSViewController, NSCollectionViewDelegate {
         ejectProcess.launchPath = "/usr/bin/drutil"
         ejectProcess.arguments = ["tray", "eject"]
         ejectProcess.launch()
+    }
+
+    func stopSpinning() {
+        progressSpinner?.isHidden = true
+        progressSpinner?.stopAnimation(self)
+    }
+
+    func startSpinning() {
+        progressSpinner?.startAnimation(self)
+        progressSpinner?.isHidden = false
     }
 }
 extension ViewController: NSCollectionViewDataSource {
@@ -427,4 +406,35 @@ extension ViewController: NSCollectionViewDataSource {
         view.layer?.position = position!
         view.layer?.anchorPoint = anchorPoint
     }
+}
+extension ViewController: MountDiskDelegate {
+    func handleDiskError(message: String) {
+        self.showErrorAlert(title: "Disk Error", message: message)
+    }
+
+    func readyToInstall(volumePath: String, macOSVersion: String) {
+        stopSpinning()
+        self.installButton?.isEnabled = true
+        self.installPopupButton?.isEnabled = true
+
+        guard let plistPath = self.getPropertyList()
+            else {
+                return
+        }
+        guard let preferences = NSMutableDictionary(contentsOf: plistPath)
+            else {
+                return
+        }
+
+        preferences["macOS Volume"] = volumePath
+        preferences["macOS Version"] = macOSVersion
+
+        preferences.write(to: plistPath, atomically: true)
+    }
+
+    func unreadyToInstall() {
+        self.installButton?.isEnabled = false
+    }
+
+
 }

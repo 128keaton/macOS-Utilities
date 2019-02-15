@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8A0138C6221703B700C77DA0 /* Compatibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0138C5221703B700C77DA0 /* Compatibility.swift */; };
+		8A0138CD2217447C00C77DA0 /* InstallOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0138CC2217447C00C77DA0 /* InstallOS.swift */; };
+		8A0138CF2217449700C77DA0 /* MountDisk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0138CE2217449700C77DA0 /* MountDisk.swift */; };
+		8A0138D1221749BD00C77DA0 /* VersionNumbers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0138D0221749BD00C77DA0 /* VersionNumbers.swift */; };
+		8A0138D62217624700C77DA0 /* InfoPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0138D52217624700C77DA0 /* InfoPopoverViewController.swift */; };
 		8A39D3602119E81B00437F4E /* com.er2.applications.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8A39D35F2119E81B00437F4E /* com.er2.applications.plist */; };
 		8A47DED9210A2D30003F5CC3 /* NSCollectionAppCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */; };
 		8A47DEDB210A3418003F5CC3 /* NSCollectionAppCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */; };
@@ -22,6 +27,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8A0138C5221703B700C77DA0 /* Compatibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Compatibility.swift; sourceTree = "<group>"; };
+		8A0138CC2217447C00C77DA0 /* InstallOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallOS.swift; sourceTree = "<group>"; };
+		8A0138CE2217449700C77DA0 /* MountDisk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MountDisk.swift; sourceTree = "<group>"; };
+		8A0138D0221749BD00C77DA0 /* VersionNumbers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionNumbers.swift; sourceTree = "<group>"; };
+		8A0138D52217624700C77DA0 /* InfoPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoPopoverViewController.swift; sourceTree = "<group>"; };
 		8A39D35F2119E81B00437F4E /* com.er2.applications.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = com.er2.applications.plist; sourceTree = "<group>"; };
 		8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSCollectionAppCell.swift; sourceTree = "<group>"; };
 		8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NSCollectionAppCell.xib; sourceTree = "<group>"; };
@@ -70,6 +80,61 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		8A0138C7221703BC00C77DA0 /* Compatibility */ = {
+			isa = PBXGroup;
+			children = (
+				8A0138D0221749BD00C77DA0 /* VersionNumbers.swift */,
+				8A87B8B421A47D8C004496AA /* ModelYearDetermination.swift */,
+				8A0138C5221703B700C77DA0 /* Compatibility.swift */,
+			);
+			path = Compatibility;
+			sourceTree = "<group>";
+		};
+		8A0138C8221703CC00C77DA0 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				8A87B8B621A47DD8004496AA /* CwlSysctl.swift */,
+				8ADBB215210A623800C4F1D9 /* Extensions.swift */,
+				8ACB65F021067A81004B9C5A /* WindowClass.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		8A0138C9221703D400C77DA0 /* NSCollectionAppCell */ = {
+			isa = PBXGroup;
+			children = (
+				8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */,
+				8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */,
+			);
+			path = NSCollectionAppCell;
+			sourceTree = "<group>";
+		};
+		8A0138D2221757B200C77DA0 /* Disk and Installation */ = {
+			isa = PBXGroup;
+			children = (
+				8A0138CC2217447C00C77DA0 /* InstallOS.swift */,
+				8A0138CE2217449700C77DA0 /* MountDisk.swift */,
+			);
+			path = "Disk and Installation";
+			sourceTree = "<group>";
+		};
+		8A0138D32217623200C77DA0 /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				8ACB65DA21063E6F004B9C5A /* Main.storyboard */,
+			);
+			path = Storyboards;
+			sourceTree = "<group>";
+		};
+		8A0138D42217623700C77DA0 /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				8ACB65D621063E6F004B9C5A /* ViewController.swift */,
+				8A0138D52217624700C77DA0 /* InfoPopoverViewController.swift */,
+			);
+			path = "View Controllers";
+			sourceTree = "<group>";
+		};
 		8ACB65C821063E6F004B9C5A = {
 			isa = PBXGroup;
 			children = (
@@ -91,19 +156,17 @@
 		8ACB65D321063E6F004B9C5A /* macOS Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				8A39D35F2119E81B00437F4E /* com.er2.applications.plist */,
 				8ACB65D821063E6F004B9C5A /* Assets.xcassets */,
 				8ACB65D421063E6F004B9C5A /* AppDelegate.swift */,
-				8ACB65D621063E6F004B9C5A /* ViewController.swift */,
-				8ACB65DA21063E6F004B9C5A /* Main.storyboard */,
-				8A87B8B421A47D8C004496AA /* ModelYearDetermination.swift */,
-				8A87B8B621A47DD8004496AA /* CwlSysctl.swift */,
+				8A0138D42217623700C77DA0 /* View Controllers */,
+				8A0138C7221703BC00C77DA0 /* Compatibility */,
+				8A0138D32217623200C77DA0 /* Storyboards */,
+				8A0138C9221703D400C77DA0 /* NSCollectionAppCell */,
+				8A0138C8221703CC00C77DA0 /* Helpers */,
+				8A0138D2221757B200C77DA0 /* Disk and Installation */,
 				8ACB65DD21063E6F004B9C5A /* Info.plist */,
 				8ACB65DE21063E6F004B9C5A /* macOS_Utilities.entitlements */,
-				8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */,
-				8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */,
-				8ADBB215210A623800C4F1D9 /* Extensions.swift */,
-				8ACB65F021067A81004B9C5A /* WindowClass.swift */,
+				8A39D35F2119E81B00437F4E /* com.er2.applications.plist */,
 			);
 			path = "macOS Utilities";
 			sourceTree = "<group>";
@@ -138,7 +201,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = "Keaton Burleson";
 				TargetAttributes = {
 					8ACB65D021063E6F004B9C5A = {
@@ -243,9 +306,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A0138C6221703B700C77DA0 /* Compatibility.swift in Sources */,
 				8A87B8B521A47D8C004496AA /* ModelYearDetermination.swift in Sources */,
+				8A0138D1221749BD00C77DA0 /* VersionNumbers.swift in Sources */,
 				8ADBB216210A623800C4F1D9 /* Extensions.swift in Sources */,
+				8A0138D62217624700C77DA0 /* InfoPopoverViewController.swift in Sources */,
 				8ACB65D721063E6F004B9C5A /* ViewController.swift in Sources */,
+				8A0138CF2217449700C77DA0 /* MountDisk.swift in Sources */,
+				8A0138CD2217447C00C77DA0 /* InstallOS.swift in Sources */,
 				8ACB65F121067A81004B9C5A /* WindowClass.swift in Sources */,
 				8A47DED9210A2D30003F5CC3 /* NSCollectionAppCell.swift in Sources */,
 				8A87B8B721A47DD8004496AA /* CwlSysctl.swift in Sources */,
@@ -281,6 +349,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -288,6 +357,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -338,6 +408,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -345,6 +416,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
