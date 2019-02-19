@@ -14,6 +14,7 @@ class Compatibility {
     private (set) public var modelIdentifier: String? = nil
     private (set) public var hasMetalGPU = false
     private (set) public var hasEnoughMemory = false
+    private (set) public var hasLargeEnoughHDD = false
     private (set) public var incompatibleGPUs = [String]()
     private var installableVersions = ModelYearDetermination().determineInstallableVersions()
 
@@ -21,6 +22,7 @@ class Compatibility {
         modelIdentifier = ModelYearDetermination().modelIdentifier
         getMetalCompatibility()
         checkMemory()
+        checkHDD()
     }
 
     func canInstall(version: String) -> Bool {
@@ -34,6 +36,31 @@ class Compatibility {
         } else {
             hasEnoughMemory = true
         }
+    }
+    
+    func checkHDD(){
+        let hddSpaceInGB = getTotalSizeGB()
+        if(hddSpaceInGB < 150){
+            hasLargeEnoughHDD = false
+        }else{
+            hasLargeEnoughHDD = true
+        }
+    }
+    
+    func getTotalSizeGB() -> Int{
+        return Int(ceil(Double(getTotalSize()! / 1000000000)))
+    }
+    
+    func getTotalSize() -> Int64?{
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+        if let dictionary = try? FileManager.default.attributesOfFileSystem(forPath: paths.last!) {
+            if let freeSize = dictionary[FileAttributeKey.systemSize] as? NSNumber {
+                return freeSize.int64Value
+            }
+        }else{
+            print("Error Obtaining System Memory Info:")
+        }
+        return nil
     }
 
     // Determines metal compatibility

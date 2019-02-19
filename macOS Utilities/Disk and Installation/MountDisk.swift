@@ -13,11 +13,12 @@ class MountDisk {
     let temporaryPath = "/var/tmp/Installers/"
     var delegate: MountDiskDelegate? = nil
 
-    private var macOSVolume: String? = nil
     private let versionNumbers: VersionNumbers = VersionNumbers()
+    private var compatibilityChecker: Compatibility = Compatibility()
     private var host: String
     private var hostPath: String
-    private var currentVersion: String? = nil
+    private var mountedVersions = [OSVersion]()
+    private var mountedVolumes = [String]()
 
     init(host: String, hostPath: String) {
         self.host = host
@@ -26,8 +27,8 @@ class MountDisk {
         mountInstallerServer()
     }
 
-    func getInstallerDiskImages() -> [String: String] {
-        var diskImages = [String: String]()
+    func getInstallerDiskImages() -> [OSVersion] {
+        var diskImages = [OSVersion]()
 
         let fileManager = FileManager.default
         let installersURL = URL(fileURLWithPath: temporaryPath)
@@ -36,8 +37,11 @@ class MountDisk {
             for file in fileURLs {
                 let fileName = file.lastPathComponent
                 if(fileName.contains(".dmg")) {
-                    let rawVersion = fileName.replacingOccurrences(of: ".dmg", with: "")
-                    diskImages[rawVersion] = versionNumbers.getNameForVersion(rawVersion)
+                    let version = fileName.replacingOccurrences(of: ".dmg", with: "")
+                    let label = versionNumbers.getNameForVersion(version)
+                    let diskImagePath = "\(installersURL.absoluteString.replacingOccurrences(of: "file://", with: ""))/\(fileName)"
+
+                    diskImages.append(OSVersion(diskImagePath: diskImagePath, appLabel: label, version: version))
                 }
             }
         } catch {
@@ -66,19 +70,21 @@ class MountDisk {
     }
 
     // Mounts an install disk from the temporary path
-    func mountInstallDisk(_ version: String, _ fallbackVersion: String?) {
-        let dmgVersionNumber = versionNumbers.getVersionForName(version)
-        macOSVolume = "/Volumes/\(version)"
-        currentVersion = dmgVersionNumber
+    func mountInstallDisk(installDisk: OSVersion) {
+        let dmgVersionNumber = installDisk.version
+        let volume = "/Volumes/\(installDisk.appLabel)"
+        mountedVolumes.append(volume)
+        mountedVersions.append(installDisk)
 
-        let taskOutput = handleTask(command: "/usr/bin/hdiutil", arguments: ["attach",  "\(temporaryPath)\(dmgVersionNumber).dmg", "-noverify"])
+        let taskOutput = handleTask(command: "/usr/bin/hdiutil", arguments: ["attach", "\(temporaryPath)\(dmgVersionNumber).dmg", "-noverify"])
         print("Mounting \(temporaryPath)\(dmgVersionNumber).dmg")
         print(taskOutput!)
-        if((taskOutput?.contains("hdiutil: mount failed"))! && fallbackVersion != nil) {
-           let _ = mountInstallDisk(fallbackVersion!, nil)
-            delegate?.handleDiskError(message: "Unable to find image /var/tmp/Installers/\(version).dmg. Falling back on previous version")
-        } else if((taskOutput?.contains("hdiutil: mount failed"))! && fallbackVersion == nil) {
-            delegate?.handleDiskError(message: "Unable to find image /var/tmp/Installers/\(version).dmg. No fallback version specified")
+
+        if((taskOutput?.contains("hdiutil: mount failed"))!) {
+            delegate?.handleDiskError(message: "Unable to find image /var/tmp/Installers/\(dmgVersionNumber).dmg. No fallback version specified")
+
+            mountedVolumes.removeAll { $0 == volume }
+            mountedVersions = mountedVersions.filter { $0.version != installDisk.version }
         }
     }
 
@@ -104,26 +110,64 @@ class MountDisk {
         NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(didUnmount(_:)), name: NSWorkspace.didUnmountNotification, object: nil)
     }
 
-    public func unmountActiveDisk(){
-        if let currentVolume = macOSVolume{
-            let taskOutput = handleTask(command: "/sbin/umount", arguments: [currentVolume])
-            print(taskOutput!)
-        }
+    public func unmountDisk(installDisk: OSVersion) {
+        let taskOutput = handleTask(command: "/sbin/umount", arguments: ["/Volumes/\(installDisk.appLabel)"])
+        let volume = "/Volumes/\(installDisk.appLabel)"
+
+        mountedVolumes.removeAll { $0 == volume }
+        mountedVersions = mountedVersions.filter { $0.version != installDisk.version }
+        print(taskOutput!)
     }
-    
+
+
+
     @objc func didMount(_ notification: NSNotification) {
-        if let devicePath = notification.userInfo!["NSDevicePath"] as? String, let volume = macOSVolume {
-            if (devicePath.contains(volume) && currentVersion != nil) {
-                delegate?.readyToInstall(volumePath: volume, macOSVersion: currentVersion!)
+        if let devicePath = notification.userInfo!["NSDevicePath"] as? String {
+            let newVolume = devicePath.components(separatedBy: CharacterSet.decimalDigits).joined().trimmingCharacters(in: .whitespacesAndNewlines)
+            let appLabel = newVolume.replacingOccurrences(of: "/Volumes/", with: "")
+            if (mountedVolumes.contains(newVolume)) {
+
+                guard let currentMountedVersion = (mountedVersions.filter { $0.appLabel == appLabel }).first
+                    else {
+                        return
+                }
+
+                delegate?.diskMounted(diskImage: currentMountedVersion)
+                currentMountedVersion.updateIcon()
                 print("macOS Installer Volume mounted -- macOS Install possible at this time")
+            } else {
+                let appLabel = devicePath.replacingOccurrences(of: "/Volumes/", with: "")
+                let appPath = "\(devicePath)/\(appLabel).app"
+                if(URL(fileURLWithPath: appPath).filestatus != .isNot) {
+                    let installVersion = VersionNumbers().getVersionForName(appLabel)
+                    let installDisk = OSVersion(diskImagePath: devicePath, appLabel: appLabel, version: installVersion)
+
+                    if(compatibilityChecker.canInstall(version: installDisk.version)) {
+                        mountedVolumes.append(devicePath)
+                        mountedVersions.append(installDisk)
+                        
+                        delegate?.diskMounted(diskImage: installDisk)
+                        installDisk.updateIcon()
+                        print("macOS Installer Volume mounted -- macOS Install possible at this time")
+                    }
+                }
             }
         }
     }
 
     @objc func didUnmount(_ notification: NSNotification) {
-        if let devicePath = notification.userInfo!["NSDevicePath"] as? String, let volume = macOSVolume {
-            if (devicePath.contains(volume)) {
-                delegate?.unreadyToInstall()
+        if let devicePath = notification.userInfo!["NSDevicePath"] as? String {
+            let removedVolume = devicePath.components(separatedBy: CharacterSet.decimalDigits).joined().trimmingCharacters(in: .whitespacesAndNewlines)
+            let appLabel = removedVolume.replacingOccurrences(of: "/Volumes/", with: "")
+            if (mountedVolumes.contains(removedVolume)) {
+                mountedVolumes.removeAll { $0 == removedVolume }
+                guard let unmountedVersion = (mountedVersions.filter { $0.appLabel == appLabel }).first
+                    else {
+                        print("Unable to determine unmounted version -- you can safely ignore this probably")
+                        return
+                }
+                mountedVersions.removeAll { $0.version == unmountedVersion.version }
+                delegate?.diskUnmounted(diskImage: unmountedVersion)
                 print("macOS Installer Volume unmounted -- macOS Install impossible at this time")
             }
         }
@@ -131,37 +175,7 @@ class MountDisk {
 }
 protocol MountDiskDelegate {
     func handleDiskError(message: String)
-    func readyToInstall(volumePath: String, macOSVersion: String)
-    func unreadyToInstall()
-}
-
-extension URL {
-    enum Filestatus {
-        case isFile
-        case isDir
-        case isNot
-    }
-
-    var filestatus: Filestatus {
-        get {
-            let filestatus: Filestatus
-            var isDir: ObjCBool = false
-            if FileManager.default.fileExists(atPath: self.path, isDirectory: &isDir) {
-                if isDir.boolValue {
-                    // file exists and is a directory
-                    filestatus = .isDir
-                }
-                else {
-                    // file exists and is not a directory
-                    filestatus = .isFile
-                }
-            }
-            else {
-                // file does not exist
-                filestatus = .isNot
-            }
-            return filestatus
-        }
-    }
+    func diskMounted(diskImage: OSVersion)
+    func diskUnmounted(diskImage: OSVersion)
 }
 

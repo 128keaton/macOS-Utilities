@@ -13,12 +13,16 @@
 		8A0138D1221749BD00C77DA0 /* VersionNumbers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0138D0221749BD00C77DA0 /* VersionNumbers.swift */; };
 		8A0138D62217624700C77DA0 /* InfoPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0138D52217624700C77DA0 /* InfoPopoverViewController.swift */; };
 		8A39D3602119E81B00437F4E /* com.er2.applications.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8A39D35F2119E81B00437F4E /* com.er2.applications.plist */; };
+		8A4305B5221BA7A7005C8D7A /* ResizingTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A4305B4221BA7A7005C8D7A /* ResizingTabViewController.swift */; };
+		8A4305B7221BB13E005C8D7A /* OSVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A4305B6221BB13E005C8D7A /* OSVersion.swift */; };
 		8A47DED9210A2D30003F5CC3 /* NSCollectionAppCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */; };
 		8A47DEDB210A3418003F5CC3 /* NSCollectionAppCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */; };
+		8A6F28F0221B9F5C00FF9DB3 /* InstallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6F28EF221B9F5C00FF9DB3 /* InstallViewController.swift */; };
+		8A6F28F2221BA0AA00FF9DB3 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6F28F1221BA0AA00FF9DB3 /* Preferences.swift */; };
 		8A87B8B521A47D8C004496AA /* ModelYearDetermination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87B8B421A47D8C004496AA /* ModelYearDetermination.swift */; };
 		8A87B8B721A47DD8004496AA /* CwlSysctl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87B8B621A47DD8004496AA /* CwlSysctl.swift */; };
 		8ACB65D521063E6F004B9C5A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ACB65D421063E6F004B9C5A /* AppDelegate.swift */; };
-		8ACB65D721063E6F004B9C5A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ACB65D621063E6F004B9C5A /* ViewController.swift */; };
+		8ACB65D721063E6F004B9C5A /* ApplicationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ACB65D621063E6F004B9C5A /* ApplicationViewController.swift */; };
 		8ACB65D921063E6F004B9C5A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8ACB65D821063E6F004B9C5A /* Assets.xcassets */; };
 		8ACB65DC21063E6F004B9C5A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8ACB65DA21063E6F004B9C5A /* Main.storyboard */; };
 		8ACB65F121067A81004B9C5A /* WindowClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ACB65F021067A81004B9C5A /* WindowClass.swift */; };
@@ -33,13 +37,17 @@
 		8A0138D0221749BD00C77DA0 /* VersionNumbers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionNumbers.swift; sourceTree = "<group>"; };
 		8A0138D52217624700C77DA0 /* InfoPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoPopoverViewController.swift; sourceTree = "<group>"; };
 		8A39D35F2119E81B00437F4E /* com.er2.applications.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = com.er2.applications.plist; sourceTree = "<group>"; };
+		8A4305B4221BA7A7005C8D7A /* ResizingTabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizingTabViewController.swift; sourceTree = "<group>"; };
+		8A4305B6221BB13E005C8D7A /* OSVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSVersion.swift; sourceTree = "<group>"; };
 		8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSCollectionAppCell.swift; sourceTree = "<group>"; };
 		8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NSCollectionAppCell.xib; sourceTree = "<group>"; };
+		8A6F28EF221B9F5C00FF9DB3 /* InstallViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallViewController.swift; sourceTree = "<group>"; };
+		8A6F28F1221BA0AA00FF9DB3 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		8A87B8B421A47D8C004496AA /* ModelYearDetermination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelYearDetermination.swift; sourceTree = "<group>"; };
 		8A87B8B621A47DD8004496AA /* CwlSysctl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CwlSysctl.swift; sourceTree = "<group>"; };
 		8ACB65D121063E6F004B9C5A /* macOS Utilities.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "macOS Utilities.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8ACB65D421063E6F004B9C5A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		8ACB65D621063E6F004B9C5A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		8ACB65D621063E6F004B9C5A /* ApplicationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationViewController.swift; sourceTree = "<group>"; };
 		8ACB65D821063E6F004B9C5A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8ACB65DB21063E6F004B9C5A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		8ACB65DD21063E6F004B9C5A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -96,6 +104,8 @@
 				8A87B8B621A47DD8004496AA /* CwlSysctl.swift */,
 				8ADBB215210A623800C4F1D9 /* Extensions.swift */,
 				8ACB65F021067A81004B9C5A /* WindowClass.swift */,
+				8A6F28F1221BA0AA00FF9DB3 /* Preferences.swift */,
+				8A4305B4221BA7A7005C8D7A /* ResizingTabViewController.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -112,6 +122,7 @@
 		8A0138D2221757B200C77DA0 /* Disk and Installation */ = {
 			isa = PBXGroup;
 			children = (
+				8A4305B6221BB13E005C8D7A /* OSVersion.swift */,
 				8A0138CC2217447C00C77DA0 /* InstallOS.swift */,
 				8A0138CE2217449700C77DA0 /* MountDisk.swift */,
 			);
@@ -129,8 +140,9 @@
 		8A0138D42217623700C77DA0 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				8ACB65D621063E6F004B9C5A /* ViewController.swift */,
+				8ACB65D621063E6F004B9C5A /* ApplicationViewController.swift */,
 				8A0138D52217624700C77DA0 /* InfoPopoverViewController.swift */,
+				8A6F28EF221B9F5C00FF9DB3 /* InstallViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -183,7 +195,6 @@
 				8ACB65CE21063E6F004B9C5A /* Frameworks */,
 				8ACB65CF21063E6F004B9C5A /* Resources */,
 				07E9E86598DEC0B8EC3E57C3 /* [CP] Embed Pods Frameworks */,
-				40939B651F67280B98446EBC /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -266,21 +277,6 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-macOS Utilities/Pods-macOS Utilities-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		40939B651F67280B98446EBC /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-macOS Utilities/Pods-macOS Utilities-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		D6B004D59B8D6F5F589502D9 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -308,11 +304,15 @@
 			files = (
 				8A0138C6221703B700C77DA0 /* Compatibility.swift in Sources */,
 				8A87B8B521A47D8C004496AA /* ModelYearDetermination.swift in Sources */,
+				8A4305B7221BB13E005C8D7A /* OSVersion.swift in Sources */,
 				8A0138D1221749BD00C77DA0 /* VersionNumbers.swift in Sources */,
+				8A6F28F0221B9F5C00FF9DB3 /* InstallViewController.swift in Sources */,
 				8ADBB216210A623800C4F1D9 /* Extensions.swift in Sources */,
 				8A0138D62217624700C77DA0 /* InfoPopoverViewController.swift in Sources */,
-				8ACB65D721063E6F004B9C5A /* ViewController.swift in Sources */,
+				8ACB65D721063E6F004B9C5A /* ApplicationViewController.swift in Sources */,
+				8A4305B5221BA7A7005C8D7A /* ResizingTabViewController.swift in Sources */,
 				8A0138CF2217449700C77DA0 /* MountDisk.swift in Sources */,
+				8A6F28F2221BA0AA00FF9DB3 /* Preferences.swift in Sources */,
 				8A0138CD2217447C00C77DA0 /* InstallOS.swift in Sources */,
 				8ACB65F121067A81004B9C5A /* WindowClass.swift in Sources */,
 				8A47DED9210A2D30003F5CC3 /* NSCollectionAppCell.swift in Sources */,
@@ -457,6 +457,7 @@
 				INFOPLIST_FILE = "macOS Utilities/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.keatonburleson.macOS-Utilities";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -476,6 +477,7 @@
 				INFOPLIST_FILE = "macOS Utilities/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.keatonburleson.macOS-Utilities";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
