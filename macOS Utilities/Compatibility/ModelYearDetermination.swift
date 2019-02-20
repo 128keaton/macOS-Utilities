@@ -45,6 +45,7 @@ class ModelYearDetermination {
         } else if modelIdentifier.contains("MacPro") {
             // Mac Pro
             let identifierDigits = getIdentifierDigitsFor("MacPro")
+            installableVersions.append("10.9")
             if(identifierDigits > 41) {
                 canInstallMojave()
             }

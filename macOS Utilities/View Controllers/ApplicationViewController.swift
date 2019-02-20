@@ -92,7 +92,6 @@ extension ApplicationViewController: NSCollectionViewDataSource {
         }
     }
 
-
     func numberOfSections(in collectionView: NSCollectionView) -> Int {
         return sections.keys.count
     }
