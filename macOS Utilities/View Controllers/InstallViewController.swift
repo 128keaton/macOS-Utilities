@@ -64,30 +64,30 @@ class InstallViewController: NSViewController {
 
     func checkForMetal() {
         if compatibilityChecker.hasMetalGPU {
-            metalStatus.image = NSImage(named: NSImage.Name(rawValue: "SuccessIcon"))
+            metalStatus.image = NSImage(named: "SuccessIcon")
         } else {
-            metalStatus.image = NSImage(named: NSImage.Name(rawValue: "AlertIcon"))
+            metalStatus.image = NSImage(named: "AlertIcon")
         }
     }
 
     func verifyMemoryAmount() {
         if compatibilityChecker.hasEnoughMemory {
-            memoryStatus.image = NSImage(named: NSImage.Name(rawValue: "SuccessIcon"))
+            memoryStatus.image = NSImage(named: "SuccessIcon")
         } else {
-            memoryStatus.image = NSImage(named: NSImage.Name(rawValue: "AlertIcon"))
+            memoryStatus.image = NSImage(named: "AlertIcon")
         }
     }
     
     func verifyHDDSize(){
         if compatibilityChecker.hasLargeEnoughHDD {
-            hddStatus.image = NSImage(named: NSImage.Name(rawValue: "SuccessIcon"))
+            hddStatus.image = NSImage(named: "SuccessIcon")
         }else{
-            hddStatus.image = NSImage(named: NSImage.Name(rawValue: "AlertIcon"))
+            hddStatus.image = NSImage(named: "AlertIcon")
         }
     }
 
     @IBAction func showPopover(sender: NSButton) {
-        let popoverController = storyboard?.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "InfoPopoverViewController")) as! InfoPopoverViewController
+        let popoverController = storyboard?.instantiateController(withIdentifier: "InfoPopoverViewController") as! InfoPopoverViewController
 
         if(sender == memoryStatus) {
             if(compatibilityChecker.hasEnoughMemory) {

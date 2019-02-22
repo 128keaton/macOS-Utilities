@@ -10,7 +10,7 @@ import Foundation
 import AppKit
 
 let taskQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.background)
-let prohibatoryIcon = NSImage(named: NSImage.Name(rawValue: "stop"))
+let prohibatoryIcon = NSImage(named: "stop")
 
 func findIconFor(applicationPath: String) -> NSImage {
     let path = applicationPath + "/Contents/Info.plist"

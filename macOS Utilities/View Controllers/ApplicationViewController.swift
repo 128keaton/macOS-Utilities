@@ -141,7 +141,7 @@ extension ApplicationViewController: NSCollectionViewDataSource {
 
     func buildAnimation(view: NSView) {
         let basicAnimation = CABasicAnimation(keyPath: "transform.rotation")
-        basicAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
+        basicAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.linear)
         basicAnimation.fromValue = (0 * (Double.pi / 180))
         basicAnimation.toValue = (360 * (Double.pi / 180))
         basicAnimation.duration = 1.0

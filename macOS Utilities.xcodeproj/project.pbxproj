@@ -217,6 +217,7 @@
 				TargetAttributes = {
 					8ACB65D021063E6F004B9C5A = {
 						CreatedOnToolsVersion = 9.2;
+						LastSwiftMigration = 1010;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.Sandbox = {
@@ -265,7 +266,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-macOS Utilities/Pods-macOS Utilities-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-macOS Utilities/Pods-macOS Utilities-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/AppFolder/AppFolder.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -274,7 +275,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-macOS Utilities/Pods-macOS Utilities-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-macOS Utilities/Pods-macOS Utilities-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		D6B004D59B8D6F5F589502D9 /* [CP] Check Pods Manifest.lock */ = {
@@ -461,7 +462,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.keatonburleson.macOS-Utilities";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -481,7 +482,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.keatonburleson.macOS-Utilities";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
