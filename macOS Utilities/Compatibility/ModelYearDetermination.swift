@@ -56,11 +56,21 @@ class ModelYearDetermination {
                 canInstallMojave()
             }
         }
+        print("Installable versions: \(installableVersions)")
         return installableVersions.reversed()
     }
 
     func getIdentifierDigitsFor(_ modelName: String) -> Int {
         return Int(modelIdentifier.replacingOccurrences(of: modelName, with: "").replacingOccurrences(of: ",", with: ""))!
+    }
+    
+    public func getInstallableVersions() -> [String]{
+        var installableVersionsAndNames = [String]()
+        for version in installableVersions{
+            installableVersionsAndNames.append("\(VersionNumbers.getNameForVersion(version)) (\(version))")
+        }
+        
+        return installableVersionsAndNames
     }
 }
 

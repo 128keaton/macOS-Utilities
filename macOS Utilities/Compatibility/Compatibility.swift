@@ -37,30 +37,47 @@ class Compatibility {
             hasEnoughMemory = true
         }
     }
-    
-    func checkHDD(){
-        let hddSpaceInGB = getTotalSizeGB()
-        if(hddSpaceInGB < 150){
+
+    func checkHDD() {
+        let hddSpaceInGB = getTotalSize()
+
+        if(hddSpaceInGB < 150.0) {
             hasLargeEnoughHDD = false
-        }else{
+        } else {
             hasLargeEnoughHDD = true
         }
     }
-    
-    func getTotalSizeGB() -> Int{
-        return Int(ceil(Double(getTotalSize()! / 1000000000)))
-    }
-    
-    func getTotalSize() -> Int64?{
-        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
-        if let dictionary = try? FileManager.default.attributesOfFileSystem(forPath: paths.last!) {
-            if let freeSize = dictionary[FileAttributeKey.systemSize] as? NSNumber {
-                return freeSize.int64Value
+
+    func getTotalSize() -> Double {
+        // diskutil info disk1s2 | grep -Ei '([0-9]){1,4}.*.GB'
+        if let diskSizeTaskOutput = handleTask(command: "/usr/sbin/diskutil", arguments: ["info", "disk1s2"]) {
+            let diskSizes = matches(for: "([0-9]){1,4}.*.GB", in: diskSizeTaskOutput)
+            print("Output good")
+            if let size = diskSizes.first {
+                print("Size is good")
+                print(size)
+                if let doubleSize = Double(size) {
+                    return doubleSize
+                }
             }
-        }else{
-            print("Error Obtaining System Memory Info:")
         }
-        return nil
+        return 0.0
+    }
+
+    private func handleTask(command: String, arguments: [String]) -> String? {
+        let task = Process()
+        let pipe = Pipe()
+        task.standardError = pipe
+        task.launchPath = command
+        task.arguments = arguments
+        task.launch()
+        task.waitUntilExit()
+
+        let handle = pipe.fileHandleForReading
+        let data = handle.readDataToEndOfFile()
+        let taskOutput = String (data: data, encoding: String.Encoding.utf8)
+
+        return taskOutput
     }
 
     // Determines metal compatibility

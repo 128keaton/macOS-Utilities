@@ -41,6 +41,8 @@ class InstallViewController: NSViewController {
     }
 
     func getInstallableVersions() {
+
+        
         let diskAgent = self.diskAgent!
 
         let diskImages = diskAgent.getInstallerDiskImages().sorted(by: { $0.version > $1.version })
@@ -54,7 +56,7 @@ class InstallViewController: NSViewController {
         }
 
         if(diskImages.count == 0) {
-            showErrorAlert(title: "macOS Install Error", message: "There are no installable versions found on the server compatible with this machine")
+            showErrorAlert(title: "macOS Install Error", message: "There were no installable versions found on the server (\(preferences.getServerIP())) compatible with this machine (\(Sysctl.model)).")
         }
     }
 
@@ -79,6 +81,7 @@ class InstallViewController: NSViewController {
     }
     
     func verifyHDDSize(){
+        compatibilityChecker.checkHDD()
         if compatibilityChecker.hasLargeEnoughHDD {
             hddStatus.image = NSImage(named: "SuccessIcon")
         }else{
@@ -105,7 +108,7 @@ class InstallViewController: NSViewController {
             if(compatibilityChecker.hasLargeEnoughHDD) {
                 popoverController.message = "This machine has a primary storage device larger than 150GB."
             } else {
-                popoverController.message = "This machine's HDD space is too low \(compatibilityChecker.getTotalSizeGB())."
+                popoverController.message = "This machine's HDD space is too low \(compatibilityChecker.getTotalSize())."
             }
         }
 
@@ -128,6 +131,7 @@ extension InstallViewController: NSTableViewDataSource {
 }
 
 extension InstallViewController: NSTableViewDelegate {
+    
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
 
         guard let version = installableVersions?[row] else {
@@ -187,5 +191,10 @@ extension InstallViewController: MountDiskDelegate {
         DispatchQueue.main.async {
             self.tableView.reloadData()
         }
+    }
+    
+    func refreshDiskStatus(){
+        print("Refreshing disk status (maybe reformatted?)")
+        verifyHDDSize()
     }
 }

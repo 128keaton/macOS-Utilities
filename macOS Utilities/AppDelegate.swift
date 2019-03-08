@@ -12,6 +12,8 @@ import Cocoa
 class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var utilitiesMenu: NSMenu?
     
+    let modelYearDetermination = ModelYearDetermination()
+    
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         let utilities = try! FileManager.default.contentsOfDirectory(atPath: "/Applications/Utilities")
         for file in utilities {
@@ -31,6 +33,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let path = sender.title
         NSWorkspace.shared.open(URL(fileURLWithPath: "/Applications/Utilities/\(path).app"))
     }
-
+    
+    @IBAction func showInstallableVersions(sender: NSMenuItem){
+        
+    }
 }
 

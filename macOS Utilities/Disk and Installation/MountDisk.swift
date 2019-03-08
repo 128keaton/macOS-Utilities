@@ -13,7 +13,6 @@ class MountDisk {
     let temporaryPath = "/var/tmp/Installers/"
     var delegate: MountDiskDelegate? = nil
 
-    private let versionNumbers: VersionNumbers = VersionNumbers()
     private var compatibilityChecker: Compatibility = Compatibility()
     private var host: String
     private var hostPath: String
@@ -38,7 +37,7 @@ class MountDisk {
                 let fileName = file.lastPathComponent
                 if(fileName.contains(".dmg")) {
                     let version = fileName.replacingOccurrences(of: ".dmg", with: "")
-                    let label = versionNumbers.getNameForVersion(version)
+                    let label = VersionNumbers.getNameForVersion(version)
                     let diskImagePath = "\(installersURL.absoluteString.replacingOccurrences(of: "file://", with: ""))/\(fileName)"
 
                     diskImages.append(OSVersion(diskImagePath: diskImagePath, appLabel: label, version: version))
@@ -139,18 +138,19 @@ class MountDisk {
                 let appLabel = devicePath.replacingOccurrences(of: "/Volumes/", with: "")
                 let appPath = "\(devicePath)/\(appLabel).app"
                 if(URL(fileURLWithPath: appPath).filestatus != .isNot) {
-                    let installVersion = VersionNumbers().getVersionForName(appLabel)
+                    let installVersion = VersionNumbers.getVersionForName(appLabel)
                     let installDisk = OSVersion(diskImagePath: devicePath, appLabel: appLabel, version: installVersion)
 
                     if(compatibilityChecker.canInstall(version: installDisk.version)) {
                         mountedVolumes.append(devicePath)
                         mountedVersions.append(installDisk)
-                        
+
                         delegate?.diskMounted(diskImage: installDisk)
                         installDisk.updateIcon()
                         print("macOS Installer Volume mounted -- macOS Install possible at this time")
                     }
                 }
+                delegate?.refreshDiskStatus()
             }
         }
     }
@@ -177,5 +177,6 @@ protocol MountDiskDelegate {
     func handleDiskError(message: String)
     func diskMounted(diskImage: OSVersion)
     func diskUnmounted(diskImage: OSVersion)
+    func refreshDiskStatus()
 }
 

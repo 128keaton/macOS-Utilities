@@ -9,7 +9,7 @@
 import Foundation
 
 class VersionNumbers{
-    func getNameForVersion(_ versionNumber: String) -> String {
+    static func getNameForVersion(_ versionNumber: String) -> String {
         switch versionNumber {
         case "10.12":
             return "Install macOS Sierra"
@@ -23,7 +23,7 @@ class VersionNumbers{
         }
     }
     
-    func getVersionForName(_ name: String) -> String{
+    static func getVersionForName(_ name: String) -> String{
         switch name {
         case "Install macOS Sierra":
             return "10.12"
