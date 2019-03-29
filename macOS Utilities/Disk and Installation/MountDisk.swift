@@ -71,7 +71,7 @@ class MountDisk {
 
             if(badErrorWords.filter { taskOutput.range(of: $0) != nil }.count != 0) {
                 DDLogError(taskOutput)
-            }else{
+            } else {
                 DDLogInfo(taskOutput)
             }
         }
@@ -130,6 +130,7 @@ class MountDisk {
 
 
     @objc func didMount(_ notification: NSNotification) {
+        delegate?.refreshDiskStatus()
         if let devicePath = notification.userInfo!["NSDevicePath"] as? String {
             let newVolume = devicePath.components(separatedBy: CharacterSet.decimalDigits).joined().trimmingCharacters(in: .whitespacesAndNewlines)
             let appLabel = newVolume.replacingOccurrences(of: "/Volumes/", with: "")
@@ -159,7 +160,6 @@ class MountDisk {
                         print("macOS Installer Volume mounted -- macOS Install possible at this time")
                     }
                 }
-                delegate?.refreshDiskStatus()
             }
         }
     }
