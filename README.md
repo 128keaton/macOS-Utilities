@@ -11,9 +11,10 @@ This app expects to have 'Install macOS High Sierra' mounted. Due to the lazines
 If you wish to change the installer version, and kick off app, please make your own changes in your own repository. Sorry.
 
 ## Customizing
-I'm lazy. Everything is hardcoded. It needed to be simple and easy for me to make quickly. 
-You can easily replace the labels, icons, and paths with whatever you need. Potentially in the future, a config could be pulled
-from a remote server, but for now, that is not the case.
+The `com.er2.applications.plist` file is full of options like:
+* Applications
+* Remote NFS server containing install images
+* Papertrail Remote Logging
 
 ## [10.13 'Kickoff'](https://github.com/128keaton/macOS-Installer-Kickoff)
 
