@@ -8,6 +8,7 @@
 
 import Foundation
 import AppKit
+import CocoaLumberjack
 
 class InstallViewController: NSViewController {
     @IBOutlet weak var metalStatus: NSButton!
@@ -26,13 +27,14 @@ class InstallViewController: NSViewController {
         }
     }
 
+    private let infoMenu = (NSApplication.shared.delegate as! AppDelegate).infoMenu
 
     override func viewDidLoad() {
         super.viewDidLoad()
         checkForMetal()
         verifyMemoryAmount()
         verifyHDDSize()
-        
+
         let serverIP = preferences.getServerIP()
         let serverPath = preferences.getServerPath()
 
@@ -41,14 +43,12 @@ class InstallViewController: NSViewController {
     }
 
     func getInstallableVersions() {
-
-        
         let diskAgent = self.diskAgent!
-
         let diskImages = diskAgent.getInstallerDiskImages().sorted(by: { $0.version > $1.version })
 
         for diskImage in diskImages {
             if(compatibilityChecker.canInstall(version: diskImage.version)) {
+                infoMenu?.addItem(withTitle: diskImage.version, action: nil, keyEquivalent: "")
                 taskQueue.async {
                     self.diskAgent!.mountInstallDisk(installDisk: diskImage)
                 }
@@ -57,6 +57,11 @@ class InstallViewController: NSViewController {
 
         if(diskImages.count == 0) {
             showErrorAlert(title: "macOS Install Error", message: "There were no installable versions found on the server (\(preferences.getServerIP())) compatible with this machine (\(Sysctl.model)).")
+            DDLogError("No installable versions found on the server")
+            DDLogInfo("Machine: \(Sysctl.model)")
+            DDLogInfo("Server IP: \(preferences.getServerIP())")
+            DDLogInfo("Installers found: \(diskImages.count)")
+            infoMenu?.addItem(withTitle: "No installable versions found", action: nil, keyEquivalent: "")
         }
     }
 
@@ -79,12 +84,12 @@ class InstallViewController: NSViewController {
             memoryStatus.image = NSImage(named: "AlertIcon")
         }
     }
-    
-    func verifyHDDSize(){
+
+    func verifyHDDSize() {
         compatibilityChecker.checkHDD()
         if compatibilityChecker.hasLargeEnoughHDD {
             hddStatus.image = NSImage(named: "SuccessIcon")
-        }else{
+        } else {
             hddStatus.image = NSImage(named: "AlertIcon")
         }
     }
@@ -104,22 +109,39 @@ class InstallViewController: NSViewController {
             } else {
                 popoverController.message = "This machine has no Metal compatible GPUs or has a non-Metal compatible GPU installed."
             }
-        }else{
-            if(compatibilityChecker.hasLargeEnoughHDD) {
-                popoverController.message = "This machine has a primary storage device larger than 150GB."
-            } else {
-                popoverController.message = "This machine's HDD space is too low \(compatibilityChecker.getTotalSize())."
+        } else {
+            if(compatibilityChecker.hasFormattedHDD && compatibilityChecker.hasLargeEnoughHDD) {
+                popoverController.message = "This machine has a primary storage device with a capacity of \(compatibilityChecker.storageDeviceSize) GB."
+                #if DEBUG
+                    popoverController.buttonAction = #selector(InstallViewController.openDiskUtility)
+                    popoverController.buttonText = "Open Disk Utility"
+                #endif
+            } else if(!compatibilityChecker.hasFormattedHDD && !compatibilityChecker.hasLargeEnoughHDD) {
+                popoverController.message = "Your machine does not have an installable storage device, or the storage device is improperly formatted"
+                popoverController.buttonAction = #selector(InstallViewController.openDiskUtility)
+                popoverController.buttonText = "Open Disk Utility"
+            } else if(compatibilityChecker.hasFormattedHDD && !compatibilityChecker.hasLargeEnoughHDD) {
+                popoverController.message = "This machine's HDD space is too low \(compatibilityChecker.storageDeviceSize) GB."
             }
         }
 
         let popover = NSPopover()
-        popover.contentSize = NSSize(width: 216, height: 111)
+        if(popoverController.buttonText != nil && popoverController.buttonAction != nil) {
+            popover.contentSize = NSSize(width: 250, height: 150)
+        } else {
+            popover.contentSize = NSSize(width: 250, height: 111)
+        }
+        
         popover.behavior = .transient
         popover.animates = true
         popover.contentViewController = popoverController
 
         let entryRect = sender.convert(sender.bounds, to: NSApp.mainWindow?.contentView)
         popover.show(relativeTo: entryRect, of: (NSApp.mainWindow?.contentView)!, preferredEdge: .minY)
+    }
+
+    @objc func openDiskUtility() {
+
     }
 
 }
@@ -131,7 +153,7 @@ extension InstallViewController: NSTableViewDataSource {
 }
 
 extension InstallViewController: NSTableViewDelegate {
-    
+
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
 
         guard let version = installableVersions?[row] else {
@@ -173,10 +195,13 @@ extension InstallViewController: NSTableViewDelegate {
 extension InstallViewController: MountDiskDelegate {
     func handleDiskError(message: String) {
         self.showErrorAlert(title: "Disk Error", message: message)
+        DDLogError(message)
     }
 
     func diskUnmounted(diskImage: OSVersion) {
         self.installableVersions?.removeAll { $0.version == diskImage.version }
+        infoMenu?.items.removeAll { $0.title == diskImage.version }
+        
         DispatchQueue.main.async {
             self.tableView.reloadData()
         }
@@ -191,10 +216,11 @@ extension InstallViewController: MountDiskDelegate {
         DispatchQueue.main.async {
             self.tableView.reloadData()
         }
+        DDLogInfo("Mounted disk: \(diskImage)")
     }
-    
-    func refreshDiskStatus(){
-        print("Refreshing disk status (maybe reformatted?)")
+
+    func refreshDiskStatus() {
+        DDLogVerbose("Refreshing disk status (maybe reformatted?)")
         verifyHDDSize()
     }
 }

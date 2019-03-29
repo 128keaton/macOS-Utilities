@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CocoaLumberjack
 
 class ModelYearDetermination {
     let modelIdentifier = Sysctl.model
@@ -56,7 +57,7 @@ class ModelYearDetermination {
                 canInstallMojave()
             }
         }
-        print("Installable versions: \(installableVersions)")
+        DDLogInfo("Installable versions: \(installableVersions)")
         return installableVersions.reversed()
     }
 

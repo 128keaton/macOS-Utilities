@@ -11,10 +11,21 @@ import AppKit
 
 class InfoPopoverViewController: NSViewController {
     @IBOutlet weak var messageLabel: NSTextField?
+    @IBOutlet weak var actionButton: NSButton?
     var message: String? = nil
+    
+    var buttonAction: Selector? = nil
+    var buttonText: String? = nil
 
     override func viewDidLoad() {
         super.viewDidLoad()
         messageLabel?.stringValue = self.message!
+        
+        if(buttonText != nil && buttonAction != nil){
+            actionButton?.action = buttonAction
+            actionButton?.title = buttonText!
+        }else{
+            actionButton?.removeFromSuperview()
+        }
     }
 }

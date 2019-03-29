@@ -8,6 +8,7 @@
 
 import Foundation
 import AppKit
+import CocoaLumberjack
 
 let taskQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.background)
 let prohibatoryIcon = NSImage(named: "stop")
@@ -70,16 +71,20 @@ extension NSViewController {
         alert.informativeText = message
         alert.alertStyle = .critical
         alert.addButton(withTitle: "OK")
-        alert.runModal()
+        DispatchQueue.main.async {
+            alert.runModal()
+        }
     }
-    
+
     func showInfoAlert(title: String, message: String) {
         let alert: NSAlert = NSAlert()
         alert.messageText = title
         alert.informativeText = message
         alert.alertStyle = .informational
         alert.addButton(withTitle: "OK")
-        alert.runModal()
+        DispatchQueue.main.async {
+            alert.runModal()
+        }
     }
 }
 
@@ -99,14 +104,14 @@ extension URL {
                     // file exists and is a directory
                     filestatus = .isDir
                 }
-                    else {
-                        // file exists and is not a directory
-                        filestatus = .isFile
+                else {
+                    // file exists and is not a directory
+                    filestatus = .isFile
                 }
             }
-                else {
-                    // file does not exist
-                    filestatus = .isNot
+            else {
+                // file does not exist
+                filestatus = .isNot
             }
             return filestatus
         }
@@ -114,16 +119,27 @@ extension URL {
 }
 
 func matches(for regex: String, in text: String) -> [String] {
-    
     do {
         let regex = try NSRegularExpression(pattern: regex)
         let results = regex.matches(in: text,
-                                    range: NSRange(text.startIndex..., in: text))
+            range: NSRange(text.startIndex..., in: text))
         return results.map {
             String(text[Range($0.range, in: text)!])
         }
     } catch let error {
-        print("invalid regex: \(error.localizedDescription)")
+        DDLogInfo("invalid regex: \(error.localizedDescription)")
         return []
     }
+}
+
+func getSystemUUID() -> String? {
+    let dev = IOServiceMatching("IOPlatformExpertDevice")
+    let platformExpert: io_service_t = IOServiceGetMatchingService(kIOMasterPortDefault, dev)
+    let serialNumberAsCFString = IORegistryEntryCreateCFProperty(platformExpert, kIOPlatformUUIDKey as CFString, kCFAllocatorDefault, 0)
+    IOObjectRelease(platformExpert)
+    let ser: CFTypeRef = serialNumberAsCFString!.takeUnretainedValue()
+    if let result = ser as? String {
+        return result
+    }
+    return nil
 }

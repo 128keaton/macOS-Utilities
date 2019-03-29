@@ -8,6 +8,7 @@
 
 import Foundation
 import AppKit
+import CocoaLumberjack
 
 class MountDisk {
     let temporaryPath = "/var/tmp/Installers/"
@@ -44,7 +45,7 @@ class MountDisk {
                 }
             }
         } catch {
-            print("Error listing the installers: \(error.localizedDescription)")
+            DDLogError("Error listing the installers: \(error.localizedDescription)")
         }
 
         return diskImages
@@ -55,17 +56,25 @@ class MountDisk {
         // Checks to see if the temporary dir is created
         if(temporaryPathURL.filestatus == .isNot) {
             let taskOutput = handleTask(command: "/bin/mkdir", arguments: [temporaryPath])
-            print("Creating directory: /n \(taskOutput!)")
+            DDLogInfo("Creating directory: /n \(taskOutput!)")
             return
         }
 
-        print("Temporary path \(temporaryPath) already exists.")
+        DDLogInfo("Temporary path \(temporaryPath) already exists.")
     }
 
     private func mountInstallerServer() {
         createInstallersPath()
-        let taskOutput = handleTask(command: "/sbin/mount", arguments: ["-t", "nfs", "-o", "soft,intr,rsize=8192,wsize=8192,timeo=900,retrans=3,proto=tcp", "\(self.host):\(self.hostPath)", temporaryPath])
-        print("Mounting installer server path output: \(taskOutput!)")
+        if let taskOutput = handleTask(command: "/sbin/mount", arguments: ["-t", "nfs", "-o", "soft,intr,rsize=8192,wsize=8192,timeo=900,retrans=3,proto=tcp", "\(self.host):\(self.hostPath)", temporaryPath]) {
+
+            let badErrorWords = ["can't", "denied", "error"].flatMap { $0.components(separatedBy: " ") }
+
+            if(badErrorWords.filter { taskOutput.range(of: $0) != nil }.count != 0) {
+                DDLogError(taskOutput)
+            }else{
+                DDLogInfo(taskOutput)
+            }
+        }
     }
 
     // Mounts an install disk from the temporary path
@@ -76,8 +85,8 @@ class MountDisk {
         mountedVersions.append(installDisk)
 
         let taskOutput = handleTask(command: "/usr/bin/hdiutil", arguments: ["attach", "\(temporaryPath)\(dmgVersionNumber).dmg", "-noverify"])
-        print("Mounting \(temporaryPath)\(dmgVersionNumber).dmg")
-        print(taskOutput!)
+        DDLogInfo("Mounting \(temporaryPath)\(dmgVersionNumber).dmg")
+        DDLogInfo(taskOutput!)
 
         if((taskOutput?.contains("hdiutil: mount failed"))!) {
             delegate?.handleDiskError(message: "Unable to find image /var/tmp/Installers/\(dmgVersionNumber).dmg. No fallback version specified")

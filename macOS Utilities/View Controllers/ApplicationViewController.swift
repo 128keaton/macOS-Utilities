@@ -8,7 +8,7 @@
 
 import Cocoa
 import AppFolder
-import os
+import PaperTrailLumberjack
 
 class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     @IBOutlet weak var collectionView: NSCollectionView!
@@ -16,12 +16,15 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     private let preferences = Preferences()
     private var sections: [String: [String: String]] = [:]
     private var disabledPaths: [IndexPath] = []
+    public var apps: [App] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureCollectionView()
-        let quintClickGesture = NSClickGestureRecognizer(target: self, action: #selector(startEasterEgg))
 
+        constructLogger()
+        configureCollectionView()
+
+        let quintClickGesture = NSClickGestureRecognizer(target: self, action: #selector(startEasterEgg))
         quintClickGesture.numberOfClicksRequired = 5
         collectionView.addGestureRecognizer(quintClickGesture)
 
@@ -31,7 +34,7 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
             }
         }
 
-        os_log("Launched macOS Utilities")
+        DDLogInfo("Launched macOS Utilities")
 
         guard let loadedSections = preferences.getApplications()
             else {
@@ -42,12 +45,32 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         collectionView.reloadData()
     }
 
+    func constructLogger() {
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
+        let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
 
-    func openApplication(atPath path: String) {
-        print("Opening application at: \(path)")
-        NSWorkspace.shared.open(URL(fileURLWithPath: path))
+        DDLog.add(DDOSLogger.sharedInstance)
+
+        if(preferences.checkIfLoggingEnabled()) {
+            let logger = RMPaperTrailLogger.sharedInstance()!
+
+            logger.host = preferences.getLoggingURL()
+            logger.port = preferences.getLoggingPort()
+            print(logger.port)
+            print(logger.host)
+            
+            logger.machineName = Host.current().localizedName != nil ? String("\(Host.current().localizedName!) - \(getSystemUUID() ?? "No UUID")") : kIOPlatformUUIDKey
+            logger.programName = "macOS_Utilities-\(version)-\(build)"
+            DDLog.add(logger, with: .debug)
+            DDLogInfo("Remote logging enabled")
+        }else{
+            DDLogInfo("Remote logging disabled")
+        }
+
+        DDLogInfo("\n")
+        DDLogInfo("\n---------------------------LOGGER INITIALIZED---------------------------")
+        DDLogInfo("\n")
     }
-
 
     @IBAction func startOSInstall(sender: NSButton) {
         InstallOS.kickoffMacOSInstall()
@@ -57,14 +80,12 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         let flowLayout = NSCollectionViewFlowLayout()
         flowLayout.itemSize = NSSize(width: 100, height: 120.0)
 
-
         flowLayout.sectionInset = NSEdgeInsets(top: 15.0, left: 10.0, bottom: 10.0, right: 10.0)
         flowLayout.minimumInteritemSpacing = 60.0
         flowLayout.minimumLineSpacing = 30.0
 
         collectionView.collectionViewLayout = flowLayout
     }
-
 
     @IBAction func ejectCDTray(_ sender: NSMenuItem) {
         let ejectProcess = Process()
@@ -83,9 +104,10 @@ extension ApplicationViewController: NSCollectionViewDataSource {
             let sectionTitle = sortedSectionTitles[indexPath.section]
             let appList = sections[sectionTitle]
             let appName = Array(appList!.keys).sorted { $0 < $1 }[indexPath.item]
-            let appPath = appList![appName]
 
-            openApplication(atPath: appPath!)
+            let app = apps.first(where: { $0.name == appName })
+            app?.open()
+
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.06) {
                 collectionView.deselectItems(at: indexPaths)
             }
@@ -103,35 +125,25 @@ extension ApplicationViewController: NSCollectionViewDataSource {
 
 
     func collectionView(_ collectionView: NSCollectionView, itemForRepresentedObjectAt
-    indexPath: IndexPath) -> NSCollectionViewItem {
+        indexPath: IndexPath) -> NSCollectionViewItem {
         let item = collectionView.makeItem(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "NSCollectionAppCell"), for: indexPath)
-        guard let collectionViewItem = item as? NSCollectionAppCell else { return item }
 
         let sortedSectionTitles = Array(sections.keys).sorted { $0 < $1 }
-
         let sectionTitle = sortedSectionTitles[indexPath.section]
 
         let appList = sections[sectionTitle]
-
         let appName = Array(appList!.keys).sorted { $0 < $1 }[indexPath.item]
-        let appPath = appList![appName]
+        guard let appPath = appList![appName] else { return item }
 
-        let image = findIconFor(applicationPath: appPath!)
+        let app = App(name: appName, path: appPath)
+        apps.append(app)
 
-        collectionViewItem.icon?.image = image
-        collectionViewItem.regularImage = image
-        collectionViewItem.darkenedImage = image.darkened()
-
-        if image == prohibatoryIcon! {
-            collectionViewItem.titleLabel?.stringValue = "Invalid path"
+        if(app.isInvalid) {
             disabledPaths.append(indexPath)
-        } else {
-            collectionViewItem.titleLabel?.stringValue = appName
         }
 
-        return item
+        return app.getCollectionViewItem(item: item)
     }
-
 
     @objc func startEasterEgg() {
         for cell in self.collectionView.visibleItems() as! [NSCollectionAppCell] {

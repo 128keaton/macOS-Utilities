@@ -9,13 +9,21 @@
 import Foundation
 import AppKit
 import IOKit
+import CocoaLumberjack
 
 class Compatibility {
     private (set) public var modelIdentifier: String? = nil
     private (set) public var hasMetalGPU = false
     private (set) public var hasEnoughMemory = false
+    private (set) public var hasFormattedHDD = false
     private (set) public var hasLargeEnoughHDD = false
     private (set) public var incompatibleGPUs = [String]()
+    private (set) public var storageDeviceSize = Double(){
+        didSet{
+            checkHDD()
+        }
+    }
+    
     private var installableVersions = ModelYearDetermination().determineInstallableVersions()
 
     init() {
@@ -23,61 +31,82 @@ class Compatibility {
         getMetalCompatibility()
         checkMemory()
         checkHDD()
+        getInstallableHDD()
     }
 
-    func canInstall(version: String) -> Bool {
+    public func canInstall(version: String) -> Bool {
         return installableVersions.contains(version)
     }
 
-    func checkMemory() {
+    public func checkMemory() {
         let memoryInGB = Int((Sysctl.memSize) / 1024000000)
         if(memoryInGB < 8) {
             hasEnoughMemory = false
+            DDLogError("Machine does NOT have enough memory")
         } else {
             hasEnoughMemory = true
+            DDLogVerbose("Machine has enough memory")
         }
     }
 
-    func checkHDD() {
-        let hddSpaceInGB = getTotalSize()
-
-        if(hddSpaceInGB < 150.0) {
+    public func checkHDD() {
+        if(storageDeviceSize < 150.0) {
             hasLargeEnoughHDD = false
+            DDLogError("Machine does NOT have a storage device large enough")
         } else {
             hasLargeEnoughHDD = true
+            DDLogVerbose("Machine has a storage device large enough")
         }
     }
 
-    func getTotalSize() -> Double {
-        // diskutil info disk1s2 | grep -Ei '([0-9]){1,4}.*.GB'
-        if let diskSizeTaskOutput = handleTask(command: "/usr/sbin/diskutil", arguments: ["info", "disk1s2"]) {
-            let diskSizes = matches(for: "([0-9]){1,4}.*.GB", in: diskSizeTaskOutput)
-            print("Output good")
+    // Basic check to see if Macintosh HD is present, if not, check if volume is netbooted
+    private func getInstallableHDD() {
+        if let foundHDD = handleTask(command: "/usr/sbin/diskutil", arguments: ["info", "Macintosh HD"]) {
+            let diskSizes = matches(for: "([0-9]){1,4}.*.GB", in: foundHDD)
+            DDLogInfo("Disk sizes found: \(diskSizes)")
+
             if let size = diskSizes.first {
-                print("Size is good")
-                print(size)
-                if let doubleSize = Double(size) {
-                    return doubleSize
+                hasFormattedHDD = true
+                if let doubleSize = Double(size.replacingOccurrences(of: " GB", with: "")) {
+                    DDLogInfo("Macintosh HD is available and the size is \(doubleSize)")
+                    storageDeviceSize = doubleSize
+                    return
                 }
             }
         }
-        return 0.0
+        
+        DDLogInfo("No formatted HDD Found")
+        hasFormattedHDD = false
+        storageDeviceSize = 0.0
     }
 
     private func handleTask(command: String, arguments: [String]) -> String? {
         let task = Process()
-        let pipe = Pipe()
-        task.standardError = pipe
+        let errorPipe = Pipe()
+        let standardPipe = Pipe()
+
+        task.standardError = errorPipe
+        task.standardOutput = standardPipe
+
         task.launchPath = command
         task.arguments = arguments
+
         task.launch()
         task.waitUntilExit()
 
-        let handle = pipe.fileHandleForReading
-        let data = handle.readDataToEndOfFile()
-        let taskOutput = String (data: data, encoding: String.Encoding.utf8)
+        let errorHandle = errorPipe.fileHandleForReading
+        let errorData = errorHandle.readDataToEndOfFile()
+        let taskErrorOutput = String (data: errorData, encoding: String.Encoding.utf8)
 
-        return taskOutput
+        let standardHandle = standardPipe.fileHandleForReading
+        let standardData = standardHandle.readDataToEndOfFile()
+        let taskStandardOutput = String (data: standardData, encoding: String.Encoding.utf8)
+
+        if(taskErrorOutput != nil) {
+            return String("\(taskErrorOutput ?? "No errors")\n\(taskStandardOutput ?? "No standard output")")
+        }
+
+        return taskStandardOutput
     }
 
     // Determines metal compatibility
@@ -100,14 +129,14 @@ class Compatibility {
 
         if(nonMetalGPUs.count > 0) {
             for(gpuName) in nonMetalGPUs {
-                print(gpuName + " is not metal compatible")
+                DDLogInfo(gpuName + " is not metal compatible")
                 incompatibleGPUs.append(gpuName)
             }
         } else {
-            print("No non-metal GPUs")
+            DDLogVerbose("No non-metal GPUs")
+            DDLogVerbose("High Sierra can be installed on this machine")
         }
     }
-
 
     // Gets all of the GPUs on the PCIe bus
     private func getAllGPUs() -> [String] {
@@ -150,14 +179,14 @@ class Compatibility {
     }
 
     // Essential for comparing GPUs to find which one is the odd man out
-    func stripGPUName(name: String?) -> String? {
+    private func stripGPUName(name: String?) -> String? {
         if let gpuName = name {
             return gpuName.replacingOccurrences(of: "Graphics", with: "").replacingOccurrences(of: "\0", with: "", options: NSString.CompareOptions.literal, range: nil).trimmingCharacters(in: .whitespacesAndNewlines)
         }
         return nil
     }
 
-    func uniq<S : Sequence, T : Hashable>(source: S) -> [T] where S.Iterator.Element == T {
+    private func uniq<S : Sequence, T : Hashable>(source: S) -> [T] where S.Iterator.Element == T {
         var buffer = [T]()
         var added = Set<T>()
         for elem in source {

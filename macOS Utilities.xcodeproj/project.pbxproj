@@ -21,6 +21,7 @@
 		8A6F28F2221BA0AA00FF9DB3 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6F28F1221BA0AA00FF9DB3 /* Preferences.swift */; };
 		8A87B8B521A47D8C004496AA /* ModelYearDetermination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87B8B421A47D8C004496AA /* ModelYearDetermination.swift */; };
 		8A87B8B721A47DD8004496AA /* CwlSysctl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87B8B621A47DD8004496AA /* CwlSysctl.swift */; };
+		8A8B59A5224E9FD100CD4094 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A8B59A4224E9FD100CD4094 /* App.swift */; };
 		8ACB65D521063E6F004B9C5A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ACB65D421063E6F004B9C5A /* AppDelegate.swift */; };
 		8ACB65D721063E6F004B9C5A /* ApplicationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ACB65D621063E6F004B9C5A /* ApplicationViewController.swift */; };
 		8ACB65D921063E6F004B9C5A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8ACB65D821063E6F004B9C5A /* Assets.xcassets */; };
@@ -45,6 +46,7 @@
 		8A6F28F1221BA0AA00FF9DB3 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		8A87B8B421A47D8C004496AA /* ModelYearDetermination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelYearDetermination.swift; sourceTree = "<group>"; };
 		8A87B8B621A47DD8004496AA /* CwlSysctl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CwlSysctl.swift; sourceTree = "<group>"; };
+		8A8B59A4224E9FD100CD4094 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		8ACB65D121063E6F004B9C5A /* macOS Utilities.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "macOS Utilities.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8ACB65D421063E6F004B9C5A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8ACB65D621063E6F004B9C5A /* ApplicationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationViewController.swift; sourceTree = "<group>"; };
@@ -147,6 +149,14 @@
 			path = "View Controllers";
 			sourceTree = "<group>";
 		};
+		8A8B59A3224E9FC700CD4094 /* Applications */ = {
+			isa = PBXGroup;
+			children = (
+				8A8B59A4224E9FD100CD4094 /* App.swift */,
+			);
+			path = Applications;
+			sourceTree = "<group>";
+		};
 		8ACB65C821063E6F004B9C5A = {
 			isa = PBXGroup;
 			children = (
@@ -168,6 +178,7 @@
 		8ACB65D321063E6F004B9C5A /* macOS Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				8A8B59A3224E9FC700CD4094 /* Applications */,
 				8ACB65D821063E6F004B9C5A /* Assets.xcassets */,
 				8ACB65D421063E6F004B9C5A /* AppDelegate.swift */,
 				8A0138D42217623700C77DA0 /* View Controllers */,
@@ -268,10 +279,16 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-macOS Utilities/Pods-macOS Utilities-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/AppFolder/AppFolder.framework",
+				"${BUILT_PRODUCTS_DIR}/CocoaAsyncSocket/CocoaAsyncSocket.framework",
+				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack/CocoaLumberjack.framework",
+				"${BUILT_PRODUCTS_DIR}/PaperTrailLumberjack/PaperTrailLumberjack.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AppFolder.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaAsyncSocket.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaLumberjack.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PaperTrailLumberjack.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -310,6 +327,7 @@
 				8A6F28F0221B9F5C00FF9DB3 /* InstallViewController.swift in Sources */,
 				8ADBB216210A623800C4F1D9 /* Extensions.swift in Sources */,
 				8A0138D62217624700C77DA0 /* InfoPopoverViewController.swift in Sources */,
+				8A8B59A5224E9FD100CD4094 /* App.swift in Sources */,
 				8ACB65D721063E6F004B9C5A /* ApplicationViewController.swift in Sources */,
 				8A4305B5221BA7A7005C8D7A /* ResizingTabViewController.swift in Sources */,
 				8A0138CF2217449700C77DA0 /* MountDisk.swift in Sources */,

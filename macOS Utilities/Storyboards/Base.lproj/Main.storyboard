@@ -40,6 +40,10 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Tools" systemMenu="apple" id="lyY-dF-bR4"/>
                             </menuItem>
+                            <menuItem title="Info" id="Zq4-Ii-cHV">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Info" id="VuQ-BV-BSY"/>
+                            </menuItem>
                         </items>
                     </menu>
                     <connections>
@@ -48,6 +52,7 @@
                 </application>
                 <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="macOS_Utilities" customModuleProvider="target">
                     <connections>
+                        <outlet property="infoMenu" destination="VuQ-BV-BSY" id="V4P-bd-qA1"/>
                         <outlet property="utilitiesMenu" destination="lyY-dF-bR4" id="wZr-Mk-Lv2"/>
                     </connections>
                 </customObject>
@@ -417,25 +422,37 @@
             <objects>
                 <viewController title="InfoPopoverViewController" storyboardIdentifier="InfoPopoverViewController" id="S1m-Br-mZt" customClass="InfoPopoverViewController" customModule="macOS_Utilities" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="huS-mq-t5q">
-                        <rect key="frame" x="0.0" y="0.0" width="216" height="111"/>
+                        <rect key="frame" x="0.0" y="0.0" width="250" height="149"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="to3-Vy-CWy">
-                                <rect key="frame" x="18" y="46" width="180" height="19"/>
+                                <rect key="frame" x="69" y="65" width="113" height="19"/>
                                 <textFieldCell key="cell" selectable="YES" alignment="center" title="Multiline Label" id="AxY-0B-66M">
                                     <font key="font" metaFont="system" size="16"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JG3-2d-n06">
+                                <rect key="frame" x="85" y="6" width="81" height="32"/>
+                                <buttonCell key="cell" type="push" title="Button" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="6Mb-NY-2Xd">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="to3-Vy-CWy" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="huS-mq-t5q" secondAttribute="leading" constant="20" id="1pI-aH-Pw3"/>
+                            <constraint firstAttribute="bottom" secondItem="JG3-2d-n06" secondAttribute="bottom" constant="13" id="3vH-fS-4yz"/>
+                            <constraint firstItem="to3-Vy-CWy" firstAttribute="centerX" secondItem="huS-mq-t5q" secondAttribute="centerX" id="aGm-Bb-4RR"/>
                             <constraint firstItem="to3-Vy-CWy" firstAttribute="centerY" secondItem="huS-mq-t5q" secondAttribute="centerY" id="ce3-t9-5D6"/>
-                            <constraint firstItem="to3-Vy-CWy" firstAttribute="leading" secondItem="huS-mq-t5q" secondAttribute="leading" constant="20" symbolic="YES" id="mGt-6U-FyG"/>
-                            <constraint firstAttribute="trailing" secondItem="to3-Vy-CWy" secondAttribute="trailing" constant="20" symbolic="YES" id="wHW-cp-POi"/>
+                            <constraint firstItem="JG3-2d-n06" firstAttribute="centerX" secondItem="to3-Vy-CWy" secondAttribute="centerX" id="fPx-tg-EGo"/>
+                            <constraint firstItem="JG3-2d-n06" firstAttribute="centerX" secondItem="huS-mq-t5q" secondAttribute="centerX" id="jcF-et-5q7"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="to3-Vy-CWy" secondAttribute="trailing" constant="20" id="u73-MQ-CA0"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="actionButton" destination="JG3-2d-n06" id="qZU-6A-Zt3"/>
                         <outlet property="messageLabel" destination="to3-Vy-CWy" id="Kph-C7-ZqG"/>
                     </connections>
                 </viewController>

@@ -15,6 +15,7 @@ class NSCollectionAppCell: NSCollectionViewItem {
     
     public var regularImage: NSImage? = nil
     public var darkenedImage: NSImage? = nil
+    public var isDisabled: Bool = false
     
     override var isSelected: Bool {
         didSet {

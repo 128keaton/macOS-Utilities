@@ -12,10 +12,16 @@ import AppFolder
 class Preferences {
     private let libraryFolder = AppFolder.Library
     private var serverInfo: [String]? = nil
+    private var loggingInfo: [Any]? = nil
     private var sections: [String: [String: String]] = [:]
 
     private var hostDiskPath = "/Library/Server/Web/Data/Sites/Default/Installers"
     private var hostDiskServer = "172.16.5.5"
+
+    private var logHost = ""
+    private var logPort = 1234
+
+    private (set) public var remoteLoggingEnabled = false
 
     init() {
         createLibraryFolder()
@@ -42,7 +48,7 @@ class Preferences {
                 createLibraryFolder()
                 return copyPlist()
             }
-
+        
         } else {
             return copyPlist()
         }
@@ -121,6 +127,67 @@ class Preferences {
             return self.serverInfo
         }
     }
+    
+    public func checkIfLoggingEnabled() -> Bool{
+        if(getLoggingInfo() == nil){
+            remoteLoggingEnabled = false
+        }
+        return remoteLoggingEnabled
+    }
+
+    private func getLoggingInfo() -> [Any]? {
+        if(self.loggingInfo == nil) {
+            guard let plistPath = self.getPropertyList()
+                else {
+                    return nil
+            }
+
+            guard let preferences = NSDictionary(contentsOf: plistPath)
+                else {
+                    return nil
+            }
+
+            guard let checkForRemoteLogging = preferences["Logging Enabled"] as? Bool
+                else {
+                    return nil
+            }
+
+            remoteLoggingEnabled = checkForRemoteLogging
+
+            guard let loggingURL = preferences["Logging URL"] as? String
+                else {
+                    return nil
+            }
+
+            guard let loggingPort = preferences["Logging Port"] as? UInt
+                else {
+                    return nil
+            }
+
+            self.loggingInfo = [loggingURL, loggingPort]
+            return [loggingURL, loggingPort]
+        } else {
+            return self.loggingInfo
+        }
+    }
+
+    public func getLoggingURL() -> String {
+        guard let loggingInfo = self.getLoggingInfo()
+            else {
+                return "logs.papertrailapp.com"
+        }
+
+        return loggingInfo[0] as! String
+    }
+
+    public func getLoggingPort() -> UInt {
+        guard let serverInfo = self.getLoggingInfo()
+            else {
+                return 1234
+        }
+
+        return serverInfo[1] as! UInt
+    }
 
     public func getServerIP() -> String {
         guard let serverInfo = self.getHostInfo()
@@ -163,14 +230,10 @@ class Preferences {
                 return nil
         }
 
-
         for (title, applications) in localSections {
             sections[title] = applications as? [String: String]
         }
 
         return sections
     }
-
-
-
 }

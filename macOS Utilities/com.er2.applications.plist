@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>Logging Enabled</key>
+	<true/>
+	<key>Logging Port</key>
+	<integer>1234</integer>
+	<key>Logging URL</key>
+	<string>logs.papertrailapp.com</string>
 	<key>Applications</key>
 	<dict>
 		<key>Basic</key>
