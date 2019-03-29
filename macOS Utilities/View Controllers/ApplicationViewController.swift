@@ -59,7 +59,12 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
             print(logger.port)
             print(logger.host)
             
-            logger.machineName = Host.current().localizedName != nil ? String("\(Host.current().localizedName!) - \(getSystemUUID() ?? "No UUID")") : kIOPlatformUUIDKey
+            logger.machineName = Host.current().localizedName != nil ? String("\(Host.current().localizedName!)__(\(Sysctl.model)__\(getSystemUUID() ?? ""))") : String("\(Sysctl.model)__(\(getSystemUUID() ?? ""))")
+            
+            #if DEBUG
+                logger.machineName = logger.machineName! + "__DEBUG__"
+            #endif
+            
             logger.programName = "macOS_Utilities-\(version)-\(build)"
             DDLog.add(logger, with: .debug)
             DDLogInfo("Remote logging enabled")
