@@ -8,25 +8,25 @@
 
 import Cocoa
 import AppFolder
-import PaperTrailLumberjack
+import CocoaLumberjack
 
 class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     @IBOutlet weak var collectionView: NSCollectionView!
 
-    private let preferences = Preferences()
-    private var sections: [String: [String: String]] = [:]
-    private var disabledPaths: [IndexPath] = []
-    public var apps: [App] = []
+    private let preferences = Preferences.shared
+    private let applicationsManager = Applications.shared
 
+    private var disabledPaths: [IndexPath] = []
+    private var applications: [App] = [App]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        constructLogger()
+        applicationsManager.setDelegate(newDelegate: self)
+        applications = applicationsManager.getApplications()
+        
         configureCollectionView()
-
-        let quintClickGesture = NSClickGestureRecognizer(target: self, action: #selector(startEasterEgg))
-        quintClickGesture.numberOfClicksRequired = 5
-        collectionView.addGestureRecognizer(quintClickGesture)
+        addEasterEgg()
 
         if #available(OSX 10.13, *) {
             if let contentSize = collectionView.collectionViewLayout?.collectionViewContentSize {
@@ -35,48 +35,14 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         }
 
         DDLogInfo("Launched macOS Utilities")
-
-        guard let loadedSections = preferences.getApplications()
-            else {
-                return
-        }
-
-        sections = loadedSections
-        collectionView.reloadData()
     }
-
-    func constructLogger() {
-        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
-        let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
-
-        DDLog.add(DDOSLogger.sharedInstance)
-
-        if(preferences.checkIfLoggingEnabled()) {
-            let logger = RMPaperTrailLogger.sharedInstance()!
-
-            logger.host = preferences.getLoggingURL()
-            logger.port = preferences.getLoggingPort()
-            print(logger.port)
-            print(logger.host)
-            
-            logger.machineName = Host.current().localizedName != nil ? String("\(Host.current().localizedName!)__(\(Sysctl.model)__\(getSystemUUID() ?? ""))") : String("\(Sysctl.model)__(\(getSystemUUID() ?? ""))")
-            
-            #if DEBUG
-                logger.machineName = logger.machineName! + "__DEBUG__"
-            #endif
-            
-            logger.programName = "macOS_Utilities-\(version)-\(build)"
-            DDLog.add(logger, with: .debug)
-            DDLogInfo("Remote logging enabled")
-        }else{
-            DDLogInfo("Remote logging disabled")
-        }
-
-        DDLogInfo("\n")
-        DDLogInfo("\n---------------------------LOGGER INITIALIZED---------------------------")
-        DDLogInfo("\n")
+    
+    private func addEasterEgg(){
+        let quintClickGesture = NSClickGestureRecognizer(target: self, action: #selector(startEasterEgg))
+        quintClickGesture.numberOfClicksRequired = 5
+        collectionView.addGestureRecognizer(quintClickGesture)
     }
-
+    
     @IBAction func startOSInstall(sender: NSButton) {
         InstallOS.kickoffMacOSInstall()
     }
@@ -99,49 +65,49 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         ejectProcess.launch()
     }
 }
+
 extension ApplicationViewController: NSCollectionViewDataSource {
     func collectionView(_ collectionView: NSCollectionView, didSelectItemsAt indexPaths: Set<IndexPath>) {
         let indexPath = indexPaths.first!
 
         if !disabledPaths.contains(indexPath) {
-            let sortedSectionTitles = Array(sections.keys).sorted { $0 < $1 }
+            let applicationsForSection = applicationsManager.getApplicationsForSection(sectionIndex: indexPath.section)
 
-            let sectionTitle = sortedSectionTitles[indexPath.section]
-            let appList = sections[sectionTitle]
-            let appName = Array(appList!.keys).sorted { $0 < $1 }[indexPath.item]
-
-            let app = apps.first(where: { $0.name == appName })
-            app?.open()
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.06) {
-                collectionView.deselectItems(at: indexPaths)
+            if applicationsForSection.indices.contains(indexPath.item) {
+                applicationsForSection[indexPath.item].open()
+            } else {
+                DDLogError("This shouldn't happen... Application section (\(indexPath.section), \(applicationsForSection)) does not contain an element at \(indexPath.item)")
             }
+        }else{
+            collectionView.deselectItems(at: indexPaths)
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.06) {
+            collectionView.deselectItems(at: indexPaths)
         }
     }
 
     func numberOfSections(in collectionView: NSCollectionView) -> Int {
-        return sections.keys.count
+        return applicationsManager.getSections().count
     }
 
     func collectionView(_ collectionView: NSCollectionView, numberOfItemsInSection section: Int) -> Int {
-        let key = Array(sections.keys)[section]
-        return (sections[key])!.keys.count
+        return applicationsManager.getApplicationsForSection(sectionIndex: section).count
     }
 
-
     func collectionView(_ collectionView: NSCollectionView, itemForRepresentedObjectAt
-        indexPath: IndexPath) -> NSCollectionViewItem {
+    indexPath: IndexPath) -> NSCollectionViewItem {
         let item = collectionView.makeItem(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "NSCollectionAppCell"), for: indexPath)
 
-        let sortedSectionTitles = Array(sections.keys).sorted { $0 < $1 }
-        let sectionTitle = sortedSectionTitles[indexPath.section]
+        let applicationsForSection = applicationsManager.getApplicationsForSection(sectionIndex: indexPath.section)
+        var app = App(name: "Invalid", isUtility: false)
 
-        let appList = sections[sectionTitle]
-        let appName = Array(appList!.keys).sorted { $0 < $1 }[indexPath.item]
-        guard let appPath = appList![appName] else { return item }
-
-        let app = App(name: appName, path: appPath)
-        apps.append(app)
+        if applicationsForSection.indices.contains(indexPath.item) {
+            app = applicationsForSection[indexPath.item]
+        } else {
+            DDLogError("This shouldn't happen... Application section (\(indexPath.section), \(applicationsForSection)) does not contain an element at \(indexPath.item)")
+            app.isInvalid = true
+        }
 
         if(app.isInvalid) {
             disabledPaths.append(indexPath)
@@ -184,5 +150,12 @@ extension ApplicationViewController: NSCollectionViewDataSource {
 
         view.layer?.position = position!
         view.layer?.anchorPoint = anchorPoint
+    }
+}
+
+extension ApplicationViewController: ApplicationsDelegate{
+    func applicationsUpdated() {
+        DDLogInfo("Reloading collectionView")
+        self.collectionView.reloadData()
     }
 }

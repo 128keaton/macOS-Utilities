@@ -88,6 +88,30 @@ extension NSViewController {
     }
 }
 
+extension String{
+    var doubleValue: Double{
+        if let potentialValue = Double(self.replacingOccurrences(of: "[^0-9.]", with: "", options: .regularExpression)){
+            return potentialValue
+        }
+        print("Unable to make \(self) into a double.")
+        return 0.0
+    }
+    
+    func matches(_ regex: String, stripR: [String] = []) -> [String] {
+        do {
+            let regex = try NSRegularExpression(pattern: regex)
+            let results = regex.matches(in: self,
+                                        range: NSRange(self.startIndex..., in: self))
+            return results.map {
+                String(self[Range($0.range, in: self)!]).replacingOccurrences(of: stripR.joined(separator: "|"), with: "", options: .regularExpression)
+            }
+        } catch let error {
+            DDLogInfo("invalid regex: \(error.localizedDescription)")
+            return []
+        }
+    }
+}
+
 extension URL {
     enum Filestatus {
         case isFile

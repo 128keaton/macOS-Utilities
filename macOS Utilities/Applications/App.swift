@@ -15,6 +15,9 @@ class App {
     var isUtility: Bool
     var path: String
     var isInvalid = false
+    var sectionName = "Basic"
+
+    static let manager = Applications.shared
 
     let prohibatoryIcon = NSImage(named: "stop")
 
@@ -27,14 +30,37 @@ class App {
             self.path = "/Applications/\(self.name).app"
         }
     }
-    
-    convenience init(name: String, path: String){
+
+    convenience init(name: String, path: String) {
         self.init(name: name)
         self.path = path
-        
-        if self.path.contains("/Applications/Utilities/"){
+
+        self.determineUtilityFromPath()
+    }
+
+    convenience init(name: String, prefDict: [String: String]) {
+        self.init(name: name)
+
+        if let prefPath = prefDict["Path"] {
+            self.path = prefPath
+        } else {
+            DDLogInfo("Unable to parse path from dictionary for app: \(name)")
+            self.isInvalid = true
+        }
+
+        if let sectionName = prefDict["Section"] {
+            self.sectionName = sectionName
+        } else {
+            DDLogInfo("No section set for app: \(name), using 'Basic'.")
+        }
+
+        self.determineUtilityFromPath()
+    }
+
+    private func determineUtilityFromPath() {
+        if self.path.contains("/Applications/Utilities/") {
             self.isUtility = true
-        }else{
+        } else {
             self.isUtility = false
         }
     }
@@ -42,8 +68,12 @@ class App {
     @objc public func open() {
         App.open(path: self.path)
     }
-    
-    public static func open(path: String){
+
+    public static func open(name: String) {
+        manager.openAppByName(name)
+    }
+
+    public static func open(path: String) {
         DDLogVerbose("Opening application at: \(path)")
         NSWorkspace.shared.open(URL(fileURLWithPath: path))
     }

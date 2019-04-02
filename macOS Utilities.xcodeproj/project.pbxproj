@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		8A0138C6221703B700C77DA0 /* Compatibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0138C5221703B700C77DA0 /* Compatibility.swift */; };
 		8A0138CD2217447C00C77DA0 /* InstallOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0138CC2217447C00C77DA0 /* InstallOS.swift */; };
-		8A0138CF2217449700C77DA0 /* MountDisk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0138CE2217449700C77DA0 /* MountDisk.swift */; };
 		8A0138D1221749BD00C77DA0 /* VersionNumbers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0138D0221749BD00C77DA0 /* VersionNumbers.swift */; };
 		8A0138D62217624700C77DA0 /* InfoPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0138D52217624700C77DA0 /* InfoPopoverViewController.swift */; };
 		8A39D3602119E81B00437F4E /* com.er2.applications.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8A39D35F2119E81B00437F4E /* com.er2.applications.plist */; };
@@ -22,6 +21,13 @@
 		8A87B8B521A47D8C004496AA /* ModelYearDetermination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87B8B421A47D8C004496AA /* ModelYearDetermination.swift */; };
 		8A87B8B721A47DD8004496AA /* CwlSysctl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87B8B621A47DD8004496AA /* CwlSysctl.swift */; };
 		8A8B59A5224E9FD100CD4094 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A8B59A4224E9FD100CD4094 /* App.swift */; };
+		8ABAE30F22527B9100E537D3 /* Applications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE30E22527B9100E537D3 /* Applications.swift */; };
+		8ABAE3112252A46300E537D3 /* DiskSelectionDialogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE3102252A46300E537D3 /* DiskSelectionDialogViewController.swift */; };
+		8ABAE3132252C1D800E537D3 /* TaskHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE3122252C1D800E537D3 /* TaskHandler.swift */; };
+		8ABAE3172252D40F00E537D3 /* Disk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE3162252D40F00E537D3 /* Disk.swift */; };
+		8ABAE3192252D41C00E537D3 /* MountedDisk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE3182252D41C00E537D3 /* MountedDisk.swift */; };
+		8ABAE31D2252DA5800E537D3 /* Installer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE31C2252DA5800E537D3 /* Installer.swift */; };
+		8ABAE31F2252DF4700E537D3 /* DiskRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE31E2252DF4700E537D3 /* DiskRepository.swift */; };
 		8ACB65D521063E6F004B9C5A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ACB65D421063E6F004B9C5A /* AppDelegate.swift */; };
 		8ACB65D721063E6F004B9C5A /* ApplicationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ACB65D621063E6F004B9C5A /* ApplicationViewController.swift */; };
 		8ACB65D921063E6F004B9C5A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8ACB65D821063E6F004B9C5A /* Assets.xcassets */; };
@@ -34,7 +40,6 @@
 /* Begin PBXFileReference section */
 		8A0138C5221703B700C77DA0 /* Compatibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Compatibility.swift; sourceTree = "<group>"; };
 		8A0138CC2217447C00C77DA0 /* InstallOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallOS.swift; sourceTree = "<group>"; };
-		8A0138CE2217449700C77DA0 /* MountDisk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MountDisk.swift; sourceTree = "<group>"; };
 		8A0138D0221749BD00C77DA0 /* VersionNumbers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionNumbers.swift; sourceTree = "<group>"; };
 		8A0138D52217624700C77DA0 /* InfoPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoPopoverViewController.swift; sourceTree = "<group>"; };
 		8A39D35F2119E81B00437F4E /* com.er2.applications.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = com.er2.applications.plist; sourceTree = "<group>"; };
@@ -47,6 +52,13 @@
 		8A87B8B421A47D8C004496AA /* ModelYearDetermination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelYearDetermination.swift; sourceTree = "<group>"; };
 		8A87B8B621A47DD8004496AA /* CwlSysctl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CwlSysctl.swift; sourceTree = "<group>"; };
 		8A8B59A4224E9FD100CD4094 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
+		8ABAE30E22527B9100E537D3 /* Applications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Applications.swift; sourceTree = "<group>"; };
+		8ABAE3102252A46300E537D3 /* DiskSelectionDialogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskSelectionDialogViewController.swift; sourceTree = "<group>"; };
+		8ABAE3122252C1D800E537D3 /* TaskHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskHandler.swift; sourceTree = "<group>"; };
+		8ABAE3162252D40F00E537D3 /* Disk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Disk.swift; sourceTree = "<group>"; };
+		8ABAE3182252D41C00E537D3 /* MountedDisk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MountedDisk.swift; sourceTree = "<group>"; };
+		8ABAE31C2252DA5800E537D3 /* Installer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Installer.swift; sourceTree = "<group>"; };
+		8ABAE31E2252DF4700E537D3 /* DiskRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskRepository.swift; sourceTree = "<group>"; };
 		8ACB65D121063E6F004B9C5A /* macOS Utilities.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "macOS Utilities.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8ACB65D421063E6F004B9C5A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8ACB65D621063E6F004B9C5A /* ApplicationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationViewController.swift; sourceTree = "<group>"; };
@@ -108,6 +120,7 @@
 				8ACB65F021067A81004B9C5A /* WindowClass.swift */,
 				8A6F28F1221BA0AA00FF9DB3 /* Preferences.swift */,
 				8A4305B4221BA7A7005C8D7A /* ResizingTabViewController.swift */,
+				8ABAE3122252C1D800E537D3 /* TaskHandler.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -126,7 +139,10 @@
 			children = (
 				8A4305B6221BB13E005C8D7A /* OSVersion.swift */,
 				8A0138CC2217447C00C77DA0 /* InstallOS.swift */,
-				8A0138CE2217449700C77DA0 /* MountDisk.swift */,
+				8ABAE3162252D40F00E537D3 /* Disk.swift */,
+				8ABAE3182252D41C00E537D3 /* MountedDisk.swift */,
+				8ABAE31C2252DA5800E537D3 /* Installer.swift */,
+				8ABAE31E2252DF4700E537D3 /* DiskRepository.swift */,
 			);
 			path = "Disk and Installation";
 			sourceTree = "<group>";
@@ -145,6 +161,7 @@
 				8ACB65D621063E6F004B9C5A /* ApplicationViewController.swift */,
 				8A0138D52217624700C77DA0 /* InfoPopoverViewController.swift */,
 				8A6F28EF221B9F5C00FF9DB3 /* InstallViewController.swift */,
+				8ABAE3102252A46300E537D3 /* DiskSelectionDialogViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -153,6 +170,7 @@
 			isa = PBXGroup;
 			children = (
 				8A8B59A4224E9FD100CD4094 /* App.swift */,
+				8ABAE30E22527B9100E537D3 /* Applications.swift */,
 			);
 			path = Applications;
 			sourceTree = "<group>";
@@ -277,7 +295,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-macOS Utilities/Pods-macOS Utilities-frameworks.sh",
+				"${SRCROOT}/Pods/Target Support Files/Pods-macOS Utilities/Pods-macOS Utilities-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/AppFolder/AppFolder.framework",
 				"${BUILT_PRODUCTS_DIR}/CocoaAsyncSocket/CocoaAsyncSocket.framework",
 				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack/CocoaLumberjack.framework",
@@ -292,7 +310,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-macOS Utilities/Pods-macOS Utilities-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-macOS Utilities/Pods-macOS Utilities-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		D6B004D59B8D6F5F589502D9 /* [CP] Check Pods Manifest.lock */ = {
@@ -321,21 +339,27 @@
 			buildActionMask = 2147483647;
 			files = (
 				8A0138C6221703B700C77DA0 /* Compatibility.swift in Sources */,
+				8ABAE3132252C1D800E537D3 /* TaskHandler.swift in Sources */,
 				8A87B8B521A47D8C004496AA /* ModelYearDetermination.swift in Sources */,
+				8ABAE30F22527B9100E537D3 /* Applications.swift in Sources */,
 				8A4305B7221BB13E005C8D7A /* OSVersion.swift in Sources */,
+				8ABAE3192252D41C00E537D3 /* MountedDisk.swift in Sources */,
 				8A0138D1221749BD00C77DA0 /* VersionNumbers.swift in Sources */,
 				8A6F28F0221B9F5C00FF9DB3 /* InstallViewController.swift in Sources */,
+				8ABAE31D2252DA5800E537D3 /* Installer.swift in Sources */,
 				8ADBB216210A623800C4F1D9 /* Extensions.swift in Sources */,
+				8ABAE31F2252DF4700E537D3 /* DiskRepository.swift in Sources */,
 				8A0138D62217624700C77DA0 /* InfoPopoverViewController.swift in Sources */,
+				8ABAE3112252A46300E537D3 /* DiskSelectionDialogViewController.swift in Sources */,
 				8A8B59A5224E9FD100CD4094 /* App.swift in Sources */,
 				8ACB65D721063E6F004B9C5A /* ApplicationViewController.swift in Sources */,
 				8A4305B5221BA7A7005C8D7A /* ResizingTabViewController.swift in Sources */,
-				8A0138CF2217449700C77DA0 /* MountDisk.swift in Sources */,
 				8A6F28F2221BA0AA00FF9DB3 /* Preferences.swift in Sources */,
 				8A0138CD2217447C00C77DA0 /* InstallOS.swift in Sources */,
 				8ACB65F121067A81004B9C5A /* WindowClass.swift in Sources */,
 				8A47DED9210A2D30003F5CC3 /* NSCollectionAppCell.swift in Sources */,
 				8A87B8B721A47DD8004496AA /* CwlSysctl.swift in Sources */,
+				8ABAE3172252D40F00E537D3 /* Disk.swift in Sources */,
 				8ACB65D521063E6F004B9C5A /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -12,11 +12,11 @@ import CocoaLumberjack
 
 class InstallOS{
     static func kickoffMacOSInstall(){
-        let filePath = "/Applications/Install macOS.app"
+      /*  let filePath = "/Applications/Install macOS.app"
         
         if FileManager.default.fileExists(atPath: filePath) {
             DDLogInfo("Starting macOS Install")
-            NSWorkspace.shared.open(URL(fileURLWithPath: "/Applications/Install macOS.app"))
+          //  NSWorkspace.shared.open(URL(fileURLWithPath: "/Applications/Install macOS.app"))
         } else {
             DDLogInfo("Unable to start macOS Install. Missing kickstart application")
             let alert: NSAlert = NSAlert()
@@ -25,6 +25,10 @@ class InstallOS{
             alert.alertStyle = .critical
             alert.addButton(withTitle: "OK")
             alert.runModal()
-        }
+        }*/
+        
+        
+
+        
     }
 }

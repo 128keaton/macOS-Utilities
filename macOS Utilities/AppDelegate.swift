@@ -16,28 +16,30 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     let modelYearDetermination = ModelYearDetermination()
 
+    private let applicationManager = Applications.shared
+    
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        addToInfoMenu()
-        let utilities = try! FileManager.default.contentsOfDirectory(atPath: "/Applications/Utilities").sorted { $0 < $1 }
-        for file in utilities {
-            if file != ".DS_Store" && file != ".localized" {
-                let title = file.replacingOccurrences(of: ".app", with: "")
-                let menuItem = NSMenuItem(title: title, action: #selector(openApp(sender:)), keyEquivalent: "")
-                utilitiesMenu!.addItem(menuItem)
-            }
+        buildInfoMenu()
+        
+        print(DiskRepository.shared.getInstallers())
+        
+        DiskRepository.shared.mountDiskImagesAt("/Users/keatonburleson/Documents/NFS")
+        for utility in applicationManager.getUtilities(){
+            let utilityMenuItem = NSMenuItem(title: utility.name, action: #selector(openApp(sender:)), keyEquivalent: "")
+            utilitiesMenu!.addItem(utilityMenuItem)
         }
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
-        // Insert code here to tear down your application
+        // GLOROUS
+    //    MountDisk.unmountAllInstallDisks()
     }
-
+    
     @objc func openApp(sender: NSMenuItem) {
-        let path = "/Applications/Utilities/\(sender.title).app"
-        App.open(path: path)
+        App.manager.openAppByName(sender.title, isUtility: true)
     }
 
-    func addToInfoMenu() {
+    func buildInfoMenu() {
         if(infoMenu?.items.count ?? 0 > 0) {
             infoMenu?.addItem(NSMenuItem.separator())
         }

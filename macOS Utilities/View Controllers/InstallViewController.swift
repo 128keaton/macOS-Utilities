@@ -20,15 +20,18 @@ class InstallViewController: NSViewController {
     private var installableVersions: [OSVersion]? = []
     private var compatibilityChecker: Compatibility = Compatibility()
     private var versionNumbers: VersionNumbers = VersionNumbers()
-    private var preferences = Preferences()
-    private var diskAgent: MountDisk? = nil {
+    private var preferences = Preferences.shared
+    /*   private var diskAgent: MountDisk? = nil {
         didSet {
             diskAgent?.delegate = self
         }
-    }
+    }*/
 
+    private var installers = [Installer]()
     private let infoMenu = (NSApplication.shared.delegate as! AppDelegate).infoMenu
 
+       public var selectedVersion: Installer? = nil
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         checkForMetal()
@@ -38,12 +41,19 @@ class InstallViewController: NSViewController {
         let serverIP = preferences.getServerIP()
         let serverPath = preferences.getServerPath()
 
-        diskAgent = MountDisk(host: serverIP, hostPath: serverPath)
-        getInstallableVersions()
+        DiskRepository.shared.delegate = self
+        
+        //  diskAgent = MountDisk(host: serverIP, hostPath: serverPath)
+    }
+    
+    func getInstallableVersions() {
+        let allInstallers = DiskRepository.shared.getInstallers()
+        installers = allInstallers
     }
 
+    /*
     func getInstallableVersions() {
-        let diskAgent = self.diskAgent!
+      //  let diskAgent = self.diskAgent!
         let diskImages = diskAgent.getInstallerDiskImages().sorted(by: { $0.version > $1.version })
 
         for diskImage in diskImages {
@@ -63,7 +73,7 @@ class InstallViewController: NSViewController {
             DDLogInfo("Installers found: \(diskImages.count)")
             infoMenu?.addItem(withTitle: "No installable versions found", action: nil, keyEquivalent: "")
         }
-    }
+    }*/
 
     @IBAction func startOSInstall(sender: NSButton) {
         InstallOS.kickoffMacOSInstall()
@@ -86,7 +96,6 @@ class InstallViewController: NSViewController {
     }
 
     func verifyHDDSize() {
-        compatibilityChecker.checkHDD()
         if compatibilityChecker.hasLargeEnoughHDD {
             hddStatus.image = NSImage(named: "SuccessIcon")
         } else {
@@ -121,7 +130,7 @@ class InstallViewController: NSViewController {
                 popoverController.buttonAction = #selector(InstallViewController.openDiskUtility)
                 popoverController.buttonText = "Open Disk Utility"
             } else if(compatibilityChecker.hasFormattedHDD && !compatibilityChecker.hasLargeEnoughHDD) {
-                popoverController.message = "This machine's HDD space is too low \(compatibilityChecker.storageDeviceSize) GB."
+                popoverController.message = "This machine's HDD space is too low (\(compatibilityChecker.storageDeviceSize) GB)."
             }
         }
 
@@ -131,7 +140,7 @@ class InstallViewController: NSViewController {
         } else {
             popover.contentSize = NSSize(width: 250, height: 111)
         }
-        
+
         popover.behavior = .transient
         popover.animates = true
         popover.contentViewController = popoverController
@@ -141,14 +150,14 @@ class InstallViewController: NSViewController {
     }
 
     @objc func openDiskUtility() {
-
+        App.manager.openAppByName("Disk Utility", isUtility: true)
     }
 
 }
 
 extension InstallViewController: NSTableViewDataSource {
     func numberOfRows(in tableView: NSTableView) -> Int {
-        return installableVersions?.count ?? 0
+        return installers.count
     }
 }
 
@@ -156,13 +165,11 @@ extension InstallViewController: NSTableViewDelegate {
 
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
 
-        guard let version = installableVersions?[row] else {
-            return nil
-        }
+        let installer = installers[row]
 
         if let cell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "osCell"), owner: nil) as? NSTableCellView {
-            cell.textField?.stringValue = version.appLabel
-            cell.imageView?.image = version.icon ?? nil
+            cell.textField?.stringValue = installer.appLabel
+            cell.imageView?.image = installer.icon ?? nil
             return cell
         }
 
@@ -171,10 +178,7 @@ extension InstallViewController: NSTableViewDelegate {
     func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
         tableView.deselectAll(self)
 
-        if let version = installableVersions?[row] {
-            preferences.updatePreferences(["macOS Volume": version.getVolumePath(), "macOS Version": version.version])
-            installButton.isEnabled = true
-        }
+        
 
         return true
     }
@@ -192,7 +196,16 @@ extension InstallViewController: NSTableViewDelegate {
     }
 }
 
-extension InstallViewController: MountDiskDelegate {
+extension InstallViewController: DiskRepositoryDelegate {
+    func installersUpdated() {
+        DispatchQueue.main.async {
+            self.getInstallableVersions()
+            self.tableView.reloadData()
+        }
+    }
+}
+
+/*extension InstallViewController: MountDiskDelegate {
     func handleDiskError(message: String) {
         self.showErrorAlert(title: "Disk Error", message: message)
         DDLogError(message)
@@ -224,3 +237,4 @@ extension InstallViewController: MountDiskDelegate {
         verifyHDDSize()
     }
 }
+*/

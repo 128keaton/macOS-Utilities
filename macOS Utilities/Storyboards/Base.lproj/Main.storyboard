@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -417,6 +417,140 @@
             </objects>
             <point key="canvasLocation" x="899" y="664"/>
         </scene>
+        <!--Window Controller-->
+        <scene sceneID="aoj-tT-X2k">
+            <objects>
+                <windowController id="wxY-Mv-NrZ" sceneMemberID="viewController">
+                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="7Gp-30-Kqw">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+                        <rect key="contentRect" x="425" y="526" width="480" height="270"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1577"/>
+                        <value key="minSize" type="size" width="480" height="270"/>
+                        <value key="maxSize" type="size" width="480" height="270"/>
+                        <connections>
+                            <outlet property="delegate" destination="wxY-Mv-NrZ" id="hcI-Oc-jSR"/>
+                        </connections>
+                    </window>
+                    <connections>
+                        <segue destination="LfO-6t-AFg" kind="relationship" relationship="window.shadowedContentViewController" id="3h8-t3-QpB"/>
+                    </connections>
+                </windowController>
+                <customObject id="Hq0-vC-qpc" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1633" y="467"/>
+        </scene>
+        <!--Disk Selection Dialog View Controller-->
+        <scene sceneID="LU1-q4-Yhl">
+            <objects>
+                <viewController id="LfO-6t-AFg" customClass="DiskSelectionDialogViewController" customModule="macOS_Utilities" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="aS1-QT-y2p">
+                        <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vCG-cE-ag0">
+                                <rect key="frame" x="20" y="58" width="440" height="135"/>
+                                <clipView key="contentView" id="Ivg-1D-hjB">
+                                    <rect key="frame" x="1" y="0.0" width="438" height="134"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="e6H-Qs-xEe" id="QuU-vC-lkw">
+                                            <rect key="frame" x="0.0" y="0.0" width="438" height="109"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <size key="intercellSpacing" width="3" height="2"/>
+                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
+                                            <tableColumns>
+                                                <tableColumn width="116" minWidth="40" maxWidth="1000" id="XXr-PX-7iV">
+                                                    <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Disk">
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                                    </tableHeaderCell>
+                                                    <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" title="Text Cell" id="GJu-SI-hkD">
+                                                        <font key="font" metaFont="system"/>
+                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                    <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                                </tableColumn>
+                                                <tableColumn width="316" minWidth="40" maxWidth="1000" id="is9-uK-vrn">
+                                                    <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Size">
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                                    </tableHeaderCell>
+                                                    <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" title="Text Cell" id="Jz9-f8-SSE">
+                                                        <font key="font" metaFont="system"/>
+                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                    <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                                </tableColumn>
+                                            </tableColumns>
+                                        </tableView>
+                                    </subviews>
+                                </clipView>
+                                <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="WHL-Lu-DIb">
+                                    <rect key="frame" x="1" y="119" width="223" height="15"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                                <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="NnY-MY-AiU">
+                                    <rect key="frame" x="224" y="17" width="15" height="102"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                                <tableHeaderView key="headerView" id="e6H-Qs-xEe">
+                                    <rect key="frame" x="0.0" y="0.0" width="438" height="25"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableHeaderView>
+                            </scrollView>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2LR-R3-eAq">
+                                <rect key="frame" x="338" y="10" width="128" height="32"/>
+                                <buttonCell key="cell" type="push" title="Next" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="pGT-CR-abJ">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7Pu-fZ-f1v">
+                                <rect key="frame" x="18" y="19" width="318" height="17"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="Clicking 'Next' will result in erasure of selected disk." id="cTq-xH-9tS">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="systemGrayColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="u5Z-hR-kfr">
+                                <rect key="frame" x="18" y="217" width="444" height="33"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="Installing macOS Sierra" id="zub-2T-TfS">
+                                    <font key="font" metaFont="systemSemibold" size="27"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="2LR-R3-eAq" secondAttribute="trailing" constant="20" symbolic="YES" id="EKE-oN-2QW"/>
+                            <constraint firstItem="vCG-cE-ag0" firstAttribute="leading" secondItem="u5Z-hR-kfr" secondAttribute="leading" id="Npb-r2-6Dc"/>
+                            <constraint firstItem="vCG-cE-ag0" firstAttribute="top" secondItem="aS1-QT-y2p" secondAttribute="top" constant="77" id="TcH-og-bjf"/>
+                            <constraint firstItem="2LR-R3-eAq" firstAttribute="leading" secondItem="7Pu-fZ-f1v" secondAttribute="trailing" constant="10" id="VNu-zX-DrJ"/>
+                            <constraint firstItem="2LR-R3-eAq" firstAttribute="trailing" secondItem="vCG-cE-ag0" secondAttribute="trailing" id="WGo-UA-tlQ"/>
+                            <constraint firstItem="2LR-R3-eAq" firstAttribute="trailing" secondItem="u5Z-hR-kfr" secondAttribute="trailing" id="bGO-gp-5nx"/>
+                            <constraint firstAttribute="bottom" secondItem="2LR-R3-eAq" secondAttribute="bottom" constant="17" id="ctv-XY-mPq"/>
+                            <constraint firstItem="2LR-R3-eAq" firstAttribute="centerY" secondItem="7Pu-fZ-f1v" secondAttribute="centerY" id="cxV-Xs-TBs"/>
+                            <constraint firstItem="vCG-cE-ag0" firstAttribute="top" secondItem="u5Z-hR-kfr" secondAttribute="bottom" constant="24" id="kEf-cg-y8n"/>
+                            <constraint firstItem="vCG-cE-ag0" firstAttribute="leading" secondItem="aS1-QT-y2p" secondAttribute="leading" constant="20" symbolic="YES" id="pBV-fA-1sQ"/>
+                            <constraint firstItem="2LR-R3-eAq" firstAttribute="top" secondItem="vCG-cE-ag0" secondAttribute="bottom" constant="20" symbolic="YES" id="vXH-G0-xuY"/>
+                            <constraint firstItem="vCG-cE-ag0" firstAttribute="leading" secondItem="7Pu-fZ-f1v" secondAttribute="leading" id="zij-s9-L4V"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="view" destination="aS1-QT-y2p" id="tWg-1Z-cxk"/>
+                    </connections>
+                </viewController>
+                <customObject id="4iD-xa-VX2" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1633" y="936"/>
+        </scene>
         <!--InfoPopoverViewController-->
         <scene sceneID="tiW-Gr-R8k">
             <objects>
@@ -462,6 +596,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="AlertIcon" width="175" height="175"/>
+        <image name="AlertIcon" width="350" height="350"/>
     </resources>
 </document>

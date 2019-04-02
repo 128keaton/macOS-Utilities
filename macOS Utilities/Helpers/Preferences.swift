@@ -8,6 +8,7 @@
 
 import Foundation
 import AppFolder
+import PaperTrailLumberjack
 
 class Preferences {
     private let libraryFolder = AppFolder.Library
@@ -22,11 +23,13 @@ class Preferences {
     private var logPort = 1234
 
     private (set) public var remoteLoggingEnabled = false
-
-    init() {
+    static let shared = Preferences()
+    
+    private init() {
+        self.constructLogger()
         createLibraryFolder()
     }
-
+    
     fileprivate func createLibraryFolder() {
         let url = libraryFolder.url
         let fileManager = FileManager.default
@@ -215,6 +218,19 @@ class Preferences {
         #endif
     }
 
+    public func raw() -> NSDictionary? {
+        guard let plistPath = self.getPropertyList()
+            else {
+                return nil
+        }
+        guard let rawPreferences = NSDictionary(contentsOf: plistPath)
+            else {
+                return nil
+        }
+        
+        return rawPreferences
+    }
+    
     public func getApplications() -> [String: [String: String]]? {
         guard let plistPath = self.getPropertyList()
             else {
@@ -236,4 +252,38 @@ class Preferences {
 
         return sections
     }
+    
+    
+    private func constructLogger() {
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
+        let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
+        
+        DDLog.add(DDOSLogger.sharedInstance)
+        
+        if(self.checkIfLoggingEnabled()) {
+            let logger = RMPaperTrailLogger.sharedInstance()!
+            
+            logger.host = self.getLoggingURL()
+            logger.port = self.getLoggingPort()
+            print(logger.port)
+            print(logger.host)
+            
+            logger.machineName = Host.current().localizedName != nil ? String("\(Host.current().localizedName!)__(\(Sysctl.model)__\(getSystemUUID() ?? ""))") : String("\(Sysctl.model)__(\(getSystemUUID() ?? ""))")
+            
+            #if DEBUG
+            logger.machineName = logger.machineName! + "__DEBUG__"
+            #endif
+            
+            logger.programName = "macOS_Utilities-\(version)-\(build)"
+            DDLog.add(logger, with: .debug)
+            DDLogInfo("Remote logging enabled")
+        } else {
+            DDLogInfo("Remote logging disabled")
+        }
+        
+        DDLogInfo("\n")
+        DDLogInfo("\n---------------------------LOGGER INITIALIZED---------------------------")
+        DDLogInfo("\n")
+    }
+
 }

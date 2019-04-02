@@ -10,27 +10,61 @@
 	<string>logs.papertrailapp.com</string>
 	<key>Applications</key>
 	<dict>
-		<key>Basic</key>
+		<key>Prime95</key>
 		<dict>
-			<key>KillDisk</key>
-			<string>/Applications/KillDiskStart.app</string>
-			<key>Prime95</key>
+			<key>Section</key>
+			<string>Basic</string>
+			<key>Path</key>
 			<string>/Applications/Prime95.app</string>
-			<key>FurMark</key>
+		</dict>
+		<key>FurMark</key>
+		<dict>
+			<key>Section</key>
+			<string>Basic</string>
+			<key>Path</key>
 			<string>/Applications/FurMark.app</string>
-			<key>Print Label</key>
+		</dict>
+		<key>Print Label</key>
+		<dict>
+			<key>Section</key>
+			<string>Basic</string>
+			<key>Path</key>
 			<string>/Applications/Print Label.app</string>
 		</dict>
-		<key>Utilities</key>
+		<key>KillDisk</key>
 		<dict>
-			<key>AVTest</key>
-			<string>/Applications/AVTest.app</string>
-			<key>Safari</key>
+			<key>Section</key>
+			<string>Basic</string>
+			<key>Path</key>
+			<string>/Applications/KillDisk.app</string>
+		</dict>
+		<key>Safari</key>
+		<dict>
+			<key>Section</key>
+			<string>Utiliites</string>
+			<key>Path</key>
 			<string>/Applications/Safari.app</string>
-			<key>Disk Utility</key>
+		</dict>
+		<key>Disk Utility</key>
+		<dict>
+			<key>Section</key>
+			<string>Utiliites</string>
+			<key>Path</key>
 			<string>/Applications/Utilities/Disk Utility.app</string>
-			<key>Terminal</key>
+		</dict>
+		<key>Terminal</key>
+		<dict>
+			<key>Path</key>
 			<string>/Applications/Utilities/Terminal.app</string>
+			<key>Section</key>
+			<string>Utiliites</string>
+		</dict>
+		<key>AVTest</key>
+		<dict>
+			<key>Section</key>
+			<string>Utiliites</string>
+			<key>Path</key>
+			<string>/Applications/AVTest.app</string>
 		</dict>
 	</dict>
 	<key>Server Path</key>

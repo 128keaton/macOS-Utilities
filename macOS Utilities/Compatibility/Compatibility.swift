@@ -30,7 +30,6 @@ class Compatibility {
         modelIdentifier = ModelYearDetermination().modelIdentifier
         getMetalCompatibility()
         checkMemory()
-        checkHDD()
         getInstallableHDD()
     }
 
@@ -60,15 +59,17 @@ class Compatibility {
     }
 
     // Basic check to see if Macintosh HD is present, if not, check if volume is netbooted
-    private func getInstallableHDD() {
-        if let foundHDD = handleTask(command: "/usr/sbin/diskutil", arguments: ["info", "Macintosh HD"]) {
+    public func getInstallableHDD() {
+        let hddName = "Macintosh HD"
+        DDLogInfo("Checking for volume named \(hddName)")
+        if let foundHDD = handleTask(command: "/usr/sbin/diskutil", arguments: ["info", hddName]) {
             let diskSizes = matches(for: "([0-9]){1,4}.*.GB", in: foundHDD)
             DDLogInfo("Disk sizes found: \(diskSizes)")
 
             if let size = diskSizes.first {
                 hasFormattedHDD = true
                 if let doubleSize = Double(size.replacingOccurrences(of: " GB", with: "")) {
-                    DDLogInfo("Macintosh HD is available and the size is \(doubleSize)")
+                    DDLogInfo("\(hddName) is available and the size is \(doubleSize)")
                     storageDeviceSize = doubleSize
                     return
                 }
