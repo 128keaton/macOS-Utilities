@@ -73,9 +73,7 @@ class Disk: CustomStringConvertible {
 
     convenience init(diskType: DiskType, matchedDiskOutput: String) {
         self.init(diskType: diskType)
-        
-        let newMountedDisk = MountedDisk(existingDisk: self, matchedDiskOutput: matchedDiskOutput)
-        DDLogInfo("Attaching \(newMountedDisk) to \(self)")
+        self.mountedDisk = MountedDisk(existingDisk: self, matchedDiskOutput: matchedDiskOutput)
     }
     
     convenience init() {
@@ -89,6 +87,15 @@ class Disk: CustomStringConvertible {
 
     public func updateMountedDisk(mountedDisk: MountedDisk) {
         self.mountedDisk = mountedDisk
+    }
+    
+    public func eject() {
+        if let devEntry = self.devEntry{
+            TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["eject", devEntry]) { (ejectOutput) in
+                print(ejectOutput ?? "No output")
+                self.mountedDisk = nil
+            }
+        }
     }
     
     enum DiskType: String {

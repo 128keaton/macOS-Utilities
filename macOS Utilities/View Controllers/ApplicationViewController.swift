@@ -14,10 +14,10 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     @IBOutlet weak var collectionView: NSCollectionView!
 
     private let preferences = Preferences.shared
-    private let applicationsManager = Applications.shared
+    private let applicationsManager = ApplicationRepository.shared
 
     private var disabledPaths: [IndexPath] = []
-    private var applications: [App] = [App]()
+    private var applications: [Application] = [Application]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -100,7 +100,7 @@ extension ApplicationViewController: NSCollectionViewDataSource {
         let item = collectionView.makeItem(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "NSCollectionAppCell"), for: indexPath)
 
         let applicationsForSection = applicationsManager.getApplicationsForSection(sectionIndex: indexPath.section)
-        var app = App(name: "Invalid", isUtility: false)
+        var app = Application(name: "Invalid", isUtility: false)
 
         if applicationsForSection.indices.contains(indexPath.item) {
             app = applicationsForSection[indexPath.item]

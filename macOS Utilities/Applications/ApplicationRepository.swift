@@ -10,18 +10,18 @@ import Foundation
 import AppKit
 import CocoaLumberjack
 
-class Applications {
+class ApplicationRepository {
     private let preferences = Preferences.shared
     private var sections = [String]()
     private var delegate: ApplicationsDelegate? = nil
-    private var applications = [App]() {
+    private var applications = [Application]() {
         didSet {
             self.delegate?.applicationsUpdated()
         }
     }
-    private var utilities = [App]()
+    private var utilities = [Application]()
 
-    static let shared = Applications()
+    static let shared = ApplicationRepository()
 
     private init() {
         fetchUtilities()
@@ -36,21 +36,21 @@ class Applications {
         let utilitiesPaths = try! FileManager.default.contentsOfDirectory(atPath: "/Applications/Utilities").sorted { $0 < $1 }
         for file in utilitiesPaths {
             if file != ".DS_Store" && file != ".localized" {
-                let utility = App(name: file, isUtility: true)
+                let utility = Application(name: file, isUtility: true)
                 self.utilities.append(utility)
             }
         }
     }
 
-    public func getUtilities() -> [App] {
+    public func getUtilities() -> [Application] {
         if(self.utilities.count == 0) {
             self.fetchUtilities()
         }
         return self.utilities
     }
 
-    public func getApplications() -> [App] {
-        var updatedApplications = [App]()
+    public func getApplications() -> [Application] {
+        var updatedApplications = [Application]()
 
         guard let allApplications = self.getPreferenceList()["Applications"] as? [String: [String: String]]
             else {
@@ -61,7 +61,7 @@ class Applications {
 
         for name in applicationNames {
             if let rawApplication = allApplications[name] {
-                let newApp = App(name: name, prefDict: rawApplication)
+                let newApp = Application(name: name, prefDict: rawApplication)
                 DDLogInfo("Adding new application with name: \(newApp.name), and path: \(newApp.path). Is invalid? \(newApp.isInvalid)")
 
                 if(!sections.contains(newApp.sectionName)) {
@@ -96,12 +96,12 @@ class Applications {
         return self.sections
     }
 
-    public func getApplicationsForSection(section: String) -> [App] {
+    public func getApplicationsForSection(section: String) -> [Application] {
         return applications.filter { $0.sectionName == section }
     }
 
-    public func getApplicationsForSection(sectionIndex: Int) -> [App] {
-        var applicationsForSection = [App]()
+    public func getApplicationsForSection(sectionIndex: Int) -> [Application] {
+        var applicationsForSection = [Application]()
         var section = ""
 
         if self.sections.indices.contains(sectionIndex) {

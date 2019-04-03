@@ -580,16 +580,32 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="XSQ-Qv-tY3">
+                                <rect key="frame" x="412" y="202" width="48" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="48" id="c6I-8f-Rze"/>
+                                </constraints>
+                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="DriveIcon" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="is1-Ea-w6e">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="openDiskUtility:" target="LfO-6t-AFg" id="joM-r5-oCs"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="2LR-R3-eAq" secondAttribute="trailing" constant="20" symbolic="YES" id="EKE-oN-2QW"/>
+                            <constraint firstItem="XSQ-Qv-tY3" firstAttribute="trailing" secondItem="u5Z-hR-kfr" secondAttribute="trailing" id="L9l-ZP-pRy"/>
                             <constraint firstItem="vCG-cE-ag0" firstAttribute="leading" secondItem="u5Z-hR-kfr" secondAttribute="leading" id="Npb-r2-6Dc"/>
+                            <constraint firstItem="vCG-cE-ag0" firstAttribute="top" secondItem="XSQ-Qv-tY3" secondAttribute="bottom" constant="9" id="REj-Lg-aaL"/>
                             <constraint firstItem="vCG-cE-ag0" firstAttribute="top" secondItem="aS1-QT-y2p" secondAttribute="top" constant="77" id="TcH-og-bjf"/>
                             <constraint firstItem="2LR-R3-eAq" firstAttribute="leading" secondItem="7Pu-fZ-f1v" secondAttribute="trailing" constant="10" id="VNu-zX-DrJ"/>
                             <constraint firstItem="2LR-R3-eAq" firstAttribute="trailing" secondItem="vCG-cE-ag0" secondAttribute="trailing" id="WGo-UA-tlQ"/>
                             <constraint firstItem="2LR-R3-eAq" firstAttribute="trailing" secondItem="u5Z-hR-kfr" secondAttribute="trailing" id="bGO-gp-5nx"/>
                             <constraint firstAttribute="bottom" secondItem="2LR-R3-eAq" secondAttribute="bottom" constant="17" id="ctv-XY-mPq"/>
                             <constraint firstItem="2LR-R3-eAq" firstAttribute="centerY" secondItem="7Pu-fZ-f1v" secondAttribute="centerY" id="cxV-Xs-TBs"/>
+                            <constraint firstItem="XSQ-Qv-tY3" firstAttribute="top" secondItem="aS1-QT-y2p" secondAttribute="top" constant="20" symbolic="YES" id="g8m-iZ-qkE"/>
                             <constraint firstItem="vCG-cE-ag0" firstAttribute="top" secondItem="u5Z-hR-kfr" secondAttribute="bottom" constant="24" id="kEf-cg-y8n"/>
                             <constraint firstItem="vCG-cE-ag0" firstAttribute="leading" secondItem="aS1-QT-y2p" secondAttribute="leading" constant="20" symbolic="YES" id="pBV-fA-1sQ"/>
                             <constraint firstItem="2LR-R3-eAq" firstAttribute="top" secondItem="vCG-cE-ag0" secondAttribute="bottom" constant="20" symbolic="YES" id="vXH-G0-xuY"/>
@@ -651,5 +667,6 @@
     </scenes>
     <resources>
         <image name="AlertIcon" width="350" height="350"/>
+        <image name="DriveIcon" width="215.5" height="212"/>
     </resources>
 </document>

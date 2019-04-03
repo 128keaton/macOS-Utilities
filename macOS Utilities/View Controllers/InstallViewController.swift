@@ -30,18 +30,21 @@ class InstallViewController: NSViewController {
         checkForMetal()
         verifyMemoryAmount()
         verifyHDDSize()
-
-        let serverIP = preferences.getServerIP()
-        let serverPath = preferences.getServerPath()
-
         getInstallableVersions()
     }
 
     func getInstallableVersions() {
         DiskRepository.shared.getInstallers { (returnedInstallers) in
-            self.installers = returnedInstallers.filter { self.compatibilityChecker.canInstall(version: $0.versionNumber) }
-            DispatchQueue.main.sync {
-                self.tableView.reloadData()
+            let newInstallers = returnedInstallers.filter { self.compatibilityChecker.canInstall(version: $0.versionNumber) }
+
+            if(newInstallers != self.installers) {
+                self.installers.indices.forEach { self.infoMenu?.removeItem(at: $0) }
+                self.installers = newInstallers
+                self.installers.forEach { self.infoMenu?.insertItem(withTitle: $0.versionNumber, action: nil, keyEquivalent: "", at: 0) }
+                self.infoMenu?.insertItem(NSMenuItem.separator(), at: (self.installers.count))
+                DispatchQueue.main.sync {
+                    self.tableView.reloadData()
+                }
             }
         }
     }
@@ -121,7 +124,7 @@ class InstallViewController: NSViewController {
     }
 
     @objc func openDiskUtility() {
-        App.manager.openAppByName("Disk Utility", isUtility: true)
+        Application.open("Disk Utility", isUtility: true)
     }
 
 }
@@ -133,9 +136,7 @@ extension InstallViewController: NSTableViewDataSource {
 }
 
 extension InstallViewController: NSTableViewDelegate {
-
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
-
         let installer = installers[row]
 
         if let cell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "osCell"), owner: nil) as? NSTableCellView {
@@ -148,9 +149,6 @@ extension InstallViewController: NSTableViewDelegate {
     }
     func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
         tableView.deselectAll(self)
-
-
-
         return true
     }
 
@@ -175,37 +173,3 @@ extension InstallViewController: DiskRepositoryDelegate {
         }
     }
 }
-
-/*extension InstallViewController: MountDiskDelegate {
-    func handleDiskError(message: String) {
-        self.showErrorAlert(title: "Disk Error", message: message)
-        DDLogError(message)
-    }
-
-    func diskUnmounted(diskImage: OSVersion) {
-        self.installableVersions?.removeAll { $0.version == diskImage.version }
-        infoMenu?.items.removeAll { $0.title == diskImage.version }
-        
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
-        }
-    }
-
-    func diskMounted(diskImage: OSVersion) {
-        diskImage.updateIcon()
-        if(diskImage.icon != nil) {
-            self.installableVersions?.append(diskImage)
-        }
-
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
-        }
-        DDLogInfo("Mounted disk: \(diskImage)")
-    }
-
-    func refreshDiskStatus() {
-        DDLogVerbose("Refreshing disk status (maybe reformatted?)")
-        verifyHDDSize()
-    }
-}
-*/

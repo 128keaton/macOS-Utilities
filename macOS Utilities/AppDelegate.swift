@@ -16,27 +16,25 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     let modelYearDetermination = ModelYearDetermination()
 
-    private let applicationManager = Applications.shared
-    
+    private let applicationManager = ApplicationRepository.shared
+
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         buildInfoMenu()
-        
-      /*  print(DiskRepository.shared.getInstallers())
-        
+
         DiskRepository.shared.mountDiskImagesAt("/Users/keatonburleson/Documents/NFS")
+        
         for utility in applicationManager.getUtilities(){
             let utilityMenuItem = NSMenuItem(title: utility.name, action: #selector(openApp(sender:)), keyEquivalent: "")
             utilitiesMenu!.addItem(utilityMenuItem)
-        }*/
+        }
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
-        // GLOROUS
-    //    MountDisk.unmountAllInstallDisks()
+        DiskRepository.shared.unmountAllDiskImages()
     }
-    
+
     @objc func openApp(sender: NSMenuItem) {
-        App.manager.openAppByName(sender.title, isUtility: true)
+        Application.open(sender.title, isUtility: true)
     }
 
     func buildInfoMenu() {

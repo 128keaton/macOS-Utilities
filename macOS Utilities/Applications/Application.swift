@@ -10,14 +10,14 @@ import Foundation
 import AppKit
 import CocoaLumberjack
 
-class App {
+class Application {
     var name: String
     var isUtility: Bool
     var path: String
     var isInvalid = false
     var sectionName = "Basic"
 
-    static let manager = Applications.shared
+    private static let repository = ApplicationRepository.shared
 
     let prohibatoryIcon = NSImage(named: "stop")
 
@@ -66,11 +66,11 @@ class App {
     }
 
     @objc public func open() {
-        App.open(path: self.path)
+        Application.open(path: self.path)
     }
 
-    public static func open(name: String) {
-        manager.openAppByName(name)
+    public static func open(_ name: String, isUtility: Bool = false) {
+        repository.openAppByName(name, isUtility: isUtility)
     }
 
     public static func open(path: String) {

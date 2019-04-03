@@ -26,6 +26,10 @@ class DiskSelectionDialogViewController: NSViewController {
             self.tableView?.reloadData()
         }
     }
+    
+    @IBAction func openDiskUtility(_ sender: NSButton) {
+        Application.open("Disk Utility", isUtility: true)
+    }
 }
 
 extension DiskSelectionDialogViewController: NSTableViewDelegate {

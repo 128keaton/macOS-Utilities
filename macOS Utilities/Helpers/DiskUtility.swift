@@ -16,6 +16,7 @@ class DiskUtility {
     private var networkShareUtility: NetworkShareUtility? = nil
 
     private var physicalDisks = [Disk]()
+    private let diskModificationQueue = DispatchQueue(label: "DiskModificationQueue")
 
     private init() {
         self.diskImageUtility = DiskImageUtility(diskUtility: self)
@@ -29,7 +30,6 @@ class DiskUtility {
             TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["list"]) { (allDisks) in
                 let matchedDisks = allDisks!.matches("(Apple_APFS|Apple_HFS|APFS Volume).\\b(?!Container)\\b.*([0-9]+( |.[0-9]+ )(GB|TB))+ *disk([0-9]*)s[0-99]")
 
-
                 var watchedDisks = [Disk]()
                 var stillWatching = true
 
@@ -40,9 +40,19 @@ class DiskUtility {
                     watchedDisks.append(newDisk)
 
                     newDisk.mountAction = DiskAction {
-                        returnedDisks.append(newDisk)
+                        self.diskModificationQueue.sync {
+                            returnedDisks.append(newDisk)
+                        }
                     }
                 }
+
+                #if DEBUG
+                    self.diskModificationQueue.sync {
+                        let dummyDisk = self.generateDummyDisk()
+                        watchedDisks.append(dummyDisk)
+                        returnedDisks.append(dummyDisk)
+                    }
+                #endif
 
                 while (stillWatching == true) {
                     if(watchedDisks.count == returnedDisks.count) {
@@ -55,6 +65,19 @@ class DiskUtility {
         } else {
             diskHandler(self.physicalDisks)
         }
+    }
+
+    private func generateDummyDisk() -> Disk {
+        let dummyDisk = Disk(diskType: .physical, isRemoteDisk: false, path: "/Volumes/DummyDisk", mountPath: "/Volumes/DummyDisk")
+        let dummyMountedDisk = MountedDisk(existingDisk: dummyDisk, matchedDiskOutput: "")
+        dummyMountedDisk.size = 6942069.0
+        dummyMountedDisk.name = "Dummy Disk"
+        dummyMountedDisk.measurementUnit = "TB"
+        dummyMountedDisk.devEntry = "/dev/dummy"
+
+        dummyDisk.updateMountedDisk(mountedDisk: dummyMountedDisk)
+        DDLogInfo("Adding dummy disk: \n \(dummyDisk)")
+        return dummyDisk
     }
 
     public func getNameForDisk(_ disk: Disk, returnEscaping: @escaping(String) -> ()) {
@@ -264,12 +287,12 @@ fileprivate class DiskImageUtility {
             DiskUtility.shared.getRawDiskInfo(path: mountPath, returnCompletion: { (potentialDiskInfo) in
                 if let diskInfo = potentialDiskInfo {
                     let newMountedDisk = MountedDisk(existingDisk: disk, matchedDiskOutput: diskInfo)
-                    disk.mountedDisk = newMountedDisk
-                    DDLogInfo("MountedDisk created: \n \(disk.description)")
-                    returnCompletion(newMountedDisk)
+                    newMountedDisk.updatedAction = DiskAction {
+                        disk.mountedDisk = newMountedDisk
+                        returnCompletion(newMountedDisk)
+                    }
                 }
             })
         }
     }
-
 }

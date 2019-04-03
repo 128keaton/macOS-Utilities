@@ -18,8 +18,8 @@
 		8A6F28F2221BA0AA00FF9DB3 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6F28F1221BA0AA00FF9DB3 /* Preferences.swift */; };
 		8A87B8B521A47D8C004496AA /* ModelYearDetermination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87B8B421A47D8C004496AA /* ModelYearDetermination.swift */; };
 		8A87B8B721A47DD8004496AA /* CwlSysctl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87B8B621A47DD8004496AA /* CwlSysctl.swift */; };
-		8A8B59A5224E9FD100CD4094 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A8B59A4224E9FD100CD4094 /* App.swift */; };
-		8ABAE30F22527B9100E537D3 /* Applications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE30E22527B9100E537D3 /* Applications.swift */; };
+		8A8B59A5224E9FD100CD4094 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A8B59A4224E9FD100CD4094 /* Application.swift */; };
+		8ABAE30F22527B9100E537D3 /* ApplicationRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE30E22527B9100E537D3 /* ApplicationRepository.swift */; };
 		8ABAE3112252A46300E537D3 /* DiskSelectionDialogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE3102252A46300E537D3 /* DiskSelectionDialogViewController.swift */; };
 		8ABAE3132252C1D800E537D3 /* TaskHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE3122252C1D800E537D3 /* TaskHandler.swift */; };
 		8ABAE3172252D40F00E537D3 /* Disk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE3162252D40F00E537D3 /* Disk.swift */; };
@@ -48,8 +48,8 @@
 		8A6F28F1221BA0AA00FF9DB3 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		8A87B8B421A47D8C004496AA /* ModelYearDetermination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelYearDetermination.swift; sourceTree = "<group>"; };
 		8A87B8B621A47DD8004496AA /* CwlSysctl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CwlSysctl.swift; sourceTree = "<group>"; };
-		8A8B59A4224E9FD100CD4094 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
-		8ABAE30E22527B9100E537D3 /* Applications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Applications.swift; sourceTree = "<group>"; };
+		8A8B59A4224E9FD100CD4094 /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
+		8ABAE30E22527B9100E537D3 /* ApplicationRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationRepository.swift; sourceTree = "<group>"; };
 		8ABAE3102252A46300E537D3 /* DiskSelectionDialogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskSelectionDialogViewController.swift; sourceTree = "<group>"; };
 		8ABAE3122252C1D800E537D3 /* TaskHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskHandler.swift; sourceTree = "<group>"; };
 		8ABAE3162252D40F00E537D3 /* Disk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Disk.swift; sourceTree = "<group>"; };
@@ -166,8 +166,8 @@
 		8A8B59A3224E9FC700CD4094 /* Applications */ = {
 			isa = PBXGroup;
 			children = (
-				8A8B59A4224E9FD100CD4094 /* App.swift */,
-				8ABAE30E22527B9100E537D3 /* Applications.swift */,
+				8A8B59A4224E9FD100CD4094 /* Application.swift */,
+				8ABAE30E22527B9100E537D3 /* ApplicationRepository.swift */,
 			);
 			path = Applications;
 			sourceTree = "<group>";
@@ -338,7 +338,7 @@
 				8A0138C6221703B700C77DA0 /* Compatibility.swift in Sources */,
 				8ABAE3132252C1D800E537D3 /* TaskHandler.swift in Sources */,
 				8A87B8B521A47D8C004496AA /* ModelYearDetermination.swift in Sources */,
-				8ABAE30F22527B9100E537D3 /* Applications.swift in Sources */,
+				8ABAE30F22527B9100E537D3 /* ApplicationRepository.swift in Sources */,
 				8ABAE3192252D41C00E537D3 /* MountedDisk.swift in Sources */,
 				8A0138D1221749BD00C77DA0 /* VersionNumbers.swift in Sources */,
 				8A6F28F0221B9F5C00FF9DB3 /* InstallViewController.swift in Sources */,
@@ -347,7 +347,7 @@
 				8ABAE31F2252DF4700E537D3 /* DiskRepository.swift in Sources */,
 				8A0138D62217624700C77DA0 /* InfoPopoverViewController.swift in Sources */,
 				8ABAE3112252A46300E537D3 /* DiskSelectionDialogViewController.swift in Sources */,
-				8A8B59A5224E9FD100CD4094 /* App.swift in Sources */,
+				8A8B59A5224E9FD100CD4094 /* Application.swift in Sources */,
 				8ACB65D721063E6F004B9C5A /* ApplicationViewController.swift in Sources */,
 				8A4305B5221BA7A7005C8D7A /* ResizingTabViewController.swift in Sources */,
 				8A6F28F2221BA0AA00FF9DB3 /* Preferences.swift in Sources */,

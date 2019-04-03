@@ -17,16 +17,11 @@ class MountedDisk: CustomStringConvertible {
     var measurementUnit: String = "GB"
     var isInternal: Bool = true
     var disk: Disk? = nil
-
-    var containsInstaller: Bool = false {
-        didSet {
-            DiskRepository.shared.installersDidUpdate()
-        }
-    }
-
+    var containsInstaller: Bool = false
     var installer: Installer? = nil
+    var updatedAction: DiskAction? = nil
 
-    var mountMount: String? {
+    var mountPoint: String? {
         if self.isValid {
             return "/Volumes/\(self.name)"
         }
@@ -55,7 +50,7 @@ class MountedDisk: CustomStringConvertible {
     }
 
     var description: String {
-        let baseString = "MountedDisk: \n\t Name: \(self.name) \n\t Size: \(self.size) \(self.measurementUnit) \n\t Valid: \(self.isValid) \n\t Contains Installer: \(self.containsInstaller) \n\t Mount Point: \(self.mountMount ?? "No mount point") \n\t /dev/disk Entry: \(self.devEntry) \n\t Internal: \(self.isInternal ? "Yes" : "No")\n"
+        let baseString = "MountedDisk: \n\t Name: \(self.name) \n\t Size: \(self.size) \(self.measurementUnit)  \n\t Installable to: \(self.isInstallable) \n\t Valid: \(self.isValid) \n\t Contains Installer: \(self.containsInstaller) \n\t Mount Point: \(self.mountPoint ?? "No mount point") \n\t /dev/disk Entry: \(self.devEntry) \n\t Internal: \(self.isInternal ? "Yes" : "No")\n"
         if(containsInstaller == true) {
             return "\(baseString) \t\t \(self.installer!)"
         }
@@ -89,12 +84,16 @@ class MountedDisk: CustomStringConvertible {
             diskUtility.getNameForDisk(self) { (returnedName) in
                 self.name = returnedName
                 self.checkIfContainsInstaller()
+                if let action = self.updatedAction {
+                    action.action()
+                }
                 self.disk?.mountedDisk = self
             }
         }
 
         self.disk = existingDisk
     }
+
 
     public func checkIfContainsInstaller(shouldUpdate: Bool = false) {
         if((self.name.contains("Install OS X") || self.name.contains("Install macOS")) == true && self.containsInstaller == false) {
@@ -117,7 +116,7 @@ class MountedDisk: CustomStringConvertible {
         TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["eject", self.devEntry]) { (ejectOutput) in
             print(ejectOutput ?? "No output")
             if let parentDisk = self.disk {
-                parentDisk.mountedDisk = nil
+                parentDisk.eject()
             }
         }
     }

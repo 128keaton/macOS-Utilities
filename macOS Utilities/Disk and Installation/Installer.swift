@@ -9,7 +9,7 @@
 import Foundation
 import AppKit
 
-class Installer: CustomStringConvertible {
+class Installer: CustomStringConvertible, Equatable {
     var appLabel: String = "Not Available"
     var versionNumber: String = "0.0"
     var icon: NSImage? = nil
@@ -59,5 +59,10 @@ class Installer: CustomStringConvertible {
         }
 
         return NSImage(contentsOfFile: imagePath)!
+    }
+
+    static func == (lhs: Installer, rhs: Installer) -> Bool {
+        return lhs.versionNumber == rhs.versionNumber &&
+            lhs.versionName == rhs.versionName
     }
 }
