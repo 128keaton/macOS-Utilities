@@ -21,13 +21,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         buildInfoMenu()
         
-        print(DiskRepository.shared.getInstallers())
+      /*  print(DiskRepository.shared.getInstallers())
         
         DiskRepository.shared.mountDiskImagesAt("/Users/keatonburleson/Documents/NFS")
         for utility in applicationManager.getUtilities(){
             let utilityMenuItem = NSMenuItem(title: utility.name, action: #selector(openApp(sender:)), keyEquivalent: "")
             utilitiesMenu!.addItem(utilityMenuItem)
-        }
+        }*/
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {

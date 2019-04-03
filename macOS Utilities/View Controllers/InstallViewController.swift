@@ -17,21 +17,14 @@ class InstallViewController: NSViewController {
     @IBOutlet weak var tableView: NSTableView!
     @IBOutlet weak var installButton: NSButton!
 
-    private var installableVersions: [OSVersion]? = []
     private var compatibilityChecker: Compatibility = Compatibility()
     private var versionNumbers: VersionNumbers = VersionNumbers()
     private var preferences = Preferences.shared
-    /*   private var diskAgent: MountDisk? = nil {
-        didSet {
-            diskAgent?.delegate = self
-        }
-    }*/
-
     private var installers = [Installer]()
     private let infoMenu = (NSApplication.shared.delegate as! AppDelegate).infoMenu
 
-       public var selectedVersion: Installer? = nil
-    
+    public var selectedVersion: Installer? = nil
+
     override func viewDidLoad() {
         super.viewDidLoad()
         checkForMetal()
@@ -41,42 +34,20 @@ class InstallViewController: NSViewController {
         let serverIP = preferences.getServerIP()
         let serverPath = preferences.getServerPath()
 
-        DiskRepository.shared.delegate = self
-        
-        //  diskAgent = MountDisk(host: serverIP, hostPath: serverPath)
-    }
-    
-    func getInstallableVersions() {
-        let allInstallers = DiskRepository.shared.getInstallers()
-        installers = allInstallers
+        getInstallableVersions()
     }
 
-    /*
     func getInstallableVersions() {
-      //  let diskAgent = self.diskAgent!
-        let diskImages = diskAgent.getInstallerDiskImages().sorted(by: { $0.version > $1.version })
-
-        for diskImage in diskImages {
-            if(compatibilityChecker.canInstall(version: diskImage.version)) {
-                infoMenu?.addItem(withTitle: diskImage.version, action: nil, keyEquivalent: "")
-                taskQueue.async {
-                    self.diskAgent!.mountInstallDisk(installDisk: diskImage)
-                }
+        DiskRepository.shared.getInstallers { (returnedInstallers) in
+            self.installers = returnedInstallers.filter { self.compatibilityChecker.canInstall(version: $0.versionNumber) }
+            DispatchQueue.main.sync {
+                self.tableView.reloadData()
             }
         }
-
-        if(diskImages.count == 0) {
-            showErrorAlert(title: "macOS Install Error", message: "There were no installable versions found on the server (\(preferences.getServerIP())) compatible with this machine (\(Sysctl.model)).")
-            DDLogError("No installable versions found on the server")
-            DDLogInfo("Machine: \(Sysctl.model)")
-            DDLogInfo("Server IP: \(preferences.getServerIP())")
-            DDLogInfo("Installers found: \(diskImages.count)")
-            infoMenu?.addItem(withTitle: "No installable versions found", action: nil, keyEquivalent: "")
-        }
-    }*/
+    }
 
     @IBAction func startOSInstall(sender: NSButton) {
-        InstallOS.kickoffMacOSInstall()
+        //  InstallOS.kickoffMacOSInstall()
     }
 
     func checkForMetal() {
@@ -168,7 +139,7 @@ extension InstallViewController: NSTableViewDelegate {
         let installer = installers[row]
 
         if let cell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "osCell"), owner: nil) as? NSTableCellView {
-            cell.textField?.stringValue = installer.appLabel
+            cell.textField?.stringValue = installer.versionName
             cell.imageView?.image = installer.icon ?? nil
             return cell
         }
@@ -178,7 +149,7 @@ extension InstallViewController: NSTableViewDelegate {
     func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
         tableView.deselectAll(self)
 
-        
+
 
         return true
     }

@@ -11,6 +11,8 @@ import Foundation
 class VersionNumbers{
     static func getNameForVersion(_ versionNumber: String) -> String {
         switch versionNumber {
+        case "10.9":
+            return "Install OS X Mavericks"
         case "10.12":
             return "Install macOS Sierra"
         case "10.13":
@@ -19,7 +21,6 @@ class VersionNumbers{
             return "Install macOS Mojave"
         default:
             return "Install OS X El Capitan"
-            
         }
     }
     
@@ -31,9 +32,11 @@ class VersionNumbers{
             return "10.13"
         case "Install macOS Mojave":
             return "10.14"
+        case "Install OS X Mavericks":
+            return "10.9"
         default:
             return "10.11"
-            
+
         }
     }
 }

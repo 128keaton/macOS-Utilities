@@ -32,7 +32,7 @@ class Installer: CustomStringConvertible {
 
     private func getVersionName() -> String {
         let parsedName = self.mountedDisk!.name.replacingOccurrences(of: ".[0-9].*", with: "", options: .regularExpression)
-        versionNumber = VersionNumbers.getVersionForName(parsedName)
+        self.versionNumber = VersionNumbers.getVersionForName(parsedName)
         return parsedName
     }
 

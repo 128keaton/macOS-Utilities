@@ -44,7 +44,7 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     }
     
     @IBAction func startOSInstall(sender: NSButton) {
-        InstallOS.kickoffMacOSInstall()
+       
     }
 
     fileprivate func configureCollectionView() {

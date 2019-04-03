@@ -18,12 +18,12 @@ class Compatibility {
     private (set) public var hasFormattedHDD = false
     private (set) public var hasLargeEnoughHDD = false
     private (set) public var incompatibleGPUs = [String]()
-    private (set) public var storageDeviceSize = Double(){
-        didSet{
+    private (set) public var storageDeviceSize = Double() {
+        didSet {
             checkHDD()
         }
     }
-    
+
     private var installableVersions = ModelYearDetermination().determineInstallableVersions()
 
     init() {
@@ -34,7 +34,11 @@ class Compatibility {
     }
 
     public func canInstall(version: String) -> Bool {
-        return installableVersions.contains(version)
+        let canInstall = installableVersions.contains(version)
+        if(canInstall) {
+            DDLogInfo("\(Sysctl.model) can install \(version)")
+        }
+        return canInstall
     }
 
     public func checkMemory() {
@@ -75,7 +79,7 @@ class Compatibility {
                 }
             }
         }
-        
+
         DDLogInfo("No formatted HDD Found")
         hasFormattedHDD = false
         storageDeviceSize = 0.0

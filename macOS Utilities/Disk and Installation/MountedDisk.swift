@@ -10,12 +10,14 @@ import Foundation
 import CommonCrypto
 
 class MountedDisk: CustomStringConvertible {
-    var mountPoint: String = "/dev/null"
+    var devEntry: String = "/dev/null"
     var name: String = "Invalid Disk"
+
     var size: Double = 0.0
     var measurementUnit: String = "GB"
     var isInternal: Bool = true
     var disk: Disk? = nil
+
     var containsInstaller: Bool = false {
         didSet {
             DiskRepository.shared.installersDidUpdate()
@@ -23,6 +25,14 @@ class MountedDisk: CustomStringConvertible {
     }
 
     var installer: Installer? = nil
+
+    var mountMount: String? {
+        if self.isValid {
+            return "/Volumes/\(self.name)"
+        }
+
+        return nil
+    }
 
     var uniqueMountID: String {
         guard let data = self.name.data(using: String.Encoding.utf8) else { return self.name }
@@ -37,14 +47,15 @@ class MountedDisk: CustomStringConvertible {
     }
 
     var isValid: Bool {
-        return self.mountPoint != "/dev/null" && self.name != "Not applicable (no file system)"
+        return self.devEntry != "/dev/null" && self.name != "Not applicable (no file system)" && self.name != "Invalid Disk"
     }
+
     var isInstallable: Bool {
         return (self.size > 150.0 || self.measurementUnit == "TB") && isValid
     }
 
     var description: String {
-        let baseString = "MountedDisk: \n\t Name: \(self.name) \n\t Size: \(self.size) \(self.measurementUnit) \n\t Valid: \(self.isValid) \n\t Contains Installer: \(self.containsInstaller) \n\t Mount Point: \(self.mountPoint) \n\t Internal: \(self.isInternal)\n"
+        let baseString = "MountedDisk: \n\t Name: \(self.name) \n\t Size: \(self.size) \(self.measurementUnit) \n\t Valid: \(self.isValid) \n\t Contains Installer: \(self.containsInstaller) \n\t Mount Point: \(self.mountMount ?? "No mount point") \n\t /dev/disk Entry: \(self.devEntry) \n\t Internal: \(self.isInternal ? "Yes" : "No")\n"
         if(containsInstaller == true) {
             return "\(baseString) \t\t \(self.installer!)"
         }
@@ -52,7 +63,9 @@ class MountedDisk: CustomStringConvertible {
         return baseString
     }
 
-    init(disk: Disk, matchedDiskOutput: String) {
+    private var diskUtility = DiskUtility.shared
+
+    init(existingDisk: Disk, matchedDiskOutput: String, passedName: String? = nil) {
         if let matchedSize = matchedDiskOutput.matches("([0-9]+( |.[0-9]+ )(GB|TB))", stripR: ["\\*", "\\+"]).first {
             if(matchedSize.contains("TB")) {
                 self.measurementUnit = "TB"
@@ -62,35 +75,46 @@ class MountedDisk: CustomStringConvertible {
         }
 
         if let matchedMountPoint = matchedDiskOutput.matches("disk([0-9]*)s.").first {
-            self.mountPoint = "/dev/\(matchedMountPoint)"
+            self.devEntry = "/dev/\(matchedMountPoint)"
         }
 
-        self.disk = disk
-        getNameFromDiskUtil { (name) in
-            self.name = name
+
+        if let potentialName = passedName {
+            self.name = potentialName
             self.checkIfContainsInstaller()
+            self.disk?.mountedDisk = self
         }
+
+        if (self.name == "Invalid Disk") {
+            diskUtility.getNameForDisk(self) { (returnedName) in
+                self.name = returnedName
+                self.checkIfContainsInstaller()
+                self.disk?.mountedDisk = self
+            }
+        }
+
+        self.disk = existingDisk
     }
 
-    public func checkIfContainsInstaller() {
-        DispatchQueue.main.async {
-            if(self.name.contains("Install OS X") || self.name.contains("Install macOS")) {
-                let potentialInstaller = Installer(mountedDisk: self)
-                if(potentialInstaller.isValid) {
-                    self.disk?.diskType = .dmg
-                    self.installer = potentialInstaller
-                    self.containsInstaller = true
-                    self.disk?.updateMountedDisk(mountedDisk: self)
-                    return
-                }
+    public func checkIfContainsInstaller(shouldUpdate: Bool = false) {
+        if((self.name.contains("Install OS X") || self.name.contains("Install macOS")) == true && self.containsInstaller == false) {
+            let potentialInstaller = Installer(mountedDisk: self)
+            if(potentialInstaller.isValid) {
+                self.disk?.diskType = .dmg
+                self.installer = potentialInstaller
+                self.containsInstaller = true
             }
-            self.disk?.updateMountedDisk(mountedDisk: self)
+        } else if(self.containsInstaller == true) {
             self.containsInstaller = false
+        }
+
+        if(shouldUpdate) {
+            self.disk?.updateMountedDisk(mountedDisk: self)
         }
     }
 
     public func eject() {
-        TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["eject", self.mountPoint]) { (ejectOutput) in
+        TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["eject", self.devEntry]) { (ejectOutput) in
             print(ejectOutput ?? "No output")
             if let parentDisk = self.disk {
                 parentDisk.mountedDisk = nil
@@ -100,7 +124,7 @@ class MountedDisk: CustomStringConvertible {
 
     private func getNameFromDiskUtil(returnCompletion: @escaping (String) -> ()) {
         DispatchQueue.main.async {
-            TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["info", self.mountPoint]) { (diskUtilInfo) in
+            TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["info", self.devEntry]) { (diskUtilInfo) in
                 var name = self.name
                 if let volumeName = diskUtilInfo!.matches("Volume Name: *.*").first {
                     name = volumeName.replacingOccurrences(of: "Volume Name: *", with: "", options: .regularExpression)
