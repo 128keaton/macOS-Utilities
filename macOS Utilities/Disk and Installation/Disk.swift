@@ -41,17 +41,7 @@ class Disk: CustomStringConvertible {
     }
 
     var uniqueDiskID: String {
-        let random = self.randomString(length: 12)
-
-        guard let data = random.data(using: String.Encoding.utf8) else { return random }
-
-        let hash = data.withUnsafeBytes { (bytes: UnsafePointer<Data>) -> [UInt8] in
-            var hash: [UInt8] = [UInt8](repeating: 0, count: Int(CC_SHA1_DIGEST_LENGTH))
-            CC_SHA1(bytes, CC_LONG(data.count), &hash)
-            return hash
-        }
-
-        return hash.map { String(format: "%02x", $0) }.joined()
+        return String.random(12).md5Value
     }
 
     init(diskType: DiskType, isRemoteDisk: Bool, path: String?, mountPath: String?) {
@@ -80,11 +70,6 @@ class Disk: CustomStringConvertible {
         self.init(diskType: .physical)
     }
     
-    private func randomString(length: Int) -> String {
-        let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        return String((0..<length).map { _ in letters.randomElement()! })
-    }
-
     public func updateMountedDisk(mountedDisk: MountedDisk) {
         self.mountedDisk = mountedDisk
     }
