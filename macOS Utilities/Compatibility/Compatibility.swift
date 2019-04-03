@@ -24,21 +24,11 @@ class Compatibility {
         }
     }
 
-    private var installableVersions = ModelYearDetermination().determineInstallableVersions()
-
     init() {
         modelIdentifier = ModelYearDetermination().modelIdentifier
         getMetalCompatibility()
         checkMemory()
         getInstallableHDD()
-    }
-
-    public func canInstall(version: String) -> Bool {
-        let canInstall = installableVersions.contains(version)
-        if(canInstall) {
-            DDLogInfo("\(Sysctl.model) can install \(version)")
-        }
-        return canInstall
     }
 
     public func checkMemory() {

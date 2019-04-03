@@ -35,12 +35,10 @@ class InstallViewController: NSViewController {
 
     func getInstallableVersions() {
         DiskRepository.shared.getInstallers { (returnedInstallers) in
-            let newInstallers = returnedInstallers.filter { self.compatibilityChecker.canInstall(version: $0.versionNumber) }
-
-            if(newInstallers != self.installers) {
+            if(returnedInstallers != self.installers) {
                 self.installers.indices.forEach { self.infoMenu?.removeItem(at: $0) }
-                self.installers = newInstallers
-                self.installers.forEach { self.infoMenu?.insertItem(withTitle: $0.versionNumber, action: nil, keyEquivalent: "", at: 0) }
+                self.installers = returnedInstallers
+                self.installers.forEach { self.infoMenu?.insertItem(withTitle: "\($0.versionNumber) - \($0.canInstall ? "🙂" : "☹️")", action: nil, keyEquivalent: "", at: 0) }
                 self.infoMenu?.insertItem(NSMenuItem.separator(), at: (self.installers.count))
                 DispatchQueue.main.sync {
                     self.tableView.reloadData()
@@ -149,7 +147,7 @@ extension InstallViewController: NSTableViewDelegate {
     }
     func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
         tableView.deselectAll(self)
-        return true
+        return self.installers[row].canInstall
     }
 
     override open func mouseDown(with event: NSEvent) {

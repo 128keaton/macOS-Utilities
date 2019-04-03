@@ -8,8 +8,10 @@
 
 import Foundation
 import AppKit
+import CocoaLumberjack
 
 class Installer: CustomStringConvertible, Equatable {
+    private let installableVersions = ModelYearDetermination().determineInstallableVersions()
     var appLabel: String = "Not Available"
     var versionNumber: String = "0.0"
     var icon: NSImage? = nil
@@ -18,7 +20,14 @@ class Installer: CustomStringConvertible, Equatable {
     var isValid: Bool {
         return appLabel != "Not Available" && versionNumber != "0.0"
     }
-
+    
+    var canInstall: Bool {
+        if(installableVersions.contains(self.versionNumber)) {
+            DDLogInfo("\(Sysctl.model) can install \(self.versionNumber)")
+        }
+        return installableVersions.contains(self.versionNumber)
+    }
+    
     var description: String {
         return "Installer - \(versionNumber) - \(versionName) - Icon: \(icon == nil ? "no" : "yes") - Valid: \(isValid)"
     }
@@ -60,6 +69,7 @@ class Installer: CustomStringConvertible, Equatable {
 
         return NSImage(contentsOfFile: imagePath)!
     }
+
 
     static func == (lhs: Installer, rhs: Installer) -> Bool {
         return lhs.versionNumber == rhs.versionNumber &&
