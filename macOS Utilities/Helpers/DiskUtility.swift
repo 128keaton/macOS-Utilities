@@ -71,9 +71,10 @@ class DiskUtility {
         let dummyDisk = Disk(diskType: .physical, isRemoteDisk: false, path: "/Volumes/DummyDisk", mountPath: "/Volumes/DummyDisk")
         let dummyMountedDisk = MountedDisk(existingDisk: dummyDisk, matchedDiskOutput: "")
         dummyMountedDisk.size = 6942069.0
+        dummyDisk.devEntry = "/dev/disk0"
         dummyMountedDisk.name = "Dummy Disk"
         dummyMountedDisk.measurementUnit = "TB"
-        dummyMountedDisk.devEntry = "/dev/dummy"
+        dummyMountedDisk.devEntry = "/dev/disk0s1"
 
         dummyDisk.updateMountedDisk(mountedDisk: dummyMountedDisk)
         DDLogInfo("Adding dummy disk: \n \(dummyDisk)")
@@ -101,6 +102,24 @@ class DiskUtility {
             }
         }
 
+    }
+
+    public func erase(disk: Disk, newName: String, returnCompletion: @escaping (Bool) -> ()) {
+        if disk.devEntry == nil && disk.mountedDisk == nil {
+            returnCompletion(false)
+        }
+
+        let devEntry = disk.devEntry ?? String((disk.mountedDisk!.devEntry.split(separator: "0").first!))
+
+
+        TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["eraseDisk", "APFS", newName, devEntry]) { (taskOutput) in
+            if let eraseOutput = taskOutput {
+                DDLogInfo(eraseOutput)
+                returnCompletion(eraseOutput.contains("Finished erase"))
+            } else {
+                returnCompletion(false)
+            }
+        }
     }
 
     // Can be any kind of valid and defined disk

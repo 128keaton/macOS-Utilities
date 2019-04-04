@@ -59,6 +59,12 @@ class DiskRepository {
             returnCompletion(allDisks.filter { $0.mountedDisk != nil && $0.mountedDisk?.containsInstaller == true }.map { $0.mountedDisk!.installer! })
         }
     }
+    
+    public func getSelectedInstaller(returnCompletion: @escaping (Installer?) -> ()) {
+        diskUtility.getAllDisks { (allDisks) in
+            returnCompletion(allDisks.filter { $0.mountedDisk != nil && $0.mountedDisk?.containsInstaller == true && $0.mountedDisk?.installer?.isSelected == true }.map { $0.mountedDisk!.installer! }.first)
+        }
+    }
 
     public func mountDiskImagesAt(_ folderPath: String) {
         let fileManager = FileManager.default
@@ -106,13 +112,14 @@ class DiskRepository {
             if (updatedDiskImages != diskImages) {
                 diskImages = updatedDiskImages
                 DDLogInfo("Total Disk Images: \(self.diskImages.count)")
-                delegate?.installersUpdated()
             }
             
             if (updatedPhysicalDisks != physicalDisks) {
                 physicalDisks = updatedPhysicalDisks
                 DDLogInfo("Total Physical Disks: \(self.physicalDisks.count)")
             }
+            
+              delegate?.installersUpdated()
         }
     }
 }

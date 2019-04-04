@@ -148,7 +148,15 @@ extension InstallViewController: NSTableViewDelegate {
     }
     func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
         tableView.deselectAll(self)
-        return self.installers[row].canInstall
+        if(installers[row].canInstall) {
+            installButton.isEnabled = true
+            
+            installers.forEach { $0.isSelected = false }
+            installers[row].isSelected = true
+            
+            return true
+        }
+        return false
     }
 
     override open func mouseDown(with event: NSEvent) {
@@ -160,14 +168,14 @@ extension InstallViewController: NSTableViewDelegate {
         if rowIndex < 0 { // We didn't click any row
             tableView.deselectAll(nil)
             installButton.isEnabled = false
+            installers.forEach { $0.isSelected = false }
         }
     }
 }
 
 extension InstallViewController: DiskRepositoryDelegate {
     func installersUpdated() {
-        DispatchQueue.main.async {
-            self.getInstallableVersions()
-        }
+        self.getInstallableVersions()
+
     }
 }

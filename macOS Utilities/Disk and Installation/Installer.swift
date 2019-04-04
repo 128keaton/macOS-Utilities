@@ -17,6 +17,7 @@ class Installer: CustomStringConvertible, Equatable {
     var icon: NSImage? = nil
     var versionName: String = ""
     var mountedDisk: MountedDisk? = nil
+    var isSelected = false
     var isValid: Bool {
         return appLabel != "Not Available" && versionNumber != "0.0"
     }
@@ -45,7 +46,7 @@ class Installer: CustomStringConvertible, Equatable {
         return parsedName
     }
 
-    public func kickoffInstall() {
+    public func launch() {
         NSWorkspace.shared.open(URL(fileURLWithPath: "/Volumes/\(self.mountedDisk!.name)/\(versionName).app"))
     }
 

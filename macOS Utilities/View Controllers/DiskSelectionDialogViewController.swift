@@ -11,9 +11,14 @@ import AppKit
 
 class DiskSelectionDialogViewController: NSViewController {
     @IBOutlet weak var tableView: NSTableView?
-
+    @IBOutlet weak var nextButton: NSButton?
+    @IBOutlet weak var spinnyView: NSProgressIndicator?
+    
     private var installableDisks = [MountedDisk]()
     private let diskUtility = DiskUtility.shared
+
+    private var selectedDisk: Disk? = nil
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,7 +31,7 @@ class DiskSelectionDialogViewController: NSViewController {
             self.tableView?.reloadData()
         }
     }
-    
+
     @IBAction func openDiskUtility(_ sender: NSButton) {
         Application.open("Disk Utility", isUtility: true)
     }
@@ -58,6 +63,46 @@ extension DiskSelectionDialogViewController: NSTableViewDelegate {
             return cell
         }
         return nil
+    }
+
+    func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
+        self.tableView?.deselectAll(self)
+        print("Disk Selected: \(self.installableDisks[row])")
+        self.selectedDisk = self.installableDisks[row].disk!
+        nextButton?.isEnabled = true
+
+        return true
+    }
+
+    override open func mouseDown(with event: NSEvent) {
+        super.mouseDown(with: event)
+
+        let point = self.view.convert(event.locationInWindow, from: nil)
+        let rowIndex = tableView?.row(at: point)
+
+        if rowIndex! < 0 { // We didn't click any row
+            tableView?.deselectAll(nil)
+            self.selectedDisk = nil
+            nextButton?.isEnabled = false
+        }
+    }
+
+    @IBAction func nextButtonClicked(_ sender: NSButton) {
+        if let disk = self.selectedDisk {
+            spinnyView?.startSpinning()
+            sender.isEnabled = false
+            diskUtility.erase(disk: disk, newName: disk.mountedDisk!.name) { (didFinish) in
+                DiskRepository.shared.getSelectedInstaller(returnCompletion: { (potentialInstaller) in
+                    if let selectedInstaller = potentialInstaller {
+                        selectedInstaller.launch()
+                        DispatchQueue.main.sync {
+                            self.spinnyView?.stopSpinning()
+                            self.dismiss(self)
+                        }
+                    }
+                })
+            }
+        }
     }
 }
 
