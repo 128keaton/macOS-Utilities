@@ -72,10 +72,7 @@ class DiskRepository {
                     let newDisk = Disk(diskType: .dmg, isRemoteDisk: false, path: diskImagePath, mountPath: nil)
                     diskUtility.mount(disk: newDisk) { (mountedDisk) in
                         if mountedDisk != nil {
-                            DDLogInfo("New Disk Image Mounted: \(mountedDisk!.description)")
-                            if (self.diskImages.contains { $0.mountedDisk?.name == mountedDisk?.name } == false) {
-                                self.diskImages.append(newDisk)
-                            }
+                            DDLogInfo("New Disk Image Mounted: \(newDisk.description)")
                         }
                         DDLogInfo("Total Disk Images: \(self.diskImages.count)")
                     }
@@ -103,8 +100,19 @@ class DiskRepository {
     @objc func didUnmount(_ notification: NSNotification) {
         if let devicePath = notification.userInfo!["NSDevicePath"] as? String {
             let removedDevicePath = devicePath.components(separatedBy: CharacterSet.decimalDigits).joined().trimmingCharacters(in: .whitespacesAndNewlines)
-            diskImages = diskImages.filter { $0.mountPath != removedDevicePath }
-            physicalDisks = physicalDisks.filter { $0.mountPath != removedDevicePath }
+            let updatedDiskImages = diskImages.filter { $0.mountedDisk!.mountPoint != removedDevicePath }
+            let updatedPhysicalDisks = physicalDisks.filter { $0.mountedDisk!.mountPoint != removedDevicePath }
+
+            if (updatedDiskImages != diskImages) {
+                diskImages = updatedDiskImages
+                DDLogInfo("Total Disk Images: \(self.diskImages.count)")
+                delegate?.installersUpdated()
+            }
+            
+            if (updatedPhysicalDisks != physicalDisks) {
+                physicalDisks = updatedPhysicalDisks
+                DDLogInfo("Total Physical Disks: \(self.physicalDisks.count)")
+            }
         }
     }
 }

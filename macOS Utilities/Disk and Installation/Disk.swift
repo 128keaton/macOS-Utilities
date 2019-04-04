@@ -11,7 +11,7 @@ import AppKit
 import CocoaLumberjack
 import CommonCrypto
 
-class Disk: CustomStringConvertible {
+class Disk: CustomStringConvertible, Equatable {
     var mountedDisk: MountedDisk? = nil {
         didSet {
             if self.mountedDisk != nil && self.mountedDisk?.isValid == true {
@@ -19,13 +19,13 @@ class Disk: CustomStringConvertible {
             }
         }
     }
-    
+
     var isRemoteDisk: Bool = false
     var diskType: DiskType = .physical
     var path: String? = nil
     var mountPath: String? = nil
     var devEntry: String? = nil
-    
+
     var mountAction: DiskAction? = nil
 
     var isMounted: Bool {
@@ -65,40 +65,43 @@ class Disk: CustomStringConvertible {
         self.init(diskType: diskType)
         self.mountedDisk = MountedDisk(existingDisk: self, matchedDiskOutput: matchedDiskOutput)
     }
-    
+
     convenience init() {
         self.init(diskType: .physical)
     }
-    
+
     public func updateMountedDisk(mountedDisk: MountedDisk) {
         self.mountedDisk = mountedDisk
     }
-    
+
     public func eject() {
-        if let devEntry = self.devEntry{
+        if let devEntry = self.devEntry {
             TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["eject", devEntry]) { (ejectOutput) in
                 print(ejectOutput ?? "No output")
                 self.mountedDisk = nil
             }
         }
     }
-    
+
     enum DiskType: String {
         case nfs = "NFS"
         case dmg = "DMG"
         case physical = "Physical"
     }
 
+    static func == (lhs: Disk, rhs: Disk) -> Bool {
+        return lhs.uniqueDiskID == rhs.uniqueDiskID
+    }
 }
 
 final class DiskAction: NSObject {
     private let _action: () -> ()
-    
+
     init(action: @escaping () -> ()) {
         _action = action
         super.init()
     }
-    
+
     func action() {
         _action()
     }

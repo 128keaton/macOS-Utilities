@@ -31,6 +31,7 @@ class InstallViewController: NSViewController {
         verifyMemoryAmount()
         verifyHDDSize()
         getInstallableVersions()
+        DiskRepository.shared.delegate = self
     }
 
     func getInstallableVersions() {
@@ -167,7 +168,6 @@ extension InstallViewController: DiskRepositoryDelegate {
     func installersUpdated() {
         DispatchQueue.main.async {
             self.getInstallableVersions()
-            self.tableView.reloadData()
         }
     }
 }

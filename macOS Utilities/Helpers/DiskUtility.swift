@@ -191,7 +191,6 @@ fileprivate class NetworkShareUtility {
 
 fileprivate class DiskImageUtility {
     private var diskImages = [Disk]()
-    private var mountedDiskImages = [Disk]()
     private var diskUtility: DiskUtility? = nil
 
     init(diskUtility: DiskUtility) {
@@ -219,12 +218,14 @@ fileprivate class DiskImageUtility {
                         let existingDisk = self.diskImages.filter { $0.mountPath == mountPath && $0.mountedDisk !== nil }.first
                         if(existingDisk == nil) {
                             self.createMountedDiskFromDiskImage(mountPath: mountPath, disk: diskImage) { (newMountedDisk) in
-                                self.mountedDiskImages.append(diskImage)
+                                self.diskImages.append(diskImage)
+                                print("Disk Images Count: (utility) \(self.diskImages.count)")
                                 diskImage.mountedDisk = newMountedDisk
                                 returnCompletion(newMountedDisk)
                             }
                         } else {
                             DDLogInfo("Disk already mounted: \n \(existingDisk!.description)")
+                            self.diskImages.append(existingDisk!)
                             returnCompletion(existingDisk!.mountedDisk!)
                         }
                     }
@@ -289,6 +290,7 @@ fileprivate class DiskImageUtility {
                     let newMountedDisk = MountedDisk(existingDisk: disk, matchedDiskOutput: diskInfo)
                     newMountedDisk.updatedAction = DiskAction {
                         disk.mountedDisk = newMountedDisk
+
                         returnCompletion(newMountedDisk)
                     }
                 }
