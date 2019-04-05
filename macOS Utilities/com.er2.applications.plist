@@ -41,14 +41,14 @@
 		<key>Safari</key>
 		<dict>
 			<key>Section</key>
-			<string>Utiliites</string>
+			<string>Utilities</string>
 			<key>Path</key>
 			<string>/Applications/Safari.app</string>
 		</dict>
 		<key>Disk Utility</key>
 		<dict>
 			<key>Section</key>
-			<string>Utiliites</string>
+			<string>Utilities</string>
 			<key>Path</key>
 			<string>/Applications/Utilities/Disk Utility.app</string>
 		</dict>
@@ -57,12 +57,12 @@
 			<key>Path</key>
 			<string>/Applications/Utilities/Terminal.app</string>
 			<key>Section</key>
-			<string>Utiliites</string>
+			<string>Utilities</string>
 		</dict>
 		<key>AVTest</key>
 		<dict>
 			<key>Section</key>
-			<string>Utiliites</string>
+			<string>Utilities</string>
 			<key>Path</key>
 			<string>/Applications/AVTest.app</string>
 		</dict>

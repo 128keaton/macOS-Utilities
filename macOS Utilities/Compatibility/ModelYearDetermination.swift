@@ -57,7 +57,6 @@ class ModelYearDetermination {
                 canInstallMojave()
             }
         }
-        DDLogInfo("Installable versions: \(installableVersions)")
         return installableVersions.reversed()
     }
 

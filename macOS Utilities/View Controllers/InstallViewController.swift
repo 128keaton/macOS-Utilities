@@ -25,26 +25,26 @@ class InstallViewController: NSViewController {
 
     public var selectedVersion: Installer? = nil
 
+    override func awakeFromNib() {
+        NotificationCenter.default.addObserver(self, selector: #selector(InstallViewController.getInstallableVersions), name: ItemRepository.newInstaller, object: nil)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         checkForMetal()
         verifyMemoryAmount()
         verifyHDDSize()
         getInstallableVersions()
-        DiskRepository.shared.delegate = self
     }
 
-    func getInstallableVersions() {
-        DiskRepository.shared.getInstallers { (returnedInstallers) in
-            if(returnedInstallers != self.installers) {
-                self.installers.indices.forEach { self.infoMenu?.removeItem(at: $0) }
-                self.installers = returnedInstallers
-                self.installers.forEach { self.infoMenu?.insertItem(withTitle: "\($0.versionNumber) - \($0.canInstall ? "🙂" : "☹️")", action: nil, keyEquivalent: "", at: 0) }
-                self.infoMenu?.insertItem(NSMenuItem.separator(), at: (self.installers.count))
-                DispatchQueue.main.sync {
-                    self.tableView.reloadData()
-                }
-            }
+    @objc func getInstallableVersions() {
+        let returnedInstallers = ItemRepository.shared.getInstallers()
+        if(returnedInstallers != self.installers) {
+            self.installers.indices.forEach { self.infoMenu?.removeItem(at: $0) }
+            self.installers = returnedInstallers
+            self.installers.forEach { self.infoMenu?.insertItem(withTitle: "\($0.versionNumber) - \($0.canInstall ? "🙂" : "☹️")", action: nil, keyEquivalent: "", at: 0) }
+            self.infoMenu?.insertItem(NSMenuItem.separator(), at: (self.installers.count))
+            self.tableView.reloadData()
         }
     }
 
@@ -123,7 +123,7 @@ class InstallViewController: NSViewController {
     }
 
     @objc func openDiskUtility() {
-        Application.open("Disk Utility", isUtility: true)
+         ApplicationUtility.shared.open("Disk Utility")
     }
 
 }
@@ -173,9 +173,3 @@ extension InstallViewController: NSTableViewDelegate {
     }
 }
 
-extension InstallViewController: DiskRepositoryDelegate {
-    func installersUpdated() {
-        self.getInstallableVersions()
-
-    }
-}

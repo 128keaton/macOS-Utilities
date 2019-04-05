@@ -14,7 +14,7 @@ class DiskSelectionDialogViewController: NSViewController {
     @IBOutlet weak var nextButton: NSButton?
     @IBOutlet weak var spinnyView: NSProgressIndicator?
     
-    private var installableDisks = [MountedDisk]()
+    private var installableDisks = [Disk]()
     private let diskUtility = DiskUtility.shared
 
     private var selectedDisk: Disk? = nil
@@ -26,14 +26,12 @@ class DiskSelectionDialogViewController: NSViewController {
     }
 
     private func getDisks() {
-        diskUtility.getAllDisks(mountedOnly: true) { (physicalDisks) in
-            self.installableDisks = physicalDisks.map { $0.mountedDisk! }.filter { $0.isInstallable == true }
-            self.tableView?.reloadData()
-        }
+        installableDisks = ItemRepository.shared.getDisks().filter { $0.isInstallable == true && $0.getMainVolume() != nil && $0.getMainVolume()!.isInstallable == true}
+        self.tableView?.reloadData()
     }
 
     @IBAction func openDiskUtility(_ sender: NSButton) {
-        Application.open("Disk Utility", isUtility: true)
+        ApplicationUtility.shared.open("Disk Utility")
     }
 }
 
@@ -49,12 +47,22 @@ extension DiskSelectionDialogViewController: NSTableViewDelegate {
         var cellIdentifier: String = ""
 
         let installableDisk = installableDisks[row]
+        
+        var size = installableDisk.size
+        var measurementUnit = installableDisk.measurementUnit
+        var name = installableDisk.deviceIdentifier
+        
+        if let installableVolume = installableDisk.getMainVolume(){
+            size = installableVolume.size
+            measurementUnit = installableVolume.measurementUnit
+            name = installableVolume.volumeName
+        }
 
         if tableColumn == tableView.tableColumns[0] {
-            text = installableDisk.name
+            text = name
             cellIdentifier = CellIdentifiers.DiskNameCell
         } else if tableColumn == tableView.tableColumns[1] {
-            text = "\(Int(installableDisk.size.rounded())) \(installableDisk.measurementUnit)"
+            text = "\(Int(size)) \(measurementUnit)"
             cellIdentifier = CellIdentifiers.DiskSizeCell
         }
 
@@ -68,7 +76,7 @@ extension DiskSelectionDialogViewController: NSTableViewDelegate {
     func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
         self.tableView?.deselectAll(self)
         print("Disk Selected: \(self.installableDisks[row])")
-        self.selectedDisk = self.installableDisks[row].disk!
+        self.selectedDisk = self.installableDisks[row]
         nextButton?.isEnabled = true
 
         return true
@@ -91,7 +99,7 @@ extension DiskSelectionDialogViewController: NSTableViewDelegate {
         if let disk = self.selectedDisk {
             spinnyView?.startSpinning()
             sender.isEnabled = false
-            diskUtility.erase(disk: disk, newName: disk.mountedDisk!.name) { (didFinish) in
+            /*diskUtility.erase(disk: disk, newName: disk.mountedDisk!.name) { (didFinish) in
                 DiskRepository.shared.getSelectedInstaller(returnCompletion: { (potentialInstaller) in
                     if let selectedInstaller = potentialInstaller {
                         selectedInstaller.launch()
@@ -101,7 +109,7 @@ extension DiskSelectionDialogViewController: NSTableViewDelegate {
                         }
                     }
                 })
-            }
+            }*/
         }
     }
 }

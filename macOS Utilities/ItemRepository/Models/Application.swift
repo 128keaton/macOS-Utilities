@@ -10,25 +10,41 @@ import Foundation
 import AppKit
 import CocoaLumberjack
 
-class Application {
+class Application: Item {
+    let prohibatoryIcon = NSImage(named: "stop")
     var name: String
-    var isUtility: Bool
+    var isUtility: Bool = false
     var path: String
     var isInvalid = false
     var sectionName = "Basic"
+    var id: String {
+        get {
+            return self.name.md5Value
+        }
+    }
 
-    private static let repository = ApplicationRepository.shared
+    var showInApplicationsWindow = true
 
-    let prohibatoryIcon = NSImage(named: "stop")
+    var description: String {
+        return "Application: \n\t Name: \(self.name) \n\t Utility: \(self.isUtility) \n\t Invalid: \(self.isInvalid) \n\t Section: \(self.sectionName) \n\t Path: \(self.path)"
+    }
+
+    func addToRepo() {
+        ItemRepository.shared.addToRepository(newApplication: self)
+    }
 
     init(name: String, isUtility: Bool = false) {
         self.name = name.replacingOccurrences(of: ".app", with: "")
+
         self.isUtility = isUtility
         if(self.isUtility) {
+            self.showInApplicationsWindow = false
             self.path = "/Applications/Utilities/\(self.name).app"
         } else {
             self.path = "/Applications/\(self.name).app"
         }
+
+        self.addToRepo()
     }
 
     convenience init(name: String, path: String) {
@@ -55,27 +71,20 @@ class Application {
         }
 
         self.determineUtilityFromPath()
+        self.showInApplicationsWindow = true
     }
 
     private func determineUtilityFromPath() {
-        if self.path.contains("/Applications/Utilities/") {
+        if self.path.contains("/Applications/Utilities") {
             self.isUtility = true
+            self.showInApplicationsWindow = false
         } else {
             self.isUtility = false
         }
     }
 
-    @objc public func open() {
-        Application.open(path: self.path)
-    }
-
-    public static func open(_ name: String, isUtility: Bool = false) {
-        repository.openAppByName(name, isUtility: isUtility)
-    }
-
-    public static func open(path: String) {
-        DDLogVerbose("Opening application at: \(path)")
-        NSWorkspace.shared.open(URL(fileURLWithPath: path))
+    public func open() {
+        NSWorkspace.shared.open(URL(fileURLWithPath: self.path))
     }
 
     public func getCollectionViewItem(item: NSCollectionViewItem) -> NSCollectionViewItem {
@@ -88,8 +97,14 @@ class Application {
         collectionViewItem.darkenedImage = icon.darkened()
 
         if(self.isInvalid) {
-            collectionViewItem.titleLabel?.stringValue = "Invalid path"
+            collectionViewItem.titleLabel?.textColor = NSColor.gray
+            collectionViewItem.titleLabel?.stringValue = "\(self.name)*"
         } else {
+            if(NSApplication.shared.isDarkMode(view: collectionViewItem.view)) {
+                collectionViewItem.titleLabel?.textColor = NSColor.white
+            } else {
+                collectionViewItem.titleLabel?.textColor = NSColor.black
+            }
             collectionViewItem.titleLabel?.stringValue = self.name
         }
 
@@ -97,26 +112,31 @@ class Application {
     }
 
     private func findIcon() -> NSImage {
-        let infoPath = self.path + "/Contents/Info.plist"
+        let infoPath = "\(self.path)/Contents/Info.plist"
         guard let infoDictionary = NSDictionary(contentsOfFile: infoPath)
             else {
-                self.isInvalid = true
+                isInvalid = true
                 return prohibatoryIcon!
         }
 
         guard let imageName = (infoDictionary["CFBundleIconFile"] as? String)
             else {
-                self.isInvalid = true
+                isInvalid = true
                 return prohibatoryIcon!
         }
 
-        var imagePath = "\(self.path)/Contents/Resources/\(imageName)"
+        let imagePath = URL(fileURLWithPath: "\(self.path)/Contents/Resources/\(imageName)", isDirectory: false)
+        let imageUti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, imagePath.pathExtension as CFString, nil)
 
-        if !imageName.contains(".icns") {
-            imagePath = imagePath + ".icns"
+        if UTTypeConformsTo((imageUti?.takeRetainedValue())!, kUTTypeImage) {
+            return NSImage(contentsOf: imagePath)!
+        } else {
+            return NSImage(contentsOf: imagePath.appendingPathExtension("icns"))!
         }
-
-        return NSImage(contentsOfFile: imagePath)!
     }
 
+    static func == (lhs: Application, rhs: Application) -> Bool {
+        return lhs.path == rhs.path &&
+            lhs.name == rhs.name
+    }
 }

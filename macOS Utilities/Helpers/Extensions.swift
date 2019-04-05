@@ -35,6 +35,17 @@ func findIconFor(applicationPath: String) -> NSImage {
     return NSImage(contentsOfFile: imagePath)!
 }
 
+extension NSApplication{
+    func isDarkMode(view: NSView?) -> Bool {
+        if #available(OSX 10.14, *) {
+            if let appearance = view?.effectiveAppearance ?? NSAppearance.current {
+                return (appearance.name == .darkAqua)
+            }
+        }
+        return false
+    }
+}
+
 extension NSImage {
     func darkened() -> NSImage? {
         if(NSGraphicsContext.current !== nil) {
