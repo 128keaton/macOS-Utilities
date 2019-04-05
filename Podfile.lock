@@ -1,4 +1,5 @@
 PODS:
+  - Alamofire (5.0.0-beta.4)
   - AppFolder (0.2.0)
   - CocoaAsyncSocket (7.6.3)
   - CocoaLumberjack (3.5.2):
@@ -14,6 +15,7 @@ PODS:
     - PaperTrailLumberjack/Core
 
 DEPENDENCIES:
+  - Alamofire (~> 5.0.0-beta.3)
   - AppFolder (~> 0.2.0)
   - CocoaAsyncSocket
   - CocoaLumberjack/Swift
@@ -21,17 +23,19 @@ DEPENDENCIES:
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
+    - Alamofire
     - AppFolder
     - CocoaAsyncSocket
     - CocoaLumberjack
     - PaperTrailLumberjack
 
 SPEC CHECKSUMS:
+  Alamofire: 6458d95477bc40adf10129f22c67cfb014162dc8
   AppFolder: d10ba19488bd441d60ffcf96eb2ab639a4825231
   CocoaAsyncSocket: eafaa68a7e0ec99ead0a7b35015e0bf25d2c8987
   CocoaLumberjack: 118bf4a820efc641f79fa487b75ed928dccfae23
   PaperTrailLumberjack: 449587968d5aeb3eab2d4de041ffc61ee2d49f25
 
-PODFILE CHECKSUM: 8383ba248433b29c2ca4a3f801a2b61dbe6f976e
+PODFILE CHECKSUM: 0df506adc1d5712a9ee235d1603b7c408dc32728
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.6.1

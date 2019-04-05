@@ -1,2 +1,5 @@
 *.DS_Store
 .DS_Store
+Pods/
+macOS Utilities.xcworkspace/xcshareddata/
+macOS Utilities.xcworkspace/xcuserdata/
