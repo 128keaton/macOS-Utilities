@@ -41,7 +41,7 @@ class TaskHandler{
                     DDLogInfo(taskStandardOutput ?? "")
                 }
                 
-                DDLogInfo("Task \(task.launchPath ?? "") \(task.arguments.map { "\($0) " } ?? "") succeeded")
+                DDLogInfo("Task \(task.launchPath ?? "") \(task.arguments?.joined(separator: " ") ?? "") was executed")
                 returnEscaping(taskStandardOutput)
             }
         }

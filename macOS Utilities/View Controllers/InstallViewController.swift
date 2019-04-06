@@ -28,7 +28,7 @@ class InstallViewController: NSViewController {
     override func awakeFromNib() {
         NotificationCenter.default.addObserver(self, selector: #selector(InstallViewController.getInstallableVersions), name: ItemRepository.newInstaller, object: nil)
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         checkForMetal()
@@ -44,7 +44,13 @@ class InstallViewController: NSViewController {
             self.installers = returnedInstallers
             self.installers.forEach { self.infoMenu?.insertItem(withTitle: "\($0.versionNumber) - \($0.canInstall ? "🙂" : "☹️")", action: nil, keyEquivalent: "", at: 0) }
             self.infoMenu?.insertItem(NSMenuItem.separator(), at: (self.installers.count))
-            self.tableView.reloadData()
+            if(Thread.isMainThread == true) {
+                self.tableView.reloadData()
+            } else {
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
         }
     }
 
@@ -123,7 +129,7 @@ class InstallViewController: NSViewController {
     }
 
     @objc func openDiskUtility() {
-         ApplicationUtility.shared.open("Disk Utility")
+        ApplicationUtility.shared.open("Disk Utility")
     }
 
 }
@@ -150,10 +156,10 @@ extension InstallViewController: NSTableViewDelegate {
         tableView.deselectAll(self)
         if(installers[row].canInstall) {
             installButton.isEnabled = true
-            
+
             installers.forEach { $0.isSelected = false }
             installers[row].isSelected = true
-            
+
             return true
         }
         return false

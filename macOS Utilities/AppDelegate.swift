@@ -19,18 +19,40 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private let itemRepository = ItemRepository.shared
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        NotificationCenter.default.addObserver(self, selector: #selector(InstallViewController.getInstallableVersions), name: ItemRepository.newInstaller, object: nil)
-
         buildInfoMenu()
         ItemRepository.shared.getApplications().filter { $0.isUtility == true }.map { NSMenuItem(title: $0.name, action: #selector(openApp(sender:)), keyEquivalent: "") }.forEach { utilitiesMenu?.addItem($0) }
-    }
 
-    func applicationWillTerminate(_ aNotification: Notification) {
-        //    DiskRepository.shared.unmountAllDiskImages()
+        let installersShareIP = Preferences.shared.getServerIP()
+        let installersSharePath = Preferences.shared.getServerPath()
+        let installersLocalPath = Preferences.shared.getMountPoint()
+
+        DiskUtility.shared.mountNFSShare(shareURL: "\(installersShareIP):\(installersSharePath)", localPath: installersLocalPath) { (didSucceed) in
+            if(didSucceed) {
+                DiskUtility.shared.mountDiskImagesAt(installersLocalPath)
+            }
+        }
     }
 
     @objc func openApp(sender: NSMenuItem) {
         ApplicationUtility.shared.open(sender.title)
+    }
+
+    private func checkIfReadyToTerminate(){
+        if applicationShouldTerminate(NSApplication.shared) == .terminateNow{
+            NSApplication.shared.terminate(self)
+        }
+    }
+    
+    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        if(DiskUtility.shared.allSharesAndInstallersUnmounted == false){
+            DiskUtility.shared.ejectAll { (didComplete) in
+                DDLogInfo("Finished ejecting? \(didComplete)")
+                self.checkIfReadyToTerminate()
+            }
+            return .terminateLater
+        }
+        
+        return .terminateNow
     }
 
     func buildInfoMenu() {
@@ -44,6 +66,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             infoMenu?.addItem(NSMenuItem.separator())
             infoMenu?.addItem(withTitle: "Check Warranty", action: #selector(AppDelegate.openSerialLink), keyEquivalent: "")
         }
+    }
+
+    @IBAction func reloadPreferences(_ sender: NSMenuItem) {
+        ItemRepository.shared.reloadAllItems()
+    }
+
+    @IBAction func ejectAll(_ sender: NSMenuItem) {
+        DiskUtility.shared.ejectAll { (didComplete) in
+            DDLogInfo("Finished ejecting? \(didComplete)")
+        }
+    }
+
+    @IBAction func reloadInstallers(_ sender: NSMenuItem) {
+        ItemRepository.shared.getInstallers().forEach { $0.refresh() }
     }
 
     // Unfortunately, this is rate limited :/

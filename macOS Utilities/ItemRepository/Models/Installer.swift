@@ -10,8 +10,11 @@ import Foundation
 import AppKit
 import CocoaLumberjack
 
-class Installer: Item {
+class Installer: NSObject, Item, NSFilePresenter {
     private let installableVersions = ModelYearDetermination().determineInstallableVersions()
+
+    var presentedItemURL: URL?
+    var presentedItemOperationQueue: OperationQueue = OperationQueue.main
     var appLabel: String = "Not Available"
     var versionNumber: String = "0.0"
     var icon: NSImage? = nil
@@ -35,20 +38,35 @@ class Installer: Item {
         return installableVersions.contains(self.versionNumber)
     }
 
-    var description: String {
+    override var description: String {
         return "Installer - \(versionNumber) - \(versionName) - Icon: \(icon == nil ? "no" : "yes") - Valid: \(isValid)"
     }
 
     init(volume: Volume) {
         self.volume = volume
+        super.init()
+
         self.versionName = self.getVersionName()
         self.appLabel = self.versionName + ".app"
         self.icon = self.findAppIcon()
+
+        self.presentedItemURL = URL(fileURLWithPath: "\(self.volume.mountPoint)", isDirectory: false)
+
         self.addToRepo()
     }
 
     func addToRepo() {
         ItemRepository.shared.addToRepository(newInstaller: self)
+    }
+
+    func presentedSubitemDidChange(at url: URL) {
+        let pathExtension = url.pathExtension
+
+        if pathExtension == "app" {
+            DDLogInfo("installer updated? \(self.description)")
+        } else {
+            DDLogInfo("maybe not installer updated? \(self.description)")
+        }
     }
 
     private func getVersionName() -> String {
@@ -61,8 +79,15 @@ class Installer: Item {
         NSWorkspace.shared.open(URL(fileURLWithPath: "\(self.volume.mountPoint)/\(versionName).app"))
     }
 
+    public func refresh() {
+        DispatchQueue.main.sync {
+            self.icon = self.findAppIcon()
+            NotificationCenter.default.post(name: ItemRepository.newInstaller, object: nil)
+        }
+    }
+
     private func findAppIcon() -> NSImage {
-        let path = "\(self.volume.mountPoint)/\(versionName).app/Contents/Info.plist"
+        let path = "\(self.volume.mountPoint)/\(self.appLabel)/Contents/Info.plist"
         guard let infoDictionary = NSDictionary(contentsOfFile: path)
             else {
                 return prohibatoryIcon!
@@ -73,7 +98,7 @@ class Installer: Item {
                 return prohibatoryIcon!
         }
 
-        var imagePath = "\(self.volume.mountPoint)/\(versionName).app/Contents/Resources/\(imageName)"
+        var imagePath = "\(self.volume.mountPoint)/\(self.appLabel)/Contents/Resources/\(imageName)"
 
         if !imageName.contains(".icns") {
             imagePath = imagePath + ".icns"
@@ -85,6 +110,6 @@ class Installer: Item {
 
     static func == (lhs: Installer, rhs: Installer) -> Bool {
         return lhs.versionNumber == rhs.versionNumber &&
-            lhs.versionName == rhs.versionName
+            lhs.versionName == rhs.versionName && lhs.icon == rhs.icon
     }
 }

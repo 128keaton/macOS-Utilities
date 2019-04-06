@@ -39,7 +39,7 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         getApplicationsAndSections()
         DDLogInfo("Launched macOS Utilities")
     }
-
+    
     @objc public func getApplicationsAndSections() {
         let newApplications = ItemRepository.shared.getApplications().filter { $0.showInApplicationsWindow == true }.sorted(by: { $0.sectionName > $1.sectionName })
         let newSections = Array(Set(newApplications.map { $0.sectionName })).sorted(by: { $0 > $1 })

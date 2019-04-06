@@ -36,13 +36,37 @@
                                     </items>
                                 </menu>
                             </menuItem>
-                            <menuItem title="Tools" id="u8z-V6-8gv">
+                            <menuItem title="Utilities" id="u8z-V6-8gv">
                                 <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="Tools" systemMenu="apple" id="lyY-dF-bR4"/>
+                                <menu key="submenu" title="Utilities" systemMenu="apple" id="lyY-dF-bR4"/>
                             </menuItem>
                             <menuItem title="Info" id="Zq4-Ii-cHV">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Info" id="VuQ-BV-BSY"/>
+                            </menuItem>
+                            <menuItem title="Debug" id="sPu-5E-K3N">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Debug" id="s3u-ZL-WVO">
+                                    <items>
+                                        <menuItem title="Reload Preferences" keyEquivalent="R" allowsKeyEquivalentWhenHidden="YES" id="aen-O5-oBn">
+                                            <connections>
+                                                <action selector="reloadPreferences:" target="Voe-Tx-rLC" id="IzR-3u-Em3"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Reload Installers" keyEquivalent="r" allowsKeyEquivalentWhenHidden="YES" id="EC4-va-hBY">
+                                            <connections>
+                                                <action selector="reloadInstallers:" target="Voe-Tx-rLC" id="fsa-Hk-J76"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="I0T-So-KPy"/>
+                                        <menuItem title="Eject Shares and Installers" keyEquivalent="" allowsKeyEquivalentWhenHidden="YES" id="MQr-bN-p41">
+                                            <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="ejectAll:" target="Voe-Tx-rLC" id="Ok9-EO-jEk"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
                             </menuItem>
                         </items>
                     </menu>
@@ -349,7 +373,7 @@
                             </textField>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Pia-LF-tGJ">
                                 <rect key="frame" x="608" y="37" width="76" height="32"/>
-                                <buttonCell key="cell" type="push" title="Install" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="iUa-7u-6pC">
+                                <buttonCell key="cell" type="push" title="Install" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="iUa-7u-6pC">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -449,13 +473,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <scrollView autohidesScrollers="YES" horizontalLineScroll="24" horizontalPageScroll="10" verticalLineScroll="24" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vCG-cE-ag0">
+                            <scrollView autohidesScrollers="YES" horizontalLineScroll="26" horizontalPageScroll="10" verticalLineScroll="26" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vCG-cE-ag0">
                                 <rect key="frame" x="20" y="58" width="440" height="135"/>
                                 <clipView key="contentView" id="Ivg-1D-hjB">
                                     <rect key="frame" x="1" y="0.0" width="438" height="134"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="22" rowSizeStyle="systemDefault" headerView="e6H-Qs-xEe" viewBased="YES" id="QuU-vC-lkw">
+                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="24" rowSizeStyle="systemDefault" headerView="e6H-Qs-xEe" viewBased="YES" id="QuU-vC-lkw">
                                             <rect key="frame" x="0.0" y="0.0" width="438" height="109"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>

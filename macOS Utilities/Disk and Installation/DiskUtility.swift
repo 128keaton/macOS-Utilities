@@ -9,12 +9,33 @@
 import Foundation
 import CocoaLumberjack
 
-class DiskUtility {
+class DiskUtility: NSObject, NSFilePresenter {
+    var presentedItemURL: URL?
+    var presentedItemOperationQueue: OperationQueue = OperationQueue.main
+
     public static let shared = DiskUtility()
     private var cachedDisks = [Disk]()
-    
-    private init() {
+    private var mountedShares = [Disk]()
+    private var mountedInstallers = [Disk]()
 
+    public var allSharesAndInstallersUnmounted: Bool {
+        return self.mountedShares.count == 0 && self.mountedInstallers.count == 0
+    }
+
+    private let diskModificationQueue = DispatchQueue(label: "NSDiskModificationQueue")
+
+    private override init() {
+        DDLogInfo("Disk Utility Instance Created")
+    }
+
+    func presentedSubitemDidChange(at url: URL) {
+        let pathExtension = url.pathExtension
+
+        if pathExtension == "dmg" {
+            let diskImagesPath = url.deletingLastPathComponent().absoluteString
+            DDLogInfo("Potential installer added at: \(diskImagesPath)")
+            self.mountDiskImagesAt(diskImagesPath)
+        }
     }
 
     public func getAllDisks() {
@@ -23,9 +44,70 @@ class DiskUtility {
                 let diskImageInfo = self.parseDiskUtilList(plistOutput)
                 if let allDisks = diskImageInfo["AllDisksAndPartitions"] as? [NSDictionary] {
                     self.cachedDisks = allDisks.map { Disk(diskDictionary: $0) }
+                    #if DEBUG
+                        if var dummyDisk = (self.cachedDisks.filter { $0.getMainVolume()?.volumeName == "Dummy Disk" }.first) {
+                            dummyDisk.measurementUnit = "TB"
+                            dummyDisk.size = 999.0
+                            dummyDisk.getMainVolume()?.size = 999.0
+                            dummyDisk.getMainVolume()?.measurementUnit = "TB"
+                            dummyDisk.update()
+                            print(dummyDisk)
+                        }
+                    #endif
                 }
             }
         }
+    }
+
+    public func mountNFSShare(shareURL: String, localPath: String, didSucceed: @escaping (Bool) -> ()) {
+        self.createMountPath(localPath) { (success) in
+            if(success) {
+                let contents = try! FileManager.default.contentsOfDirectory(atPath: localPath)
+                if ((contents.filter { $0.contains(".dmg") }).count > 0) {
+                    didSucceed(true)
+                    return
+                }else{
+                    self.unmountNFSShare(nil, path: localPath, didComplete: { (didUnmountOldShare) in
+                        print("Unmounted old share")
+                        self.mountNFSShare(shareURL: shareURL, localPath: localPath, didSucceed: { (nestedDidSucceed) in
+                            didSucceed(nestedDidSucceed)
+                        })
+                    })
+                }
+
+                TaskHandler.createTask(command: "/sbin/mount", arguments: ["-t", "nfs", shareURL, localPath]) { (taskOutput) in
+                    DDLogInfo("Mount output: \(taskOutput ?? "NO output")")
+                    if let mountOutput = taskOutput {
+                        self.presentedItemURL = URL(fileURLWithPath: localPath, isDirectory: true)
+                        if (!["can't", "denied", "error"].map { mountOutput.contains($0) }.contains(true)) {
+                            let nfsShare = Disk(deviceIdentifier: "NFS", content: "NFS", mountPoint: localPath)
+                            DDLogInfo("Share mounted: \(nfsShare)")
+                            self.mountedShares.append(nfsShare)
+                            didSucceed(true)
+                        } else {
+                            didSucceed(false)
+                        }
+                    }
+                }
+            } else {
+                DDLogError("Unable to create path: \(localPath) for share: \(shareURL)")
+            }
+        }
+    }
+
+    private func createMountPath(_ path: String, didSucceed: @escaping (Bool) -> ()) {
+        let temporaryPathURL = URL(fileURLWithPath: path)
+        // Checks to see if the temporary dir is created
+        if(temporaryPathURL.filestatus == .isNot) {
+            TaskHandler.createTask(command: "/bin/mkdir", arguments: [path]) { (mkdirOutput) in
+                DDLogInfo("Creating directory: \(mkdirOutput ?? "No output")")
+                // TODO: error handling/detection
+                didSucceed(true)
+            }
+        }
+
+        didSucceed(true)
+        DDLogInfo("Temporary path \(path) already exists.")
     }
 
     public func mountDiskImagesAt(_ folderPath: String) {
@@ -48,7 +130,7 @@ class DiskUtility {
     }
 
     public func mountDiskImage(_ at: String) {
-        if(at.contains(".dmg")) {
+        if(!at.contains(".dmg")) {
             DDLogError("Disk \(at) is not a disk image or is not mountable")
         }
 
@@ -59,14 +141,97 @@ class DiskUtility {
                 DDLogError("Disk \(at) could not be mounted: \n")
                 DDLogError(taskOutput!)
             } else {
-                if let hdiutilOutput = taskOutput {
-                    print(hdiutilOutput)
+                if let plistOutput = taskOutput {
+                    let diskImageInfo = self.parseDiskUtilList(plistOutput)
+                    self.cachedDisks.append(Disk(diskImageDictionary: diskImageInfo))
                 }
             }
         }
     }
 
-    // Returns an NSDictionary with the contents of the system-entities
+    private func unmountNFSShare(_ share: Disk?, path: String? = nil, didComplete: @escaping (Bool) -> ()) {
+        var validPath = ""
+
+        if let validShare = share {
+            validPath = validShare.getMainVolume()!.mountPoint
+        }
+
+        if let validSharePath = path {
+            validPath = validSharePath
+        }
+
+        TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["unmount", validPath], returnEscaping: { (taskOutput) in
+                if let diskUtilOutput = taskOutput {
+                    if diskUtilOutput.contains("Unmount successful for") {
+                        self.mountedShares.removeAll { $0 == share }
+                        DDLogInfo("Unmounted share: \(validPath)")
+                    } else {
+                        DDLogError("Unable to unmount share \(validPath): \(diskUtilOutput)")
+                    }
+                    didComplete(true)
+                }
+            })
+    }
+
+    public func erase(_ volume: Volume, newName: String, returnCompletion: @escaping (Bool) -> ()) {
+        // TODO: check for APFS container
+
+        if(volume.containsInstaller == true) {
+            DDLogError("Cannot erase a drive containing an installer")
+            returnCompletion(false)
+            return
+        }
+
+        let devEntry = volume.parentDisk.deviceIdentifier
+
+        TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["eraseDisk", "APFS", newName, devEntry]) { (taskOutput) in
+            if let eraseOutput = taskOutput {
+                DDLogInfo(eraseOutput)
+                returnCompletion(eraseOutput.contains("Finished erase"))
+            } else {
+                returnCompletion(false)
+            }
+        }
+    }
+
+
+    public func ejectAll(didComplete: @escaping (Bool) -> ()) {
+        mountedShares = self.cachedDisks.filter { $0.content == "NFS" }
+        mountedInstallers = self.cachedDisks.filter { $0.getMainVolume()?.containsInstaller == true }
+
+        if(allSharesAndInstallersUnmounted) {
+            didComplete(true)
+        }
+
+        mountedInstallers.forEach {
+            let currentDisk = $0
+
+            TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["eject", $0.deviceIdentifier], returnEscaping: { (taskOutput) in
+                    if let diskUtilOutput = taskOutput {
+                        if diskUtilOutput.contains("ejected") {
+                            self.diskModificationQueue.sync {
+                                self.mountedInstallers.removeAll { $0 == currentDisk }
+                                DDLogInfo("Ejected disk image: \(currentDisk.deviceIdentifier) \(diskUtilOutput)")
+                                if(self.mountedInstallers.count == 0) {
+                                    NotificationCenter.default.post(name: ItemRepository.refreshRepository, object: nil)
+                                    DDLogInfo("Unmounting NFS shares now")
+                                    for share in self.mountedShares {
+                                        self.unmountNFSShare(share, didComplete: { (nfsComplete) in
+                                            didComplete(nfsComplete)
+                                        })
+                                    }
+                                }
+                            }
+                        } else {
+                            didComplete(true)
+                            DDLogError("Unable to eject disk image: \(currentDisk.deviceIdentifier) \(diskUtilOutput)")
+                        }
+                    }
+                })
+        }
+    }
+
+// Returns an NSDictionary with the contents of the system-entities
     private func parseDiskUtilList(_ diskUtilOutput: String) -> NSDictionary {
         var errorDescription: String? = nil
         var validDictionary = NSDictionary()
@@ -84,6 +249,32 @@ class DiskUtility {
             }
         } else {
             errorDescription = "Output was invalid: \n \(diskUtilOutput)"
+        }
+
+        if let errorDescriptionString = errorDescription {
+            DDLogError("Could not parse disk info: \(errorDescriptionString)")
+        }
+
+        return validDictionary
+    }
+
+    private func parseDiskImageInfo(_ hdiutilOutput: String) -> NSDictionary {
+        var errorDescription: String? = nil
+        var validDictionary = NSDictionary()
+
+        if let diskImageRawData = hdiutilOutput.data(using: .utf8) {
+            do {
+                if let potentialDictionary = try PropertyListSerialization.propertyList(from: diskImageRawData, options: [], format: nil) as? NSDictionary {
+                    validDictionary = potentialDictionary
+                } else {
+                    errorDescription = "Output did not contain valid disk image info. \n \(hdiutilOutput)"
+                }
+
+            } catch let error as NSError {
+                errorDescription = error.localizedDescription
+            }
+        } else {
+            errorDescription = "Output was invalid: \n \(hdiutilOutput)"
         }
 
         if let errorDescriptionString = errorDescription {

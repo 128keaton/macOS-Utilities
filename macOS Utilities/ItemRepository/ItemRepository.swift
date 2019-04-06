@@ -17,17 +17,28 @@ class ItemRepository {
     static let newDisk = Notification.Name("NSNewDisk")
     static let newInstaller = Notification.Name("NSNewInstaller")
     static let newVolume = Notification.Name("NSNewVolume")
+    static let refreshRepository = Notification.Name("NSRefreshRepository")
 
     private init() {
         DDLogInfo("ItemRepository initialized")
         DispatchQueue.main.async {
-            DiskUtility.shared.getAllDisks()
-            ApplicationUtility.shared.getApplications()
-            ApplicationUtility.shared.getUtilities()
+            self.reloadAllItems()
         }
-
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(ItemRepository.reloadAllItems), name: ItemRepository.refreshRepository, object: nil)
     }
 
+    @objc public func reloadAllItems() {
+        DiskUtility.shared.getAllDisks()
+        ApplicationUtility.shared.getApplications()
+        ApplicationUtility.shared.getUtilities()
+    }
+    
+    public func updateDisk(_ disk: Disk){
+        self.items.removeAll { ($0 as? Disk) == disk }
+        self.addToRepository(newDisk: disk)
+    }
+    
     public func getDisks() -> [Disk] {
         return (items.filter { type(of: $0) == Disk.self } as! [Disk]).sorted { $0.deviceIdentifier < $1.deviceIdentifier }
     }

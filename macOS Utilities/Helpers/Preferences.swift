@@ -24,12 +24,12 @@ class Preferences {
 
     private (set) public var remoteLoggingEnabled = false
     static let shared = Preferences()
-    
+
     private init() {
         self.constructLogger()
         createLibraryFolder()
     }
-    
+
     fileprivate func createLibraryFolder() {
         let url = libraryFolder.url
         let fileManager = FileManager.default
@@ -51,7 +51,7 @@ class Preferences {
                 createLibraryFolder()
                 return copyPlist()
             }
-        
+
         } else {
             return copyPlist()
         }
@@ -130,9 +130,9 @@ class Preferences {
             return self.serverInfo
         }
     }
-    
-    public func checkIfLoggingEnabled() -> Bool{
-        if(getLoggingInfo() == nil){
+
+    public func checkIfLoggingEnabled() -> Bool {
+        if(getLoggingInfo() == nil) {
             remoteLoggingEnabled = false
         }
         return remoteLoggingEnabled
@@ -199,9 +199,17 @@ class Preferences {
         }
 
         #if DEBUG
-            return "127.0.0.1"
+            return "172.16.5.5"
         #else
             return serverInfo[0]
+        #endif
+    }
+
+    public func getMountPoint() -> String {
+        #if DEBUG
+            return "/var/tmp/TestInstallers"
+        #else
+            return "/var/tmp/Installers"
         #endif
     }
 
@@ -212,7 +220,7 @@ class Preferences {
         }
 
         #if DEBUG
-            return "/Users/keatonburleson/Documents/NFS"
+            return "/Library/Server/Web/Data/Sites/Default/Installers"
         #else
             return serverInfo[1]
         #endif
@@ -227,10 +235,10 @@ class Preferences {
             else {
                 return nil
         }
-        
+
         return rawPreferences
     }
-    
+
     public func getApplications() -> [String: [String: String]]? {
         guard let plistPath = self.getPropertyList()
             else {
@@ -252,35 +260,35 @@ class Preferences {
 
         return sections
     }
-    
-    
+
+
     private func constructLogger() {
         let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
         let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
-        
+
         DDLog.add(DDOSLogger.sharedInstance)
-        
+
         if(self.checkIfLoggingEnabled()) {
             let logger = RMPaperTrailLogger.sharedInstance()!
-            
+
             logger.host = self.getLoggingURL()
             logger.port = self.getLoggingPort()
             print(logger.port)
             print(logger.host)
-            
+
             logger.machineName = Host.current().localizedName != nil ? String("\(Host.current().localizedName!)__(\(Sysctl.model)__\(getSystemUUID() ?? ""))") : String("\(Sysctl.model)__(\(getSystemUUID() ?? ""))")
-            
+
             #if DEBUG
-            logger.machineName = logger.machineName! + "__DEBUG__"
+                logger.machineName = logger.machineName! + "__DEBUG__"
             #endif
-            
+
             logger.programName = "macOS_Utilities-\(version)-\(build)"
             DDLog.add(logger, with: .debug)
             DDLogInfo("Remote logging enabled")
         } else {
             DDLogInfo("Remote logging disabled")
         }
-        
+
         DDLogInfo("\n")
         DDLogInfo("\n---------------------------LOGGER INITIALIZED---------------------------")
         DDLogInfo("\n")

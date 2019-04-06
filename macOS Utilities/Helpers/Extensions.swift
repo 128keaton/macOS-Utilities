@@ -98,6 +98,17 @@ extension NSViewController {
             alert.runModal()
         }
     }
+    
+    func showConfirmationAlert(question: String, text: String) -> Bool {
+        let alert = NSAlert()
+        alert.messageText = question
+        alert.informativeText = text
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "Yes")
+        alert.addButton(withTitle: "No")
+        return alert.runModal() == .alertFirstButtonReturn
+    }
+
 }
 
 extension String{
