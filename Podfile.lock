@@ -1,6 +1,9 @@
 PODS:
   - Alamofire (5.0.0-beta.4)
   - AppFolder (0.2.0)
+  - BMExtendablePageController (0.2.0):
+    - CAAnimationBlocks (~> 0.0.1)
+  - CAAnimationBlocks (0.0.1)
   - CocoaAsyncSocket (7.6.3)
   - CocoaLumberjack (3.5.2):
     - CocoaLumberjack/Core (= 3.5.2)
@@ -17,6 +20,7 @@ PODS:
 DEPENDENCIES:
   - Alamofire (~> 5.0.0-beta.3)
   - AppFolder (~> 0.2.0)
+  - BMExtendablePageController (from `https://github.com/Foboz/BMExtPageController`)
   - CocoaAsyncSocket
   - CocoaLumberjack/Swift
   - PaperTrailLumberjack/Swift
@@ -25,17 +29,29 @@ SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - Alamofire
     - AppFolder
+    - CAAnimationBlocks
     - CocoaAsyncSocket
     - CocoaLumberjack
     - PaperTrailLumberjack
 
+EXTERNAL SOURCES:
+  BMExtendablePageController:
+    :git: https://github.com/Foboz/BMExtPageController
+
+CHECKOUT OPTIONS:
+  BMExtendablePageController:
+    :commit: c280f73244a92a451f3ea4bcd644180ea3609aab
+    :git: https://github.com/Foboz/BMExtPageController
+
 SPEC CHECKSUMS:
   Alamofire: 6458d95477bc40adf10129f22c67cfb014162dc8
   AppFolder: d10ba19488bd441d60ffcf96eb2ab639a4825231
+  BMExtendablePageController: 0c144c22853ad09cd321c9b2330af2cac3fbb0c6
+  CAAnimationBlocks: 1aaca5fb6447a95d83b20cc786992956ef46e4ee
   CocoaAsyncSocket: eafaa68a7e0ec99ead0a7b35015e0bf25d2c8987
   CocoaLumberjack: 118bf4a820efc641f79fa487b75ed928dccfae23
   PaperTrailLumberjack: 449587968d5aeb3eab2d4de041ffc61ee2d49f25
 
-PODFILE CHECKSUM: 0df506adc1d5712a9ee235d1603b7c408dc32728
+PODFILE CHECKSUM: a953352c1f1ceb56cfbf41dd7cb306c4a9343c84
 
 COCOAPODS: 1.7.0.beta.3

@@ -24,6 +24,7 @@
 		8A9370D12256BB5A002B3838 /* Volume.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9370D02256BB5A002B3838 /* Volume.swift */; };
 		8A9370D42256D5F6002B3838 /* ItemRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9370D32256D5F6002B3838 /* ItemRepository.swift */; };
 		8A9370D62256D604002B3838 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9370D52256D604002B3838 /* Item.swift */; };
+		8A9370DD22587147002B3838 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9370DC22587147002B3838 /* LoadingViewController.swift */; };
 		8ABAE30F22527B9100E537D3 /* ApplicationUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE30E22527B9100E537D3 /* ApplicationUtility.swift */; };
 		8ABAE3112252A46300E537D3 /* DiskSelectionDialogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE3102252A46300E537D3 /* DiskSelectionDialogViewController.swift */; };
 		8ABAE3132252C1D800E537D3 /* TaskHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE3122252C1D800E537D3 /* TaskHandler.swift */; };
@@ -45,6 +46,7 @@
 		8A4305B4221BA7A7005C8D7A /* ResizingTabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizingTabViewController.swift; sourceTree = "<group>"; };
 		8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSCollectionAppCell.swift; sourceTree = "<group>"; };
 		8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NSCollectionAppCell.xib; sourceTree = "<group>"; };
+		8A6C6452225BADC900CD6DCF /* macOS-Utilities-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "macOS-Utilities-Bridging-Header.h"; sourceTree = "<group>"; };
 		8A6F28EF221B9F5C00FF9DB3 /* InstallViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallViewController.swift; sourceTree = "<group>"; };
 		8A6F28F1221BA0AA00FF9DB3 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		8A87B8B421A47D8C004496AA /* ModelYearDetermination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelYearDetermination.swift; sourceTree = "<group>"; };
@@ -55,6 +57,7 @@
 		8A9370D02256BB5A002B3838 /* Volume.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Volume.swift; sourceTree = "<group>"; };
 		8A9370D32256D5F6002B3838 /* ItemRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemRepository.swift; sourceTree = "<group>"; };
 		8A9370D52256D604002B3838 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
+		8A9370DC22587147002B3838 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
 		8ABAE30E22527B9100E537D3 /* ApplicationUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationUtility.swift; sourceTree = "<group>"; };
 		8ABAE3102252A46300E537D3 /* DiskSelectionDialogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskSelectionDialogViewController.swift; sourceTree = "<group>"; };
 		8ABAE3122252C1D800E537D3 /* TaskHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskHandler.swift; sourceTree = "<group>"; };
@@ -157,6 +160,7 @@
 				8A0138D52217624700C77DA0 /* InfoPopoverViewController.swift */,
 				8A6F28EF221B9F5C00FF9DB3 /* InstallViewController.swift */,
 				8ABAE3102252A46300E537D3 /* DiskSelectionDialogViewController.swift */,
+				8A9370DC22587147002B3838 /* LoadingViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -211,6 +215,7 @@
 		8ACB65D321063E6F004B9C5A /* macOS Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				8A6C6452225BADC900CD6DCF /* macOS-Utilities-Bridging-Header.h */,
 				8A9370D22256D5E6002B3838 /* ItemRepository */,
 				8A8B59A3224E9FC700CD4094 /* Applications */,
 				8ACB65D821063E6F004B9C5A /* Assets.xcassets */,
@@ -314,6 +319,8 @@
 				"${PODS_ROOT}/Target Support Files/Pods-macOS Utilities/Pods-macOS Utilities-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/AppFolder/AppFolder.framework",
+				"${BUILT_PRODUCTS_DIR}/BMExtendablePageController/BMExtendablePageController.framework",
+				"${BUILT_PRODUCTS_DIR}/CAAnimationBlocks/CAAnimationBlocks.framework",
 				"${BUILT_PRODUCTS_DIR}/CocoaAsyncSocket/CocoaAsyncSocket.framework",
 				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack/CocoaLumberjack.framework",
 				"${BUILT_PRODUCTS_DIR}/PaperTrailLumberjack/PaperTrailLumberjack.framework",
@@ -322,6 +329,8 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AppFolder.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BMExtendablePageController.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CAAnimationBlocks.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaAsyncSocket.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaLumberjack.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PaperTrailLumberjack.framework",
@@ -370,6 +379,7 @@
 				8A9370D42256D5F6002B3838 /* ItemRepository.swift in Sources */,
 				8A0138D62217624700C77DA0 /* InfoPopoverViewController.swift in Sources */,
 				8ABAE3112252A46300E537D3 /* DiskSelectionDialogViewController.swift in Sources */,
+				8A9370DD22587147002B3838 /* LoadingViewController.swift in Sources */,
 				8A8B59A5224E9FD100CD4094 /* Application.swift in Sources */,
 				8ACB65D721063E6F004B9C5A /* ApplicationViewController.swift in Sources */,
 				8A4305B5221BA7A7005C8D7A /* ResizingTabViewController.swift in Sources */,
@@ -522,6 +532,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.keatonburleson.macOS-Utilities";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/macOS Utilities/macOS-Utilities-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -542,6 +553,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.keatonburleson.macOS-Utilities";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/macOS Utilities/macOS-Utilities-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;

@@ -21,6 +21,8 @@ class InstallViewController: NSViewController {
     private var versionNumbers: VersionNumbers = VersionNumbers()
     private var preferences = Preferences.shared
     private var installers = [Installer]()
+
+    private let pageControllerDelegate = (NSApplication.shared.delegate as? AppDelegate)!
     private let infoMenu = (NSApplication.shared.delegate as! AppDelegate).infoMenu
 
     public var selectedVersion: Installer? = nil
@@ -48,14 +50,12 @@ class InstallViewController: NSViewController {
                 self.tableView.reloadData()
             } else {
                 DispatchQueue.main.async {
-                    self.tableView.reloadData()
+                    if self.tableView != nil {
+                        self.tableView.reloadData()
+                    }
                 }
             }
         }
-    }
-
-    @IBAction func startOSInstall(sender: NSButton) {
-        //  InstallOS.kickoffMacOSInstall()
     }
 
     func checkForMetal() {
@@ -132,6 +132,13 @@ class InstallViewController: NSViewController {
         ApplicationUtility.shared.open("Disk Utility")
     }
 
+    @IBAction func cancelButtonClicked(_ sender: NSButton) {
+        pageControllerDelegate.goToPreviousPage()
+    }
+
+    @IBAction func nextButtonClicked(_ sender: NSButton) {
+        pageControllerDelegate.goToNextPage()
+    }
 }
 
 extension InstallViewController: NSTableViewDataSource {

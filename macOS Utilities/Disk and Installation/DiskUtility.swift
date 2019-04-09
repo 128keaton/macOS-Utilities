@@ -17,6 +17,7 @@ class DiskUtility: NSObject, NSFilePresenter {
     private var cachedDisks = [Disk]()
     private var mountedShares = [Disk]()
     private var mountedInstallers = [Disk]()
+    private var fakeDisks = [Disk]()
 
     public var allSharesAndInstallersUnmounted: Bool {
         return self.mountedShares.count == 0 && self.mountedInstallers.count == 0
@@ -45,69 +46,67 @@ class DiskUtility: NSObject, NSFilePresenter {
                 if let allDisks = diskImageInfo["AllDisksAndPartitions"] as? [NSDictionary] {
                     self.cachedDisks = allDisks.map { Disk(diskDictionary: $0) }
                     #if DEBUG
-                        if var dummyDisk = (self.cachedDisks.filter { $0.getMainVolume()?.volumeName == "Dummy Disk" }.first) {
-                            dummyDisk.measurementUnit = "TB"
-                            dummyDisk.size = 999.0
-                            dummyDisk.getMainVolume()?.size = 999.0
-                            dummyDisk.getMainVolume()?.measurementUnit = "TB"
-                            dummyDisk.update()
-                            print(dummyDisk)
-                        }
+                        self.addFakeDisk()
                     #endif
                 }
             }
         }
     }
 
-    public func mountNFSShare(shareURL: String, localPath: String, didSucceed: @escaping (Bool) -> ()) {
-        self.createMountPath(localPath) { (success) in
-            if(success) {
-                let contents = try! FileManager.default.contentsOfDirectory(atPath: localPath)
-                if ((contents.filter { $0.contains(".dmg") }).count > 0) {
-                    didSucceed(true)
-                    return
-                }else{
-                    self.unmountNFSShare(nil, path: localPath, didComplete: { (didUnmountOldShare) in
-                        print("Unmounted old share")
-                        self.mountNFSShare(shareURL: shareURL, localPath: localPath, didSucceed: { (nestedDidSucceed) in
-                            didSucceed(nestedDidSucceed)
-                        })
-                    })
-                }
+    public func addFakeDisk() {
+        let fakeDisk = Disk(isFakeDisk: true)
+        fakeDisks.append(fakeDisk)
+    }
 
-                TaskHandler.createTask(command: "/sbin/mount", arguments: ["-t", "nfs", shareURL, localPath]) { (taskOutput) in
-                    DDLogInfo("Mount output: \(taskOutput ?? "NO output")")
-                    if let mountOutput = taskOutput {
-                        self.presentedItemURL = URL(fileURLWithPath: localPath, isDirectory: true)
-                        if (!["can't", "denied", "error"].map { mountOutput.contains($0) }.contains(true)) {
-                            let nfsShare = Disk(deviceIdentifier: "NFS", content: "NFS", mountPoint: localPath)
-                            DDLogInfo("Share mounted: \(nfsShare)")
-                            self.mountedShares.append(nfsShare)
-                            didSucceed(true)
-                        } else {
-                            didSucceed(false)
-                        }
+    public func mountNFSShare(shareURL: String, localPath: String, didSucceed: @escaping (Bool) -> ()) {
+        self.createMountPath(localPath) { (alreadyExisted) in
+            var semaphore: DispatchSemaphore? = nil
+            let contents = try! FileManager.default.contentsOfDirectory(atPath: localPath)
+
+            if (alreadyExisted == true && (contents.filter { $0.contains(".dmg") }).count > 0) {
+                didSucceed(true)
+                return
+            } else if (alreadyExisted == true) {
+                semaphore = DispatchSemaphore(value: 0)
+                self.unmountNFSShare(nil, path: localPath, didComplete: { (_) in
+                    semaphore?.signal()
+                })
+            }
+
+            if let validSemaphone = semaphore {
+                validSemaphone.wait()
+            }
+
+            TaskHandler.createTask(command: "/sbin/mount", arguments: ["-t", "nfs", shareURL, localPath]) { (taskOutput) in
+                DDLogInfo("Mount output: \(taskOutput ?? "NO output")")
+                if let mountOutput = taskOutput {
+                    self.presentedItemURL = URL(fileURLWithPath: localPath, isDirectory: true)
+                    if (!["can't", "denied", "error"].map { mountOutput.contains($0) }.contains(true)) {
+                        let nfsShare = Disk(deviceIdentifier: "NFS", content: "NFS", mountPoint: localPath)
+                        DDLogInfo("Share mounted: \(nfsShare)")
+                        self.mountedShares.append(nfsShare)
+                        didSucceed(true)
+                    } else {
+                        didSucceed(false)
                     }
                 }
-            } else {
-                DDLogError("Unable to create path: \(localPath) for share: \(shareURL)")
             }
         }
     }
 
-    private func createMountPath(_ path: String, didSucceed: @escaping (Bool) -> ()) {
+    private func createMountPath(_ path: String, didExist: @escaping (Bool) -> ()) {
         let temporaryPathURL = URL(fileURLWithPath: path)
         // Checks to see if the temporary dir is created
         if(temporaryPathURL.filestatus == .isNot) {
             TaskHandler.createTask(command: "/bin/mkdir", arguments: [path]) { (mkdirOutput) in
                 DDLogInfo("Creating directory: \(mkdirOutput ?? "No output")")
                 // TODO: error handling/detection
-                didSucceed(true)
+                didExist(false)
             }
+        } else {
+            didExist(true)
+            DDLogInfo("Temporary path \(path) already exists.")
         }
-
-        didSucceed(true)
-        DDLogInfo("Temporary path \(path) already exists.")
     }
 
     public func mountDiskImagesAt(_ folderPath: String) {
@@ -160,36 +159,44 @@ class DiskUtility: NSObject, NSFilePresenter {
             validPath = validSharePath
         }
 
-        TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["unmount", validPath], returnEscaping: { (taskOutput) in
-                if let diskUtilOutput = taskOutput {
-                    if diskUtilOutput.contains("Unmount successful for") {
-                        self.mountedShares.removeAll { $0 == share }
-                        DDLogInfo("Unmounted share: \(validPath)")
-                    } else {
-                        DDLogError("Unable to unmount share \(validPath): \(diskUtilOutput)")
-                    }
-                    didComplete(true)
+        TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["unmount", validPath], printStandardOutput: true, returnEscaping: { (taskOutput) in
+            if let diskUtilOutput = taskOutput {
+                if diskUtilOutput.contains("Unmount successful for") {
+                    self.mountedShares.removeAll { $0 == share }
+                    DDLogInfo("Unmounted share: \(validPath)")
+                } else {
+                    DDLogError("Unable to unmount share \(validPath): \(diskUtilOutput)")
+                    DDLogError(diskUtilOutput)
                 }
-            })
+                didComplete(true)
+            }
+        })
     }
 
     public func erase(_ volume: Volume, newName: String, returnCompletion: @escaping (Bool) -> ()) {
         // TODO: check for APFS container
-
-        if(volume.containsInstaller == true) {
-            DDLogError("Cannot erase a drive containing an installer")
-            returnCompletion(false)
-            return
-        }
-
-        let devEntry = volume.parentDisk.deviceIdentifier
-
-        TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["eraseDisk", "APFS", newName, devEntry]) { (taskOutput) in
-            if let eraseOutput = taskOutput {
-                DDLogInfo(eraseOutput)
-                returnCompletion(eraseOutput.contains("Finished erase"))
-            } else {
+        if(volume.parentDisk.isFakeDisk) {
+            DDLogInfo("Starting demo erase on FakeVolume: \(volume)")
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                DDLogInfo("Finished demo erase on FakeVolume: \(volume)")
+                returnCompletion(true)
+            }
+        } else {
+            if(volume.containsInstaller == true) {
+                DDLogError("Cannot erase a drive containing an installer")
                 returnCompletion(false)
+                return
+            }
+
+            let devEntry = volume.parentDisk.deviceIdentifier
+
+            TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["eraseDisk", "APFS", newName, devEntry]) { (taskOutput) in
+                if let eraseOutput = taskOutput {
+                    DDLogInfo(eraseOutput)
+                    returnCompletion(eraseOutput.contains("Finished erase"))
+                } else {
+                    returnCompletion(false)
+                }
             }
         }
     }
@@ -207,27 +214,27 @@ class DiskUtility: NSObject, NSFilePresenter {
             let currentDisk = $0
 
             TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["eject", $0.deviceIdentifier], returnEscaping: { (taskOutput) in
-                    if let diskUtilOutput = taskOutput {
-                        if diskUtilOutput.contains("ejected") {
-                            self.diskModificationQueue.sync {
-                                self.mountedInstallers.removeAll { $0 == currentDisk }
-                                DDLogInfo("Ejected disk image: \(currentDisk.deviceIdentifier) \(diskUtilOutput)")
-                                if(self.mountedInstallers.count == 0) {
-                                    NotificationCenter.default.post(name: ItemRepository.refreshRepository, object: nil)
-                                    DDLogInfo("Unmounting NFS shares now")
-                                    for share in self.mountedShares {
-                                        self.unmountNFSShare(share, didComplete: { (nfsComplete) in
-                                            didComplete(nfsComplete)
-                                        })
-                                    }
+                if let diskUtilOutput = taskOutput {
+                    if diskUtilOutput.contains("ejected") {
+                        self.diskModificationQueue.sync {
+                            self.mountedInstallers.removeAll { $0 == currentDisk }
+                            DDLogInfo("Ejected disk image: \(currentDisk.deviceIdentifier) \(diskUtilOutput)")
+                            if(self.mountedInstallers.count == 0) {
+                                NotificationCenter.default.post(name: ItemRepository.refreshRepository, object: nil)
+                                DDLogInfo("Unmounting NFS shares now")
+                                for share in self.mountedShares {
+                                    self.unmountNFSShare(share, didComplete: { (nfsComplete) in
+                                        didComplete(nfsComplete)
+                                    })
                                 }
                             }
-                        } else {
-                            didComplete(true)
-                            DDLogError("Unable to eject disk image: \(currentDisk.deviceIdentifier) \(diskUtilOutput)")
                         }
+                    } else {
+                        didComplete(true)
+                        DDLogError("Unable to eject disk image: \(currentDisk.deviceIdentifier) \(diskUtilOutput)")
                     }
-                })
+                }
+            })
         }
     }
 

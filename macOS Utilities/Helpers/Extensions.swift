@@ -99,6 +99,17 @@ extension NSViewController {
         }
     }
     
+    func showInfoAlert(title: String, message: String, completion: @escaping (Bool) -> ()) {
+        let alert: NSAlert = NSAlert()
+        alert.messageText = title
+        alert.informativeText = message
+        alert.alertStyle = .informational
+        alert.addButton(withTitle: "OK")
+        DispatchQueue.main.async {
+            completion(alert.runModal() == .alertFirstButtonReturn)
+        }
+    }
+    
     func showConfirmationAlert(question: String, text: String) -> Bool {
         let alert = NSAlert()
         alert.messageText = question

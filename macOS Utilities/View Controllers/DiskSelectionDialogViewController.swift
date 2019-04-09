@@ -12,13 +12,17 @@ import AppKit
 class DiskSelectionDialogViewController: NSViewController {
     @IBOutlet weak var tableView: NSTableView?
     @IBOutlet weak var nextButton: NSButton?
-    @IBOutlet weak var spinnyView: NSProgressIndicator?
+    @IBOutlet weak var diskProgressIndicator: NSProgressIndicator?
 
-    private var installableVolumes = [Volume]()
     private let diskUtility = DiskUtility.shared
+    private let pageControllerDelegate = (NSApplication.shared.delegate as? AppDelegate)!
 
+    private var installableVolumes = [Volume]() {
+        didSet {
+            reloadTableView()
+        }
+    }
     private var selectedVolume: Volume? = nil
-
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,17 +30,40 @@ class DiskSelectionDialogViewController: NSViewController {
     }
 
     private func getDisks() {
+        diskProgressIndicator?.startSpinning()
         installableVolumes = ItemRepository.shared.getDisks().filter { $0.isInstallable == true && $0.getMainVolume() != nil && $0.getMainVolume()!.isInstallable == true }.map { $0.getMainVolume()! }
-        self.tableView?.reloadData()
     }
 
     @IBAction func openDiskUtility(_ sender: NSButton) {
         ApplicationUtility.shared.open("Disk Utility")
     }
-    
+
+    @IBAction func backButtonClicked(_ sender: NSButton) {
+        pageControllerDelegate.goToPreviousPage()
+    }
+
+    private func reloadTableView() {
+        if let _tableView = self.tableView {
+            DispatchQueue.main.async {
+                _tableView.reloadData()
+            }
+        }
+        if let _progressView = self.diskProgressIndicator {
+            DispatchQueue.main.async {
+                _progressView.stopSpinning()
+            }
+        }
+    }
+
+    override func viewDidAppear() {
+        super.viewDidAppear()
+        getDisks()
+    }
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
+
 }
 
 extension DiskSelectionDialogViewController: NSTableViewDelegate {
@@ -94,24 +121,31 @@ extension DiskSelectionDialogViewController: NSTableViewDelegate {
     }
 
     @IBAction func nextButtonClicked(_ sender: NSButton) {
-        let aUnownedSelf = self
         if let volume = self.selectedVolume {
             let userConfirmedErase = self.showConfirmationAlert(question: "Confirm Disk Destruction", text: "Are you sure you want to erase disk \(volume.volumeName)")
             if(userConfirmedErase) {
-                spinnyView?.startSpinning()
+
+                pageControllerDelegate.goToLoadingPage()
                 sender.isEnabled = false
+
                 diskUtility.erase(volume, newName: volume.volumeName) { (didFinish) in
                     if(didFinish) {
-                        if let selectedInstaller = (ItemRepository.shared.getInstallers().first { $0.isSelected == true }) {
-                            selectedInstaller.launch()
-                        }
-
-                        OperationQueue.main.addOperation{
-                            self.spinnyView?.stopSpinning()
+                        self.showInfoAlert(title: "Erase Completed", message: "Please use the disk \"\(volume.volumeName)\" when installing macOS.", completion: { (clickedOk) in
                             self.nextButton?.isEnabled = true
-                            aUnownedSelf.view.window?.close()
-                            aUnownedSelf.showInfoAlert(title: "Erase Completed", message: "Please use the disk \"\(volume.volumeName)\" when installing macOS.")
-                        }
+                            
+                            let selectedInstaller = (ItemRepository.shared.getInstallers().first { $0.isSelected == true })
+                            var openInstaller = !volume.parentDisk.isFakeDisk
+                            
+                            if !openInstaller {
+                                openInstaller = self.showConfirmationAlert(question: "Open Installer?", text: "Do you want to open the selected macOS Installer?")
+                            }
+                            
+                            if openInstaller && selectedInstaller != nil {
+                                selectedInstaller!.launch()
+                            }
+                            
+                            self.pageControllerDelegate.dismissPageController()
+                        })
                     }
                 }
             }

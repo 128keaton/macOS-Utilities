@@ -39,7 +39,7 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         getApplicationsAndSections()
         DDLogInfo("Launched macOS Utilities")
     }
-    
+
     @objc public func getApplicationsAndSections() {
         let newApplications = ItemRepository.shared.getApplications().filter { $0.showInApplicationsWindow == true }.sorted(by: { $0.sectionName > $1.sectionName })
         let newSections = Array(Set(newApplications.map { $0.sectionName })).sorted(by: { $0 > $1 })
@@ -61,7 +61,7 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         let flowLayout = NSCollectionViewFlowLayout()
         flowLayout.itemSize = NSSize(width: 100, height: 120.0)
 
-        flowLayout.sectionInset = NSEdgeInsets(top: 15.0, left: 10.0, bottom: 10.0, right: 10.0)
+        flowLayout.sectionInset = NSEdgeInsets(top: 0.0, left: 10.0, bottom: 10.0, right: 10.0)
         flowLayout.minimumInteritemSpacing = 60.0
         flowLayout.minimumLineSpacing = 30.0
 
@@ -73,6 +73,10 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         ejectProcess.launchPath = "/usr/bin/drutil"
         ejectProcess.arguments = ["tray", "eject"]
         ejectProcess.launch()
+    }
+
+    @IBAction func installMacOSButtonClicked(_ sender: NSButton) {
+        (NSApplication.shared.delegate as? AppDelegate)?.showPageController()
     }
 }
 
@@ -118,7 +122,7 @@ extension ApplicationViewController: NSCollectionViewDataSource {
             if(app.isInvalid) {
                 disabledPaths.append(indexPath)
             }
-            
+
             return app.getCollectionViewItem(item: item)
         } else {
             DDLogError("This shouldn't happen... Application section (\(indexPath.section), \(applicationsForSection)) does not contain an element at \(indexPath.item)")

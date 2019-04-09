@@ -34,7 +34,8 @@ class TaskHandler{
                 if(taskErrorOutput != nil && taskErrorOutput!.count > 0) {
                     DDLogError("Task \(task.launchPath ?? "") \(task.arguments.map { "\($0) " } ?? ""): ")
                     DDLogError("Task failed with: \(taskErrorOutput ?? "No errors..") \(taskStandardOutput ?? "No standard output..") ")
-                    returnEscaping(String("\(taskErrorOutput ?? "No errors")\n\(taskStandardOutput ?? "No standard output")"))
+                    returnEscaping("\(taskErrorOutput ?? "No errors..") \(taskStandardOutput ?? "No standard output..") ")
+                    return
                 }
                 
                 if(printStandardOutput){

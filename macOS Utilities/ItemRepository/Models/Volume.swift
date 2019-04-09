@@ -24,11 +24,11 @@ class Volume: Item {
     var parentDisk: Disk
 
     var description: String {
-        return "Volume: \n\t Device Identifier: \(self.deviceIdentifier) \n\t Disk UUID: \(self.diskUUID) \n\t Installable: \(self.isInstallable) \n\t Mount Point: \(self.mountPoint)\n\t   Volume Name: \(self.volumeName)\n\t Volume UUID: \(self.volumeUUID)\n\t  Installer: \(self.installer == nil ? "None" : self.installer!.description)\n\t   Size: \(self.size) \(self.measurementUnit) \n"
+        return parentDisk.isFakeDisk ? "FakeVolume \n\t FakeDisk: \n\t\t\(self.parentDisk)" : "Volume: \n\t Device Identifier: \(self.deviceIdentifier) \n\t Disk UUID: \(self.diskUUID) \n\t Installable: \(self.isInstallable) \n\t Mount Point: \(self.mountPoint)\n\t   Volume Name: \(self.volumeName)\n\t Volume UUID: \(self.volumeUUID)\n\t  Installer: \(self.installer == nil ? "None" : self.installer!.description)\n\t   Size: \(self.size) \(self.measurementUnit) \n"
     }
 
     var isInstallable: Bool {
-        return (measurementUnit == "GB" ? size > 150.0: true) && content != "Apple_APFS" && content != "EFI"
+        return ((measurementUnit == "GB" ? size > 150.0: true) && content != "Apple_APFS" && content != "EFI") || parentDisk.isFakeDisk == true
     }
 
     init(_ volumeDictionary: NSDictionary, disk: Disk) {
@@ -82,7 +82,7 @@ class Volume: Item {
         if let deviceIdentifier = hdiutilVolumeDictionary["dev-entry"] as? String {
             self.deviceIdentifier = deviceIdentifier
         }
-        
+
         if let volumeUUID = hdiutilVolumeDictionary["unmapped-content-hint"] as? String {
             self.volumeUUID = volumeUUID
         }
@@ -90,7 +90,7 @@ class Volume: Item {
         self.volumeName = URL(fileURLWithPath: mountPoint, isDirectory: true).lastPathComponent
         self.size = 0.0
         self.parentDisk = disk
-        
+
         self.checkIfContainsInstaller()
         self.addToRepo()
     }
@@ -103,6 +103,21 @@ class Volume: Item {
         self.addToRepo()
     }
 
+    init(disk: Disk) {
+        if(disk.isFakeDisk) {
+            self.mountPoint = "/tmp"
+            self.volumeName = "FakeDisk"
+            self.content = "FakeDisk_Null"
+        }else{
+            DDLogError("FakeVolume initializer called without a fake disk.. This initializer (for right now) should only be used with a FakeDisk")
+        }
+
+        self.size = disk.size
+        self.measurementUnit = disk.measurementUnit
+        self.parentDisk = disk
+        self.addToRepo()
+    }
+
     public func checkIfContainsInstaller() {
         if((self.volumeName.contains("Install OS X") || self.volumeName.contains("Install macOS")) == true && self.containsInstaller == false) {
             let potentialInstaller = Installer(volume: self)
@@ -110,7 +125,7 @@ class Volume: Item {
                 self.installer = potentialInstaller
                 self.containsInstaller = true
             }
-        } else if(self.containsInstaller == true && (self.volumeName.contains("Install OS X") || self.volumeName.contains("Install macOS")) == false ) {
+        } else if(self.containsInstaller == true && (self.volumeName.contains("Install OS X") || self.volumeName.contains("Install macOS")) == false) {
             self.containsInstaller = false
         }
     }

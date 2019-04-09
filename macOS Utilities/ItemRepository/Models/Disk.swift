@@ -18,13 +18,15 @@ struct Disk: Item {
     var volumes = [Volume]()
     var id: String = String.random(12).md5Value
     var measurementUnit: String = "GB"
+    var isFakeDisk: Bool = false
 
     var isInstallable: Bool {
-        return (measurementUnit == "GB" ? size > 150.0: true)
+        return (measurementUnit == "GB" ? size > 150.0: true) || isFakeDisk == true
     }
 
+
     var description: String {
-        return "Disk: \n\t Device Identifier: \(self.deviceIdentifier) \n\t Content: \(self.content)  \n\t   Installable: \(self.isInstallable) \n\t Size: \(self.size) \(self.measurementUnit) \n\t   Volumes: \(self.volumes) \n "
+        return isFakeDisk ? "FakeDisk (created by application)" : "Disk: \n\t Device Identifier: \(self.deviceIdentifier) \n\t Content: \(self.content)  \n\t   Installable: \(self.isInstallable) \n\t Size: \(self.size) \(self.measurementUnit) \n\t   Volumes: \(self.volumes) \n "
     }
 
     private init() {
@@ -85,6 +87,25 @@ struct Disk: Item {
         self.deviceIdentifier = deviceIdentifier
         self.content = content
         self.volumes = [Volume(mountPoint: mountPoint, content: content, disk: self)]
+        self.addToRepo()
+    }
+
+    init(isFakeDisk: Bool = true) {
+        self.init()
+
+        if !isFakeDisk {
+            DDLogError("FakeDisk initializer called with isFakeDisk == false.. This initializer (for right now) should only be called with isFakeDisk == true")
+            fatalError()
+        }
+
+        self.isFakeDisk = true
+        self.deviceIdentifier = "/dev/null"
+        self.content = "Utilities_Fake_Disk"
+        self.size = 99
+        self.measurementUnit = "TB"
+
+        self.volumes = [Volume(disk: self)]
+
         self.addToRepo()
     }
 

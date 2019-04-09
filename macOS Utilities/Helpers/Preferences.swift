@@ -199,7 +199,7 @@ class Preferences {
         }
 
         #if DEBUG
-            return "172.16.5.5"
+            return "127.0.0.1"
         #else
             return serverInfo[0]
         #endif
@@ -220,7 +220,7 @@ class Preferences {
         }
 
         #if DEBUG
-            return "/Library/Server/Web/Data/Sites/Default/Installers"
+            return "/Users/keatonburleson/Documents/NFS"
         #else
             return serverInfo[1]
         #endif

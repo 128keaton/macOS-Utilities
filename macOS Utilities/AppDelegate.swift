@@ -13,13 +13,19 @@ import PaperTrailLumberjack
 class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var utilitiesMenu: NSMenu?
     @IBOutlet weak var infoMenu: NSMenu?
+    @IBOutlet weak var pageController: NSPageController!
+
+    private var currentPageIndex = 0
 
     let modelYearDetermination = ModelYearDetermination()
 
+    private var loadingViewController: LoadingViewController? = nil
     private let itemRepository = ItemRepository.shared
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         buildInfoMenu()
+
+        pageController.arrangedObjects = ["installSelectorController", "diskSelectorController", "loadingViewController"]
         ItemRepository.shared.getApplications().filter { $0.isUtility == true }.map { NSMenuItem(title: $0.name, action: #selector(openApp(sender:)), keyEquivalent: "") }.forEach { utilitiesMenu?.addItem($0) }
 
         let installersShareIP = Preferences.shared.getServerIP()
@@ -37,21 +43,22 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         ApplicationUtility.shared.open(sender.title)
     }
 
-    private func checkIfReadyToTerminate(){
-        if applicationShouldTerminate(NSApplication.shared) == .terminateNow{
+    private func checkIfReadyToTerminate() {
+        if applicationShouldTerminate(NSApplication.shared) == .terminateNow {
             NSApplication.shared.terminate(self)
         }
     }
-    
+
+
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
-        if(DiskUtility.shared.allSharesAndInstallersUnmounted == false){
+        if(DiskUtility.shared.allSharesAndInstallersUnmounted == false) {
             DiskUtility.shared.ejectAll { (didComplete) in
                 DDLogInfo("Finished ejecting? \(didComplete)")
                 self.checkIfReadyToTerminate()
             }
             return .terminateLater
         }
-        
+
         return .terminateNow
     }
 
@@ -102,5 +109,92 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         IOObjectRelease(platformExpert)
         return serialNumber
+    }
+}
+extension AppDelegate: NSPageControllerDelegate {
+    public func showPageController(initialPage: Int = 0) {
+        if let mainWindow = NSApplication.shared.mainWindow {
+            if let mainViewController = mainWindow.contentViewController {
+                mainViewController.presentAsSheet(self.pageController)
+            }
+        }
+    }
+
+    public func goToPage(_ page: Int) {
+        if pageController.arrangedObjects.indices.contains(page) {
+            currentPageIndex = page
+            NSAnimationContext.runAnimationGroup({ (_) in
+                self.pageController.animator().selectedIndex = page
+            }) {
+                self.pageController.completeTransition()
+            }
+        } else {
+            DDLogInfo("Cannot change")
+        }
+    }
+
+    public func goToNextPage() {
+        if pageController.arrangedObjects.indices.contains(currentPageIndex + 1) {
+            currentPageIndex += 1
+            self.goToPage(currentPageIndex)
+        } else {
+            dismissPageController()
+        }
+    }
+
+    public func goToPreviousPage() {
+        if pageController.arrangedObjects.indices.contains(currentPageIndex - 1) {
+            currentPageIndex -= 1
+            self.goToPage(currentPageIndex)
+        } else {
+            dismissPageController()
+        }
+    }
+
+    public func dismissPageController(savePosition: Bool = false) {
+        if !savePosition {
+            currentPageIndex = 0
+        }
+
+        DDLogInfo("Dismissing NSPageController: \(String(describing: pageController!))")
+        self.pageController.dismiss(self)
+    }
+
+    public func goToLoadingPage(loadingText: String = "Loading") {
+        let objectIdentifiers = (self.pageController.arrangedObjects.map { ($0 as? String) }.compactMap { $0 })
+
+        if let loadingPageIndex = objectIdentifiers.firstIndex(of: "loadingViewController") {
+            
+            if let _loadingViewController = self.loadingViewController {
+                _loadingViewController.setLoadingText(loadingText: "Loading :D   ")
+            }
+
+            goToPage(loadingPageIndex)
+        } else {
+            DDLogInfo("loadingViewController identifier not present in arrangedObjects \(self.pageController.arrangedObjects)")
+        }
+    }
+
+    func pageController(_ pageController: NSPageController, identifierFor object: Any) -> String {
+        if let identifier = object as? String {
+            return identifier
+        }
+        DDLogError("Object \(object) not string")
+        return String()
+    }
+
+    func pageController(_ pageController: NSPageController, viewControllerForIdentifier identifier: String) -> NSViewController {
+        let viewController = NSStoryboard(name: "Main", bundle: nil).instantiateController(withIdentifier: identifier) as! NSViewController
+
+        if(identifier == "loadingViewController") {
+            loadingViewController = viewController as? LoadingViewController
+        }
+
+        return viewController
+    }
+
+    func pageControllerDidEndLiveTransition(_ pageController: NSPageController) {
+        DDLogInfo("Page Controller changed pages to \(pageController.arrangedObjects[currentPageIndex])")
+        self.pageController?.completeTransition()
     }
 }
