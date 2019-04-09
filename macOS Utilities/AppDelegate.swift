@@ -164,9 +164,12 @@ extension AppDelegate: NSPageControllerDelegate {
         let objectIdentifiers = (self.pageController.arrangedObjects.map { ($0 as? String) }.compactMap { $0 })
 
         if let loadingPageIndex = objectIdentifiers.firstIndex(of: "loadingViewController") {
-            
             if let _loadingViewController = self.loadingViewController {
-                _loadingViewController.setLoadingText(loadingText: "Loading :D   ")
+                _loadingViewController.loadingText = loadingText
+            } else {
+                let _loadingViewController = NSStoryboard(name: "Main", bundle: nil).instantiateController(withIdentifier: "loadingViewController") as? LoadingViewController
+                _loadingViewController?.loadingText = loadingText
+                self.loadingViewController = _loadingViewController
             }
 
             goToPage(loadingPageIndex)
@@ -186,8 +189,10 @@ extension AppDelegate: NSPageControllerDelegate {
     func pageController(_ pageController: NSPageController, viewControllerForIdentifier identifier: String) -> NSViewController {
         let viewController = NSStoryboard(name: "Main", bundle: nil).instantiateController(withIdentifier: identifier) as! NSViewController
 
-        if(identifier == "loadingViewController") {
-            loadingViewController = viewController as? LoadingViewController
+        if(identifier == "loadingViewController" && self.loadingViewController == nil) {
+            self.loadingViewController = viewController as? LoadingViewController
+        } else if(identifier == "loadingViewController" && self.loadingViewController != nil) {
+            return self.loadingViewController! as NSViewController
         }
 
         return viewController

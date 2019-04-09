@@ -13,12 +13,22 @@ class LoadingViewController: NSViewController {
     @IBOutlet var loadingSpinner: NSProgressIndicator?
     @IBOutlet var loadingTextField: NSTextField?
     
-    public func setLoadingText(loadingText: String){
-        loadingTextField?.ti = loadingText
+    public var loadingText: String = "Loading" {
+        didSet {
+            updateLoadingLabel()
+        }
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        updateLoadingLabel()
+    }
+    
+    func updateLoadingLabel() {
+        guard isViewLoaded else {
+            return
+        }
+        self.loadingTextField?.stringValue = self.loadingText
     }
     
     override func viewWillAppear() {

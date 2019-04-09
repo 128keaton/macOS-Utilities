@@ -125,7 +125,7 @@ extension DiskSelectionDialogViewController: NSTableViewDelegate {
             let userConfirmedErase = self.showConfirmationAlert(question: "Confirm Disk Destruction", text: "Are you sure you want to erase disk \(volume.volumeName)")
             if(userConfirmedErase) {
 
-                pageControllerDelegate.goToLoadingPage()
+                pageControllerDelegate.goToLoadingPage(loadingText: "Erasing Disk \"\(volume.volumeName)\"")
                 sender.isEnabled = false
 
                 diskUtility.erase(volume, newName: volume.volumeName) { (didFinish) in
