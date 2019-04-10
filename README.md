@@ -28,6 +28,7 @@ The `com.er2.applications.plist` file is full of options like:
 
 ### Menus:
 ![](https://github.com/128keaton/macOS-Utilities/blob/disk-manager/Screenshots/screenshot0.png?raw=true)
+
 ![Main](https://github.com/128keaton/macOS-Utilities/blob/disk-manager/Screenshots/screenshot1.png?raw=true)
 ![Help](https://github.com/128keaton/macOS-Utilities/blob/disk-manager/Screenshots/screenshot2.png?raw=true)
 ![Info](https://github.com/128keaton/macOS-Utilities/blob/disk-manager/Screenshots/screenshot3.png?raw=true)
