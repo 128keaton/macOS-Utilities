@@ -239,6 +239,24 @@ class Preferences {
         return rawPreferences
     }
 
+    public func getHelpEmailAddress() -> String? {
+        guard let plistPath = self.getPropertyList()
+            else {
+                return nil
+        }
+        guard let preferences = NSDictionary(contentsOf: plistPath)
+            else {
+                return nil
+        }
+        
+        guard let helpEmailAddress = preferences["Help Email Address"] as? String
+            else {
+                return nil
+        }
+        
+        return helpEmailAddress
+    }
+    
     public func getApplications() -> [String: [String: String]]? {
         guard let plistPath = self.getPropertyList()
             else {

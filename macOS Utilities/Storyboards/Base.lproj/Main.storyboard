@@ -102,6 +102,7 @@
                 </application>
                 <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="macOS_Utilities" customModuleProvider="target">
                     <connections>
+                        <outlet property="helpMenu" destination="s3u-ZL-WVO" id="Bj1-PJ-V1N"/>
                         <outlet property="infoMenu" destination="VuQ-BV-BSY" id="V4P-bd-qA1"/>
                         <outlet property="pageController" destination="fhx-CL-3aL" id="gCW-pg-dJm"/>
                         <outlet property="utilitiesMenu" destination="lyY-dF-bR4" id="wZr-Mk-Lv2"/>

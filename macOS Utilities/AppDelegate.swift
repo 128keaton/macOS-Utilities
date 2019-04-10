@@ -14,9 +14,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var utilitiesMenu: NSMenu?
     @IBOutlet weak var infoMenu: NSMenu?
     @IBOutlet weak var pageController: NSPageController!
+    @IBOutlet weak var helpMenu: NSMenu?
 
     private let itemRepository = ItemRepository.shared
+    
     private var installers = [Installer]()
+    private var helpEmailAddress: String? = nil
 
     public let modelYearDetermination = ModelYearDetermination()
     public let pageControllerDelegate: PageController = PageController.shared
@@ -43,6 +46,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             if(didSucceed) {
                 DiskUtility.shared.mountDiskImagesAt(installersLocalPath)
             }
+        }
+        
+        if let helpEmailAddress = Preferences.shared.getHelpEmailAddress(){
+            self.helpEmailAddress = helpEmailAddress
+        }else{
+            helpMenu?.items.removeAll { $0.title == "Send Log" }
         }
     }
 
@@ -172,19 +181,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBAction func setTicketEmail(_ sender: NSMenuItem) {
         let emailService = NSSharingService(named: .composeEmail)
         let logFilePaths = (DDLog.allLoggers.first { $0 is DDFileLogger } as! DDFileLogger).logFileManager.sortedLogFilePaths.map { URL(fileURLWithPath: $0) }
-        let htmlContent = "<h2>Please type your issue here:<h2><br><p>Replace Me</p>".data(using: .utf8)
+        let htmlContent = "<h2>Please type your issue here:</h2><br><p>Replace Me</p>".data(using: .utf8)
         
         var items: [Any] = [NSAttributedString(html: htmlContent!, options: [:], documentAttributes: nil)!]
-        var emailSubject = Host.current().localizedName != nil ? String("\(Host.current().localizedName!)__(\(Sysctl.model)__\(getSystemUUID() ?? ""))") : String("\(Sysctl.model)__(\(getSystemUUID() ?? ""))")
-        
-        #if DEBUG
-            emailSubject = emailSubject + "__DEBUG__"
-        #endif
+        let emailSubject = Host.current().localizedName != nil ? String("\(Host.current().localizedName!)__(\(Sysctl.model)__\(getSystemUUID() ?? ""))") : String("\(Sysctl.model)__(\(getSystemUUID() ?? ""))")
         
         logFilePaths.forEach { items.append($0) }
 
         emailService?.subject = emailSubject
-        emailService?.recipients = ["keaton.burleson@er2.com"]
+        emailService?.recipients = [helpEmailAddress!]
         emailService?.perform(withItems: items)
     }
 }
