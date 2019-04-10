@@ -15,17 +15,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var infoMenu: NSMenu?
     @IBOutlet weak var pageController: NSPageController!
 
-    private var currentPageIndex = 0
-
-    let modelYearDetermination = ModelYearDetermination()
-
-    private var loadingViewController: LoadingViewController? = nil
     private let itemRepository = ItemRepository.shared
+    private var installers = [Installer]()
+
+    public let modelYearDetermination = ModelYearDetermination()
+    public let pageControllerDelegate: PageController = PageController.shared
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.addInstallersToInfoMenu), name: ItemRepository.newInstaller, object: nil)
+
         buildInfoMenu()
 
-        pageController.arrangedObjects = ["installSelectorController", "diskSelectorController", "loadingViewController"]
+        pageControllerDelegate.setPageController(pageController: self.pageController)
+
+        #if DEBUG
+            ItemRepository.shared.addFakeInstaller()
+        #endif
+
+
         ItemRepository.shared.getApplications().filter { $0.isUtility == true }.map { NSMenuItem(title: $0.name, action: #selector(openApp(sender:)), keyEquivalent: "") }.forEach { utilitiesMenu?.addItem($0) }
 
         let installersShareIP = Preferences.shared.getServerIP()
@@ -49,6 +56,44 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+    private func removeInstallersFromInfoMenu() {
+        guard let infoMenu = self.infoMenu
+            else {
+                return
+        }
+
+        infoMenu.items.filter { $0.title.contains("Install") }.forEach { infoMenu.removeItem($0) }
+
+        if (infoMenu.items.filter { $0 == NSMenuItem.separator() }).count > 2 {
+            infoMenu.removeItem(infoMenu.items.first { $0 == NSMenuItem.separator() }!)
+        }
+    }
+
+    @objc func startOSInstall(_ sender: NSMenuItem) {
+        if let indexOfSender = infoMenu?.items.firstIndex(of: sender) {
+            guard installers.indices.contains(indexOfSender) == true
+                else {
+                    return
+            }
+            
+            let installerVersion = String(sender.title.split(separator: " ")[1])
+ 
+            if let selectedInstaller = (installers.first { $0.versionNumber == installerVersion }){
+                print(sender)
+                print(selectedInstaller)
+                ItemRepository.shared.setSelectedInstaller(selectedInstaller)
+                
+                pageControllerDelegate.showPageController(initialPage: 1)
+            }
+        }
+    }
+
+    @objc private func addInstallersToInfoMenu() {
+        removeInstallersFromInfoMenu()
+        installers = ItemRepository.shared.getInstallers().filter { $0.isFakeInstaller == false }
+        installers.forEach { infoMenu?.insertItem(withTitle: "Install \($0.versionNumber) - \($0.canInstall ? "🙂" : "☹️")", action: #selector(AppDelegate.startOSInstall(_:)), keyEquivalent: "", at: 0) }
+        infoMenu?.insertItem(NSMenuItem.separator(), at: (installers.count))
+    }
 
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         if(DiskUtility.shared.allSharesAndInstallersUnmounted == false) {
@@ -63,6 +108,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func buildInfoMenu() {
+        addInstallersToInfoMenu()
+
         if(infoMenu?.items.count ?? 0 > 0) {
             infoMenu?.addItem(NSMenuItem.separator())
         }
@@ -89,6 +136,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         ItemRepository.shared.getInstallers().forEach { $0.refresh() }
     }
 
+    @IBAction func createFakeInstallerNonInstallable(_ sender: NSMenuItem) {
+        ItemRepository.shared.addFakeInstaller()
+    }
+
+    @IBAction func createFakeInstaller(_ sender: NSMenuItem) {
+        ItemRepository.shared.addFakeInstaller(canInstallOnMachine: true)
+    }
+
+
     // Unfortunately, this is rate limited :/
     @objc func openSerialLink() {
         if let serial = serialNumber {
@@ -109,97 +165,5 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         IOObjectRelease(platformExpert)
         return serialNumber
-    }
-}
-extension AppDelegate: NSPageControllerDelegate {
-    public func showPageController(initialPage: Int = 0) {
-        if let mainWindow = NSApplication.shared.mainWindow {
-            if let mainViewController = mainWindow.contentViewController {
-                mainViewController.presentAsSheet(self.pageController)
-            }
-        }
-    }
-
-    public func goToPage(_ page: Int) {
-        if pageController.arrangedObjects.indices.contains(page) {
-            currentPageIndex = page
-            NSAnimationContext.runAnimationGroup({ (_) in
-                self.pageController.animator().selectedIndex = page
-            }) {
-                self.pageController.completeTransition()
-            }
-        } else {
-            DDLogInfo("Cannot change")
-        }
-    }
-
-    public func goToNextPage() {
-        if pageController.arrangedObjects.indices.contains(currentPageIndex + 1) {
-            currentPageIndex += 1
-            self.goToPage(currentPageIndex)
-        } else {
-            dismissPageController()
-        }
-    }
-
-    public func goToPreviousPage() {
-        if pageController.arrangedObjects.indices.contains(currentPageIndex - 1) {
-            currentPageIndex -= 1
-            self.goToPage(currentPageIndex)
-        } else {
-            dismissPageController()
-        }
-    }
-
-    public func dismissPageController(savePosition: Bool = false) {
-        if !savePosition {
-            currentPageIndex = 0
-        }
-
-        DDLogInfo("Dismissing NSPageController: \(String(describing: pageController!))")
-        self.pageController.dismiss(self)
-    }
-
-    public func goToLoadingPage(loadingText: String = "Loading") {
-        let objectIdentifiers = (self.pageController.arrangedObjects.map { ($0 as? String) }.compactMap { $0 })
-
-        if let loadingPageIndex = objectIdentifiers.firstIndex(of: "loadingViewController") {
-            if let _loadingViewController = self.loadingViewController {
-                _loadingViewController.loadingText = loadingText
-            } else {
-                let _loadingViewController = NSStoryboard(name: "Main", bundle: nil).instantiateController(withIdentifier: "loadingViewController") as? LoadingViewController
-                _loadingViewController?.loadingText = loadingText
-                self.loadingViewController = _loadingViewController
-            }
-
-            goToPage(loadingPageIndex)
-        } else {
-            DDLogInfo("loadingViewController identifier not present in arrangedObjects \(self.pageController.arrangedObjects)")
-        }
-    }
-
-    func pageController(_ pageController: NSPageController, identifierFor object: Any) -> String {
-        if let identifier = object as? String {
-            return identifier
-        }
-        DDLogError("Object \(object) not string")
-        return String()
-    }
-
-    func pageController(_ pageController: NSPageController, viewControllerForIdentifier identifier: String) -> NSViewController {
-        let viewController = NSStoryboard(name: "Main", bundle: nil).instantiateController(withIdentifier: identifier) as! NSViewController
-
-        if(identifier == "loadingViewController" && self.loadingViewController == nil) {
-            self.loadingViewController = viewController as? LoadingViewController
-        } else if(identifier == "loadingViewController" && self.loadingViewController != nil) {
-            return self.loadingViewController! as NSViewController
-        }
-
-        return viewController
-    }
-
-    func pageControllerDidEndLiveTransition(_ pageController: NSPageController) {
-        DDLogInfo("Page Controller changed pages to \(pageController.arrangedObjects[currentPageIndex])")
-        self.pageController?.completeTransition()
     }
 }

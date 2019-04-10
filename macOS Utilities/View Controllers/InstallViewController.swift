@@ -22,7 +22,6 @@ class InstallViewController: NSViewController {
     private var preferences = Preferences.shared
     private var installers = [Installer]()
 
-    private let pageControllerDelegate = (NSApplication.shared.delegate as? AppDelegate)!
     private let infoMenu = (NSApplication.shared.delegate as! AppDelegate).infoMenu
 
     public var selectedVersion: Installer? = nil
@@ -41,19 +40,36 @@ class InstallViewController: NSViewController {
 
     @objc func getInstallableVersions() {
         let returnedInstallers = ItemRepository.shared.getInstallers()
-        if(returnedInstallers != self.installers) {
-            self.installers.indices.forEach { self.infoMenu?.removeItem(at: $0) }
-            self.installers = returnedInstallers
-            self.installers.forEach { self.infoMenu?.insertItem(withTitle: "\($0.versionNumber) - \($0.canInstall ? "🙂" : "☹️")", action: nil, keyEquivalent: "", at: 0) }
-            self.infoMenu?.insertItem(NSMenuItem.separator(), at: (self.installers.count))
+        if(returnedInstallers != installers) {
+            installers = returnedInstallers.sorted(by: { $0.comparibleVersionNumber > $1.comparibleVersionNumber && $0.isFakeInstaller == false })
             if(Thread.isMainThread == true) {
                 self.tableView.reloadData()
             } else {
                 DispatchQueue.main.async {
                     if self.tableView != nil {
                         self.tableView.reloadData()
+                        self.selectFirstInstallable()
                     }
                 }
+            }
+        }
+    }
+
+    private func deselectAllInstallers(shouldDisableInstallButton: Bool = true) {
+        if(shouldDisableInstallButton && installButton.isEnabled) {
+            installButton.isEnabled = false
+        } else if (!shouldDisableInstallButton && !installButton.isEnabled) {
+            installButton.isEnabled = true
+        }
+
+        installers.forEach { $0.isSelected = false }
+    }
+
+    private func selectFirstInstallable() {
+        if let firstInstallable = (self.installers.first { $0.canInstall }) {
+            if let firstInstallableIndex = self.installers.firstIndex(of: firstInstallable) {
+                self.tableView.selectRowIndexes(IndexSet(integer: firstInstallableIndex), byExtendingSelection: false)
+                self.installButton.isEnabled = true
             }
         }
     }
@@ -133,11 +149,11 @@ class InstallViewController: NSViewController {
     }
 
     @IBAction func cancelButtonClicked(_ sender: NSButton) {
-        pageControllerDelegate.goToPreviousPage()
+        PageController.shared.goToPreviousPage()
     }
 
     @IBAction func nextButtonClicked(_ sender: NSButton) {
-        pageControllerDelegate.goToNextPage()
+        PageController.shared.goToNextPage()
     }
 }
 
@@ -147,41 +163,37 @@ extension InstallViewController: NSTableViewDataSource {
     }
 }
 
-extension InstallViewController: NSTableViewDelegate {
+extension InstallViewController: NSTableViewDelegate, NSTableViewDelegateDeselectListener {
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         let installer = installers[row]
 
-        if let cell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "osCell"), owner: nil) as? NSTableCellView {
-            cell.textField?.stringValue = installer.versionName
-            cell.imageView?.image = installer.icon ?? nil
-            return cell
+        if let installerCell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "osCell"), owner: nil) as? InstallerCellView {
+            installerCell.installer = installer
+            return installerCell
         }
 
         return nil
     }
+
     func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
         tableView.deselectAll(self)
-        if(installers[row].canInstall) {
-            installButton.isEnabled = true
 
-            installers.forEach { $0.isSelected = false }
-            installers[row].isSelected = true
+        let potentialInstaller = installers[row]
 
-            return true
+        if(potentialInstaller.canInstall) {
+            deselectAllInstallers(shouldDisableInstallButton: false)
+            potentialInstaller.isSelected = true
+        } else {
+            DDLogInfo("Unable to install \(potentialInstaller) on machine \(Sysctl.model) ")
         }
-        return false
+
+        return potentialInstaller.canInstall
     }
 
-    override open func mouseDown(with event: NSEvent) {
-        super.mouseDown(with: event)
-
-        let point = self.view.convert(event.locationInWindow, from: nil)
-        let rowIndex = tableView.row(at: point)
-
-        if rowIndex < 0 { // We didn't click any row
-            tableView.deselectAll(nil)
-            installButton.isEnabled = false
-            installers.forEach { $0.isSelected = false }
+    func tableView(_ tableView: NSTableView, didDeselectAllRows: Bool) {
+        if(didDeselectAllRows) {
+            DDLogInfo("Deselecting all installers/rows in \(self)")
+            deselectAllInstallers()
         }
     }
 }

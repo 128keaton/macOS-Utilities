@@ -13,10 +13,12 @@ class DiskSelectionDialogViewController: NSViewController {
     @IBOutlet weak var tableView: NSTableView?
     @IBOutlet weak var nextButton: NSButton?
     @IBOutlet weak var diskProgressIndicator: NSProgressIndicator?
+    @IBOutlet weak var installingVersionLabel: NSTextField?
+       @IBOutlet weak var backButton: NSButton!
 
     private let diskUtility = DiskUtility.shared
-    private let pageControllerDelegate = (NSApplication.shared.delegate as? AppDelegate)!
 
+    private var selectedInstaller: Installer? = nil
     private var installableVolumes = [Volume]() {
         didSet {
             reloadTableView()
@@ -26,7 +28,20 @@ class DiskSelectionDialogViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        updateBackButton()
+        getSelectedInstaller()
         getDisks()
+    }
+
+    private func getSelectedInstaller() {
+        if let selectedInstaller = ItemRepository.shared.getSelectedInstaller() {
+            installingVersionLabel?.stringValue = "Installing \(selectedInstaller.versionName)"
+            installingVersionLabel?.isHidden = false
+            self.selectedInstaller = selectedInstaller
+        } else {
+            installingVersionLabel?.isHidden = true
+        }
     }
 
     private func getDisks() {
@@ -39,7 +54,11 @@ class DiskSelectionDialogViewController: NSViewController {
     }
 
     @IBAction func backButtonClicked(_ sender: NSButton) {
-        pageControllerDelegate.goToPreviousPage()
+        if PageController.shared.isInitialPage(self) {
+            PageController.shared.dismissPageController()
+        } else {
+            PageController.shared.goToPreviousPage()
+        }
     }
 
     private func reloadTableView() {
@@ -54,9 +73,19 @@ class DiskSelectionDialogViewController: NSViewController {
             }
         }
     }
+    
+    private func updateBackButton(){
+        if PageController.shared.isInitialPage(self) {
+            backButton.title = "Cancel"
+        } else {
+            backButton.title = "Back"
+        }
+    }
 
     override func viewDidAppear() {
         super.viewDidAppear()
+        updateBackButton()
+        getSelectedInstaller()
         getDisks()
     }
 
@@ -125,27 +154,29 @@ extension DiskSelectionDialogViewController: NSTableViewDelegate {
             let userConfirmedErase = self.showConfirmationAlert(question: "Confirm Disk Destruction", text: "Are you sure you want to erase disk \(volume.volumeName)")
             if(userConfirmedErase) {
 
-                pageControllerDelegate.goToLoadingPage(loadingText: "Erasing Disk \"\(volume.volumeName)\"")
+                PageController.shared.goToLoadingPage(loadingText: "Erasing Disk \"\(volume.volumeName)\"")
                 sender.isEnabled = false
 
                 diskUtility.erase(volume, newName: volume.volumeName) { (didFinish) in
                     if(didFinish) {
-                        self.showInfoAlert(title: "Erase Completed", message: "Please use the disk \"\(volume.volumeName)\" when installing macOS.", completion: { (clickedOk) in
+                        PageController.shared.goToFinishPage(finishedText: "Erase Completed", descriptionText: "Please use the disk \"\(volume.volumeName)\" when installing macOS.")
+
+                        /* self.showInfoAlert(title: "Erase Completed", message: "Please use the disk \"\(volume.volumeName)\" when installing macOS.", completion: { (clickedOk) in
                             self.nextButton?.isEnabled = true
-                            
+
                             let selectedInstaller = (ItemRepository.shared.getInstallers().first { $0.isSelected == true })
                             var openInstaller = !volume.parentDisk.isFakeDisk
-                            
+
                             if !openInstaller {
                                 openInstaller = self.showConfirmationAlert(question: "Open Installer?", text: "Do you want to open the selected macOS Installer?")
                             }
-                            
+
                             if openInstaller && selectedInstaller != nil {
                                 selectedInstaller!.launch()
                             }
-                            
-                            self.pageControllerDelegate.dismissPageController()
-                        })
+
+                            PageController.shared.dismissPageController()
+                        })*/
                     }
                 }
             }

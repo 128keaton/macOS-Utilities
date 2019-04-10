@@ -94,7 +94,12 @@ class Application: Item {
 
         collectionViewItem.icon?.image = icon
         collectionViewItem.regularImage = icon
-        collectionViewItem.darkenedImage = icon.darkened()
+
+        DispatchQueue.main.async {
+            collectionViewItem.icon!.lockFocus()
+            collectionViewItem.darkenedImage = icon.darkened()
+            collectionViewItem.icon!.unlockFocus()
+        }
 
         if(self.isInvalid) {
             collectionViewItem.titleLabel?.textColor = NSColor.gray

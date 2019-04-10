@@ -13,7 +13,9 @@
 		8A39D3602119E81B00437F4E /* com.er2.applications.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8A39D35F2119E81B00437F4E /* com.er2.applications.plist */; };
 		8A47DED9210A2D30003F5CC3 /* NSCollectionAppCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */; };
 		8A47DEDB210A3418003F5CC3 /* NSCollectionAppCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */; };
-		8A6C6456225D304700CD6DCF /* FinishViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C6455225D304700CD6DCF /* FinishViewController.swift */; };
+		8A6C6456225D304700CD6DCF /* WizardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C6455225D304700CD6DCF /* WizardViewController.swift */; };
+		8A6C6459225D324900CD6DCF /* PageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C6458225D324900CD6DCF /* PageController.swift */; };
+		8A6C645C225D4E9900CD6DCF /* InstallerCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C645B225D4E9900CD6DCF /* InstallerCellView.swift */; };
 		8A6F28F0221B9F5C00FF9DB3 /* InstallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6F28EF221B9F5C00FF9DB3 /* InstallViewController.swift */; };
 		8A6F28F2221BA0AA00FF9DB3 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6F28F1221BA0AA00FF9DB3 /* Preferences.swift */; };
 		8A87B8B521A47D8C004496AA /* ModelYearDetermination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87B8B421A47D8C004496AA /* ModelYearDetermination.swift */; };
@@ -24,7 +26,6 @@
 		8A9370D12256BB5A002B3838 /* Volume.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9370D02256BB5A002B3838 /* Volume.swift */; };
 		8A9370D42256D5F6002B3838 /* ItemRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9370D32256D5F6002B3838 /* ItemRepository.swift */; };
 		8A9370D62256D604002B3838 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9370D52256D604002B3838 /* Item.swift */; };
-		8A9370DD22587147002B3838 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9370DC22587147002B3838 /* LoadingViewController.swift */; };
 		8ABAE30F22527B9100E537D3 /* ApplicationUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE30E22527B9100E537D3 /* ApplicationUtility.swift */; };
 		8ABAE3112252A46300E537D3 /* DiskSelectionDialogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE3102252A46300E537D3 /* DiskSelectionDialogViewController.swift */; };
 		8ABAE3132252C1D800E537D3 /* TaskHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE3122252C1D800E537D3 /* TaskHandler.swift */; };
@@ -45,7 +46,9 @@
 		8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSCollectionAppCell.swift; sourceTree = "<group>"; };
 		8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NSCollectionAppCell.xib; sourceTree = "<group>"; };
 		8A6C6452225BADC900CD6DCF /* macOS-Utilities-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "macOS-Utilities-Bridging-Header.h"; sourceTree = "<group>"; };
-		8A6C6455225D304700CD6DCF /* FinishViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishViewController.swift; sourceTree = "<group>"; };
+		8A6C6455225D304700CD6DCF /* WizardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WizardViewController.swift; sourceTree = "<group>"; };
+		8A6C6458225D324900CD6DCF /* PageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PageController.swift; path = "macOS Utilities/View Controllers/PageController.swift"; sourceTree = "<group>"; };
+		8A6C645B225D4E9900CD6DCF /* InstallerCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallerCellView.swift; sourceTree = "<group>"; };
 		8A6F28EF221B9F5C00FF9DB3 /* InstallViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallViewController.swift; sourceTree = "<group>"; };
 		8A6F28F1221BA0AA00FF9DB3 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		8A87B8B421A47D8C004496AA /* ModelYearDetermination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelYearDetermination.swift; sourceTree = "<group>"; };
@@ -56,7 +59,6 @@
 		8A9370D02256BB5A002B3838 /* Volume.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Volume.swift; sourceTree = "<group>"; };
 		8A9370D32256D5F6002B3838 /* ItemRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemRepository.swift; sourceTree = "<group>"; };
 		8A9370D52256D604002B3838 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
-		8A9370DC22587147002B3838 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
 		8ABAE30E22527B9100E537D3 /* ApplicationUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationUtility.swift; sourceTree = "<group>"; };
 		8ABAE3102252A46300E537D3 /* DiskSelectionDialogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskSelectionDialogViewController.swift; sourceTree = "<group>"; };
 		8ABAE3122252C1D800E537D3 /* TaskHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskHandler.swift; sourceTree = "<group>"; };
@@ -153,6 +155,7 @@
 		8A0138D42217623700C77DA0 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				8A6C645A225D4E8D00CD6DCF /* NSTableCellView */,
 				8A0138C9221703D400C77DA0 /* NSCollectionAppCell */,
 				8A6C6457225D305700CD6DCF /* NSPageController */,
 				8ACB65D621063E6F004B9C5A /* ApplicationViewController.swift */,
@@ -166,11 +169,19 @@
 		8A6C6457225D305700CD6DCF /* NSPageController */ = {
 			isa = PBXGroup;
 			children = (
-				8A9370DC22587147002B3838 /* LoadingViewController.swift */,
-				8A6C6455225D304700CD6DCF /* FinishViewController.swift */,
+				8A6C6455225D304700CD6DCF /* WizardViewController.swift */,
+				8A6C6458225D324900CD6DCF /* PageController.swift */,
 			);
 			name = NSPageController;
 			path = ../..;
+			sourceTree = "<group>";
+		};
+		8A6C645A225D4E8D00CD6DCF /* NSTableCellView */ = {
+			isa = PBXGroup;
+			children = (
+				8A6C645B225D4E9900CD6DCF /* InstallerCellView.swift */,
+			);
+			path = NSTableCellView;
 			sourceTree = "<group>";
 		};
 		8A9370D22256D5E6002B3838 /* Repository */ = {
@@ -368,17 +379,18 @@
 				8ABAE3132252C1D800E537D3 /* TaskHandler.swift in Sources */,
 				8A87B8B521A47D8C004496AA /* ModelYearDetermination.swift in Sources */,
 				8ABAE30F22527B9100E537D3 /* ApplicationUtility.swift in Sources */,
-				8A6C6456225D304700CD6DCF /* FinishViewController.swift in Sources */,
+				8A6C6456225D304700CD6DCF /* WizardViewController.swift in Sources */,
 				8A0138D1221749BD00C77DA0 /* VersionNumbers.swift in Sources */,
 				8A9370D62256D604002B3838 /* Item.swift in Sources */,
+				8A6C6459225D324900CD6DCF /* PageController.swift in Sources */,
 				8A6F28F0221B9F5C00FF9DB3 /* InstallViewController.swift in Sources */,
 				8ABAE31D2252DA5800E537D3 /* Installer.swift in Sources */,
 				8ADBB216210A623800C4F1D9 /* Extensions.swift in Sources */,
 				8A9370D12256BB5A002B3838 /* Volume.swift in Sources */,
+				8A6C645C225D4E9900CD6DCF /* InstallerCellView.swift in Sources */,
 				8A9370D42256D5F6002B3838 /* ItemRepository.swift in Sources */,
 				8A0138D62217624700C77DA0 /* InfoPopoverViewController.swift in Sources */,
 				8ABAE3112252A46300E537D3 /* DiskSelectionDialogViewController.swift in Sources */,
-				8A9370DD22587147002B3838 /* LoadingViewController.swift in Sources */,
 				8A8B59A5224E9FD100CD4094 /* Application.swift in Sources */,
 				8ACB65D721063E6F004B9C5A /* ApplicationViewController.swift in Sources */,
 				8A6F28F2221BA0AA00FF9DB3 /* Preferences.swift in Sources */,

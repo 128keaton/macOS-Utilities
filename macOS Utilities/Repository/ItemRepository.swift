@@ -13,6 +13,8 @@ class ItemRepository {
     public static let shared = ItemRepository()
     private (set) public var items: [Any] = []
 
+    private var fakeItems: [Any] = []
+
     static let newApplication = Notification.Name("NSNewApplication")
     static let newDisk = Notification.Name("NSNewDisk")
     static let newInstaller = Notification.Name("NSNewInstaller")
@@ -21,10 +23,11 @@ class ItemRepository {
 
     private init() {
         DDLogInfo("ItemRepository initialized")
+
         DispatchQueue.main.async {
             self.reloadAllItems()
         }
-        
+
         NotificationCenter.default.addObserver(self, selector: #selector(ItemRepository.reloadAllItems), name: ItemRepository.refreshRepository, object: nil)
     }
 
@@ -33,12 +36,34 @@ class ItemRepository {
         ApplicationUtility.shared.getApplications()
         ApplicationUtility.shared.getUtilities()
     }
+
+    public func getSelectedInstaller() -> Installer? {
+        if let installer = (self.getInstallers().first { $0.isSelected == true }){
+            return installer
+        }
+        
+        return nil
+    }
     
-    public func updateDisk(_ disk: Disk){
+    public func setSelectedInstaller(_ installer: Installer){
+        unsetAllSelectedInstallers()
+        (items.first(where: { ($0 as? Installer) == installer }) as? Installer)?.isSelected = true
+    }
+
+    public func unsetAllSelectedInstallers(){
+        (items.filter { type(of: $0) == Installer.self } as! [Installer]).forEach { $0.isSelected = false }
+    }
+    
+    public func addFakeInstaller(canInstallOnMachine: Bool = false) {
+        let fakeInstaller = Installer(isFakeInstaller: true, canInstallOnMachine: canInstallOnMachine)
+        fakeItems.append(fakeInstaller)
+    }
+
+    public func updateDisk(_ disk: Disk) {
         self.items.removeAll { ($0 as? Disk) == disk }
         self.addToRepository(newDisk: disk)
     }
-    
+
     public func getDisks() -> [Disk] {
         return (items.filter { type(of: $0) == Disk.self } as! [Disk]).sorted { $0.deviceIdentifier < $1.deviceIdentifier }
     }
@@ -48,7 +73,7 @@ class ItemRepository {
     }
 
     public func getInstallers() -> [Installer] {
-        return (items.filter { type(of: $0) == Installer.self } as! [Installer]).sorted { $0.versionNumber < $1.versionNumber }
+        return (items.filter { type(of: $0) == Installer.self } as! [Installer]).sorted { $0.comparibleVersionNumber < $1.comparibleVersionNumber }
     }
 
     public func getApplications() -> [Application] {
@@ -87,7 +112,7 @@ class ItemRepository {
             } else {
                 DDLogInfo("Adding utility \(newApplication.id) to repo")
             }
-            
+
             self.items.append(newApplication)
             NotificationCenter.default.post(name: ItemRepository.newApplication, object: nil)
         }

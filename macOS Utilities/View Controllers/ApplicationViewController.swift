@@ -76,7 +76,7 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     }
 
     @IBAction func installMacOSButtonClicked(_ sender: NSButton) {
-        (NSApplication.shared.delegate as? AppDelegate)?.showPageController()
+       PageController.shared.showPageController()
     }
 }
 

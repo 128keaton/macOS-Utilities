@@ -35,7 +35,7 @@ func findIconFor(applicationPath: String) -> NSImage {
     return NSImage(contentsOfFile: imagePath)!
 }
 
-extension NSApplication{
+extension NSApplication {
     func isDarkMode(view: NSView?) -> Bool {
         if #available(OSX 10.14, *) {
             if let appearance = view?.effectiveAppearance ?? NSAppearance.current {
@@ -98,7 +98,7 @@ extension NSViewController {
             alert.runModal()
         }
     }
-    
+
     func showInfoAlert(title: String, message: String, completion: @escaping (Bool) -> ()) {
         let alert: NSAlert = NSAlert()
         alert.messageText = title
@@ -109,7 +109,7 @@ extension NSViewController {
             completion(alert.runModal() == .alertFirstButtonReturn)
         }
     }
-    
+
     func showConfirmationAlert(question: String, text: String) -> Bool {
         let alert = NSAlert()
         alert.messageText = question
@@ -119,39 +119,78 @@ extension NSViewController {
         alert.addButton(withTitle: "No")
         return alert.runModal() == .alertFirstButtonReturn
     }
-
 }
 
-extension String{
-    var doubleValue: Double{
-        if let potentialValue = Double(self.replacingOccurrences(of: "[^0-9.]", with: "", options: .regularExpression)){
+extension NSTableView {
+    override open func mouseDown(with event: NSEvent) {
+        let globalLocation = event.locationInWindow
+        let localLocation = convert(globalLocation, from: nil)
+        let clickedRow = row(at: localLocation)
+
+        super.mouseDown(with: event)
+
+        if clickedRow == -1 {
+            self.deselectAll(self)
+            if let delegate = self.delegate {
+                if delegate is NSTableViewDelegateDeselectListener {
+                    (delegate as! NSTableViewDelegateDeselectListener).tableView?(self, didDeselectAllRows: true)
+                }
+            }
+        } else {
+
+            if let delegate = self.delegate {
+                if let shouldSelect = delegate.tableView?(self, shouldSelectRow: clickedRow) {
+                    if shouldSelect {
+                        self.selectRowIndexes(IndexSet(integer: clickedRow), byExtendingSelection: false)
+                    }
+                }
+            } else {
+                self.selectRowIndexes(IndexSet(integer: clickedRow), byExtendingSelection: false)
+            }
+        }
+    }
+}
+
+@objc protocol NSTableViewDelegateDeselectListener: NSTableViewDelegate {
+    @objc optional func tableView(_ tableView: NSTableView, didDeselectAllRows: Bool)
+}
+
+extension String {
+    var doubleValue: Double {
+        if let potentialValue = Double(self.replacingOccurrences(of: "[^0-9.]", with: "", options: .regularExpression)) {
             return potentialValue
         }
         print("Unable to make \(self) into a double.")
         return 0.0
     }
-    
+
     var md5Value: String {
         let length = Int(CC_MD5_DIGEST_LENGTH)
         var digest = [UInt8](repeating: 0, count: length)
-        
+
         if let d = self.data(using: .utf8) {
             _ = d.withUnsafeBytes { body -> String in
                 CC_MD5(body.baseAddress, CC_LONG(d.count), &digest)
-                
+
                 return ""
             }
         }
-        
+
         return (0 ..< length).reduce("") {
             $0 + String(format: "%02x", digest[$1])
         }
     }
-    
-    static func random(_ length: Int) -> String {
-        let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+    static func random(_ length: Int, numericOnly: Bool = false) -> String {
+        var letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        
+        if(numericOnly) {
+            letters = "123456789"
+        }
+
         return String((0..<length).map { _ in letters.randomElement()! })
     }
+
 
     func matches(_ regex: String, stripR: [String] = []) -> [String] {
         do {
@@ -184,14 +223,14 @@ extension URL {
                     // file exists and is a directory
                     filestatus = .isDir
                 }
-                else {
-                    // file exists and is not a directory
-                    filestatus = .isFile
+                    else {
+                        // file exists and is not a directory
+                        filestatus = .isFile
                 }
             }
-            else {
-                // file does not exist
-                filestatus = .isNot
+                else {
+                    // file does not exist
+                    filestatus = .isNot
             }
             return filestatus
         }
@@ -202,7 +241,7 @@ func matches(for regex: String, in text: String) -> [String] {
     do {
         let regex = try NSRegularExpression(pattern: regex)
         let results = regex.matches(in: text,
-            range: NSRange(text.startIndex..., in: text))
+                                    range: NSRange(text.startIndex..., in: text))
         return results.map {
             String(text[Range($0.range, in: text)!])
         }

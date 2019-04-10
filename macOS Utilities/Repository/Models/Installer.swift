@@ -11,23 +11,29 @@ import AppKit
 import CocoaLumberjack
 
 class Installer: NSObject, Item, NSFilePresenter {
+    // MARK: FakeInstaller
+    public var isFakeInstaller = false
+    private var fakeInstallerCanInstall = false
+
+    private var stopIcon = NSImage(named: "stop")!
     private let installableVersions = ModelYearDetermination().determineInstallableVersions()
 
     var presentedItemURL: URL?
     var presentedItemOperationQueue: OperationQueue = OperationQueue.main
     var appLabel: String = "Not Available"
     var versionNumber: String = "0.0"
-    var icon: NSImage? = nil
+    var icon: NSImage = NSImage(named: "stop")!
     var versionName: String = ""
-    var volume: Volume
+    var volume: Volume? = nil
     var isSelected = false
+
     var isValid: Bool {
         return appLabel != "Not Available" && versionNumber != "0.0"
     }
 
     var id: String {
         get {
-            return versionName.md5Value
+            return versionNumber.md5Value
         }
     }
 
@@ -35,11 +41,15 @@ class Installer: NSObject, Item, NSFilePresenter {
         if(installableVersions.contains(self.versionNumber)) {
             DDLogInfo("\(Sysctl.model) can install \(self.versionNumber)")
         }
-        return installableVersions.contains(self.versionNumber)
+        return installableVersions.contains(self.versionNumber) || fakeInstallerCanInstall
+    }
+
+    var comparibleVersionNumber: Int {
+        return Int(versionNumber.replacingOccurrences(of: ".", with: ""))!
     }
 
     override var description: String {
-        return "Installer - \(versionNumber) - \(versionName) - Icon: \(icon == nil ? "no" : "yes") - Valid: \(isValid)"
+        return isFakeInstaller ? "FakeInstaller - Can Install: \(self.canInstall) - Icon: \(icon == stopIcon ? "no" : "yes") - ID: \(self.id)" : "Installer - \(versionNumber) - \(versionName) - Icon: \(icon == stopIcon ? "no" : "yes") - Valid: \(isValid) - Can Install: \(self.canInstall) - ID: \(self.id)"
     }
 
     init(volume: Volume) {
@@ -50,9 +60,34 @@ class Installer: NSObject, Item, NSFilePresenter {
         self.appLabel = self.versionName + ".app"
         self.icon = self.findAppIcon()
 
-        self.presentedItemURL = URL(fileURLWithPath: "\(self.volume.mountPoint)", isDirectory: false)
+        self.presentedItemURL = URL(fileURLWithPath: "\(self.volume!.mountPoint)", isDirectory: false)
 
         self.addToRepo()
+    }
+
+    init(isFakeInstaller: Bool = true, canInstallOnMachine: Bool) {
+        if(isFakeInstaller) {
+            super.init()
+            self.isFakeInstaller = isFakeInstaller
+            self.versionName = "Fake Installer"
+            self.appLabel = "Fake Installer.app"
+            self.versionNumber = String.random(10, numericOnly: true)
+            self.fakeInstallerCanInstall = canInstallOnMachine
+            self.icon = NSImage(named: "FakeInstallerIcon")!
+            
+            if(!canInstall) {
+                DispatchQueue.main.async {
+                    self.icon.lockFocus()
+                    self.icon = self.icon.darkened()!
+                    self.icon.unlockFocus()
+                }
+            }
+    
+            self.addToRepo()
+        } else {
+            DDLogError("FakeInstaller initializer called with isFakeInstaller == false. FakeInstaller initializer should only be called with isFakeInstaller == true")
+            fatalError("FakeInstaller initializer called with isFakeInstaller == false. FakeInstaller initializer should only be called with isFakeInstaller == true")
+        }
     }
 
     func addToRepo() {
@@ -70,13 +105,13 @@ class Installer: NSObject, Item, NSFilePresenter {
     }
 
     private func getVersionName() -> String {
-        let parsedName = self.volume.volumeName.replacingOccurrences(of: ".[0-9].*", with: "", options: .regularExpression)
+        let parsedName = self.volume!.volumeName.replacingOccurrences(of: ".[0-9].*", with: "", options: .regularExpression)
         self.versionNumber = VersionNumbers.getVersionForName(parsedName)
         return parsedName
     }
 
     public func launch() {
-        NSWorkspace.shared.open(URL(fileURLWithPath: "\(self.volume.mountPoint)/\(versionName).app"))
+        NSWorkspace.shared.open(URL(fileURLWithPath: "\(self.volume!.mountPoint)/\(versionName).app"))
     }
 
     public func refresh() {
@@ -87,7 +122,7 @@ class Installer: NSObject, Item, NSFilePresenter {
     }
 
     private func findAppIcon() -> NSImage {
-        let path = "\(self.volume.mountPoint)/\(self.appLabel)/Contents/Info.plist"
+        let path = "\(self.volume!.mountPoint)/\(self.appLabel)/Contents/Info.plist"
         guard let infoDictionary = NSDictionary(contentsOfFile: path)
             else {
                 return prohibatoryIcon!
@@ -98,7 +133,7 @@ class Installer: NSObject, Item, NSFilePresenter {
                 return prohibatoryIcon!
         }
 
-        var imagePath = "\(self.volume.mountPoint)/\(self.appLabel)/Contents/Resources/\(imageName)"
+        var imagePath = "\(self.volume!.mountPoint)/\(self.appLabel)/Contents/Resources/\(imageName)"
 
         if !imageName.contains(".icns") {
             imagePath = imagePath + ".icns"
