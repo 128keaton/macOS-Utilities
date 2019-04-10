@@ -12,7 +12,8 @@ import CocoaLumberjack
 
 class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     @IBOutlet weak var collectionView: NSCollectionView!
-
+    @IBOutlet weak var getInfoButton: NSButton?
+    
     private let preferences = Preferences.shared
     private let itemRepository = ItemRepository.shared
 
@@ -27,12 +28,21 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        getInfoButton?.alphaValue = 0.0
+        
         configureCollectionView()
         addEasterEgg()
 
         if #available(OSX 10.13, *) {
             if let contentSize = collectionView.collectionViewLayout?.collectionViewContentSize {
                 collectionView.setFrameSize(contentSize)
+            }
+        }
+        
+        if preferences.canUseDeviceIdentifierAPI(){
+            NSAnimationContext.runAnimationGroup { (context) in
+                context.duration = 0.5
+                self.getInfoButton?.animator().alphaValue = 1.0
             }
         }
 

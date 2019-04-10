@@ -16,6 +16,12 @@
 		8A6C6456225D304700CD6DCF /* WizardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C6455225D304700CD6DCF /* WizardViewController.swift */; };
 		8A6C6459225D324900CD6DCF /* PageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C6458225D324900CD6DCF /* PageController.swift */; };
 		8A6C645C225D4E9900CD6DCF /* InstallerCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C645B225D4E9900CD6DCF /* InstallerCellView.swift */; };
+		8A6C6460225DB39500CD6DCF /* DeviceInformationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C645F225DB39500CD6DCF /* DeviceInformationViewController.swift */; };
+		8A6C6463225DB40A00CD6DCF /* DeviceIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C6462225DB40A00CD6DCF /* DeviceIdentifier.swift */; };
+		8A6C6465225DB46A00CD6DCF /* DeviceManufacturingInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C6464225DB46A00CD6DCF /* DeviceManufacturingInfo.swift */; };
+		8A6C6467225DB47200CD6DCF /* DeviceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C6466225DB47200CD6DCF /* DeviceInfo.swift */; };
+		8A6C6469225DB48200CD6DCF /* DeviceConfigurationCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C6468225DB48200CD6DCF /* DeviceConfigurationCode.swift */; };
+		8A6C646B225DB49000CD6DCF /* DeviceUniqueID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C646A225DB49000CD6DCF /* DeviceUniqueID.swift */; };
 		8A6F28F0221B9F5C00FF9DB3 /* InstallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6F28EF221B9F5C00FF9DB3 /* InstallViewController.swift */; };
 		8A6F28F2221BA0AA00FF9DB3 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6F28F1221BA0AA00FF9DB3 /* Preferences.swift */; };
 		8A87B8B521A47D8C004496AA /* ModelYearDetermination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87B8B421A47D8C004496AA /* ModelYearDetermination.swift */; };
@@ -49,6 +55,12 @@
 		8A6C6455225D304700CD6DCF /* WizardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WizardViewController.swift; sourceTree = "<group>"; };
 		8A6C6458225D324900CD6DCF /* PageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PageController.swift; path = "macOS Utilities/View Controllers/PageController.swift"; sourceTree = "<group>"; };
 		8A6C645B225D4E9900CD6DCF /* InstallerCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallerCellView.swift; sourceTree = "<group>"; };
+		8A6C645F225DB39500CD6DCF /* DeviceInformationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInformationViewController.swift; sourceTree = "<group>"; };
+		8A6C6462225DB40A00CD6DCF /* DeviceIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceIdentifier.swift; sourceTree = "<group>"; };
+		8A6C6464225DB46A00CD6DCF /* DeviceManufacturingInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceManufacturingInfo.swift; sourceTree = "<group>"; };
+		8A6C6466225DB47200CD6DCF /* DeviceInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfo.swift; sourceTree = "<group>"; };
+		8A6C6468225DB48200CD6DCF /* DeviceConfigurationCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceConfigurationCode.swift; sourceTree = "<group>"; };
+		8A6C646A225DB49000CD6DCF /* DeviceUniqueID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceUniqueID.swift; sourceTree = "<group>"; };
 		8A6F28EF221B9F5C00FF9DB3 /* InstallViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallViewController.swift; sourceTree = "<group>"; };
 		8A6F28F1221BA0AA00FF9DB3 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		8A87B8B421A47D8C004496AA /* ModelYearDetermination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelYearDetermination.swift; sourceTree = "<group>"; };
@@ -118,6 +130,7 @@
 		8A0138C8221703CC00C77DA0 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				8A6C6461225DB3FE00CD6DCF /* DeviceIdentifier */,
 				8A87B8B621A47DD8004496AA /* CwlSysctl.swift */,
 				8ADBB215210A623800C4F1D9 /* Extensions.swift */,
 				8A6F28F1221BA0AA00FF9DB3 /* Preferences.swift */,
@@ -162,6 +175,7 @@
 				8A0138D52217624700C77DA0 /* InfoPopoverViewController.swift */,
 				8A6F28EF221B9F5C00FF9DB3 /* InstallViewController.swift */,
 				8ABAE3102252A46300E537D3 /* DiskSelectionDialogViewController.swift */,
+				8A6C645F225DB39500CD6DCF /* DeviceInformationViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -182,6 +196,26 @@
 				8A6C645B225D4E9900CD6DCF /* InstallerCellView.swift */,
 			);
 			path = NSTableCellView;
+			sourceTree = "<group>";
+		};
+		8A6C6461225DB3FE00CD6DCF /* DeviceIdentifier */ = {
+			isa = PBXGroup;
+			children = (
+				8A6C6462225DB40A00CD6DCF /* DeviceIdentifier.swift */,
+				8A6C646C225DD1BB00CD6DCF /* Models */,
+			);
+			path = DeviceIdentifier;
+			sourceTree = "<group>";
+		};
+		8A6C646C225DD1BB00CD6DCF /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				8A6C6466225DB47200CD6DCF /* DeviceInfo.swift */,
+				8A6C6468225DB48200CD6DCF /* DeviceConfigurationCode.swift */,
+				8A6C6464225DB46A00CD6DCF /* DeviceManufacturingInfo.swift */,
+				8A6C646A225DB49000CD6DCF /* DeviceUniqueID.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		8A9370D22256D5E6002B3838 /* Repository */ = {
@@ -327,22 +361,26 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-macOS Utilities/Pods-macOS Utilities-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/Alamofire-SwiftyJSON/Alamofire_SwiftyJSON.framework",
 				"${BUILT_PRODUCTS_DIR}/AppFolder/AppFolder.framework",
 				"${BUILT_PRODUCTS_DIR}/BMExtendablePageController/BMExtendablePageController.framework",
 				"${BUILT_PRODUCTS_DIR}/CAAnimationBlocks/CAAnimationBlocks.framework",
 				"${BUILT_PRODUCTS_DIR}/CocoaAsyncSocket/CocoaAsyncSocket.framework",
 				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack/CocoaLumberjack.framework",
 				"${BUILT_PRODUCTS_DIR}/PaperTrailLumberjack/PaperTrailLumberjack.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire_SwiftyJSON.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AppFolder.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BMExtendablePageController.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CAAnimationBlocks.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaAsyncSocket.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaLumberjack.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PaperTrailLumberjack.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -374,12 +412,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A6C6463225DB40A00CD6DCF /* DeviceIdentifier.swift in Sources */,
 				8A9370CF2256B7F4002B3838 /* Disk.swift in Sources */,
 				8A0138C6221703B700C77DA0 /* Compatibility.swift in Sources */,
+				8A6C646B225DB49000CD6DCF /* DeviceUniqueID.swift in Sources */,
 				8ABAE3132252C1D800E537D3 /* TaskHandler.swift in Sources */,
 				8A87B8B521A47D8C004496AA /* ModelYearDetermination.swift in Sources */,
+				8A6C6469225DB48200CD6DCF /* DeviceConfigurationCode.swift in Sources */,
 				8ABAE30F22527B9100E537D3 /* ApplicationUtility.swift in Sources */,
 				8A6C6456225D304700CD6DCF /* WizardViewController.swift in Sources */,
+				8A6C6467225DB47200CD6DCF /* DeviceInfo.swift in Sources */,
 				8A0138D1221749BD00C77DA0 /* VersionNumbers.swift in Sources */,
 				8A9370D62256D604002B3838 /* Item.swift in Sources */,
 				8A6C6459225D324900CD6DCF /* PageController.swift in Sources */,
@@ -387,6 +429,8 @@
 				8ABAE31D2252DA5800E537D3 /* Installer.swift in Sources */,
 				8ADBB216210A623800C4F1D9 /* Extensions.swift in Sources */,
 				8A9370D12256BB5A002B3838 /* Volume.swift in Sources */,
+				8A6C6460225DB39500CD6DCF /* DeviceInformationViewController.swift in Sources */,
+				8A6C6465225DB46A00CD6DCF /* DeviceManufacturingInfo.swift in Sources */,
 				8A6C645C225D4E9900CD6DCF /* InstallerCellView.swift in Sources */,
 				8A9370D42256D5F6002B3838 /* ItemRepository.swift in Sources */,
 				8A0138D62217624700C77DA0 /* InfoPopoverViewController.swift in Sources */,

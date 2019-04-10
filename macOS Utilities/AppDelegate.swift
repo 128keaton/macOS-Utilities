@@ -35,7 +35,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             ItemRepository.shared.addFakeInstaller()
         #endif
 
-
         ItemRepository.shared.getApplications().filter { $0.isUtility == true }.map { NSMenuItem(title: $0.name, action: #selector(openApp(sender:)), keyEquivalent: "") }.forEach { utilitiesMenu?.addItem($0) }
 
         let installersShareIP = Preferences.shared.getServerIP()

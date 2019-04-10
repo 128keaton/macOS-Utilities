@@ -248,15 +248,38 @@ class Preferences {
             else {
                 return nil
         }
-        
+
         guard let helpEmailAddress = preferences["Help Email Address"] as? String
             else {
                 return nil
         }
-        
+
         return helpEmailAddress
     }
-    
+
+    public func canUseDeviceIdentifierAPI() -> Bool {
+        guard let plistPath = self.getPropertyList()
+            else {
+                return false
+        }
+        guard let preferences = NSDictionary(contentsOf: plistPath)
+            else {
+                return false
+        }
+
+        guard let authenticationToken = preferences["DeviceIdentifier Authentication Token"] as? String
+            else {
+                return false
+        }
+
+        if authenticationToken != ""  && authenticationToken != " " {
+            DeviceIdentifier.setup(authenticationToken: authenticationToken)
+            return true
+        }
+        
+        return false
+    }
+
     public func getApplications() -> [String: [String: String]]? {
         guard let plistPath = self.getPropertyList()
             else {
@@ -287,7 +310,7 @@ class Preferences {
         let fileLogger: DDFileLogger = DDFileLogger()
         fileLogger.rollingFrequency = 60 * 60 * 24
         fileLogger.logFileManager.maximumNumberOfLogFiles = 7
-        
+
         DDLog.add(fileLogger)
         DDLog.add(DDOSLogger.sharedInstance)
 
