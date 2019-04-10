@@ -15,8 +15,5 @@ The `com.er2.applications.plist` file is full of options like:
 * Applications
 * Remote NFS server containing install images
 * Papertrail Remote Logging
-
-## [10.13 'Kickoff'](https://github.com/128keaton/macOS-Installer-Kickoff)
-
-Currently, the software installation is kicked off by an AppleScript app that calls a bash script to erase the drive and open the High Sierra installer application. If you do not require the drive to be erased, you can replace the path string in the application yourself. 
-
+* Email address to email logs to
+* [DeviceIdentifier](https://docs.reincubate.com/deviceidentifier/) API key
