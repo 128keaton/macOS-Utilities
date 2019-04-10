@@ -44,38 +44,51 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Info" id="VuQ-BV-BSY"/>
                             </menuItem>
-                            <menuItem title="Debug" tag="1" allowsKeyEquivalentWhenHidden="YES" id="sPu-5E-K3N">
+                            <menuItem title="Debug" tag="1" allowsKeyEquivalentWhenHidden="YES" id="1sU-Rk-1kE">
                                 <modifierMask key="keyEquivalentModifierMask" option="YES"/>
-                                <menu key="submenu" title="Debug" id="s3u-ZL-WVO">
+                                <menu key="submenu" title="Debug" id="GXn-H7-cJV">
                                     <items>
-                                        <menuItem title="Reload Preferences" keyEquivalent="R" allowsKeyEquivalentWhenHidden="YES" id="aen-O5-oBn">
+                                        <menuItem title="Reload Preferences" keyEquivalent="R" allowsKeyEquivalentWhenHidden="YES" id="JK4-mY-I21">
                                             <connections>
-                                                <action selector="reloadPreferences:" target="Voe-Tx-rLC" id="IzR-3u-Em3"/>
+                                                <action selector="reloadPreferences:" target="Voe-Tx-rLC" id="mk2-gy-DTW"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Reload Installers" keyEquivalent="r" allowsKeyEquivalentWhenHidden="YES" id="EC4-va-hBY">
+                                        <menuItem title="Reload Installers" keyEquivalent="r" allowsKeyEquivalentWhenHidden="YES" id="XrX-XG-Hcw">
                                             <connections>
-                                                <action selector="reloadInstallers:" target="Voe-Tx-rLC" id="fsa-Hk-J76"/>
+                                                <action selector="reloadInstallers:" target="Voe-Tx-rLC" id="Bie-Wy-vnB"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem isSeparatorItem="YES" id="I0T-So-KPy"/>
-                                        <menuItem title="Create Installable FakeInstaller" id="k8a-KL-UK4">
+                                        <menuItem isSeparatorItem="YES" id="sbP-hP-eoY"/>
+                                        <menuItem title="Create Installable FakeInstaller" id="pgc-ka-9qo">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="createFakeInstaller:" target="Voe-Tx-rLC" id="mqO-0q-OKw"/>
+                                                <action selector="createFakeInstaller:" target="Voe-Tx-rLC" id="Pkq-f5-avL"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Create Non-Installable FakeInstaller" id="xLK-nm-OL9">
+                                        <menuItem title="Create Non-Installable FakeInstaller" id="U7j-uH-HHG">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="createFakeInstallerNonInstallable:" target="Voe-Tx-rLC" id="VhU-cd-cf5"/>
+                                                <action selector="createFakeInstallerNonInstallable:" target="Voe-Tx-rLC" id="sbb-vd-0ce"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem isSeparatorItem="YES" id="ZJI-sO-Fla"/>
-                                        <menuItem title="Eject Shares and Installers" keyEquivalent="" allowsKeyEquivalentWhenHidden="YES" id="MQr-bN-p41">
+                                        <menuItem isSeparatorItem="YES" id="NdI-Zg-5Ek"/>
+                                        <menuItem title="Eject Shares and Installers" keyEquivalent="" allowsKeyEquivalentWhenHidden="YES" id="JnW-n4-prs">
                                             <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
                                             <connections>
-                                                <action selector="ejectAll:" target="Voe-Tx-rLC" id="Ok9-EO-jEk"/>
+                                                <action selector="ejectAll:" target="Voe-Tx-rLC" id="onb-3i-W6s"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="Help" tag="1" allowsKeyEquivalentWhenHidden="YES" id="sPu-5E-K3N">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Help" id="s3u-ZL-WVO">
+                                    <items>
+                                        <menuItem title="Send Log" allowsKeyEquivalentWhenHidden="YES" id="aen-O5-oBn">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="setTicketEmail:" target="Voe-Tx-rLC" id="ldL-Wn-MJ4"/>
                                             </connections>
                                         </menuItem>
                                     </items>

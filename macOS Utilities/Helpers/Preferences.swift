@@ -266,6 +266,11 @@ class Preferences {
         let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
         let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
 
+        let fileLogger: DDFileLogger = DDFileLogger()
+        fileLogger.rollingFrequency = 60 * 60 * 24
+        fileLogger.logFileManager.maximumNumberOfLogFiles = 7
+        
+        DDLog.add(fileLogger)
         DDLog.add(DDOSLogger.sharedInstance)
 
         if(self.checkIfLoggingEnabled()) {
@@ -289,6 +294,7 @@ class Preferences {
             DDLogInfo("Remote logging disabled")
         }
 
+        DDLogInfo("macOS_Utilities-\(version)-\(build)")
         DDLogInfo("\n")
         DDLogInfo("\n---------------------------LOGGER INITIALIZED---------------------------")
         DDLogInfo("\n")

@@ -121,6 +121,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+    // MARK: Debug menu functions
     @IBAction func reloadPreferences(_ sender: NSMenuItem) {
         ItemRepository.shared.reloadAllItems()
     }
@@ -144,6 +145,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
 
+    // MARK: Info menu functions
     // Unfortunately, this is rate limited :/
     @objc func openSerialLink() {
         if let serial = serialNumber {
@@ -164,5 +166,25 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         IOObjectRelease(platformExpert)
         return serialNumber
+    }
+
+    // MARK: Help menu functions
+    @IBAction func setTicketEmail(_ sender: NSMenuItem) {
+        let emailService = NSSharingService(named: .composeEmail)
+        let logFilePaths = (DDLog.allLoggers.first { $0 is DDFileLogger } as! DDFileLogger).logFileManager.sortedLogFilePaths.map { URL(fileURLWithPath: $0) }
+        let htmlContent = "<h2>Please type your issue here:<h2><br><p>Replace Me</p>".data(using: .utf8)
+        
+        var items: [Any] = [NSAttributedString(html: htmlContent!, options: [:], documentAttributes: nil)!]
+        var emailSubject = Host.current().localizedName != nil ? String("\(Host.current().localizedName!)__(\(Sysctl.model)__\(getSystemUUID() ?? ""))") : String("\(Sysctl.model)__(\(getSystemUUID() ?? ""))")
+        
+        #if DEBUG
+            emailSubject = emailSubject + "__DEBUG__"
+        #endif
+        
+        logFilePaths.forEach { items.append($0) }
+
+        emailService?.subject = emailSubject
+        emailService?.recipients = ["keaton.burleson@er2.com"]
+        emailService?.perform(withItems: items)
     }
 }
