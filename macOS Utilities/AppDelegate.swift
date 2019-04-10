@@ -65,7 +65,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         infoMenu.items.filter { $0.title.contains("Install") }.forEach { infoMenu.removeItem($0) }
 
         if (infoMenu.items.filter { $0 == NSMenuItem.separator() }).count > 2 {
-            infoMenu.removeItem(infoMenu.items.first { $0 == NSMenuItem.separator() }!)
+            if let separator = (infoMenu.items.first { $0 == NSMenuItem.separator() }) {
+                infoMenu.removeItem(separator)
+            }
         }
     }
 
@@ -75,14 +77,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 else {
                     return
             }
-            
+
             let installerVersion = String(sender.title.split(separator: " ")[1])
- 
-            if let selectedInstaller = (installers.first { $0.versionNumber == installerVersion }){
-                print(sender)
-                print(selectedInstaller)
+
+            if let selectedInstaller = (installers.first { $0.versionNumber == installerVersion }) {
                 ItemRepository.shared.setSelectedInstaller(selectedInstaller)
-                
                 pageControllerDelegate.showPageController(initialPage: 1)
             }
         }
@@ -97,13 +96,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         if(DiskUtility.shared.allSharesAndInstallersUnmounted == false) {
+            DDLogInfo("Terminating application..waiting for disks to eject")
             DiskUtility.shared.ejectAll { (didComplete) in
                 DDLogInfo("Finished ejecting? \(didComplete)")
                 self.checkIfReadyToTerminate()
             }
             return .terminateLater
         }
-
         return .terminateNow
     }
 

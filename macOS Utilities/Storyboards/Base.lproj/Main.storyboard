@@ -604,7 +604,7 @@ Gw
                             </scrollView>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2LR-R3-eAq">
                                 <rect key="frame" x="585" y="10" width="101" height="32"/>
-                                <buttonCell key="cell" type="push" title="Next" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="pGT-CR-abJ">
+                                <buttonCell key="cell" type="push" title="Next" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="pGT-CR-abJ">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -799,22 +799,6 @@ Gw
                         <rect key="frame" x="0.0" y="0.0" width="700" height="450"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="SVH-uj-clc">
-                                <rect key="frame" x="32" y="20" width="650" height="71"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="71" id="ciT-0q-JAW"/>
-                                </constraints>
-                                <textFieldCell key="cell" selectable="YES" alignment="center" title="Multiline Label" id="4xS-S4-Qoh">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
-                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nCC-WW-Y8N">
-                                <rect key="frame" x="279" y="154" width="142" height="142"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="SuccessIcon" id="X15-zQ-ugI"/>
-                            </imageView>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JT1-a5-blz">
                                 <rect key="frame" x="18" y="358" width="664" height="50"/>
                                 <constraints>
@@ -826,19 +810,67 @@ Gw
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="nCC-WW-Y8N">
+                                <rect key="frame" x="279" y="154" width="142" height="142"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="142" id="jTB-qd-5b3"/>
+                                    <constraint firstAttribute="height" constant="142" id="n0O-dk-0RU"/>
+                                </constraints>
+                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="SuccessIcon" id="X15-zQ-ugI"/>
+                            </imageView>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8bP-hF-Emb">
+                                <rect key="frame" x="225" y="13" width="87" height="32"/>
+                                <buttonCell key="cell" type="push" title="Dismiss" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="xvX-g0-aaf">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="dismissPageController:" target="Muo-X3-B6Z" id="H2B-W4-dpO"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fZf-Xv-eVB">
+                                <rect key="frame" x="395" y="13" width="81" height="32"/>
+                                <buttonCell key="cell" type="push" title="Button" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="aoP-gP-cfv">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
+                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="SVH-uj-clc">
+                                <rect key="frame" x="25" y="49" width="650" height="47"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="47" id="3XR-2c-sCe"/>
+                                </constraints>
+                                <textFieldCell key="cell" selectable="YES" alignment="center" title="Multiline Label" id="4xS-S4-Qoh">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="nCC-WW-Y8N" firstAttribute="centerY" secondItem="sMR-7i-URt" secondAttribute="centerY" id="1Mu-0V-Kou"/>
                             <constraint firstItem="JT1-a5-blz" firstAttribute="top" secondItem="sMR-7i-URt" secondAttribute="top" constant="42" id="5tc-Ge-hIX"/>
+                            <constraint firstItem="fZf-Xv-eVB" firstAttribute="top" secondItem="SVH-uj-clc" secondAttribute="bottom" constant="8" symbolic="YES" id="6nV-kr-OAz"/>
+                            <constraint firstItem="SVH-uj-clc" firstAttribute="leading" secondItem="sMR-7i-URt" secondAttribute="leading" constant="27" id="A8H-NR-0uw"/>
                             <constraint firstItem="JT1-a5-blz" firstAttribute="leading" secondItem="sMR-7i-URt" secondAttribute="leading" constant="20" symbolic="YES" id="LaX-7f-qWr"/>
-                            <constraint firstItem="SVH-uj-clc" firstAttribute="leading" secondItem="sMR-7i-URt" secondAttribute="leading" constant="34" id="RRu-PR-eMA"/>
-                            <constraint firstAttribute="bottom" secondItem="SVH-uj-clc" secondAttribute="bottom" constant="20" symbolic="YES" id="Ro3-xy-JEz"/>
-                            <constraint firstAttribute="trailing" secondItem="JT1-a5-blz" secondAttribute="trailing" constant="20" id="m2U-Dz-3Ts"/>
-                            <constraint firstItem="SVH-uj-clc" firstAttribute="trailing" secondItem="JT1-a5-blz" secondAttribute="trailing" id="vHc-oA-Y7X"/>
+                            <constraint firstItem="8bP-hF-Emb" firstAttribute="top" secondItem="SVH-uj-clc" secondAttribute="bottom" constant="8" symbolic="YES" id="Pan-Sn-oAM"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="SVH-uj-clc" secondAttribute="trailing" id="Py4-2o-eky"/>
+                            <constraint firstItem="SVH-uj-clc" firstAttribute="leading" secondItem="sMR-7i-URt" secondAttribute="leading" constant="27" id="SKc-12-S9o"/>
+                            <constraint firstAttribute="bottom" secondItem="SVH-uj-clc" secondAttribute="bottom" constant="49" id="SmR-Dt-1k7"/>
+                            <constraint firstAttribute="trailing" secondItem="JT1-a5-blz" secondAttribute="trailing" constant="20" id="Ub0-Vj-mDF"/>
+                            <constraint firstItem="SVH-uj-clc" firstAttribute="centerX" secondItem="JT1-a5-blz" secondAttribute="centerX" id="e8R-uD-KW3"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="JT1-a5-blz" secondAttribute="trailing" id="m2U-Dz-3Ts"/>
+                            <constraint firstItem="8bP-hF-Emb" firstAttribute="leading" secondItem="sMR-7i-URt" secondAttribute="leading" constant="231" id="oJl-h0-j1x"/>
+                            <constraint firstItem="nCC-WW-Y8N" firstAttribute="centerX" secondItem="SVH-uj-clc" secondAttribute="centerX" id="qqu-5p-90p"/>
+                            <constraint firstItem="fZf-Xv-eVB" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="8bP-hF-Emb" secondAttribute="trailing" constant="12" symbolic="YES" id="vcO-KU-qhI"/>
+                            <constraint firstAttribute="trailing" secondItem="fZf-Xv-eVB" secondAttribute="trailing" constant="230" id="zi3-Lx-rwu"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="descriptionLabel" destination="SVH-uj-clc" id="joO-Nh-JtG"/>
+                        <outlet property="dismissButton" destination="8bP-hF-Emb" id="FDq-1a-Ieh"/>
                         <outlet property="finishedImageView" destination="nCC-WW-Y8N" id="4si-U2-rDv"/>
+                        <outlet property="otherButton" destination="fZf-Xv-eVB" id="lSX-hR-ujd"/>
                         <outlet property="titleTextField" destination="JT1-a5-blz" id="eUS-KY-okd"/>
                     </connections>
                 </viewController>

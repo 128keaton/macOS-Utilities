@@ -61,7 +61,8 @@ class InstallViewController: NSViewController {
         } else if (!shouldDisableInstallButton && !installButton.isEnabled) {
             installButton.isEnabled = true
         }
-
+        
+        ItemRepository.shared.unsetAllSelectedInstallers()
         installers.forEach { $0.isSelected = false }
     }
 
@@ -69,6 +70,7 @@ class InstallViewController: NSViewController {
         if let firstInstallable = (self.installers.first { $0.canInstall }) {
             if let firstInstallableIndex = self.installers.firstIndex(of: firstInstallable) {
                 self.tableView.selectRowIndexes(IndexSet(integer: firstInstallableIndex), byExtendingSelection: false)
+                ItemRepository.shared.setSelectedInstaller(firstInstallable)
                 self.installButton.isEnabled = true
             }
         }
@@ -182,8 +184,10 @@ extension InstallViewController: NSTableViewDelegate, NSTableViewDelegateDeselec
 
         if(potentialInstaller.canInstall) {
             deselectAllInstallers(shouldDisableInstallButton: false)
+            ItemRepository.shared.setSelectedInstaller(potentialInstaller)
             potentialInstaller.isSelected = true
         } else {
+            installButton.isEnabled = false
             DDLogInfo("Unable to install \(potentialInstaller) on machine \(Sysctl.model) ")
         }
 

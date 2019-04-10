@@ -45,6 +45,8 @@ class DiskUtility: NSObject, NSFilePresenter {
                 let diskImageInfo = self.parseDiskUtilList(plistOutput)
                 if let allDisks = diskImageInfo["AllDisksAndPartitions"] as? [NSDictionary] {
                     self.cachedDisks = allDisks.map { Disk(diskDictionary: $0) }
+                    self.mountedInstallers = self.cachedDisks.filter { $0.getMainVolume() !== nil && $0.getMainVolume()?.containsInstaller == true }
+
                     #if DEBUG
                         self.addFakeDisk()
                     #endif
@@ -114,7 +116,7 @@ class DiskUtility: NSObject, NSFilePresenter {
         let folderURL = URL(fileURLWithPath: folderPath)
         do {
             let fileURLs = try fileManager.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: nil)
-            for file in fileURLs {
+            for file in (fileURLs.filter { $0.pathExtension == "dmg" }) {
                 let fileName = file.lastPathComponent
                 if(fileName.contains(".dmg")) {
                     let diskImagePath = "\(folderURL.absoluteString.replacingOccurrences(of: "file://", with: ""))\(fileName)"
@@ -142,7 +144,10 @@ class DiskUtility: NSObject, NSFilePresenter {
             } else {
                 if let plistOutput = taskOutput {
                     let diskImageInfo = self.parseDiskUtilList(plistOutput)
-                    self.cachedDisks.append(Disk(diskImageDictionary: diskImageInfo))
+                    self.diskModificationQueue.sync {
+                        let diskImage = Disk(diskImageDictionary: diskImageInfo)
+                        self.cachedDisks.append(diskImage)
+                    }
                 }
             }
         }
@@ -222,10 +227,14 @@ class DiskUtility: NSObject, NSFilePresenter {
                             if(self.mountedInstallers.count == 0) {
                                 NotificationCenter.default.post(name: ItemRepository.refreshRepository, object: nil)
                                 DDLogInfo("Unmounting NFS shares now")
-                                for share in self.mountedShares {
-                                    self.unmountNFSShare(share, didComplete: { (nfsComplete) in
-                                        didComplete(nfsComplete)
-                                    })
+                                if self.mountedShares.count > 0 {
+                                    for share in self.mountedShares {
+                                        self.unmountNFSShare(share, didComplete: { (nfsComplete) in
+                                            didComplete(nfsComplete)
+                                        })
+                                    }
+                                } else {
+                                    didComplete(true)
                                 }
                             }
                         }
@@ -235,6 +244,16 @@ class DiskUtility: NSObject, NSFilePresenter {
                     }
                 }
             })
+        }
+    }
+
+    public func diskIsAPFS( _ disk: Disk, completion: @escaping (NSDictionary?) -> ()) {
+        TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["apfs", "list", "-plist", disk.deviceIdentifier], hideTaskFailed: true) { (output) in
+            if let apfsOutput = output {
+                if !apfsOutput.contains("is not an APFS Container") {
+                    completion(self.parseDiskUtilAPFSList(apfsOutput))
+                }
+            }
         }
     }
 
@@ -248,18 +267,44 @@ class DiskUtility: NSObject, NSFilePresenter {
                 if let potentialDictionary = try PropertyListSerialization.propertyList(from: diskImageRawData, options: [], format: nil) as? NSDictionary {
                     validDictionary = potentialDictionary
                 } else {
-                    errorDescription = "Output did not contain valid disk info. \n \(diskUtilOutput)"
+                    errorDescription = "Output did not contain valid diskutil info. \n \(diskUtilOutput)"
                 }
 
             } catch let error as NSError {
                 errorDescription = error.localizedDescription
             }
         } else {
-            errorDescription = "Output was invalid: \n \(diskUtilOutput)"
+            errorDescription = "diskutil output was invalid: \n \(diskUtilOutput)"
         }
 
         if let errorDescriptionString = errorDescription {
-            DDLogError("Could not parse disk info: \(errorDescriptionString)")
+            DDLogError("Could not parse diskutil info: \(errorDescriptionString)")
+        }
+
+        return validDictionary
+    }
+
+    private func parseDiskUtilAPFSList(_ apfsOutput: String) -> NSDictionary {
+        var errorDescription: String? = nil
+        var validDictionary = NSDictionary()
+
+        if let diskImageRawData = apfsOutput.data(using: .utf8) {
+            do {
+                if let potentialDictionary = try PropertyListSerialization.propertyList(from: diskImageRawData, options: [], format: nil) as? NSDictionary {
+                    validDictionary = potentialDictionary
+                } else {
+                    errorDescription = "Output did not contain valid APFS disk info. \n \(apfsOutput)"
+                }
+
+            } catch let error as NSError {
+                errorDescription = error.localizedDescription
+            }
+        } else {
+            errorDescription = "APFS output was invalid: \n \(apfsOutput)"
+        }
+
+        if let errorDescriptionString = errorDescription {
+            DDLogError("Could not parse APFS disk info: \(errorDescriptionString)")
         }
 
         return validDictionary
@@ -274,18 +319,18 @@ class DiskUtility: NSObject, NSFilePresenter {
                 if let potentialDictionary = try PropertyListSerialization.propertyList(from: diskImageRawData, options: [], format: nil) as? NSDictionary {
                     validDictionary = potentialDictionary
                 } else {
-                    errorDescription = "Output did not contain valid disk image info. \n \(hdiutilOutput)"
+                    errorDescription = "Output did not contain valid hdiutil image info. \n \(hdiutilOutput)"
                 }
 
             } catch let error as NSError {
                 errorDescription = error.localizedDescription
             }
         } else {
-            errorDescription = "Output was invalid: \n \(hdiutilOutput)"
+            errorDescription = "hdiutil output was invalid: \n \(hdiutilOutput)"
         }
 
         if let errorDescriptionString = errorDescription {
-            DDLogError("Could not parse disk image info: \(errorDescriptionString)")
+            DDLogError("Could not parse hdiutil info: \(errorDescriptionString)")
         }
 
         return validDictionary

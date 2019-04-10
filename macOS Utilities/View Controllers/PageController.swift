@@ -16,8 +16,8 @@ class PageController: NSObject {
     private var pageController: NSPageController? = nil
     private var currentPageIndex = 0
     private var initialPageIndex = 0
-    private var loadingViewController: WizardViewController? = nil
-    private var finishViewController: WizardViewController? = nil
+    private (set) public var loadingViewController: WizardViewController? = nil
+    private (set) public var finishViewController: WizardViewController? = nil
     private var viewControllersAndIdentifiers = [String: NSViewController]()
 
     private override init() {
@@ -42,14 +42,14 @@ class PageController: NSObject {
     }
 
     public func isInitialPage(_ viewController: NSViewController) -> Bool {
-        if let viewControllerMapped = (viewControllersAndIdentifiers.first(where: {$1 == viewController})){
-            if let identifiers =  (pageController?.arrangedObjects.map { String(describing: $0)}){
-                if let indexOfIdentifier = identifiers.firstIndex(of: viewControllerMapped.key){
+        if let viewControllerMapped = (viewControllersAndIdentifiers.first(where: { $1 == viewController })) {
+            if let identifiers = (pageController?.arrangedObjects.map { String(describing: $0) }) {
+                if let indexOfIdentifier = identifiers.firstIndex(of: viewControllerMapped.key) {
                     return initialPageIndex == indexOfIdentifier
                 }
             }
         }
-        
+
         return false
     }
 
@@ -152,22 +152,22 @@ class PageController: NSObject {
                 return
         }
 
+        DDLogInfo("Dismissing NSPageController: \(String(describing: pageController))")
+        pageController.dismiss(self)
+        
         if !savePosition {
             resetPosition()
         }
-
-        DDLogInfo("Dismissing NSPageController: \(String(describing: pageController))")
-        pageController.dismiss(self)
     }
 
-    public func resetPosition(){
-        if(currentPageIndex > 0){
+    public func resetPosition() {
+        if(currentPageIndex > 0) {
             goToPage(0)
         }
         currentPageIndex = 0
         initialPageIndex = 0
     }
-    
+
     public func goToLoadingPage(loadingText: String = "Loading") {
         guard let pageController = self.pageController
             else {
@@ -192,7 +192,7 @@ class PageController: NSObject {
         }
     }
 
-    public func goToFinishPage(finishedText: String = "Finished", descriptionText: String = "Finished task") {
+    public func goToFinishPage(finishedText: String = "Finished", descriptionText: String = "Finished task", otherButtonTitle: String? = nil, otherButtonSelector: Selector? = nil, otherButtonSelectorTarget: AnyObject? = nil) {
         guard let pageController = self.pageController
             else {
                 return
@@ -202,13 +202,10 @@ class PageController: NSObject {
 
         if let loadingPageIndex = objectIdentifiers.firstIndex(of: "finishViewController") {
             if let _finishViewController = finishViewController {
-                _finishViewController.titleText = finishedText
-                _finishViewController.descriptionText = descriptionText
+                buildFinishPage(_finishViewController, finishedText: finishedText, descriptionText: descriptionText, otherButtonTitle: otherButtonTitle, otherButtonSelector: otherButtonSelector, otherButtonSelectorTarget: otherButtonSelectorTarget, viewMode: .finish)
             } else {
                 let _finishViewController = NSStoryboard(name: "Main", bundle: nil).instantiateController(withIdentifier: "finishViewController") as? WizardViewController
-                _finishViewController?.viewMode = .finish
-                _finishViewController?.titleText = finishedText
-                _finishViewController?.descriptionText = descriptionText
+                buildFinishPage(_finishViewController!, finishedText: finishedText, descriptionText: descriptionText, otherButtonTitle: otherButtonTitle, otherButtonSelector: otherButtonSelector, otherButtonSelectorTarget: otherButtonSelectorTarget, viewMode: .finish)
                 self.finishViewController = _finishViewController
             }
 
@@ -216,6 +213,19 @@ class PageController: NSObject {
         } else {
             DDLogInfo("finishViewController identifier not present in arrangedObjects \(pageController.arrangedObjects)")
         }
+    }
+    
+    private func buildFinishPage(_ finishController: WizardViewController, finishedText: String, descriptionText: String, otherButtonTitle: String? = nil, otherButtonSelector: Selector? = nil, otherButtonSelectorTarget: AnyObject? = nil, viewMode: WizardViewMode = .loading) {
+        finishController.titleText = finishedText
+        finishController.descriptionText = descriptionText
+        
+        if let _otherButtonTitle = otherButtonTitle{
+            finishController.otherButtonTitle = _otherButtonTitle
+        }
+        
+        finishController.viewMode = viewMode
+        finishController.otherButtonSelector = otherButtonSelector
+        finishController.otherButtonSelectorTarget = otherButtonSelectorTarget
     }
 }
 extension PageController: NSPageControllerDelegate {
@@ -244,7 +254,7 @@ extension PageController: NSPageControllerDelegate {
         }
 
         viewControllersAndIdentifiers[identifier] = viewController
-        
+
         return viewController
     }
 

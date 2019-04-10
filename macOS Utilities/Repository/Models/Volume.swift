@@ -10,11 +10,13 @@ import Foundation
 import CocoaLumberjack
 
 class Volume: Item {
+    private var invalidDiskPropertyValues = ["EFI", "Invalid", "VM", "Apple_APFS"]
+    
     var deviceIdentifier: String = ""
     var diskUUID: String = ""
-    var mountPoint: String = ""
+    var mountPoint: String = "Invalid"
     var size: Double = 0.0
-    var volumeName: String = ""
+    var volumeName: String = "Invalid"
     var volumeUUID: String = ""
     var containsInstaller: Bool = false
     var installer: Installer? = nil
@@ -27,8 +29,12 @@ class Volume: Item {
         return parentDisk.isFakeDisk ? "FakeVolume \n\t FakeDisk: \n\t\t\(self.parentDisk)" : "Volume: \n\t Device Identifier: \(self.deviceIdentifier) \n\t Disk UUID: \(self.diskUUID) \n\t Installable: \(self.isInstallable) \n\t Mount Point: \(self.mountPoint)\n\t   Volume Name: \(self.volumeName)\n\t Volume UUID: \(self.volumeUUID)\n\t  Installer: \(self.installer == nil ? "None" : self.installer!.description)\n\t   Size: \(self.size) \(self.measurementUnit) \n"
     }
 
+    var isValid: Bool {
+        return !invalidDiskPropertyValues.contains(volumeName) && !invalidDiskPropertyValues.contains(mountPoint)
+    }
+
     var isInstallable: Bool {
-        return ((measurementUnit == "GB" ? size > 150.0: true) && content != "Apple_APFS" && content != "EFI") || parentDisk.isFakeDisk == true
+        return ((measurementUnit == "GB" ? size > 150.0: true) && !invalidDiskPropertyValues.contains(content)) || parentDisk.isFakeDisk == true
     }
 
     init(_ volumeDictionary: NSDictionary, disk: Disk) {
@@ -66,8 +72,10 @@ class Volume: Item {
             self.volumeUUID = volumeUUID
         }
 
-        self.checkIfContainsInstaller()
-        self.addToRepo()
+        if isValid {
+            self.checkIfContainsInstaller()
+            self.addToRepo()
+        }
     }
 
     init(hdiutilVolumeDictionary: NSDictionary, disk: Disk) {
@@ -91,8 +99,10 @@ class Volume: Item {
         self.size = 0.0
         self.parentDisk = disk
 
-        self.checkIfContainsInstaller()
-        self.addToRepo()
+        if isValid {
+            self.checkIfContainsInstaller()
+            self.addToRepo()
+        }
     }
 
     init(mountPoint: String, content: String = "NFS", disk: Disk) {
@@ -100,7 +110,10 @@ class Volume: Item {
         self.content = content
         self.volumeName = String(mountPoint.split(separator: "/").last!)
         self.parentDisk = disk
-        self.addToRepo()
+
+        if isValid {
+            self.addToRepo()
+        }
     }
 
     init(disk: Disk) {
@@ -108,7 +121,7 @@ class Volume: Item {
             self.mountPoint = "/tmp"
             self.volumeName = "FakeDisk"
             self.content = "FakeDisk_Null"
-        }else{
+        } else {
             DDLogError("FakeVolume initializer called without a fake disk.. This initializer (for right now) should only be used with a FakeDisk")
         }
 
@@ -116,6 +129,26 @@ class Volume: Item {
         self.measurementUnit = disk.measurementUnit
         self.parentDisk = disk
         self.addToRepo()
+    }
+
+    public func updateWithAPFSData(_ apfsDataArray: [NSDictionary]) {
+        for apfsData in apfsDataArray {
+            if let volumeUUID = apfsData["APFSVolumeUUID"] as? String {
+                self.volumeUUID = volumeUUID
+            }
+
+            if let diskUUID = apfsData["DiskUUID"] as? String {
+                self.diskUUID = diskUUID
+            }
+
+            if(self.containsInstaller) {
+                if let capacityInUse = apfsData["CapacityInUse"] as? Double {
+                    self.size = capacityInUse
+                }
+            }
+
+            self.checkIfContainsInstaller()
+        }
     }
 
     public func checkIfContainsInstaller() {

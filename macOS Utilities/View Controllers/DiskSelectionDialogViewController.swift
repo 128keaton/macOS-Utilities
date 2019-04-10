@@ -8,13 +8,14 @@
 
 import Foundation
 import AppKit
+import CocoaLumberjack
 
 class DiskSelectionDialogViewController: NSViewController {
     @IBOutlet weak var tableView: NSTableView?
     @IBOutlet weak var nextButton: NSButton?
     @IBOutlet weak var diskProgressIndicator: NSProgressIndicator?
     @IBOutlet weak var installingVersionLabel: NSTextField?
-       @IBOutlet weak var backButton: NSButton!
+    @IBOutlet weak var backButton: NSButton!
 
     private let diskUtility = DiskUtility.shared
 
@@ -73,8 +74,12 @@ class DiskSelectionDialogViewController: NSViewController {
             }
         }
     }
+
+    override func viewWillAppear() {
+        updateBackButton()
+    }
     
-    private func updateBackButton(){
+    private func updateBackButton() {
         if PageController.shared.isInitialPage(self) {
             backButton.title = "Cancel"
         } else {
@@ -95,7 +100,7 @@ class DiskSelectionDialogViewController: NSViewController {
 
 }
 
-extension DiskSelectionDialogViewController: NSTableViewDelegate {
+extension DiskSelectionDialogViewController: NSTableViewDelegate, NSTableViewDelegateDeselectListener {
 
     fileprivate enum CellIdentifiers {
         static let DiskNameCell = "DiskNameID"
@@ -129,54 +134,44 @@ extension DiskSelectionDialogViewController: NSTableViewDelegate {
 
     func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
         self.tableView?.deselectAll(self)
-        print("Disk Selected: \(self.installableVolumes[row])")
+        DDLogInfo("Disk Selected: \(self.installableVolumes[row])")
         self.selectedVolume = self.installableVolumes[row]
         nextButton?.isEnabled = true
 
         return true
     }
 
-    override open func mouseDown(with event: NSEvent) {
-        super.mouseDown(with: event)
-
-        let point = self.view.convert(event.locationInWindow, from: nil)
-        let rowIndex = tableView?.row(at: point)
-
-        if rowIndex! < 0 { // We didn't click any row
-            tableView?.deselectAll(nil)
-            self.selectedVolume = nil
+    func tableView(_ tableView: NSTableView, didDeselectAllRows: Bool) {
+        if(didDeselectAllRows) {
             nextButton?.isEnabled = false
+            DDLogInfo("Deselecting all disks/rows in \(self)")
+            selectedVolume = nil
+        }
+    }
+
+    @objc public func openInstaller() {
+        PageController.shared.dismissPageController()
+
+        if let selectedInstaller = self.selectedInstaller {
+            selectedInstaller.launch()
+        } else if let selectedInstaller = ItemRepository.shared.getSelectedInstaller() {
+            selectedInstaller.launch()
+        } else {
+            DDLogError("Unable to launch installer: no installer selected")
         }
     }
 
     @IBAction func nextButtonClicked(_ sender: NSButton) {
         if let volume = self.selectedVolume {
-            let userConfirmedErase = self.showConfirmationAlert(question: "Confirm Disk Destruction", text: "Are you sure you want to erase disk \(volume.volumeName)")
-            if(userConfirmedErase) {
+            let userConfirmedErase = self.showConfirmationAlert(question: "Confirm Disk Destruction", text: "Are you sure you want to erase disk \(volume.volumeName)? This will make all the data on \(volume.volumeName) unrecoverable.")
 
+            if(userConfirmedErase) {
                 PageController.shared.goToLoadingPage(loadingText: "Erasing Disk \"\(volume.volumeName)\"")
                 sender.isEnabled = false
 
                 diskUtility.erase(volume, newName: volume.volumeName) { (didFinish) in
                     if(didFinish) {
-                        PageController.shared.goToFinishPage(finishedText: "Erase Completed", descriptionText: "Please use the disk \"\(volume.volumeName)\" when installing macOS.")
-
-                        /* self.showInfoAlert(title: "Erase Completed", message: "Please use the disk \"\(volume.volumeName)\" when installing macOS.", completion: { (clickedOk) in
-                            self.nextButton?.isEnabled = true
-
-                            let selectedInstaller = (ItemRepository.shared.getInstallers().first { $0.isSelected == true })
-                            var openInstaller = !volume.parentDisk.isFakeDisk
-
-                            if !openInstaller {
-                                openInstaller = self.showConfirmationAlert(question: "Open Installer?", text: "Do you want to open the selected macOS Installer?")
-                            }
-
-                            if openInstaller && selectedInstaller != nil {
-                                selectedInstaller!.launch()
-                            }
-
-                            PageController.shared.dismissPageController()
-                        })*/
+                        PageController.shared.goToFinishPage(finishedText: "Erase Completed", descriptionText: "Please use the disk \"\(volume.volumeName)\" when installing macOS.", otherButtonTitle: "Open Installer", otherButtonSelector: #selector(DiskSelectionDialogViewController.openInstaller), otherButtonSelectorTarget: self)
                     }
                 }
             }

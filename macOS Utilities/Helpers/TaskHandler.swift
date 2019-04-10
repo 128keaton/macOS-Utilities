@@ -10,7 +10,7 @@ import Foundation
 import CocoaLumberjack
 
 class TaskHandler{
-    public static func createTask(command: String, arguments: [String], printStandardOutput: Bool = false, returnEscaping: @escaping (String?) -> () ) {
+    public static func createTask(command: String, arguments: [String], printStandardOutput: Bool = false, hideTaskFailed: Bool = false, returnEscaping: @escaping (String?) -> () ) {
         let task = Process()
         let errorPipe = Pipe()
         let standardPipe = Pipe()
@@ -31,9 +31,12 @@ class TaskHandler{
                 let standardData = standardHandle.readDataToEndOfFile()
                 let taskStandardOutput = String (data: standardData, encoding: String.Encoding.utf8)
                 
-                if(taskErrorOutput != nil && taskErrorOutput!.count > 0) {
+                if(taskErrorOutput != nil && taskErrorOutput!.count > 0 && hideTaskFailed == false) {
                     DDLogError("Task \(task.launchPath ?? "") \(task.arguments.map { "\($0) " } ?? ""): ")
                     DDLogError("Task failed with: \(taskErrorOutput ?? "No errors..") \(taskStandardOutput ?? "No standard output..") ")
+                    returnEscaping("\(taskErrorOutput ?? "No errors..") \(taskStandardOutput ?? "No standard output..") ")
+                    return
+                }else if(taskErrorOutput != nil && taskErrorOutput!.count > 0 && hideTaskFailed == true){
                     returnEscaping("\(taskErrorOutput ?? "No errors..") \(taskStandardOutput ?? "No standard output..") ")
                     return
                 }

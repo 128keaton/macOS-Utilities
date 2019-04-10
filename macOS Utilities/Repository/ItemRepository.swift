@@ -82,7 +82,7 @@ class ItemRepository {
 
     public func addToRepository(newDisk: Disk) {
         if(self.items.contains { ( $0 as? Disk) != nil && ( $0 as! Disk).id == newDisk.id } == false) {
-            DDLogInfo("Adding disk \(newDisk.id) to repo")
+            DDLogInfo("Adding disk '\(newDisk.deviceIdentifier)' to repo")
             self.items.append(newDisk)
             NotificationCenter.default.post(name: ItemRepository.newDisk, object: nil)
         }
@@ -90,7 +90,7 @@ class ItemRepository {
 
     public func addToRepository(newVolume: Volume) {
         if(self.items.contains { ( $0 as? Volume) != nil && ( $0 as! Volume).id == newVolume.id } == false) {
-            DDLogInfo("Adding volume \(newVolume.id) to repo")
+            DDLogInfo("Adding volume '\(newVolume.volumeName)' to repo")
             self.items.append(newVolume)
             NotificationCenter.default.post(name: ItemRepository.newVolume, object: nil)
         }
@@ -98,7 +98,7 @@ class ItemRepository {
 
     public func addToRepository(newInstaller: Installer) {
         if (self.items.contains { ( $0 as? Installer) != nil && ( $0 as! Installer).id == newInstaller.id } == false) {
-            DDLogInfo("Adding installer \(newInstaller.id) to repo")
+            DDLogInfo("Adding installer '\(newInstaller.versionName)' to repo")
             self.items.append(newInstaller)
             NotificationCenter.default.post(name: ItemRepository.newInstaller, object: nil)
         }
@@ -107,10 +107,9 @@ class ItemRepository {
     public func addToRepository(newApplication: Application) {
         if (self.items.contains { ( $0 as? Application) != nil && ( $0 as! Application).id == newApplication.id } == false) {
             if(newApplication.isUtility == false) {
-                DDLogInfo("Adding application \(newApplication.id) to repo")
-                DDLogInfo(newApplication.description)
+                DDLogInfo("Adding application '\(newApplication.name)' to repo")
             } else {
-                DDLogInfo("Adding utility \(newApplication.id) to repo")
+                DDLogInfo("Adding utility \(newApplication.name) to repo")
             }
 
             self.items.append(newApplication)

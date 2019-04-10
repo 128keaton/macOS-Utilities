@@ -15,7 +15,6 @@ class Installer: NSObject, Item, NSFilePresenter {
     public var isFakeInstaller = false
     private var fakeInstallerCanInstall = false
 
-    private var stopIcon = NSImage(named: "stop")!
     private let installableVersions = ModelYearDetermination().determineInstallableVersions()
 
     var presentedItemURL: URL?
@@ -49,7 +48,7 @@ class Installer: NSObject, Item, NSFilePresenter {
     }
 
     override var description: String {
-        return isFakeInstaller ? "FakeInstaller - Can Install: \(self.canInstall) - Icon: \(icon == stopIcon ? "no" : "yes") - ID: \(self.id)" : "Installer - \(versionNumber) - \(versionName) - Icon: \(icon == stopIcon ? "no" : "yes") - Valid: \(isValid) - Can Install: \(self.canInstall) - ID: \(self.id)"
+        return isFakeInstaller ? "FakeInstaller - Can Install: \(self.canInstall) - Icon: \(icon == prohibatoryIcon ? "no" : "yes") - ID: \(self.id)" : "Installer - \(versionNumber) - \(versionName) - Icon: \(icon == prohibatoryIcon ? "no" : "yes") - Valid: \(isValid) - Can Install: \(self.canInstall) - ID: \(self.id)"
     }
 
     init(volume: Volume) {
@@ -74,7 +73,7 @@ class Installer: NSObject, Item, NSFilePresenter {
             self.versionNumber = String.random(10, numericOnly: true)
             self.fakeInstallerCanInstall = canInstallOnMachine
             self.icon = NSImage(named: "FakeInstallerIcon")!
-            
+
             if(!canInstall) {
                 DispatchQueue.main.async {
                     self.icon.lockFocus()
@@ -82,7 +81,7 @@ class Installer: NSObject, Item, NSFilePresenter {
                     self.icon.unlockFocus()
                 }
             }
-    
+
             self.addToRepo()
         } else {
             DDLogError("FakeInstaller initializer called with isFakeInstaller == false. FakeInstaller initializer should only be called with isFakeInstaller == true")
@@ -111,7 +110,10 @@ class Installer: NSObject, Item, NSFilePresenter {
     }
 
     public func launch() {
-        NSWorkspace.shared.open(URL(fileURLWithPath: "\(self.volume!.mountPoint)/\(versionName).app"))
+        DDLogInfo("Launching installer \(self) at path \(self.presentedItemURL?.absoluteString ?? "Invalid path")")
+        DispatchQueue.main.async {
+            NSWorkspace.shared.open(self.presentedItemURL!.appendingPathComponent(self.appLabel))
+        }
     }
 
     public func refresh() {
@@ -122,10 +124,16 @@ class Installer: NSObject, Item, NSFilePresenter {
     }
 
     private func findAppIcon() -> NSImage {
-        let path = "\(self.volume!.mountPoint)/\(self.appLabel)/Contents/Info.plist"
-        guard let infoDictionary = NSDictionary(contentsOfFile: path)
-            else {
-                return prohibatoryIcon!
+        var path = "\(self.volume!.mountPoint)/\(self.appLabel)/Contents/Info.plist"
+        var infoDictionary = NSDictionary()
+
+        if let potentialInfoDictionary = NSDictionary(contentsOfFile: path) {
+            infoDictionary = potentialInfoDictionary
+        } else if let potentialInfoDictionary = NSDictionary(contentsOfFile: "/Volumes/\(self.versionName)\(path)") {
+            infoDictionary = potentialInfoDictionary
+            path = "/Volumes/\(self.versionName)\(path)"
+        } else {
+            return prohibatoryIcon!
         }
 
         guard let imageName = (infoDictionary["CFBundleIconFile"] as? String)

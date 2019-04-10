@@ -8,12 +8,15 @@
 
 import Foundation
 import AppKit
+import CocoaLumberjack
 
 class WizardViewController: NSViewController {
     @IBOutlet weak var loadingSpinner: NSProgressIndicator?
     @IBOutlet weak var titleTextField: NSTextField?
     @IBOutlet weak var finishedImageView: NSImageView?
     @IBOutlet weak var descriptionLabel: NSTextField?
+    @IBOutlet weak var dismissButton: NSButton?
+    @IBOutlet weak var otherButton: NSButton?
 
     public var titleText: String = "Loading" {
         didSet {
@@ -33,6 +36,24 @@ class WizardViewController: NSViewController {
         }
     }
 
+    public var otherButtonSelector: Selector? = nil {
+        didSet {
+            updateOtherButtonSelector()
+        }
+    }
+
+    public var otherButtonSelectorTarget: AnyObject? = nil {
+        didSet {
+            updateOtherButtonSelector()
+        }
+    }
+
+    public var otherButtonTitle: String = "Next" {
+        didSet {
+            updateOtherButtonTitle()
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         updateView()
@@ -42,6 +63,8 @@ class WizardViewController: NSViewController {
         updateViewMode()
         updateLoadingLabel()
         updateDescriptionLabel()
+        updateOtherButtonSelector()
+        updateOtherButtonTitle()
     }
 
     public func updateViewMode() {
@@ -111,6 +134,52 @@ class WizardViewController: NSViewController {
                 return
         }
         finishedImageView.isHidden = false
+    }
+
+    private func updateOtherButtonSelector() {
+        guard let otherButton = self.otherButton
+            else {
+                return
+        }
+
+        if otherButtonSelector == nil {
+            otherButton.isHidden = true
+        } else {
+            otherButton.isHidden = false
+        }
+
+        otherButton.isHidden = false
+
+        otherButton.action = #selector(performOtherButtonAction)
+        otherButton.target = self
+    }
+
+    @objc private func performOtherButtonAction() {
+        guard let otherButtonSelector = self.otherButtonSelector
+            else {
+                return
+        }
+
+        guard let otherButtonSelectorTarget = self.otherButtonSelectorTarget
+            else {
+                return
+        }
+
+        DDLogInfo("Performing action: \(otherButtonSelector) on target \(otherButtonSelectorTarget)")
+        let _ = otherButtonSelectorTarget.perform(otherButtonSelector)
+    }
+
+    private func updateOtherButtonTitle() {
+        guard let otherButton = self.otherButton
+            else {
+                return
+        }
+
+        otherButton.title = otherButtonTitle
+    }
+
+    @IBAction func dismissPageController(_ sender: NSButton) {
+        PageController.shared.dismissPageController()
     }
 }
 

@@ -9,7 +9,7 @@
 import Foundation
 import CocoaLumberjack
 
-struct Disk: Item {
+class Disk: Item {
     typealias ItemType = Disk
 
     var deviceIdentifier: String = "Invalid"
@@ -19,6 +19,9 @@ struct Disk: Item {
     var id: String = String.random(12).md5Value
     var measurementUnit: String = "GB"
     var isFakeDisk: Bool = false
+    var isAPFS: Bool = false
+    var isFusion: Bool = false
+    var containerIdentifier: String? = nil
 
     var isInstallable: Bool {
         return (measurementUnit == "GB" ? size > 150.0: true) || isFakeDisk == true
@@ -33,7 +36,7 @@ struct Disk: Item {
 
     }
 
-    init(diskDictionary: NSDictionary) {
+    convenience init(diskDictionary: NSDictionary) {
         self.init()
         if let deviceIdentifier = diskDictionary["DeviceIdentifier"] as? String {
             self.deviceIdentifier = deviceIdentifier
@@ -57,40 +60,45 @@ struct Disk: Item {
             self.volumes = unparsedPartitions.map { Volume($0, disk: self) }
         }
 
+        self.checkIfAPFS()
+
         self.addToRepo()
     }
 
-    init(diskImageDictionary: NSDictionary) {
+    convenience init(diskImageDictionary: NSDictionary) {
         self.init()
         if let systemEntities = diskImageDictionary["system-entities"] as? [NSDictionary] {
-            if let diskMetadata = (systemEntities.first { ($0["potentially-mountable"] as! Bool) == false }) {
-                if let deviceIdentifier = diskMetadata["dev-entry"] as? String {
-                    self.deviceIdentifier = deviceIdentifier
-                }
-
-                if let content = diskMetadata["content-hint"] as? String {
-                    self.content = content
-                }
-            }
-
-            if let volumeMetadata = (systemEntities.first { ($0["potentially-mountable"] as! Bool) == true }) {
+            if let volumeMetadata = (systemEntities.first { ($0["potentially-mountable"] as! Bool) == true && ($0["content-hint"] as! String) != "EFI" }) {
                 volumes.append(Volume(hdiutilVolumeDictionary: volumeMetadata, disk: self))
+
+                if let devEntry = volumeMetadata["dev-entry"] as? String {
+                    self.deviceIdentifier = devEntry
+
+                    if let volumeKind = volumeMetadata["volume-kind"] as? String {
+                        if (volumeKind == "apfs") {
+                            self.checkIfAPFS()
+                        }
+                    }
+                }
             }
         }
 
         self.addToRepo()
     }
 
-    init(deviceIdentifier: String = "NFS", content: String = "NFS", mountPoint: String) {
+    convenience init(deviceIdentifier: String = "NFS", content: String = "NFS", mountPoint: String) {
         self.init()
 
         self.deviceIdentifier = deviceIdentifier
         self.content = content
         self.volumes = [Volume(mountPoint: mountPoint, content: content, disk: self)]
+
+        self.checkIfAPFS()
+
         self.addToRepo()
     }
 
-    init(isFakeDisk: Bool = true) {
+    convenience init(isFakeDisk: Bool = true) {
         self.init()
 
         if !isFakeDisk {
@@ -105,8 +113,40 @@ struct Disk: Item {
         self.measurementUnit = "TB"
 
         self.volumes = [Volume(disk: self)]
-
         self.addToRepo()
+    }
+
+    public func checkIfAPFS() {
+        DiskUtility.shared.diskIsAPFS(self) { (apfsData) in
+            if let apfsDictionary = apfsData {
+                self.isAPFS = true
+                if let containers = apfsDictionary["Containers"] as? [NSDictionary] {
+                    for container in containers {
+
+                        if let isFusion = container["Fusion"] as? Bool {
+                            self.isFusion = isFusion
+                        }
+
+                        if let designatedPhysicalStore = container["DesignatedPhysicalStore"] as? String {
+                            self.containerIdentifier = self.deviceIdentifier
+                            self.deviceIdentifier = "/dev/\(designatedPhysicalStore)"
+                        }
+
+                        if let apfsVolumes = container["Volumes"] as? [NSDictionary] {
+                            for apfsVolume in apfsVolumes {
+                                if let apfsVolumeName = apfsVolume["Name"] as? String {
+                                    if let matchedVolume = (self.volumes.first { $0.volumeName == apfsVolumeName }) {
+                                        matchedVolume.deviceIdentifier = self.deviceIdentifier
+                                        matchedVolume.updateWithAPFSData([container, apfsVolume])
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
     }
 
     func getMainVolume() -> Volume? {
