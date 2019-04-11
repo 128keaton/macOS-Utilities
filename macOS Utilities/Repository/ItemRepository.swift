@@ -73,6 +73,7 @@ class ItemRepository {
     }
 
     public func getInstallers() -> [Installer] {
+        print(items.filter { type(of: $0) == Installer.self })
         return (items.filter { type(of: $0) == Installer.self } as! [Installer]).sorted { $0.comparibleVersionNumber < $1.comparibleVersionNumber }
     }
 

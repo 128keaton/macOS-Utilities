@@ -17,17 +17,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var helpMenu: NSMenu?
 
     private let itemRepository = ItemRepository.shared
-    
+
     private var installers = [Installer]()
     private var helpEmailAddress: String? = nil
 
     public let modelYearDetermination = ModelYearDetermination()
     public let pageControllerDelegate: PageController = PageController.shared
+    public var preferenceLoader = PreferenceLoader(useBundlePreferences: true)
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.addInstallersToInfoMenu), name: ItemRepository.newInstaller, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.readPreferences(_:)), name: PreferenceLoader.preferencesLoaded, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.showErrorAlert(notification:)), name: ErrorAlertLogger.showErrorAlert, object: nil)
 
-        buildInfoMenu()
+        preferenceLoader = PreferenceLoader(useBundlePreferences: false)
+        preferenceLoader.constructLogger()
 
         pageControllerDelegate.setPageController(pageController: self.pageController)
 
@@ -35,22 +39,83 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             ItemRepository.shared.addFakeInstaller()
         #endif
 
+        readPreferences()
+
+        buildInfoMenu()
         ItemRepository.shared.getApplications().filter { $0.isUtility == true }.map { NSMenuItem(title: $0.name, action: #selector(openApp(sender:)), keyEquivalent: "") }.forEach { utilitiesMenu?.addItem($0) }
+    }
 
-        let installersShareIP = Preferences.shared.getServerIP()
-        let installersSharePath = Preferences.shared.getServerPath()
-        let installersLocalPath = Preferences.shared.getMountPoint()
+    @objc private func showErrorAlert(notification: Notification) {
+        if let errorDescription = notification.object as? String {
+            showErrorAlertOnCurrentWindow(title: "Error", message: errorDescription)
+        }
+    }
 
-        DiskUtility.shared.mountNFSShare(shareURL: "\(installersShareIP):\(installersSharePath)", localPath: installersLocalPath) { (didSucceed) in
-            if(didSucceed) {
-                DiskUtility.shared.mountDiskImagesAt(installersLocalPath)
+    public func showErrorAlertOnCurrentWindow(title: String, message: String) {
+        // Thank you https://github.com/sparkle-project/Sparkle/compare/1.19.0...1.20.0#diff-79d37b7d406b6534ddab8fa541dfc3e7
+        if !Thread.isMainThread {
+            DispatchQueue.main.async {
+                self.showErrorAlertOnCurrentWindow(title: title, message: message)
+            }
+            return
+        }
+
+        var aWindow: NSWindow? = nil
+
+        if let keyWindow = NSApplication.shared.keyWindow {
+            aWindow = keyWindow
+        } else if let mainWindow = NSApplication.shared.mainWindow {
+            aWindow = mainWindow
+        } else if let firstWindow = NSApplication.shared.windows.first {
+            aWindow = firstWindow
+        }
+
+        if let window = aWindow {
+            if let contentViewController = window.contentViewController {
+                contentViewController.showErrorAlert(title: title, message: message)
             }
         }
-        
-        if let helpEmailAddress = Preferences.shared.getHelpEmailAddress(){
-            self.helpEmailAddress = helpEmailAddress
-        }else{
-            helpMenu?.items.removeAll { $0.title == "Send Log" }
+    }
+
+    @objc private func readPreferences(_ aNotification: Notification? = nil) {
+        var semaphore: DispatchSemaphore? = nil
+
+        if let notification = aNotification {
+            if notification.object != nil {
+                semaphore = DispatchSemaphore(value: 1)
+                DiskUtility.shared.ejectAll { (didComplete) in
+                    semaphore?.signal()
+                }
+            }
+        }
+
+        if let validSemaphore = semaphore {
+            validSemaphore.wait()
+        }
+
+        if let preferences = preferenceLoader.currentPreferences {
+            let installerServer = preferences.installerServerPreferences
+            mountShareFrom(installerServer)
+
+            if let helpEmailAddress = preferences.helpEmailAddress {
+                self.helpEmailAddress = helpEmailAddress
+            }
+
+            if preferences.useDeviceIdentifierAPI == true {
+                DeviceIdentifier.setup(authenticationToken: preferences.deviceIdentifierAuthenticationToken!)
+            }
+
+            buildHelpMenu()
+        }
+    }
+
+    public func mountShareFrom(_ installerServer: InstallerServerPreferences) {
+        if installerServer.serverType == "NFS" && installerServer.isMountable() {
+            DiskUtility.shared.mountNFSShare(shareURL: "\(installerServer.serverIP):\(installerServer.serverPath)", localPath: installerServer.mountPath) { (didSucceed) in
+                if(didSucceed) {
+                    DiskUtility.shared.mountDiskImagesAt(installerServer.mountPath)
+                }
+            }
         }
     }
 
@@ -97,8 +162,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func addInstallersToInfoMenu() {
         removeInstallersFromInfoMenu()
-        installers = ItemRepository.shared.getInstallers().filter { $0.isFakeInstaller == false }
-        installers.forEach { infoMenu?.insertItem(withTitle: "Install \($0.versionNumber) - \($0.canInstall ? "🙂" : "☹️")", action: #selector(AppDelegate.startOSInstall(_:)), keyEquivalent: "", at: 0) }
+        installers = ItemRepository.shared.getInstallers()
+
+        #if !DEBUG
+            installers = installers.filter { $0.isFakeInstaller == false }
+        #endif
+
+        installers.forEach {
+            let installerItem = NSMenuItem(title: "Install \($0.versionName)", action: #selector(AppDelegate.startOSInstall(_:)), keyEquivalent: "")
+            installerItem.image = $0.canInstall ? NSImage(named: "NSStatusAvailable") : NSImage(named: "NSStatusUnavailable")
+            infoMenu?.insertItem(installerItem, at: 0)
+        }
+
         infoMenu?.insertItem(NSMenuItem.separator(), at: (installers.count))
     }
 
@@ -114,6 +189,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return .terminateNow
     }
 
+    func buildHelpMenu() {
+        if helpEmailAddress == nil {
+            helpMenu!.items.removeAll { $0.title == "Send Log" }
+            DDLogInfo("Disabling 'Send Log' menu item. helpEmailAddress is nil")
+        } else {
+            if (helpMenu?.items.filter { $0.title == "Send Log" })!.count == 0 {
+                infoMenu?.addItem(withTitle: "Send Log", action: #selector(AppDelegate.sendLog(_:)), keyEquivalent: "")
+            }
+        }
+    }
+
     func buildInfoMenu() {
         addInstallersToInfoMenu()
 
@@ -125,7 +211,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if let serial = serialNumber {
             infoMenu?.addItem(withTitle: serial, action: nil, keyEquivalent: "")
             infoMenu?.addItem(NSMenuItem.separator())
-            infoMenu?.addItem(withTitle: "Check Warranty", action: #selector(AppDelegate.openSerialLink), keyEquivalent: "")
+            infoMenu?.addItem(withTitle: "Check Warranty", action: #selector(AppDelegate.openCoverageLink), keyEquivalent: "")
         }
     }
 
@@ -140,8 +226,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    @IBAction func reloadInstallers(_ sender: NSMenuItem) {
-        ItemRepository.shared.getInstallers().forEach { $0.refresh() }
+    @IBAction func forceReloadAllDisks(_ sender: NSMenuItem) {
+        DiskUtility.shared.ejectAll { (didComplete) in
+            DDLogInfo("Finished ejecting? \(didComplete)")
+            if let preferences = self.preferenceLoader.currentPreferences {
+                DiskUtility.shared.mountDiskImagesAt(preferences.installerServerPreferences.mountPath)
+            }
+        }
     }
 
     @IBAction func createFakeInstallerNonInstallable(_ sender: NSMenuItem) {
@@ -155,7 +246,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     // MARK: Info menu functions
     // Unfortunately, this is rate limited :/
-    @objc func openSerialLink() {
+    @objc func openCoverageLink() {
         if let serial = serialNumber {
             NSWorkspace().open(URL(string: "https://checkcoverage.apple.com/us/en/?sn=\(serial)")!)
         }
@@ -177,14 +268,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     // MARK: Help menu functions
-    @IBAction func setTicketEmail(_ sender: NSMenuItem) {
+    @objc @IBAction func sendLog(_ sender: NSMenuItem) {
         let emailService = NSSharingService(named: .composeEmail)
         let logFilePaths = (DDLog.allLoggers.first { $0 is DDFileLogger } as! DDFileLogger).logFileManager.sortedLogFilePaths.map { URL(fileURLWithPath: $0) }
         let htmlContent = "<h2>Please type your issue here:</h2><br><p>Replace Me</p>".data(using: .utf8)
-        
+
         var items: [Any] = [NSAttributedString(html: htmlContent!, options: [:], documentAttributes: nil)!]
         let emailSubject = Host.current().localizedName != nil ? String("\(Host.current().localizedName!)__(\(Sysctl.model)__\(getSystemUUID() ?? ""))") : String("\(Sysctl.model)__(\(getSystemUUID() ?? ""))")
-        
+
         logFilePaths.forEach { items.append($0) }
 
         emailService?.subject = emailSubject

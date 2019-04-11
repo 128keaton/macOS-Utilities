@@ -19,9 +19,9 @@ class InstallViewController: NSViewController {
 
     private var compatibilityChecker: Compatibility = Compatibility()
     private var versionNumbers: VersionNumbers = VersionNumbers()
-    private var preferences = Preferences.shared
     private var installers = [Installer]()
 
+    private let preferenceLoader = (NSApplication.shared.delegate as! AppDelegate).preferenceLoader
     private let infoMenu = (NSApplication.shared.delegate as! AppDelegate).infoMenu
 
     public var selectedVersion: Installer? = nil
@@ -61,7 +61,7 @@ class InstallViewController: NSViewController {
         } else if (!shouldDisableInstallButton && !installButton.isEnabled) {
             installButton.isEnabled = true
         }
-        
+
         ItemRepository.shared.unsetAllSelectedInstallers()
         installers.forEach { $0.isSelected = false }
     }

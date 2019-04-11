@@ -13,8 +13,8 @@ import CocoaLumberjack
 class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     @IBOutlet weak var collectionView: NSCollectionView!
     @IBOutlet weak var getInfoButton: NSButton?
-    
-    private let preferences = Preferences.shared
+
+    private let preferenceLoader = PreferenceLoader(useBundlePreferences: false)
     private let itemRepository = ItemRepository.shared
 
     private var disabledPaths: [IndexPath] = []
@@ -23,31 +23,31 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
 
     override func awakeFromNib() {
         NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.getApplicationsAndSections), name: ItemRepository.newApplication, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.readPreferences), name: PreferenceLoader.preferencesLoaded, object: nil)
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         getInfoButton?.alphaValue = 0.0
-        
+
         configureCollectionView()
         addEasterEgg()
-
-        if #available(OSX 10.13, *) {
-            if let contentSize = collectionView.collectionViewLayout?.collectionViewContentSize {
-                collectionView.setFrameSize(contentSize)
-            }
-        }
-        
-        if preferences.canUseDeviceIdentifierAPI(){
-            NSAnimationContext.runAnimationGroup { (context) in
-                context.duration = 0.5
-                self.getInfoButton?.animator().alphaValue = 1.0
-            }
-        }
-
         getApplicationsAndSections()
+
         DDLogInfo("Launched macOS Utilities")
+    }
+
+    @objc private func readPreferences() {
+        if let preferences = preferenceLoader.currentPreferences {
+            if preferences.useDeviceIdentifierAPI {
+                DeviceIdentifier.setup(authenticationToken: preferences.deviceIdentifierAuthenticationToken!)
+                NSAnimationContext.runAnimationGroup { (context) in
+                    context.duration = 0.5
+                    self.getInfoButton?.animator().alphaValue = 1.0
+                }
+            }
+        }
     }
 
     @objc public func getApplicationsAndSections() {
@@ -67,7 +67,7 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         collectionView.addGestureRecognizer(quintClickGesture)
     }
 
-    fileprivate func configureCollectionView() {
+    private func configureCollectionView() {
         let flowLayout = NSCollectionViewFlowLayout()
         flowLayout.itemSize = NSSize(width: 100, height: 120.0)
 
@@ -86,7 +86,7 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     }
 
     @IBAction func installMacOSButtonClicked(_ sender: NSButton) {
-       PageController.shared.showPageController()
+        PageController.shared.showPageController()
     }
 }
 

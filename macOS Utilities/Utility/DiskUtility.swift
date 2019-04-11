@@ -62,33 +62,31 @@ class DiskUtility: NSObject, NSFilePresenter {
 
     public func mountNFSShare(shareURL: String, localPath: String, didSucceed: @escaping (Bool) -> ()) {
         self.createMountPath(localPath) { (alreadyExisted) in
-            var semaphore: DispatchSemaphore? = nil
+
             let contents = try! FileManager.default.contentsOfDirectory(atPath: localPath)
 
             if (alreadyExisted == true && (contents.filter { $0.contains(".dmg") }).count > 0) {
+                // NFS mount already exists AND has our DMGs
                 didSucceed(true)
                 return
-            } else if (alreadyExisted == true) {
-                semaphore = DispatchSemaphore(value: 0)
-                self.unmountNFSShare(nil, path: localPath, didComplete: { (_) in
-                    semaphore?.signal()
-                })
             }
 
-            if let validSemaphone = semaphore {
-                validSemaphone.wait()
-            }
 
-            TaskHandler.createTask(command: "/sbin/mount", arguments: ["-t", "nfs", shareURL, localPath]) { (taskOutput) in
+            TaskHandler.createTask(command: "/sbin/mount", arguments: ["-t", "nfs", shareURL, localPath], timeout: TimeInterval(floatLiteral: 3.0)) { (taskOutput) in
                 DDLogInfo("Mount output: \(taskOutput ?? "NO output")")
                 if let mountOutput = taskOutput {
                     self.presentedItemURL = URL(fileURLWithPath: localPath, isDirectory: true)
-                    if (!["can't", "denied", "error"].map { mountOutput.contains($0) }.contains(true)) {
+                    if (!["can't", "denied", "error", "killed"].map { mountOutput.contains($0) }.contains(true)) {
                         let nfsShare = Disk(deviceIdentifier: "NFS", content: "NFS", mountPoint: localPath)
                         DDLogInfo("Share mounted: \(nfsShare)")
                         self.mountedShares.append(nfsShare)
                         didSucceed(true)
                     } else {
+                        if(mountOutput.contains("killed")) {
+                            DDLogError("Mounting NFS share \"\(shareURL) @ \(localPath)\" failed. \n \n Try checking the hostname/path or local mount point.")
+                        }else{
+                            DDLogError("Mounting NFS share \"\(shareURL):\(localPath)\" failed: \(mountOutput)")
+                        }
                         didSucceed(false)
                     }
                 }
@@ -100,10 +98,19 @@ class DiskUtility: NSObject, NSFilePresenter {
         let temporaryPathURL = URL(fileURLWithPath: path)
         // Checks to see if the temporary dir is created
         if(temporaryPathURL.filestatus == .isNot) {
-            TaskHandler.createTask(command: "/bin/mkdir", arguments: [path]) { (mkdirOutput) in
-                DDLogInfo("Creating directory: \(mkdirOutput ?? "No output")")
-                // TODO: error handling/detection
-                didExist(false)
+            TaskHandler.createTask(command: "/bin/mkdir", arguments: [path]) { (taskOutput) in
+                if let mkdirOutput = taskOutput {
+                    if mkdirOutput.contains("File exists") {
+                        didExist(true)
+                        return
+                    } else {
+                        didExist(false)
+                        return
+                    }
+                } else {
+                    didExist(false)
+                    return
+                }
             }
         } else {
             didExist(true)
@@ -139,8 +146,7 @@ class DiskUtility: NSObject, NSFilePresenter {
             DDLogInfo("Mounting \(at)")
 
             if((taskOutput?.contains("hdiutil: mount failed"))!) {
-                DDLogError("Disk \(at) could not be mounted: \n")
-                DDLogError(taskOutput!)
+                DDLogError("Disk \(at) could not be mounted: \(taskOutput ?? "No output from hdiutil")")
             } else {
                 if let plistOutput = taskOutput {
                     let diskImageInfo = self.parseDiskUtilList(plistOutput)
@@ -169,10 +175,25 @@ class DiskUtility: NSObject, NSFilePresenter {
                 if diskUtilOutput.contains("Unmount successful for") {
                     self.mountedShares.removeAll { $0 == share }
                     DDLogInfo("Unmounted share: \(validPath)")
+                    didComplete(true)
+                    return
                 } else {
                     DDLogError("Unable to unmount share \(validPath): \(diskUtilOutput)")
                     DDLogError(diskUtilOutput)
+                    didComplete(false)
+                    return
                 }
+            }
+        })
+    }
+
+    private func removeMountPoint(_ path: String, didComplete: @escaping (Bool) -> ()) {
+        TaskHandler.createTask(command: "/bin/rm", arguments: ["-rf", path], printStandardOutput: true, returnEscaping: { (taskOutput) in
+            if let rmOutput = taskOutput {
+                DDLogError("Error removing \(path): \(rmOutput)")
+                didComplete(false)
+            } else {
+                DDLogInfo("Successfully removed \(path)")
                 didComplete(true)
             }
         })
@@ -304,7 +325,7 @@ class DiskUtility: NSObject, NSFilePresenter {
         }
 
         if let errorDescriptionString = errorDescription {
-            DDLogError("Could not parse APFS disk info: \(errorDescriptionString)")
+            DDLogError("Could not parse APFS disk info: \(errorDescriptionString) \(apfsOutput)")
         }
 
         return validDictionary

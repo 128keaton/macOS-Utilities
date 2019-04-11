@@ -13,10 +13,10 @@ PODS:
   - CocoaLumberjack/Core (3.5.2)
   - CocoaLumberjack/Swift (3.5.2):
     - CocoaLumberjack/Core
-  - PaperTrailLumberjack/Core (0.1.9):
+  - PaperTrailLumberjack/Core (0.2.0):
     - CocoaAsyncSocket (~> 7.6)
     - CocoaLumberjack (~> 3.4)
-  - PaperTrailLumberjack/Swift (0.1.9):
+  - PaperTrailLumberjack/Swift (0.2.0):
     - CocoaLumberjack/Swift (~> 3.4)
     - PaperTrailLumberjack/Core
   - SwiftyJSON (4.0.0)
@@ -28,7 +28,7 @@ DEPENDENCIES:
   - BMExtendablePageController (from `https://github.com/Foboz/BMExtPageController`)
   - CocoaAsyncSocket
   - CocoaLumberjack/Swift
-  - PaperTrailLumberjack/Swift
+  - PaperTrailLumberjack/Swift (from `https://github.com/128keaton/PaperTrailLumberjack`)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -38,17 +38,21 @@ SPEC REPOS:
     - CAAnimationBlocks
     - CocoaAsyncSocket
     - CocoaLumberjack
-    - PaperTrailLumberjack
     - SwiftyJSON
 
 EXTERNAL SOURCES:
   BMExtendablePageController:
     :git: https://github.com/Foboz/BMExtPageController
+  PaperTrailLumberjack:
+    :git: https://github.com/128keaton/PaperTrailLumberjack
 
 CHECKOUT OPTIONS:
   BMExtendablePageController:
     :commit: c280f73244a92a451f3ea4bcd644180ea3609aab
     :git: https://github.com/Foboz/BMExtPageController
+  PaperTrailLumberjack:
+    :commit: f8af31ca6a1de6b3edf84879620897f6fcb5a54f
+    :git: https://github.com/128keaton/PaperTrailLumberjack
 
 SPEC CHECKSUMS:
   Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
@@ -58,9 +62,9 @@ SPEC CHECKSUMS:
   CAAnimationBlocks: 1aaca5fb6447a95d83b20cc786992956ef46e4ee
   CocoaAsyncSocket: eafaa68a7e0ec99ead0a7b35015e0bf25d2c8987
   CocoaLumberjack: 118bf4a820efc641f79fa487b75ed928dccfae23
-  PaperTrailLumberjack: 449587968d5aeb3eab2d4de041ffc61ee2d49f25
+  PaperTrailLumberjack: cb5a8bc63de97df262c2d60e0f39b2ff0bc2646f
   SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
 
-PODFILE CHECKSUM: 2cc98a676a3366ebc13e4226d869f71edb62aa89
+PODFILE CHECKSUM: 83f1cce8b7f3f5ca3087622eaa340582f60e8f83
 
 COCOAPODS: 1.7.0.beta.3

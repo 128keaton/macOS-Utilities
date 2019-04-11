@@ -11,12 +11,14 @@ import AppKit
 import CocoaLumberjack
 
 class ApplicationUtility {
-    private let preferences = Preferences.shared
-
     static let shared = ApplicationUtility()
+
     private var allApplications = [Application]()
 
+    private let preferenceLoader = (NSApplication.shared.delegate as! AppDelegate).preferenceLoader
+    
     private init() {
+        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationUtility.getApplications), name: PreferenceLoader.preferencesLoaded, object: nil)
         DDLogInfo("Initializing Applications Manager Shared Instance")
     }
 
@@ -26,8 +28,8 @@ class ApplicationUtility {
         allApplications.append(contentsOf: utilitiesPaths.filter { $0 != ".DS_Store" && $0 != ".localized" }.map { Application(name: $0, isUtility: true) })
     }
 
-    public func getApplications() {
-        guard let applications = self.getPreferenceList()["Applications"] as? [String: [String: String]]
+    @objc public func getApplications() {
+        guard let applications = preferenceLoader.currentPreferences?.applications
             else {
                 return
         }
@@ -36,18 +38,10 @@ class ApplicationUtility {
         allApplications.append(contentsOf: applications.map { name, prefDict in (Application(name: name, prefDict: prefDict)) })
     }
 
-
     public func open(_ name: String) {
         if let foundApplication = (allApplications.filter { $0.name == name }.first) {
             foundApplication.open()
         }
     }
-
-    private func getPreferenceList() -> NSDictionary {
-        guard let rawPreferences = preferences.raw()
-            else {
-                return NSDictionary()
-        }
-        return rawPreferences
-    }
 }
+

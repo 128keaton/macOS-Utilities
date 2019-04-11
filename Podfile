@@ -7,6 +7,6 @@ target 'macOS Utilities' do
  pod 'Alamofire-SwiftyJSON'
  pod 'CocoaLumberjack/Swift'
  pod 'CocoaAsyncSocket'
- pod "PaperTrailLumberjack/Swift"
+ pod "PaperTrailLumberjack/Swift", :git => "https://github.com/128keaton/PaperTrailLumberjack"
  pod 'BMExtendablePageController', :git => "https://github.com/Foboz/BMExtPageController"
 end
