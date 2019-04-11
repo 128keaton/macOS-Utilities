@@ -18,6 +18,8 @@ class PreferenceLoader {
 
     private (set) public var currentPreferences: Preferences? = nil
 
+    public static var loaded = false
+
     init(useBundlePreferences: Bool = true) {
         if useBundlePreferences {
             if let bundlePreferences = loadPreferencesFromBundle() {
@@ -46,12 +48,23 @@ class PreferenceLoader {
 
             self.currentPreferences = preferences
             NotificationCenter.default.post(name: PreferenceLoader.preferencesLoaded, object: true)
-            
+
             DDLogInfo("Saved preferences to propertly list at path: \(libraryPropertyListPath)")
             DDLogInfo("Saved preferences to propertly list at path: \(bundlePropertyListPath)")
         } catch {
             DDLogError("Could not save preferences to propertly list at path: \(libraryPropertyListPath): \(error)")
             DDLogError("Could not save preferences to propertly list at path: \(bundlePropertyListPath): \(error)")
+        }
+    }
+
+    public func updateApplications(_ applications: [String: [String: String]], shouldSave: Bool = true) {
+        if var preferences = self.currentPreferences {
+            preferences.applications = applications
+            if shouldSave {
+                save(preferences)
+            } else {
+                self.currentPreferences = preferences
+            }
         }
     }
 
@@ -113,7 +126,7 @@ class PreferenceLoader {
             let logger = RMPaperTrailLogger.sharedInstance()!
 
             logger.debug = false
-            
+
             guard let loggerHost = currentPreferences?.loggingPreferences.loggingURL else { return }
             guard let loggerPort = currentPreferences?.loggingPreferences.loggingPort else { return }
 
@@ -141,6 +154,4 @@ class PreferenceLoader {
         DDLogInfo("\n---------------------------LOGGER INITIALIZED---------------------------")
         DDLogInfo("\n")
     }
-
-
 }

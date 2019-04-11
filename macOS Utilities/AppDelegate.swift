@@ -79,7 +79,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func readPreferences(_ aNotification: Notification? = nil) {
         var semaphore: DispatchSemaphore? = nil
-
+        PreferenceLoader.loaded = true
+        
         if let notification = aNotification {
             if notification.object != nil {
                 semaphore = DispatchSemaphore(value: 1)

@@ -31,8 +31,8 @@ class PreferencesViewController: NSViewController {
     @IBOutlet weak var sendLogAddressField: NSTextField!
     @IBOutlet weak var deviceIdentifierAPITokenField: NSTextField!
     @IBOutlet weak var savePathLabel: NSTextField!
-    
-    private let preferenceLoader = (NSApplication.shared.delegate as! AppDelegate).preferenceLoader
+
+    public let preferenceLoader: PreferenceLoader = (NSApplication.shared.delegate as! AppDelegate).preferenceLoader
     private var preferences: Preferences? = nil {
         didSet {
             updateView()
@@ -49,12 +49,21 @@ class PreferencesViewController: NSViewController {
         }
     }
 
+    override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
+        if segue.identifier == "editApplications" {
+            if let destinationViewController = segue.destinationController as? PreferencesApplicationsViewController,
+                let preferences = self.preferences {
+                destinationViewController.applications = preferences.applications
+                destinationViewController.preferencesViewController = self
+            }
+        }
+    }
     override func viewWillAppear() {
         super.viewWillAppear()
         view.window!.styleMask.remove(.resizable)
         savePathLabel.stringValue = AppFolder.Library.url.appendingPathComponent("ER2", isDirectory: true).absoluteString.replacingOccurrences(of: "file://", with: "")
     }
-    
+
     public func updateView() {
         DispatchQueue.main.async {
             if let preferences = self.preferences {
@@ -112,7 +121,7 @@ class PreferencesViewController: NSViewController {
         }
     }
 
-    @objc private func readPreferences() {
+    @objc public func readPreferences() {
         if let preferences = preferenceLoader.currentPreferences {
             self.preferences = preferences
         }
@@ -143,7 +152,7 @@ class PreferencesViewController: NSViewController {
         sender.state = .off
         NSWorkspace.shared.open(AppFolder.Library.url.appendingPathComponent("ER2", isDirectory: true))
     }
-    
+
     override func viewWillDisappear() {
         savePreferences()
     }

@@ -11,6 +11,7 @@
 		8A0138D1221749BD00C77DA0 /* VersionNumbers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0138D0221749BD00C77DA0 /* VersionNumbers.swift */; };
 		8A0138D62217624700C77DA0 /* InfoPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0138D52217624700C77DA0 /* InfoPopoverViewController.swift */; };
 		8A175AAC225EFEE50018C977 /* ErrorAlertLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A175AAB225EFEE50018C977 /* ErrorAlertLogger.swift */; };
+		8A175AAE225F2BE70018C977 /* PreferencesApplicationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A175AAD225F2BE70018C977 /* PreferencesApplicationsViewController.swift */; };
 		8A39D3602119E81B00437F4E /* com.er2.applications.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8A39D35F2119E81B00437F4E /* com.er2.applications.plist */; };
 		8A47DED9210A2D30003F5CC3 /* NSCollectionAppCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */; };
 		8A47DEDB210A3418003F5CC3 /* NSCollectionAppCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */; };
@@ -54,6 +55,7 @@
 		8A0138D0221749BD00C77DA0 /* VersionNumbers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionNumbers.swift; sourceTree = "<group>"; };
 		8A0138D52217624700C77DA0 /* InfoPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoPopoverViewController.swift; sourceTree = "<group>"; };
 		8A175AAB225EFEE50018C977 /* ErrorAlertLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorAlertLogger.swift; sourceTree = "<group>"; };
+		8A175AAD225F2BE70018C977 /* PreferencesApplicationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesApplicationsViewController.swift; sourceTree = "<group>"; };
 		8A39D35F2119E81B00437F4E /* com.er2.applications.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = com.er2.applications.plist; sourceTree = "<group>"; };
 		8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSCollectionAppCell.swift; sourceTree = "<group>"; };
 		8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NSCollectionAppCell.xib; sourceTree = "<group>"; };
@@ -188,6 +190,7 @@
 				8ABAE3102252A46300E537D3 /* DiskSelectionDialogViewController.swift */,
 				8A6C645F225DB39500CD6DCF /* DeviceInformationViewController.swift */,
 				8A6C646F225E9FA100CD6DCF /* PreferencesViewController.swift */,
+				8A175AAD225F2BE70018C977 /* PreferencesApplicationsViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -469,6 +472,7 @@
 				8A6C6465225DB46A00CD6DCF /* DeviceManufacturingInfo.swift in Sources */,
 				8A6C645C225D4E9900CD6DCF /* InstallerCellView.swift in Sources */,
 				8A9370D42256D5F6002B3838 /* ItemRepository.swift in Sources */,
+				8A175AAE225F2BE70018C977 /* PreferencesApplicationsViewController.swift in Sources */,
 				8A0138D62217624700C77DA0 /* InfoPopoverViewController.swift in Sources */,
 				8ABAE3112252A46300E537D3 /* DiskSelectionDialogViewController.swift in Sources */,
 				8A8B59A5224E9FD100CD4094 /* Application.swift in Sources */,

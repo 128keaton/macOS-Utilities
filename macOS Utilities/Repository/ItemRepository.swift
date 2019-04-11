@@ -29,6 +29,14 @@ class ItemRepository {
         }
 
         NotificationCenter.default.addObserver(self, selector: #selector(ItemRepository.reloadAllItems), name: ItemRepository.refreshRepository, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ItemRepository.reloadApplications), name: PreferenceLoader.preferencesLoaded, object: nil)
+    }
+
+    @objc private func reloadApplications() {
+        if PreferenceLoader.loaded {
+            items.removeAll { type(of: $0) == Application.self }
+            ApplicationUtility.shared.getApplications(shouldClear: true)
+        }
     }
 
     @objc public func reloadAllItems() {
@@ -38,22 +46,22 @@ class ItemRepository {
     }
 
     public func getSelectedInstaller() -> Installer? {
-        if let installer = (self.getInstallers().first { $0.isSelected == true }){
+        if let installer = (self.getInstallers().first { $0.isSelected == true }) {
             return installer
         }
-        
+
         return nil
     }
-    
-    public func setSelectedInstaller(_ installer: Installer){
+
+    public func setSelectedInstaller(_ installer: Installer) {
         unsetAllSelectedInstallers()
         (items.first(where: { ($0 as? Installer) == installer }) as? Installer)?.isSelected = true
     }
 
-    public func unsetAllSelectedInstallers(){
+    public func unsetAllSelectedInstallers() {
         (items.filter { type(of: $0) == Installer.self } as! [Installer]).forEach { $0.isSelected = false }
     }
-    
+
     public func addFakeInstaller(canInstallOnMachine: Bool = false) {
         let fakeInstaller = Installer(isFakeInstaller: true, canInstallOnMachine: canInstallOnMachine)
         fakeItems.append(fakeInstaller)

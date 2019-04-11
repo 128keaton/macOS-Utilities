@@ -14,7 +14,7 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     @IBOutlet weak var collectionView: NSCollectionView!
     @IBOutlet weak var getInfoButton: NSButton?
 
-    private let preferenceLoader = PreferenceLoader(useBundlePreferences: false)
+    private let preferenceLoader: PreferenceLoader? = PreferenceLoader(useBundlePreferences: false)
     private let itemRepository = ItemRepository.shared
 
     private var disabledPaths: [IndexPath] = []
@@ -24,6 +24,7 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     override func awakeFromNib() {
         NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.getApplicationsAndSections), name: ItemRepository.newApplication, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.readPreferences), name: PreferenceLoader.preferencesLoaded, object: nil)
+         NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.readPreferences), name: ApplicationUtility.ApplicationsChanged, object: nil)
     }
 
     override func viewDidLoad() {
@@ -33,13 +34,12 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
 
         configureCollectionView()
         addEasterEgg()
-        getApplicationsAndSections()
 
         DDLogInfo("Launched macOS Utilities")
     }
 
     @objc private func readPreferences() {
-        if let preferences = preferenceLoader.currentPreferences {
+        if let preferences = preferenceLoader?.currentPreferences {
             if preferences.useDeviceIdentifierAPI {
                 DeviceIdentifier.setup(authenticationToken: preferences.deviceIdentifierAuthenticationToken!)
                 NSAnimationContext.runAnimationGroup { (context) in
@@ -47,6 +47,8 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
                     self.getInfoButton?.animator().alphaValue = 1.0
                 }
             }
+            
+            getApplicationsAndSections()
         }
     }
 
@@ -54,6 +56,7 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         let newApplications = ItemRepository.shared.getApplications().filter { $0.showInApplicationsWindow == true }.sorted(by: { $0.sectionName > $1.sectionName })
         let newSections = Array(Set(newApplications.map { $0.sectionName })).sorted(by: { $0 > $1 })
 
+        
         if(newApplications != applications || newSections != sections) {
             sections.append(contentsOf: newSections.filter { sections.contains($0) == false })
             applications.append(contentsOf: newApplications.filter { applications.contains($0) == false })

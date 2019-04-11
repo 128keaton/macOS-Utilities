@@ -21,7 +21,7 @@ class InstallViewController: NSViewController {
     private var versionNumbers: VersionNumbers = VersionNumbers()
     private var installers = [Installer]()
 
-    private let preferenceLoader = (NSApplication.shared.delegate as! AppDelegate).preferenceLoader
+    private let preferenceLoader: PreferenceLoader? = (NSApplication.shared.delegate as! AppDelegate).preferenceLoader
     private let infoMenu = (NSApplication.shared.delegate as! AppDelegate).infoMenu
 
     public var selectedVersion: Installer? = nil
