@@ -42,7 +42,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         readPreferences()
 
         buildInfoMenu()
-        ItemRepository.shared.getApplications().filter { $0.isUtility == true }.map { NSMenuItem(title: $0.name, action: #selector(openApp(sender:)), keyEquivalent: "") }.forEach { utilitiesMenu?.addItem($0) }
+       // ItemRepository.shared.getApplications().filter { $0.isUtility == true }.map { NSMenuItem(title: $0.name, action: #selector(openApp(sender:)), keyEquivalent: "") }.forEach { utilitiesMenu?.addItem($0) }
     }
 
     @objc private func showErrorAlert(notification: Notification) {
@@ -94,7 +94,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             validSemaphore.wait()
         }
 
-        if let preferences = preferenceLoader.currentPreferences {
+        if let preferences = PreferenceLoader.currentPreferences {
             let installerServer = preferences.installerServerPreferences
             mountShareFrom(installerServer)
 
@@ -230,7 +230,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBAction func forceReloadAllDisks(_ sender: NSMenuItem) {
         DiskUtility.shared.ejectAll { (didComplete) in
             DDLogInfo("Finished ejecting? \(didComplete)")
-            if let preferences = self.preferenceLoader.currentPreferences {
+            if let preferences = PreferenceLoader.currentPreferences {
                 DiskUtility.shared.mountDiskImagesAt(preferences.installerServerPreferences.mountPath)
             }
         }

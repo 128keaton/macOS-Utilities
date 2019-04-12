@@ -12,23 +12,24 @@ import PaperTrailLumberjack
 
 class PreferenceLoader {
     static let preferencesLoaded = NSNotification.Name(rawValue: "NSPreferencesLoaded")
+    static let preferencesUpdated = NSNotification.Name(rawValue: "NSPreferencesUpdated")
 
     private let libraryFolder = AppFolder.Library.url.appendingPathComponent("ER2").absoluteString.replacingOccurrences(of: "file://", with: "")
     private let propertyListName = "com.er2.applications"
 
-    private (set) public var currentPreferences: Preferences? = nil
+    private (set) public static var currentPreferences: Preferences? = nil
 
     public static var loaded = false
 
     init(useBundlePreferences: Bool = true) {
         if useBundlePreferences {
             if let bundlePreferences = loadPreferencesFromBundle() {
-                self.currentPreferences = bundlePreferences
+                PreferenceLoader.currentPreferences = bundlePreferences
                 NotificationCenter.default.post(name: PreferenceLoader.preferencesLoaded, object: nil)
             }
         } else {
             if let libraryPreferences = loadPreferencesFromLibraryFolder() {
-                self.currentPreferences = libraryPreferences
+                PreferenceLoader.currentPreferences = libraryPreferences
                 NotificationCenter.default.post(name: PreferenceLoader.preferencesLoaded, object: nil)
             }
         }
@@ -44,9 +45,12 @@ class PreferenceLoader {
         do {
             let data = try encoder.encode(preferences)
             try data.write(to: URL(fileURLWithPath: libraryPropertyListPath))
-            try data.write(to: URL(fileURLWithPath: bundlePropertyListPath))
 
-            self.currentPreferences = preferences
+            #if !DEBUG
+                try data.write(to: URL(fileURLWithPath: bundlePropertyListPath))
+            #endif
+
+            PreferenceLoader.currentPreferences = preferences
             NotificationCenter.default.post(name: PreferenceLoader.preferencesLoaded, object: true)
 
             DDLogInfo("Saved preferences to propertly list at path: \(libraryPropertyListPath)")
@@ -57,22 +61,15 @@ class PreferenceLoader {
         }
     }
 
-    public func updateApplications(_ applications: [String: [String: String]], shouldSave: Bool = true) {
-        if var preferences = self.currentPreferences {
-            preferences.applications = applications
-            if shouldSave {
-                save(preferences)
-            } else {
-                self.currentPreferences = preferences
-            }
-        }
-    }
-
     // MARK Property List Retreival
     private func loadPreferences(_ path: String) -> Preferences? {
         if let xml = FileManager.default.contents(atPath: path) {
-            if let parsedPreferences = try? PropertyListDecoder().decode(Preferences.self, from: xml) {
-                return parsedPreferences
+            do {
+                let preferences = try PropertyListDecoder().decode(Preferences.self, from: xml)
+                return preferences
+            } catch let error {
+                DDLogError("\(error)")
+                print("Error parsing preferences: \(error)")
             }
         }
         return nil
@@ -122,13 +119,13 @@ class PreferenceLoader {
         DDLog.add(ErrorAlertLogger())
         DDLog.add(DDOSLogger.sharedInstance)
 
-        if(currentPreferences != nil && currentPreferences?.loggingPreferences.loggingEnabled == true) {
+        if(PreferenceLoader.currentPreferences != nil && PreferenceLoader.currentPreferences?.loggingPreferences.loggingEnabled == true) {
             let logger = RMPaperTrailLogger.sharedInstance()!
 
             logger.debug = false
 
-            guard let loggerHost = currentPreferences?.loggingPreferences.loggingURL else { return }
-            guard let loggerPort = currentPreferences?.loggingPreferences.loggingPort else { return }
+            guard let loggerHost = PreferenceLoader.currentPreferences?.loggingPreferences.loggingURL else { return }
+            guard let loggerPort = PreferenceLoader.currentPreferences?.loggingPreferences.loggingPort else { return }
 
             logger.host = loggerHost
             logger.port = loggerPort

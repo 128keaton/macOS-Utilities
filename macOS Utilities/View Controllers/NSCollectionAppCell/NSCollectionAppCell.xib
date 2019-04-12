@@ -14,33 +14,34 @@
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gs5-ZP-wAf">
-                    <rect key="frame" x="27" y="0.0" width="41" height="17"/>
-                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Label" id="oKJ-ZF-bC0">
-                        <font key="font" metaFont="system"/>
+                    <rect key="frame" x="4" y="7" width="88" height="13"/>
+                    <textFieldCell key="cell" lineBreakMode="truncatingTail" truncatesLastVisibleLine="YES" sendsActionOnEndEditing="YES" alignment="center" title="Google Chrome" id="oKJ-ZF-bC0">
+                        <font key="font" metaFont="system" size="10"/>
                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
                 <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="gzM-Dz-wwk">
-                    <rect key="frame" x="6" y="20" width="84" height="84"/>
+                    <rect key="frame" x="9" y="28" width="78" height="78"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="84" id="Pyw-Af-Hi8"/>
-                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="84" id="arw-i6-rqa"/>
-                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="84" id="kZF-7X-upQ"/>
-                        <constraint firstAttribute="width" constant="84" id="rZ3-Hg-Po9"/>
+                        <constraint firstAttribute="height" constant="78" id="Pyw-Af-Hi8"/>
+                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="78" id="arw-i6-rqa"/>
+                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="78" id="kZF-7X-upQ"/>
+                        <constraint firstAttribute="width" constant="78" id="rZ3-Hg-Po9"/>
                     </constraints>
                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="AlertIcon" id="vJq-LD-afc"/>
                 </imageView>
             </subviews>
             <constraints>
-                <constraint firstItem="gs5-ZP-wAf" firstAttribute="top" secondItem="gzM-Dz-wwk" secondAttribute="bottom" constant="3" id="Q4a-Ck-ACk"/>
-                <constraint firstAttribute="bottom" secondItem="gzM-Dz-wwk" secondAttribute="bottom" constant="20" symbolic="YES" id="UgR-xC-c98"/>
+                <constraint firstItem="gs5-ZP-wAf" firstAttribute="trailing" secondItem="gzM-Dz-wwk" secondAttribute="trailing" constant="3" id="1t1-tb-Kr6"/>
+                <constraint firstItem="gs5-ZP-wAf" firstAttribute="leading" secondItem="gzM-Dz-wwk" secondAttribute="leading" constant="-3" id="KNj-Q1-Agd"/>
+                <constraint firstAttribute="bottom" secondItem="gzM-Dz-wwk" secondAttribute="bottom" constant="28" id="UgR-xC-c98"/>
                 <constraint firstItem="gzM-Dz-wwk" firstAttribute="centerX" secondItem="o2S-uG-gT8" secondAttribute="centerX" id="aUH-Zy-SUv"/>
-                <constraint firstItem="gs5-ZP-wAf" firstAttribute="centerX" secondItem="gzM-Dz-wwk" secondAttribute="centerX" id="enK-cz-FrI"/>
+                <constraint firstItem="gs5-ZP-wAf" firstAttribute="top" secondItem="gzM-Dz-wwk" secondAttribute="bottom" constant="8" id="bdK-X8-jSc"/>
             </constraints>
             <point key="canvasLocation" x="127.5" y="182.5"/>
         </view>
-        <collectionViewItem id="tl3-tm-gU8" customClass="NSCollectionAppCell" customModule="macOS_Utilities" customModuleProvider="target">
+        <collectionViewItem title="App Cell" nibName="NSCollectionAppCell" id="tl3-tm-gU8" customClass="NSCollectionAppCell" customModule="macOS_Utilities" customModuleProvider="target">
             <connections>
                 <outlet property="icon" destination="gzM-Dz-wwk" id="VWm-C3-Jlw"/>
                 <outlet property="sourceItemView" destination="o2S-uG-gT8" id="l6Q-qF-ccL"/>

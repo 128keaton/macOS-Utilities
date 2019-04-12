@@ -10,13 +10,12 @@ import Foundation
 import AppKit
 import CocoaLumberjack
 
-class Application: Item {
-    let prohibatoryIcon = NSImage(named: "stop")
+class Application: Item, Codable {
+    static let prohibatoryIcon = NSImage(named: "stop")
     var name: String
     var isUtility: Bool = false
     var path: String
     var isInvalid = false
-    var sectionName = "Basic"
     var id: String {
         get {
             return self.name.md5Value
@@ -26,7 +25,7 @@ class Application: Item {
     var showInApplicationsWindow = true
 
     var description: String {
-        return "Application: \n\t Name: \(self.name) \n\t Utility: \(self.isUtility) \n\t Invalid: \(self.isInvalid) \n\t Section: \(self.sectionName) \n\t Path: \(self.path)"
+        return "Application: \n\t Name: \(self.name) \n\t Utility: \(self.isUtility) \n\t Invalid: \(self.isInvalid) \n\t \n\t Path: \(self.path)"
     }
 
     func addToRepo() {
@@ -47,31 +46,12 @@ class Application: Item {
         self.addToRepo()
     }
 
-    convenience init(name: String, path: String) {
+    convenience init(name: String, path: String, showInApplicationsWindow: Bool = false) {
         self.init(name: name)
         self.path = path
 
         self.determineUtilityFromPath()
-    }
-
-    convenience init(name: String, prefDict: [String: String]) {
-        self.init(name: name)
-
-        if let prefPath = prefDict["Path"] {
-            self.path = prefPath
-        } else {
-            DDLogInfo("Unable to parse path from dictionary for app: \(name)")
-            self.isInvalid = true
-        }
-
-        if let sectionName = prefDict["Section"] {
-            self.sectionName = sectionName
-        } else {
-            DDLogInfo("No section set for app: \(name), using 'Basic'.")
-        }
-
-        self.determineUtilityFromPath()
-        self.showInApplicationsWindow = true
+        self.showInApplicationsWindow = showInApplicationsWindow
     }
 
     private func determineUtilityFromPath() {
@@ -121,13 +101,13 @@ class Application: Item {
         guard let infoDictionary = NSDictionary(contentsOfFile: infoPath)
             else {
                 isInvalid = true
-                return prohibatoryIcon!
+                return Application.prohibatoryIcon!
         }
 
         guard let imageName = (infoDictionary["CFBundleIconFile"] as? String)
             else {
                 isInvalid = true
-                return prohibatoryIcon!
+                return Application.prohibatoryIcon!
         }
 
         let imagePath = URL(fileURLWithPath: "\(self.path)/Contents/Resources/\(imageName)", isDirectory: false)
@@ -145,3 +125,4 @@ class Application: Item {
             lhs.name == rhs.name
     }
 }
+

@@ -19,27 +19,29 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
 
     private var disabledPaths: [IndexPath] = []
     private var applications: [Application] = []
-    private var sections: [String] = []
-
-    override func awakeFromNib() {
-        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.getApplicationsAndSections), name: ItemRepository.newApplication, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.readPreferences), name: PreferenceLoader.preferencesLoaded, object: nil)
-         NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.readPreferences), name: ApplicationUtility.ApplicationsChanged, object: nil)
-    }
+    private var applicationsInSections = [[Application]]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         getInfoButton?.alphaValue = 0.0
 
-        configureCollectionView()
         addEasterEgg()
+        if let collectionViewNib = NSNib(nibNamed: "NSCollectionAppCell", bundle: nil) {
+            collectionView.register(collectionViewNib, forItemWithIdentifier: NSUserInterfaceItemIdentifier(rawValue: "NSCollectionAppCell"))
+            registerForNotifications()
+        }
 
         DDLogInfo("Launched macOS Utilities")
     }
 
+    private func registerForNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.getApplications), name: ItemRepository.newApplication, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.readPreferences), name: PreferenceLoader.preferencesLoaded, object: nil)
+    }
+
     @objc private func readPreferences() {
-        if let preferences = preferenceLoader?.currentPreferences {
+        if let preferences = PreferenceLoader.currentPreferences {
             if preferences.useDeviceIdentifierAPI {
                 DeviceIdentifier.setup(authenticationToken: preferences.deviceIdentifierAuthenticationToken!)
                 NSAnimationContext.runAnimationGroup { (context) in
@@ -47,22 +49,32 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
                     self.getInfoButton?.animator().alphaValue = 1.0
                 }
             }
-            
-            getApplicationsAndSections()
         }
     }
 
-    @objc public func getApplicationsAndSections() {
-        let newApplications = ItemRepository.shared.getApplications().filter { $0.showInApplicationsWindow == true }.sorted(by: { $0.sectionName > $1.sectionName })
-        let newSections = Array(Set(newApplications.map { $0.sectionName })).sorted(by: { $0 > $1 })
+    @objc public func getApplications() {
+        if !Thread.isMainThread {
+            DispatchQueue.main.async {
+                self.getApplications()
+            }
+            return
+        }
 
-        
-        if(newApplications != applications || newSections != sections) {
-            sections.append(contentsOf: newSections.filter { sections.contains($0) == false })
+        let newApplications = ItemRepository.shared.getApplications().filter { $0.showInApplicationsWindow == true }.sorted(by: { $0.name > $1.name })
+
+        if(newApplications.count > applications.count) {
             applications.append(contentsOf: newApplications.filter { applications.contains($0) == false })
-            self.collectionView?.reloadData()
+        } else if (newApplications.count < applications.count) {
+            applications.removeAll { !newApplications.contains($0) }
         }
+
+        applicationsInSections = applications.count > 4 ? applications.chunked(into: 4) : [applications]
+
+   
+        configureCollectionView()
+        self.collectionView?.reloadData()
     }
+
 
     private func addEasterEgg() {
         let quintClickGesture = NSClickGestureRecognizer(target: self, action: #selector(startEasterEgg))
@@ -71,14 +83,39 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     }
 
     private func configureCollectionView() {
-        let flowLayout = NSCollectionViewFlowLayout()
-        flowLayout.itemSize = NSSize(width: 100, height: 120.0)
+        // collectionView width is 660
+        // inner available width is 640 (insets are 10.0 left/right)
 
-        flowLayout.sectionInset = NSEdgeInsets(top: 0.0, left: 10.0, bottom: 10.0, right: 10.0)
-        flowLayout.minimumInteritemSpacing = 60.0
-        flowLayout.minimumLineSpacing = 30.0
+        DispatchQueue.main.async {
+            let flowLayout = NSCollectionViewFlowLayout()
 
-        collectionView.collectionViewLayout = flowLayout
+            let collectionViewWidth = 640
+            let collectionViewHeight = 291.0
+
+            let itemWidth = 100
+            let itemHeight = 120
+
+            let totalNumberOfItems = Double(self.applications.count)
+            let numberOfItemsInSections = self.applicationsInSections.map { $0.count }
+
+            let itemSpacing = (collectionViewWidth - (numberOfItemsInSections.first! * itemWidth)) / numberOfItemsInSections.first!
+
+            flowLayout.itemSize = NSSize(width: itemWidth, height: itemHeight)
+
+            if totalNumberOfItems <= 4.0 {
+                flowLayout.minimumLineSpacing = 0.0
+                flowLayout.sectionInset = NSEdgeInsets(top: CGFloat(collectionViewHeight / 4.0), left: 10.0, bottom: 10.0, right: 10.0)
+            } else {
+                flowLayout.minimumLineSpacing = 3.0
+                flowLayout.sectionInset = NSEdgeInsets(top: 0.0, left: 10.0, bottom: 10.0, right: 10.0)
+            }
+
+
+            print("Item spacing: \(itemSpacing)")
+
+            flowLayout.minimumInteritemSpacing = CGFloat(itemSpacing)
+            self.collectionView.collectionViewLayout = flowLayout
+        }
     }
 
     @IBAction func ejectCDTray(_ sender: NSMenuItem) {
@@ -97,51 +134,44 @@ extension ApplicationViewController: NSCollectionViewDataSource {
     func collectionView(_ collectionView: NSCollectionView, didSelectItemsAt indexPaths: Set<IndexPath>) {
         let indexPath = indexPaths.first!
 
+        let applicationsInSection = applicationsInSections[indexPath.section]
+        let applicationFromSection = applicationsInSection[indexPath.item]
 
-        if !disabledPaths.contains(indexPath) {
-
-            let applicationsForSection = applications.filter { $0.sectionName == sections[indexPath.section] }
-
-            if applicationsForSection.indices.contains(indexPath.item) {
-                applicationsForSection[indexPath.item].open()
-            } else {
-                DDLogError("This shouldn't happen... Application section (\(indexPath.section), \(applicationsForSection)) does not contain an element at \(indexPath.item)")
-            }
-        } else {
-            collectionView.deselectItems(at: indexPaths)
+        if(applicationFromSection.isInvalid) {
+            disabledPaths.append(indexPath)
+            return deselectAllItems(indexPaths)
         }
 
+        applicationFromSection.open()
+        deselectAllItems(indexPaths)
+    }
+
+    func deselectAllItems(_ indexPaths: Set<IndexPath>) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.06) {
-            collectionView.deselectItems(at: indexPaths)
+            self.collectionView.deselectItems(at: indexPaths)
         }
     }
 
     func numberOfSections(in collectionView: NSCollectionView) -> Int {
-        return sections.count
+        return applicationsInSections.count
     }
 
     func collectionView(_ collectionView: NSCollectionView, numberOfItemsInSection section: Int) -> Int {
-        return applications.filter { $0.sectionName == sections[section] }.count
+        return applicationsInSections[section].count
     }
 
     func collectionView(_ collectionView: NSCollectionView, itemForRepresentedObjectAt
     indexPath: IndexPath) -> NSCollectionViewItem {
         let item = collectionView.makeItem(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "NSCollectionAppCell"), for: indexPath)
+        let applicationsInSection = applicationsInSections[indexPath.section]
 
-        let applicationsForSection = applications.filter { $0.sectionName == sections[indexPath.section] }
+        let applicationFromSection = applicationsInSection[indexPath.item]
 
-        if applicationsForSection.indices.contains(indexPath.item) {
-            let app = applicationsForSection[indexPath.item]
-            if(app.isInvalid) {
-                disabledPaths.append(indexPath)
-            }
-
-            return app.getCollectionViewItem(item: item)
-        } else {
-            DDLogError("This shouldn't happen... Application section (\(indexPath.section), \(applicationsForSection)) does not contain an element at \(indexPath.item)")
+        if(applicationFromSection.isInvalid) {
+            disabledPaths.append(indexPath)
         }
 
-        return NSCollectionViewItem()
+        return applicationFromSection.getCollectionViewItem(item: item)
     }
 
     @objc func startEasterEgg() {

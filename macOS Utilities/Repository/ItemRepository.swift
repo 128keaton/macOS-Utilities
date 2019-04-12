@@ -20,6 +20,7 @@ class ItemRepository {
     static let newInstaller = Notification.Name("NSNewInstaller")
     static let newVolume = Notification.Name("NSNewVolume")
     static let refreshRepository = Notification.Name("NSRefreshRepository")
+    static let updatingApplications = Notification.Name("NSUpdatingApplications")
 
     private init() {
         DDLogInfo("ItemRepository initialized")
@@ -115,16 +116,19 @@ class ItemRepository {
 
     public func addToRepository(newApplication: Application) {
         if (self.items.contains { ( $0 as? Application) != nil && ( $0 as! Application).id == newApplication.id } == false) {
+            self.items.append(newApplication)
+
             if(newApplication.isUtility == false) {
                 DDLogInfo("Adding application '\(newApplication.name)' to repo")
+                NotificationCenter.default.post(name: ItemRepository.newApplication, object: nil)
             } else {
                 DDLogInfo("Adding utility \(newApplication.name) to repo")
             }
-
-            self.items.append(newApplication)
-            NotificationCenter.default.post(name: ItemRepository.newApplication, object: nil)
         }
     }
 
-
+    public func addToRepository(newApplications: [Application]) {
+        self.items.append(contentsOf: newApplications)
+        NotificationCenter.default.post(name: ItemRepository.newApplication, object: nil)
+    }
 }

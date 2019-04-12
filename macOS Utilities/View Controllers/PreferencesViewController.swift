@@ -53,8 +53,7 @@ class PreferencesViewController: NSViewController {
         if segue.identifier == "editApplications" {
             if let destinationViewController = segue.destinationController as? PreferencesApplicationsViewController,
                 let preferences = self.preferences {
-                destinationViewController.applications = preferences.applications
-                destinationViewController.preferencesViewController = self
+                destinationViewController.preferences = preferences
             }
         }
     }
@@ -122,13 +121,15 @@ class PreferencesViewController: NSViewController {
     }
 
     @objc public func readPreferences() {
-        if let preferences = preferenceLoader.currentPreferences {
+        if let preferences = PreferenceLoader.currentPreferences {
             self.preferences = preferences
         }
     }
 
     private func savePreferences() {
-        if var preferences = self.preferences {
+        NotificationCenter.default.post(name: ItemRepository.updatingApplications, object: nil)
+
+        if let preferences = self.preferences {
             preferences.installerServerPreferences.serverIP = installerServerIPField.stringValue
             preferences.installerServerPreferences.serverPath = installerServerPathField.stringValue
             preferences.installerServerPreferences.mountPath = installerMountPathField.stringValue
@@ -148,12 +149,13 @@ class PreferencesViewController: NSViewController {
 
     }
 
+    @IBAction func closePreferences(_ sender: NSButton) {
+        savePreferences()
+        self.view.window?.windowController?.close()
+    }
+
     @IBAction func openSavePath(_ sender: NSButton) {
         sender.state = .off
         NSWorkspace.shared.open(AppFolder.Library.url.appendingPathComponent("ER2", isDirectory: true))
-    }
-
-    override func viewWillDisappear() {
-        savePreferences()
     }
 }

@@ -183,7 +183,7 @@ extension String {
 
     static func random(_ length: Int, numericOnly: Bool = false) -> String {
         var letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        
+
         if(numericOnly) {
             letters = "123456789"
         }
@@ -203,6 +203,14 @@ extension String {
         } catch let error {
             DDLogInfo("invalid regex: \(error.localizedDescription)")
             return []
+        }
+    }
+}
+
+extension Array {
+    func chunked(into size: Int) -> [[Element]] {
+        return stride(from: 0, to: count, by: size).map {
+            Array(self[$0 ..< Swift.min($0 + size, count)])
         }
     }
 }

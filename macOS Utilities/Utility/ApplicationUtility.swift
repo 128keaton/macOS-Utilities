@@ -12,14 +12,14 @@ import CocoaLumberjack
 
 class ApplicationUtility {
     static let shared = ApplicationUtility()
-    static let ApplicationsChanged = NSNotification.Name("NSApplicationsChanged")
-    
+
     private var allApplications = [Application]()
 
     public let preferenceLoader: PreferenceLoader? = (NSApplication.shared.delegate as! AppDelegate).preferenceLoader
 
     private init() {
         NotificationCenter.default.addObserver(self, selector: #selector(ApplicationUtility.getApplications), name: PreferenceLoader.preferencesLoaded, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationUtility.forceReloadApplications), name: PreferenceLoader.preferencesUpdated, object: nil)
         DDLogInfo("Initializing Applications Manager Shared Instance")
     }
 
@@ -30,19 +30,27 @@ class ApplicationUtility {
     }
 
     @objc public func getApplications(shouldClear: Bool = false) {
-        guard let preferenceLoader = self.preferenceLoader else { return }
-        guard let applications = preferenceLoader.currentPreferences?.applications else { return }
-        
         if(shouldClear == true) {
-            allApplications = []
+            return forceReloadApplications()
         }
 
+        guard let applications = PreferenceLoader.currentPreferences?.getApplications() else { return }
+
+        allApplications.append(contentsOf: applications)
+        allApplications.forEach { $0.showInApplicationsWindow = true }
+
+        ItemRepository.shared.addToRepository(newApplications: allApplications)
+    }
+
+    @objc public func forceReloadApplications() {
+        guard let applications = PreferenceLoader.currentPreferences?.getApplications() else { return }
+
+        allApplications = []
+
         allApplications.removeAll { $0.isUtility == false }
-        allApplications.append(contentsOf: applications.map { name, prefDict in (Application(name: name, prefDict: prefDict)) })
-        
-        if(shouldClear == true) {
-            NotificationCenter.default.post(name: ApplicationUtility.ApplicationsChanged, object: nil)
-        }
+        allApplications.append(contentsOf: applications)
+
+        ItemRepository.shared.addToRepository(newApplications: allApplications)
     }
 
     public func open(_ name: String) {
