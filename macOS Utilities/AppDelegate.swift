@@ -135,11 +135,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 return
         }
 
-        infoMenu.items.filter { $0.title.contains("Install") }.forEach { infoMenu.removeItem($0) }
-
-        if (infoMenu.items.filter { $0 == NSMenuItem.separator() }).count > 2 {
-            if let separator = (infoMenu.items.first { $0 == NSMenuItem.separator() }) {
-                infoMenu.removeItem(separator)
+        if ((infoMenu.items.filter { $0.title.contains("Install") }).count > 1){
+            if (infoMenu.items.filter { $0 == NSMenuItem.separator() }).count > 2 {
+                if let separator = (infoMenu.items.first { $0 == NSMenuItem.separator() }) {
+                    infoMenu.removeItem(separator)
+                }
             }
         }
     }

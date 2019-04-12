@@ -10,7 +10,7 @@ import Foundation
 import AppKit
 import CocoaLumberjack
 
-class Application: Item, Codable {
+@objcMembers class Application: NSObject, Item, Codable {
     static let prohibatoryIcon = NSImage(named: "stop")
     var name: String
     var isUtility: Bool = false
@@ -24,7 +24,7 @@ class Application: Item, Codable {
 
     var showInApplicationsWindow = true
 
-    var description: String {
+    override var description: String {
         return "Application: \n\t Name: \(self.name) \n\t Utility: \(self.isUtility) \n\t Invalid: \(self.isInvalid) \n\t \n\t Path: \(self.path)"
     }
 
@@ -43,10 +43,12 @@ class Application: Item, Codable {
             self.path = "/Applications/\(self.name).app"
         }
 
+        super.init()
         self.addToRepo()
     }
 
     convenience init(name: String, path: String, showInApplicationsWindow: Bool = false) {
+
         self.init(name: name)
         self.path = path
 
@@ -124,5 +126,6 @@ class Application: Item, Codable {
         return lhs.path == rhs.path &&
             lhs.name == rhs.name
     }
+
 }
 

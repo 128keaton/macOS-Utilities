@@ -34,7 +34,6 @@ class ApplicationUtility {
             guard let applications = PreferenceLoader.currentPreferences?.getApplications() else { return }
             
             allApplications.append(contentsOf: applications)
-            allApplications.forEach { $0.showInApplicationsWindow = true }
             
             ItemRepository.shared.addToRepository(newApplications: allApplications)
         }

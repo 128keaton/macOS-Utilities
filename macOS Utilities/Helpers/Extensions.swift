@@ -121,7 +121,23 @@ extension NSViewController {
     }
 }
 
-extension NSTableView {
+extension MutableCollection where Self : RandomAccessCollection {
+    /// Sort `self` in-place using criteria stored in a NSSortDescriptors array
+    public mutating func sort(sortDescriptors theSortDescs: [NSSortDescriptor]) {
+        sort { by:
+            for sortDesc in theSortDescs {
+                switch sortDesc.compare($0, to: $1) {
+                case .orderedAscending: return true
+                case .orderedDescending: return false
+                case .orderedSame: continue
+                }
+            }
+            return false
+        }
+    }
+}
+
+class KBTableView: NSTableView {
     override open func mouseDown(with event: NSEvent) {
         let globalLocation = event.locationInWindow
         let localLocation = convert(globalLocation, from: nil)
@@ -134,19 +150,21 @@ extension NSTableView {
             if let delegate = self.delegate {
                 if delegate is NSTableViewDelegateDeselectListener {
                     (delegate as! NSTableViewDelegateDeselectListener).tableView?(self, didDeselectAllRows: true)
+                    return
                 }
             }
+            return super.mouseDown(with: event)
         } else {
-
             if let delegate = self.delegate {
-                if let shouldSelect = delegate.tableView?(self, shouldSelectRow: clickedRow) {
-                    if shouldSelect {
-                        self.selectRowIndexes(IndexSet(integer: clickedRow), byExtendingSelection: false)
+                if delegate is NSTableViewDelegateDeselectListener {
+                    if let shouldSelect = delegate.tableView?(self, shouldSelectRow: clickedRow) {
+                        if shouldSelect {
+                            return self.selectRowIndexes(IndexSet(integer: clickedRow), byExtendingSelection: false)
+                        }
                     }
                 }
-            } else {
-                self.selectRowIndexes(IndexSet(integer: clickedRow), byExtendingSelection: false)
             }
+            return super.mouseDown(with: event)
         }
     }
 }
@@ -212,6 +230,22 @@ extension Array {
         return stride(from: 0, to: count, by: size).map {
             Array(self[$0 ..< Swift.min($0 + size, count)])
         }
+    }
+    
+    mutating func move(from start: Index, to end: Index) {
+        guard (0..<count) ~= start, (0...count) ~= end else { return }
+        if start == end { return }
+        let targetIndex = start < end ? end - 1 : end
+        insert(remove(at: start), at: targetIndex)
+    }
+    
+    mutating func move(with indexes: IndexSet, to toIndex: Index) {
+        let movingData = indexes.map{ self[$0] }
+        let targetIndex = toIndex - indexes.filter{ $0 < toIndex }.count
+        for (i, e) in indexes.enumerated() {
+            remove(at: e - i)
+        }
+        insert(contentsOf: movingData, at: targetIndex)
     }
 }
 

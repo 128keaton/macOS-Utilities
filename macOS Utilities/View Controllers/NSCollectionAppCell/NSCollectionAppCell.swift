@@ -24,7 +24,8 @@ class NSCollectionAppCell: NSCollectionViewItem {
     }
     override func viewDidLoad() {
         NotificationCenter.default.addObserver(self, selector: #selector(self.hide), name: ItemRepository.hideApplications, object: nil)
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.show), name: ItemRepository.showApplications, object: nil)
+
         if let titleLabel = self.titleLabel {
 
             self.icon?.alphaValue = 0.0
@@ -40,18 +41,14 @@ class NSCollectionAppCell: NSCollectionViewItem {
         }
     }
 
-    override func viewDidAppear() {
-        self.show()
-    }
-
-    private func show() {
+    @objc private func show() {
         NSAnimationContext.runAnimationGroup { (context) in
             context.duration = 0.5
             self.icon?.animator().alphaValue = 1.0
             self.titleLabel?.animator().alphaValue = 1.0
         }
     }
-    
+
     @objc private func hide() {
         NSAnimationContext.runAnimationGroup { (context) in
             context.duration = 0.5

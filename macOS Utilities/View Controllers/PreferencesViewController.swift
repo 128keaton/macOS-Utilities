@@ -56,6 +56,7 @@ class PreferencesViewController: NSViewController {
         if segue.identifier == "editApplications" {
             if let destinationViewController = segue.destinationController as? PreferencesApplicationsViewController,
                 let preferences = self.preferences {
+                destinationViewController.preferencesViewController = self
                 destinationViewController.preferences = preferences
             }
         }

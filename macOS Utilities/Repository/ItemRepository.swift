@@ -23,6 +23,7 @@ class ItemRepository {
     static let refreshRepository = Notification.Name("NSRefreshRepository")
     static let updatingApplications = Notification.Name("NSUpdatingApplications")
     static let hideApplications = Notification.Name("NSHideApplications")
+    static let showApplications =  Notification.Name("NSShowApplications")
 
     private init() {
         DDLogInfo("ItemRepository initialized")

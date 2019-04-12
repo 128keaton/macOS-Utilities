@@ -49,8 +49,6 @@ class Preferences: Codable, NSCopying {
                 mappedApplications = (applications.objectValue?.map {
                     Application(name: $0, path: $1.stringValue!)
                 })!
-                
-                mappedApplications?.forEach { $0.showInApplicationsWindow = true }
             }
         }
 

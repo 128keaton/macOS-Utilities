@@ -13,6 +13,11 @@ import CocoaLumberjack
 class PreferencesApplicationsViewController: NSViewController {
     @IBOutlet weak var tableView: NSTableView!
 
+    public var preferencesViewController: PreferencesViewController? = nil
+
+    private var dragDropType = NSPasteboard.PasteboardType(rawValue: "public.data")
+    private var fileNameType = NSPasteboard.PasteboardType(rawValue: "NSFilenamesPboardType")
+
     private let fileType = ["app"]
 
     private var applications = [Application]() {
@@ -30,11 +35,18 @@ class PreferencesApplicationsViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        if #available(OSX 10.13, *) {
-            tableView.registerForDraggedTypes([NSPasteboard.PasteboardType.fileURL, NSPasteboard.PasteboardType.URL])
-        } else {
-            tableView.registerForDraggedTypes([NSPasteboard.PasteboardType.filePromise])
-        }
+        tableView.dataSource = self
+        tableView.allowsMultipleSelection = true
+        tableView.registerForDraggedTypes([dragDropType])
+
+        let sortValid = NSSortDescriptor(key: "isInvalid", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
+        tableView.tableColumns[0].sortDescriptorPrototype = sortValid
+
+        let sortName = NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
+        tableView.tableColumns[1].sortDescriptorPrototype = sortName
+
+        let sortShow = NSSortDescriptor(key: "showInApplicationsWindow", ascending: false, selector: #selector(NSNumber.compare(_:)))
+        tableView.tableColumns[3].sortDescriptorPrototype = sortShow
 
         if let currentPreferences = self.preferences {
             self.applications = currentPreferences.getApplications()
@@ -44,7 +56,11 @@ class PreferencesApplicationsViewController: NSViewController {
     private func updateApplications() {
         if let currentPreferences = PreferenceLoader.currentPreferences {
             currentPreferences.setApplications(self.applications)
+
             PreferenceLoader.save(currentPreferences, notify: false)
+            if let preferencesViewController = self.preferencesViewController {
+                preferencesViewController.applicationsCountLabel.stringValue = "\(self.applications.count) application(s)"
+            }
             NotificationCenter.default.post(name: ItemRepository.updatingApplications, object: self.applications)
         }
     }
@@ -59,10 +75,10 @@ extension PreferencesApplicationsViewController: NSTableViewDataSource, NSTableV
         static let ApplicationEnableCell = "ApplicationEnableCell"
     }
 
-    func tableView(_ tableView: NSTableView, namesOfPromisedFilesDroppedAtDestination dropDestination: URL, forDraggedRowsWith indexSet: IndexSet) -> [String] {
-        print(dropDestination)
-
-        return ["Hest"]
+    func tableView(_ tableView: NSTableView, pasteboardWriterForRow row: Int) -> NSPasteboardWriting? {
+        let item = NSPasteboardItem()
+        item.setString(String(row), forType: self.dragDropType)
+        return item
     }
 
     func tableView(_ tableView: NSTableView, validateDrop info: NSDraggingInfo, proposedRow row: Int, proposedDropOperation dropOperation: NSTableView.DropOperation) -> NSDragOperation {
@@ -73,19 +89,58 @@ extension PreferencesApplicationsViewController: NSTableViewDataSource, NSTableV
         return .generic
     }
 
-    func tableView(_ tableView: NSTableView, acceptDrop info: NSDraggingInfo, row: Int, dropOperation: NSTableView.DropOperation) -> Bool {
-        guard let board = info.draggingPasteboard.propertyList(forType: NSPasteboard.PasteboardType(rawValue: "NSFilenamesPboardType")) as? NSArray,
-            let path = board[0] as? String
-            else { return false }
+    func tableView(_ tableView: NSTableView, sortDescriptorsDidChange oldDescriptors: [NSSortDescriptor]) {
+        let oldApplications = applications
+        applications.sort(sortDescriptors: tableView.sortDescriptors)
 
-        let suffix = URL(fileURLWithPath: path).pathExtension
-        for ext in self.fileType {
-            if ext.lowercased() == suffix {
-                addAppAt(path)
-                return true
-            }
+        if applications != oldApplications {
+            updateApplications()
+            tableView.reloadData()
         }
+    }
 
+    func tableView(_ tableView: NSTableView, acceptDrop info: NSDraggingInfo, row: Int, dropOperation: NSTableView.DropOperation) -> Bool {
+        if let board = info.draggingPasteboard.propertyList(forType: fileNameType) as? NSArray {
+            if let path = board[0] as? String {
+                let suffix = URL(fileURLWithPath: path).pathExtension
+                for ext in self.fileType {
+                    if ext.lowercased() == suffix {
+                        return addAppAt(path)
+                    }
+                }
+            }
+        } else {
+            var oldIndexes = [Int]()
+            info.enumerateDraggingItems(options: [], for: tableView, classes: [NSPasteboardItem.self], searchOptions: [:]) { dragItem, _, _ in
+                if let str = (dragItem.item as! NSPasteboardItem).string(forType: self.dragDropType), let index = Int(str) {
+                    oldIndexes.append(index)
+                }
+            }
+
+            var oldIndexOffset = 0
+            var newIndexOffset = 0
+
+            // For simplicity, the code below uses `tableView.moveRowAtIndex` to move rows around directly.
+            // You may want to move rows in your content array and then call `tableView.reloadData()` instead.
+            tableView.beginUpdates()
+            for oldIndex in oldIndexes {
+                if oldIndex < row {
+                    tableView.moveRow(at: oldIndex + oldIndexOffset, to: row - 1)
+                    applications.move(from: oldIndex + oldIndexOffset, to: row - 1)
+                    oldIndexOffset -= 1
+                } else {
+                    tableView.moveRow(at: oldIndex, to: row + newIndexOffset)
+                    applications.move(from: oldIndex, to: row + newIndexOffset)
+                    newIndexOffset += 1
+                }
+            }
+
+
+            tableView.endUpdates()
+            updateApplications()
+
+            return true
+        }
         return false
     }
 
@@ -116,13 +171,24 @@ extension PreferencesApplicationsViewController: NSTableViewDataSource, NSTableV
             }
 
             if cellIdentifier == CellIdentifiers.ApplicationEnableCell {
-                print(cell.subviews)
+                if let checkBox = (cell.subviews.first { type(of: $0) == NSButton.self }) as? NSButton {
+                    checkBox.state = (application.showInApplicationsWindow ? .on : .off)
+                }
             }
-
             return cell
         }
 
         return nil
+    }
+
+    @IBAction func toggleShownStatus(_ sender: NSButton) {
+        let row = tableView.row(for: sender)
+
+        if applications.indices.contains(row) {
+            applications[row].showInApplicationsWindow = (sender.state == .on)
+            updateApplications()
+        }
+
     }
 
     @IBAction func openContainingFolderButtonClicked(_ sender: NSButton) {
@@ -153,7 +219,7 @@ extension PreferencesApplicationsViewController: NSTableViewDataSource, NSTableV
         return false
     }
 
-    private func addAppAt(_ appPath: String) {
+    private func addAppAt(_ appPath: String) -> Bool {
         let appName = String(appPath.split(separator: "/").last!).replacingOccurrences(of: ".app", with: "")
         if (!applications.contains { $0.name == appName }) {
             let newApplication = Application(name: appName, path: appPath)
@@ -162,17 +228,23 @@ extension PreferencesApplicationsViewController: NSTableViewDataSource, NSTableV
             applications.append(newApplication)
             tableView.reloadData()
             updateApplications()
+            return true
         }
+
+        return false
     }
 
     private func removeAppSelected() {
-        let selectedIndex = tableView.selectedRow
-        if applications.indices.contains(selectedIndex) {
-            let existingApplication = applications[selectedIndex]
-            applications.removeAll { $0 == existingApplication }
-            updateApplications()
+        tableView.selectedRowIndexes.forEach {
+            if applications.indices.contains($0) {
+                let existingApplication = applications[$0]
+                applications.removeAll { $0 == existingApplication }
+                updateApplications()
+            }
         }
     }
+
+
 
     func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
         return true

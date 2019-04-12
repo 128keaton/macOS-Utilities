@@ -96,13 +96,16 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
             applications.removeAll { !newApplications.contains($0) }
         } else if newApplications.count == 0 {
             applications.removeAll()
+        } else {
+            applications = newApplications
         }
-
-
+        
         applicationsInSections = applications.count > 4 ? applications.chunked(into: 4) : [applications]
 
-        if(applications.count > 0 && applicationsInSections.count > 0 && applicationsInSections.first!.count > 0) {
-            configureCollectionView()
+        DispatchQueue.main.async {
+            if(self.applications.count > 0 && self.applicationsInSections.count > 0 && self.applicationsInSections.first!.count > 0) {
+                self.configureCollectionView()
+            }
         }
 
         self.collectionView?.reloadData()
@@ -134,19 +137,23 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
 
         flowLayout.itemSize = NSSize(width: itemWidth, height: itemHeight)
 
-        if totalNumberOfItems <= 4.0 {
+        if totalNumberOfItems < 3.0 {
+            flowLayout.minimumLineSpacing = 3.0
+            flowLayout.sectionInset = NSEdgeInsets(top: CGFloat(collectionViewHeight / 4.0), left: CGFloat(collectionViewWidth / 8), bottom: 10.0, right: CGFloat(collectionViewWidth / 8))
+        } else if totalNumberOfItems < 4.0 {
+            flowLayout.minimumLineSpacing = 3.0
+            flowLayout.sectionInset = NSEdgeInsets(top: CGFloat(collectionViewHeight / 4.0), left: CGFloat(collectionViewWidth / 12), bottom: 10.0, right: CGFloat(collectionViewWidth / 12))
+        } else if totalNumberOfItems == 4.0 {
             flowLayout.minimumLineSpacing = 0.0
             flowLayout.sectionInset = NSEdgeInsets(top: CGFloat(collectionViewHeight / 4.0), left: 10.0, bottom: 10.0, right: 10.0)
-        } else {
-            flowLayout.minimumLineSpacing = 3.0
+        } else if totalNumberOfItems > 4.0 {
+            flowLayout.minimumLineSpacing = 0.0
             flowLayout.sectionInset = NSEdgeInsets(top: 0.0, left: 10.0, bottom: 10.0, right: 10.0)
         }
 
-
-        print("Item spacing: \(itemSpacing)")
-
         flowLayout.minimumInteritemSpacing = CGFloat(itemSpacing)
         self.collectionView.collectionViewLayout = flowLayout
+        NotificationCenter.default.post(name: ItemRepository.showApplications, object: nil)
     }
 
 
@@ -189,7 +196,10 @@ extension ApplicationViewController: NSCollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: NSCollectionView, numberOfItemsInSection section: Int) -> Int {
-        return applicationsInSections[section].count
+        if applicationsInSections.indices.contains(section){
+            return applicationsInSections[section].count
+        }
+        return applications.count
     }
 
     func collectionView(_ collectionView: NSCollectionView, itemForRepresentedObjectAt
