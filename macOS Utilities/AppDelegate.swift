@@ -23,16 +23,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     public let modelYearDetermination = ModelYearDetermination()
     public let pageControllerDelegate: PageController = PageController.shared
-    public var preferenceLoader = PreferenceLoader(useBundlePreferences: true)
+
+    #if DEBUG
+        public var preferenceLoader: PreferenceLoader? = PreferenceLoader()
+    #else
+        public var preferenceLoader: PreferenceLoader? = PreferenceLoader(useBundlePreferences: true)
+    #endif
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.addInstallerToMenu(_:)), name: ItemRepository.newInstaller, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.readPreferences(_:)), name: PreferenceLoader.preferencesLoaded, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.showErrorAlert(notification:)), name: ErrorAlertLogger.showErrorAlert, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.addUtilityToMenu(_:)), name: ItemRepository.newUtility, object: nil)
+        registerForNotifications()
 
-        preferenceLoader = PreferenceLoader(useBundlePreferences: false)
-        preferenceLoader.constructLogger()
+        if let preferenceLoader = PreferenceLoader.sharedInstance {
+            self.preferenceLoader = preferenceLoader
+            NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.readPreferences(_:)), name: PreferenceLoader.preferencesLoaded, object: nil)
+        }
 
         pageControllerDelegate.setPageController(pageController: self.pageController)
 
@@ -43,6 +47,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         readPreferences()
 
         buildInfoMenu()
+    }
+
+    private func registerForNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.addInstallerToMenu(_:)), name: ItemRepository.newInstaller, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.showErrorAlert(notification:)), name: ErrorAlertLogger.showErrorAlert, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.addUtilityToMenu(_:)), name: ItemRepository.newUtility, object: nil)
     }
 
     @objc private func showErrorAlert(notification: Notification) {
@@ -95,8 +105,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         if let preferences = PreferenceLoader.currentPreferences {
-            let installerServer = preferences.installerServerPreferences
-            mountShareFrom(installerServer)
+            if let installerServer = preferences.installerServerPreferences {
+                mountShareFrom(installerServer)
+            }
 
             if let helpEmailAddress = preferences.helpEmailAddress {
                 self.helpEmailAddress = helpEmailAddress
@@ -207,6 +218,31 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+    // MARK: File menu functions
+    @IBAction func openPropertyListFile(_ sender: NSMenuItem) {
+        let openPanel = NSOpenPanel()
+        openPanel.allowedFileTypes = ["plist"]
+        openPanel.allowsMultipleSelection = false
+        openPanel.allowsOtherFileTypes = false
+        openPanel.showsHiddenFiles = true
+        openPanel.canChooseDirectories = false
+
+        openPanel.title = "Browse for existing configuration property list file"
+
+        openPanel.begin { (response) in
+            if response == .OK {
+                if let propertyListURL = openPanel.url {
+                    DispatchQueue.main.async {
+                        if let preferences = PreferenceLoader.sharedInstance!.loadPreferences(propertyListURL) {
+                            PreferenceLoader.save(preferences, notify: true)
+                            NotificationCenter.default.post(name: ItemRepository.updatingApplications, object: preferences.mappedApplications)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     // MARK: Debug menu functions
     @IBAction func reloadPreferences(_ sender: NSMenuItem) {
         ItemRepository.shared.reloadAllItems()
@@ -221,8 +257,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBAction func forceReloadAllDisks(_ sender: NSMenuItem) {
         DiskUtility.shared.ejectAll { (didComplete) in
             DDLogInfo("Finished ejecting? \(didComplete)")
-            if let preferences = PreferenceLoader.currentPreferences {
-                DiskUtility.shared.mountDiskImagesAt(preferences.installerServerPreferences.mountPath)
+            if let preferences = PreferenceLoader.currentPreferences,
+                let installerServerPreferences = preferences.installerServerPreferences {
+                DiskUtility.shared.mountDiskImagesAt(installerServerPreferences.mountPath)
             }
         }
     }

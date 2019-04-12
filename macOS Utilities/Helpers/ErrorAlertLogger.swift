@@ -21,7 +21,9 @@ class ErrorAlertLogger: DDAbstractLogger {
         }
 
         if logMessage.flag == .error {
-       //     NotificationCenter.default.post(name: ErrorAlertLogger.showErrorAlert, object: message)
+            #if !DEBUG
+                NotificationCenter.default.post(name: ErrorAlertLogger.showErrorAlert, object: message)
+            #endif
         }
     }
 }

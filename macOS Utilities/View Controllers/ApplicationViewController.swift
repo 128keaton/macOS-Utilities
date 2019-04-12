@@ -14,7 +14,7 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     @IBOutlet weak var collectionView: NSCollectionView!
     @IBOutlet weak var getInfoButton: NSButton?
 
-    private let preferenceLoader: PreferenceLoader? = PreferenceLoader(useBundlePreferences: false)
+    private var preferenceLoader: PreferenceLoader? = nil
     private let itemRepository = ItemRepository.shared
 
     private var disabledPaths: [IndexPath] = []
@@ -29,10 +29,13 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
 
         getInfoButton?.alphaValue = 0.0
 
-        addEasterEgg()
+        if let preferenceLoader = PreferenceLoader.sharedInstance {
+            self.preferenceLoader = preferenceLoader
+            self.registerForNotifications()
+        }
+
         if let collectionViewNib = NSNib(nibNamed: "NSCollectionAppCell", bundle: nil) {
             collectionView.register(collectionViewNib, forItemWithIdentifier: NSUserInterfaceItemIdentifier(rawValue: "NSCollectionAppCell"))
-            registerForNotifications()
         }
 
         DDLogInfo("Launched macOS Utilities")
@@ -203,7 +206,7 @@ extension ApplicationViewController: NSCollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: NSCollectionView, itemForRepresentedObjectAt
-    indexPath: IndexPath) -> NSCollectionViewItem {
+        indexPath: IndexPath) -> NSCollectionViewItem {
         let item = collectionView.makeItem(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "NSCollectionAppCell"), for: indexPath)
         var applicationsInSection = [Application]()
 

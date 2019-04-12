@@ -38,16 +38,16 @@ func findIconFor(applicationPath: String) -> NSImage {
 protocol GenericType {
     func isEqualTo(other: GenericType) -> Bool
 }
-extension GenericType where Self : Equatable {
+extension GenericType where Self: Equatable {
     func isEqualTo(other: GenericType) -> Bool {
         if let o = other as? Self { return self == o }
         return false
     }
 }
 
-extension UInt : GenericType {}
-extension String : GenericType {}
-extension Bool : GenericType {}
+extension UInt: GenericType { }
+extension String: GenericType { }
+extension Bool: GenericType { }
 
 
 extension NSApplication {
@@ -58,6 +58,45 @@ extension NSApplication {
             }
         }
         return false
+    }
+    
+    public func getName() -> String{
+        return Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as! String
+    }
+    
+    public func getVersion() -> String {
+        return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
+    }
+    
+    public func getBuild() -> String {
+       return  Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
+    }
+    
+    public func getVerboseName() -> String{
+        return "\(getName())-v\(getVersion())-b\(getBuild())"
+    }
+}
+
+extension NSTextField{
+    func setEnabled(_ flag: Bool = true){
+        if flag{
+            return self.enable()
+        }
+        return self.disable()
+    }
+    
+    func disable(){
+        NSAnimationContext.runAnimationGroup { (context) in
+            context.duration = 0.5
+            self.animator().alphaValue = 0.5
+        }
+    }
+    
+    func enable(){
+        NSAnimationContext.runAnimationGroup { (context) in
+            context.duration = 0.5
+            self.animator().alphaValue = 1.0
+        }
     }
 }
 
@@ -136,16 +175,16 @@ extension NSViewController {
     }
 }
 
-extension MutableCollection where Self : RandomAccessCollection {
+extension MutableCollection where Self: RandomAccessCollection {
     /// Sort `self` in-place using criteria stored in a NSSortDescriptors array
     public mutating func sort(sortDescriptors theSortDescs: [NSSortDescriptor]) {
         sort { by:
-            for sortDesc in theSortDescs {
-                switch sortDesc.compare($0, to: $1) {
-                case .orderedAscending: return true
-                case .orderedDescending: return false
-                case .orderedSame: continue
-                }
+                for sortDesc in theSortDescs {
+                    switch sortDesc.compare($0, to: $1) {
+                    case .orderedAscending: return true
+                    case .orderedDescending: return false
+                    case .orderedSame: continue
+                    }
             }
             return false
         }
@@ -229,7 +268,7 @@ extension String {
         do {
             let regex = try NSRegularExpression(pattern: regex)
             let results = regex.matches(in: self,
-                                        range: NSRange(self.startIndex..., in: self))
+                range: NSRange(self.startIndex..., in: self))
             return results.map {
                 String(self[Range($0.range, in: self)!]).replacingOccurrences(of: stripR.joined(separator: "|"), with: "", options: .regularExpression)
             }
@@ -246,17 +285,17 @@ extension Array {
             Array(self[$0 ..< Swift.min($0 + size, count)])
         }
     }
-    
+
     mutating func move(from start: Index, to end: Index) {
         guard (0..<count) ~= start, (0...count) ~= end else { return }
         if start == end { return }
-        let targetIndex = start < end ? end - 1 : end
+        let targetIndex = start < end ? end - 1: end
         insert(remove(at: start), at: targetIndex)
     }
-    
+
     mutating func move(with indexes: IndexSet, to toIndex: Index) {
-        let movingData = indexes.map{ self[$0] }
-        let targetIndex = toIndex - indexes.filter{ $0 < toIndex }.count
+        let movingData = indexes.map { self[$0] }
+        let targetIndex = toIndex - indexes.filter { $0 < toIndex }.count
         for (i, e) in indexes.enumerated() {
             remove(at: e - i)
         }
@@ -280,14 +319,14 @@ extension URL {
                     // file exists and is a directory
                     filestatus = .isDir
                 }
-                    else {
-                        // file exists and is not a directory
-                        filestatus = .isFile
+                else {
+                    // file exists and is not a directory
+                    filestatus = .isFile
                 }
             }
-                else {
-                    // file does not exist
-                    filestatus = .isNot
+            else {
+                // file does not exist
+                filestatus = .isNot
             }
             return filestatus
         }
@@ -298,7 +337,7 @@ func matches(for regex: String, in text: String) -> [String] {
     do {
         let regex = try NSRegularExpression(pattern: regex)
         let results = regex.matches(in: text,
-                                    range: NSRange(text.startIndex..., in: text))
+            range: NSRange(text.startIndex..., in: text))
         return results.map {
             String(text[Range($0.range, in: text)!])
         }

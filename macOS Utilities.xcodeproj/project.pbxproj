@@ -10,6 +10,8 @@
 		8A0138C6221703B700C77DA0 /* Compatibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0138C5221703B700C77DA0 /* Compatibility.swift */; };
 		8A0138D1221749BD00C77DA0 /* VersionNumbers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0138D0221749BD00C77DA0 /* VersionNumbers.swift */; };
 		8A0138D62217624700C77DA0 /* InfoPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0138D52217624700C77DA0 /* InfoPopoverViewController.swift */; };
+		8A12391D22610DBC008E551A /* RemoteConfigurationPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A12391C22610DBC008E551A /* RemoteConfigurationPreferences.swift */; };
+		8A123921226110CA008E551A /* RemoteConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A123920226110CA008E551A /* RemoteConfigurationViewController.swift */; };
 		8A175AAC225EFEE50018C977 /* ErrorAlertLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A175AAB225EFEE50018C977 /* ErrorAlertLogger.swift */; };
 		8A175AAE225F2BE70018C977 /* PreferencesApplicationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A175AAD225F2BE70018C977 /* PreferencesApplicationsViewController.swift */; };
 		8A39D3602119E81B00437F4E /* com.er2.applications.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8A39D35F2119E81B00437F4E /* com.er2.applications.plist */; };
@@ -54,8 +56,10 @@
 		8A0138C5221703B700C77DA0 /* Compatibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Compatibility.swift; sourceTree = "<group>"; };
 		8A0138D0221749BD00C77DA0 /* VersionNumbers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionNumbers.swift; sourceTree = "<group>"; };
 		8A0138D52217624700C77DA0 /* InfoPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoPopoverViewController.swift; sourceTree = "<group>"; };
+		8A12391C22610DBC008E551A /* RemoteConfigurationPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigurationPreferences.swift; sourceTree = "<group>"; };
+		8A123920226110CA008E551A /* RemoteConfigurationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigurationViewController.swift; sourceTree = "<group>"; };
 		8A175AAB225EFEE50018C977 /* ErrorAlertLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorAlertLogger.swift; sourceTree = "<group>"; };
-		8A175AAD225F2BE70018C977 /* PreferencesApplicationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesApplicationsViewController.swift; sourceTree = "<group>"; };
+		8A175AAD225F2BE70018C977 /* PreferencesApplicationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PreferencesApplicationsViewController.swift; path = ../PreferencesApplicationsViewController.swift; sourceTree = "<group>"; };
 		8A175AAF225FD8770018C977 /* macOS Utilities.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "macOS Utilities.entitlements"; sourceTree = "<group>"; };
 		8A39D35F2119E81B00437F4E /* com.er2.applications.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = com.er2.applications.plist; sourceTree = "<group>"; };
 		8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSCollectionAppCell.swift; sourceTree = "<group>"; };
@@ -70,7 +74,7 @@
 		8A6C6468225DB48200CD6DCF /* DeviceConfigurationCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceConfigurationCode.swift; sourceTree = "<group>"; };
 		8A6C646A225DB49000CD6DCF /* DeviceUniqueID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceUniqueID.swift; sourceTree = "<group>"; };
 		8A6C646D225DD2CA00CD6DCF /* WizardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WizardViewController.swift; path = "macOS Utilities/View Controllers/WizardViewController.swift"; sourceTree = "<group>"; };
-		8A6C646F225E9FA100CD6DCF /* PreferencesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesViewController.swift; sourceTree = "<group>"; };
+		8A6C646F225E9FA100CD6DCF /* PreferencesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PreferencesViewController.swift; path = ../PreferencesViewController.swift; sourceTree = "<group>"; };
 		8A6C6471225EA05300CD6DCF /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		8A6C6474225EA0CE00CD6DCF /* LoggingPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingPreferences.swift; sourceTree = "<group>"; };
 		8A6C6476225EA19200CD6DCF /* InstallerServerPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallerServerPreferences.swift; sourceTree = "<group>"; };
@@ -190,10 +194,19 @@
 				8A6F28EF221B9F5C00FF9DB3 /* InstallViewController.swift */,
 				8ABAE3102252A46300E537D3 /* DiskSelectionDialogViewController.swift */,
 				8A6C645F225DB39500CD6DCF /* DeviceInformationViewController.swift */,
-				8A6C646F225E9FA100CD6DCF /* PreferencesViewController.swift */,
-				8A175AAD225F2BE70018C977 /* PreferencesApplicationsViewController.swift */,
+				8A12391F226110A9008E551A /* New Group */,
 			);
 			path = "View Controllers";
+			sourceTree = "<group>";
+		};
+		8A12391F226110A9008E551A /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+				8A6C646F225E9FA100CD6DCF /* PreferencesViewController.swift */,
+				8A175AAD225F2BE70018C977 /* PreferencesApplicationsViewController.swift */,
+				8A123920226110CA008E551A /* RemoteConfigurationViewController.swift */,
+			);
+			path = "New Group";
 			sourceTree = "<group>";
 		};
 		8A6C6457225D305700CD6DCF /* NSPageController */ = {
@@ -249,6 +262,7 @@
 				8A6C6471225EA05300CD6DCF /* Preferences.swift */,
 				8A6C6474225EA0CE00CD6DCF /* LoggingPreferences.swift */,
 				8A6C6476225EA19200CD6DCF /* InstallerServerPreferences.swift */,
+				8A12391C22610DBC008E551A /* RemoteConfigurationPreferences.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -467,6 +481,7 @@
 				8A6C6475225EA0CE00CD6DCF /* LoggingPreferences.swift in Sources */,
 				8A6C6470225E9FA100CD6DCF /* PreferencesViewController.swift in Sources */,
 				8A6F28F0221B9F5C00FF9DB3 /* InstallViewController.swift in Sources */,
+				8A123921226110CA008E551A /* RemoteConfigurationViewController.swift in Sources */,
 				8ABAE31D2252DA5800E537D3 /* Installer.swift in Sources */,
 				8ADBB216210A623800C4F1D9 /* Extensions.swift in Sources */,
 				8A9370D12256BB5A002B3838 /* Volume.swift in Sources */,
@@ -483,6 +498,7 @@
 				8A87B8B721A47DD8004496AA /* CwlSysctl.swift in Sources */,
 				8A6C646E225DD2CA00CD6DCF /* WizardViewController.swift in Sources */,
 				8A9370CD2256B53C002B3838 /* DiskUtility.swift in Sources */,
+				8A12391D22610DBC008E551A /* RemoteConfigurationPreferences.swift in Sources */,
 				8ACB65D521063E6F004B9C5A /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

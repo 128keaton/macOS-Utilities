@@ -11,6 +11,7 @@ import AppKit
 import AppFolder
 
 class PreferencesViewController: NSViewController {
+    @IBOutlet weak var loggingSectionLabel: NSTextField!
     @IBOutlet weak var loggingURLField: NSTextField!
     @IBOutlet weak var loggingPortField: NSTextField!
     @IBOutlet weak var loggingURLLabel: NSTextField!
@@ -18,6 +19,7 @@ class PreferencesViewController: NSViewController {
     @IBOutlet weak var loggingCheckBox: NSButton!
 
 
+    @IBOutlet weak var installerSectionLabel: NSTextField!
     @IBOutlet weak var installerMountPathField: NSTextField!
     @IBOutlet weak var installerServerIPField: NSTextField!
     @IBOutlet weak var installerServerPathField: NSTextField!
@@ -32,8 +34,8 @@ class PreferencesViewController: NSViewController {
     @IBOutlet weak var deviceIdentifierAPITokenField: NSTextField!
     @IBOutlet weak var savePathLabel: NSTextField!
     @IBOutlet weak var applicationsCountLabel: NSTextField!
-    
-    public let preferenceLoader: PreferenceLoader = (NSApplication.shared.delegate as! AppDelegate).preferenceLoader
+
+    public var preferenceLoader: PreferenceLoader? = nil
     private var preferences: Preferences? = nil {
         didSet {
             updateView()
@@ -43,13 +45,19 @@ class PreferencesViewController: NSViewController {
     private var serverTypes = ["NFS"]
 
     override func awakeFromNib() {
-        NotificationCenter.default.addObserver(self, selector: #selector(PreferencesViewController.readPreferences), name: PreferenceLoader.preferencesLoaded, object: nil)
+        if let preferenceLoader = PreferenceLoader.sharedInstance {
+            self.preferenceLoader = preferenceLoader
 
-        if(preferences == nil) {
-            readPreferences()
-        }else{
-            applicationsCountLabel.stringValue = "\(preferences!.getApplications().count) application(s)"
+            NotificationCenter.default.addObserver(self, selector: #selector(PreferencesViewController.readPreferences), name: PreferenceLoader.preferencesLoaded, object: nil)
+
+            if(preferences == nil) {
+                readPreferences()
+            }
         }
+    }
+
+    override func viewDidLoad() {
+        configureView()
     }
 
     override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
@@ -64,14 +72,65 @@ class PreferencesViewController: NSViewController {
     override func viewWillAppear() {
         super.viewWillAppear()
         view.window!.styleMask.remove(.resizable)
-        savePathLabel.stringValue = AppFolder.Library.url.appendingPathComponent("ER2", isDirectory: true).absoluteString.replacingOccurrences(of: "file://", with: "")
+    }
+
+    public func configureView() {
+        let serverEnabled = false
+        let loggingEnabled = false
+
+        installerServerIPField.isEnabled = serverEnabled
+        installerServerIPLabel.setEnabled(serverEnabled)
+
+        installerServerPathField.isEnabled = serverEnabled
+        installerServerPathLabel.setEnabled(serverEnabled)
+
+        installerMountPathField.isEnabled = serverEnabled
+        installerMountPathLabel.setEnabled(serverEnabled)
+
+        installerServerTypePopup.isEnabled = serverEnabled
+        installerMountTypeLabel.setEnabled(serverEnabled)
+
+        loggingURLField.isEnabled = loggingEnabled
+        loggingURLLabel.setEnabled(loggingEnabled)
+
+        loggingPortField.isEnabled = loggingEnabled
+        loggingPortLabel.setEnabled(loggingEnabled)
+
+        if let sharedPreferenceLoader = PreferenceLoader.sharedInstance {
+            savePathLabel.stringValue = (sharedPreferenceLoader.loadingFromBundle == true ? "\(PreferenceLoader.bundle.resourcePath!)" :  PreferenceLoader.libraryFolder)
+            
+            if(savePathLabel.stringValue.count > 25) {
+                savePathLabel.font = NSFont.systemFont(ofSize: 10)
+            } else {
+                savePathLabel.font = NSFont.systemFont(ofSize: 12)
+            }
+        }
+
+        if let validPreferences = preferences,
+            let retreivedApplications = validPreferences.getApplications() {
+            if retreivedApplications.count > 0 {
+                applicationsCountLabel.stringValue = "\(retreivedApplications.count) application(s)"
+                return
+            }
+        }
+
+        applicationsCountLabel.stringValue = "No applications configured"
     }
 
     public func updateView() {
         DispatchQueue.main.async {
             if let preferences = self.preferences {
-                self.updateLoggingView(preferences.loggingPreferences)
-                self.updateInstallerView(preferences.installerServerPreferences)
+                if let loggingPreferences = preferences.loggingPreferences {
+                    self.updateLoggingView(loggingPreferences)
+                } else {
+                    self.loggingCheckBox.state = .off
+                }
+
+                if let installerServerPreferences = preferences.installerServerPreferences {
+                    self.updateInstallerView(installerServerPreferences)
+                } else {
+                    self.installerCheckBox.state = .off
+                }
 
                 if let helpEmailAddress = preferences.helpEmailAddress {
                     self.sendLogAddressField.stringValue = helpEmailAddress
@@ -85,42 +144,75 @@ class PreferencesViewController: NSViewController {
     }
 
     private func updateLoggingView(_ loggingPreferences: LoggingPreferences) {
-        loggingCheckBox.state = loggingPreferences.loggingEnabled ? .on : .off
+        let loggingEnabled = loggingPreferences.loggingEnabled
 
-        loggingURLField.isEnabled = loggingPreferences.loggingEnabled
-        loggingPortField.isEnabled = loggingPreferences.loggingEnabled
+        loggingCheckBox.state = loggingEnabled ? .on : .off
 
-        loggingURLField.stringValue = loggingPreferences.loggingURL
-        loggingPortField.stringValue = "\(loggingPreferences.loggingPort)"
+        loggingURLField.isEnabled = loggingEnabled
+        loggingURLLabel.setEnabled(loggingEnabled)
+
+        loggingPortField.isEnabled = loggingEnabled
+        loggingPortLabel.setEnabled(loggingEnabled)
+
+        if loggingPreferences.isValid() {
+            loggingURLField.stringValue = loggingPreferences.loggingURL
+            loggingPortField.stringValue = "\(loggingPreferences.loggingPort)"
+        }
     }
 
     private func updateInstallerView(_ installerServerPreferences: InstallerServerPreferences) {
-        installerCheckBox.state = installerServerPreferences.serverEnabled ? .on : .off
+        let serverEnabled = installerServerPreferences.serverEnabled
 
-        installerServerIPField.isEnabled = installerServerPreferences.serverEnabled
-        installerServerPathField.isEnabled = installerServerPreferences.serverEnabled
-        installerMountPathField.isEnabled = installerServerPreferences.serverEnabled
-        installerServerTypePopup.isEnabled = installerServerPreferences.serverEnabled
+        installerCheckBox.state = serverEnabled ? .on : .off
 
-        installerServerIPField.stringValue = installerServerPreferences.serverIP
-        installerServerPathField.stringValue = installerServerPreferences.serverPath
-        installerMountPathField.stringValue = installerServerPreferences.mountPath
+        installerServerIPField.isEnabled = serverEnabled
+        installerServerIPLabel.setEnabled(serverEnabled)
 
+        installerServerPathField.isEnabled = serverEnabled
+        installerServerPathLabel.setEnabled(serverEnabled)
+
+        installerMountPathField.isEnabled = serverEnabled
+        installerMountPathLabel.setEnabled(serverEnabled)
+
+        installerServerTypePopup.isEnabled = serverEnabled
+        installerMountTypeLabel.setEnabled(serverEnabled)
+
+        if installerServerPreferences.isMountable() {
+            installerServerIPField.stringValue = installerServerPreferences.serverIP
+            installerServerPathField.stringValue = installerServerPreferences.serverPath
+            installerMountPathField.stringValue = installerServerPreferences.mountPath
+
+        }
         serverTypes.forEach { installerServerTypePopup.addItem(withTitle: $0) }
-        installerServerTypePopup.selectItem(at: serverTypes.firstIndex(of: installerServerPreferences.serverType)!)
+
+        if let serverType = serverTypes.firstIndex(of: installerServerPreferences.serverType) {
+            installerServerTypePopup.selectItem(at: serverType)
+        }
     }
 
     @IBAction func installerCheckboxToggled(_ sender: NSButton) {
         if let preferences = self.preferences {
-            preferences.installerServerPreferences.serverEnabled = (sender.state == .off ? false : true)
-            updateInstallerView(preferences.installerServerPreferences)
+            if let installerServerPreferences = preferences.installerServerPreferences {
+                installerServerPreferences.serverEnabled = (sender.state == .off ? false : true)
+                updateInstallerView(installerServerPreferences)
+            } else {
+                let newInstallerServerPreferences = InstallerServerPreferences()
+                preferences.installerServerPreferences = newInstallerServerPreferences
+                updateInstallerView(newInstallerServerPreferences)
+            }
         }
     }
 
     @IBAction func loggingCheckboxToggled(_ sender: NSButton) {
         if let preferences = self.preferences {
-            preferences.loggingPreferences.loggingEnabled = (sender.state == .off ? false : true)
-            updateLoggingView(preferences.loggingPreferences)
+            if let loggingPreferences = preferences.loggingPreferences {
+                loggingPreferences.loggingEnabled = (sender.state == .off ? false : true)
+                updateLoggingView(loggingPreferences)
+            } else {
+                let newLoggingPreferences = LoggingPreferences()
+                preferences.loggingPreferences = newLoggingPreferences
+                updateLoggingView(newLoggingPreferences)
+            }
         }
     }
 
@@ -131,22 +223,26 @@ class PreferencesViewController: NSViewController {
     }
 
     private func savePreferences() {
-        if let preferences = self.preferences {
-            preferences.installerServerPreferences.serverIP = installerServerIPField.stringValue
-            preferences.installerServerPreferences.serverPath = installerServerPathField.stringValue
-            preferences.installerServerPreferences.mountPath = installerMountPathField.stringValue
+        if let preferences = self.preferences,
+            let installerServerPreferences = preferences.installerServerPreferences,
+            let loggingPreferences = preferences.loggingPreferences,
+            let validPreferenceLoader = self.preferenceLoader {
 
-            preferences.loggingPreferences.loggingURL = loggingURLField.stringValue
-            preferences.loggingPreferences.loggingPort = UInt(loggingPortField.stringValue)!
+            installerServerPreferences.serverIP = installerServerIPField.stringValue
+            installerServerPreferences.serverPath = installerServerPathField.stringValue
+            installerServerPreferences.mountPath = installerMountPathField.stringValue
+
+            loggingPreferences.loggingURL = loggingURLField.stringValue
+            loggingPreferences.loggingPort = UInt(loggingPortField.stringValue) ?? 0
 
             preferences.helpEmailAddress = sendLogAddressField.stringValue
             preferences.deviceIdentifierAuthenticationToken = deviceIdentifierAPITokenField.stringValue
 
             if let serverType = installerServerTypePopup.selectedItem?.title {
-                preferences.installerServerPreferences.serverType = serverType
+                installerServerPreferences.serverType = serverType
             }
 
-            preferenceLoader.save(preferences)
+            validPreferenceLoader.save(preferences)
         }
     }
 
@@ -155,8 +251,42 @@ class PreferencesViewController: NSViewController {
         self.view.window?.windowController?.close()
     }
 
+    @IBAction func clearAllPreferences(_ sender: NSButton) {
+        if showConfirmationAlert(question: "Confirmation", text: "Are you sure you want to clear all of your preferences?") {
+            if let preferences = self.preferences {
+                preferences.reset()
+
+                PreferenceLoader.save(preferences)
+
+                NotificationCenter.default.post(name: ItemRepository.updatingApplications, object: [])
+                configureView()
+            }
+        }
+    }
+
     @IBAction func openSavePath(_ sender: NSButton) {
         sender.state = .off
-        NSWorkspace.shared.open(AppFolder.Library.url.appendingPathComponent("ER2", isDirectory: true))
+        NSWorkspace.shared.open(URL(fileURLWithPath: (preferenceLoader!.loadingFromBundle == true ? "\(PreferenceLoader.bundle.resourcePath!)" :  PreferenceLoader.libraryFolder), isDirectory: true))
+    }
+    
+    @IBAction func generateRemoteConfigForCurrent(_ sender: NSButton){
+        if let preferences = self.preferences,
+            let copiedPreferences = preferences.copy() as? Preferences{
+            
+            copiedPreferences.isRemoteConfiguration = true
+            let randomName = String.random(12)
+            let folderName = randomName + "RemoteConfiguration"
+            let configurationName = randomName + "-remoteConfig"
+            let configurationURLs = [URL(string: "\(randomName)).plist")!]
+            
+            let newRemoteConfig = RemoteConfigurationPreferences(remoteURL: nil, configurationURLs: configurationURLs, name: configurationName)
+            
+            let didSavePreferences = PreferenceLoader.savePreferencesToDownloads(copiedPreferences, fileName: randomName, createFolder: true, folderName: folderName)
+            let didSaveConfig = PreferenceLoader.saveRemoteConfigurationToDownloads(newRemoteConfig, fileName: configurationName, createFolder: true, folderName: folderName)
+            
+            if(!didSaveConfig || !didSavePreferences){
+                //
+            }
+        }
     }
 }

@@ -48,8 +48,9 @@ class PreferencesApplicationsViewController: NSViewController {
         let sortShow = NSSortDescriptor(key: "showInApplicationsWindow", ascending: false, selector: #selector(NSNumber.compare(_:)))
         tableView.tableColumns[3].sortDescriptorPrototype = sortShow
 
-        if let currentPreferences = self.preferences {
-            self.applications = currentPreferences.getApplications()
+        if let currentPreferences = self.preferences,
+            let applications = currentPreferences.getApplications(){
+            self.applications = applications
         }
     }
 

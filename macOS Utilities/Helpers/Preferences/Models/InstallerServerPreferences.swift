@@ -19,6 +19,10 @@ class InstallerServerPreferences: Codable, Equatable {
         return serverPath.trimmingCharacters(in: .whitespaces) != "" && serverIP.trimmingCharacters(in: .whitespaces) != "" && mountPath.trimmingCharacters(in: .whitespaces) != ""
     }
     
+    static func isMountable(_ installerServerPreferences: InstallerServerPreferences) -> Bool {
+        return installerServerPreferences.isMountable()
+    }
+
     static func ==(lhs: InstallerServerPreferences, rhs: InstallerServerPreferences) -> Bool {
         
         let mLhs = Mirror(reflecting: lhs).children.filter { $0.label != nil }
@@ -34,5 +38,41 @@ class InstallerServerPreferences: Codable, Equatable {
             }
         }
         return true
+    }
+    
+    init(serverEnabled: Bool? = true, serverPath: String?, serverIP: String?, serverType: String?, mountPath: String?) {
+        if let _enabled = serverEnabled {
+            self.serverEnabled = _enabled
+        } else {
+            self.serverEnabled = false
+        }
+        
+        if let _sPath = serverPath {
+            self.serverPath = _sPath
+        } else {
+            self.serverPath = String()
+        }
+        
+        if let _ip = serverIP {
+            self.serverIP = _ip
+        } else {
+            self.serverIP = String()
+        }
+        
+        if let _type = serverType {
+            self.serverType = _type
+        } else {
+            self.serverType = String()
+        }
+        
+        if let _mPath = serverType {
+            self.mountPath = _mPath
+        } else {
+            self.mountPath = String()
+        }
+    }
+    
+    convenience init() {
+        self.init(serverEnabled: true, serverPath: nil, serverIP: nil, serverType: nil, mountPath: nil)
     }
 }
