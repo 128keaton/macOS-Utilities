@@ -99,7 +99,7 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         } else {
             applications = newApplications
         }
-        
+
         applicationsInSections = applications.count > 4 ? applications.chunked(into: 4) : [applications]
 
         DispatchQueue.main.async {
@@ -148,7 +148,7 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
             flowLayout.sectionInset = NSEdgeInsets(top: CGFloat(collectionViewHeight / 4.0), left: 10.0, bottom: 10.0, right: 10.0)
         } else if totalNumberOfItems > 4.0 {
             flowLayout.minimumLineSpacing = 0.0
-            flowLayout.sectionInset = NSEdgeInsets(top: 0.0, left: 10.0, bottom: 10.0, right: 10.0)
+            flowLayout.sectionInset = NSEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0)
         }
 
         flowLayout.minimumInteritemSpacing = CGFloat(itemSpacing)
@@ -196,7 +196,7 @@ extension ApplicationViewController: NSCollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: NSCollectionView, numberOfItemsInSection section: Int) -> Int {
-        if applicationsInSections.indices.contains(section){
+        if applicationsInSections.indices.contains(section) {
             return applicationsInSections[section].count
         }
         return applications.count
@@ -205,15 +205,22 @@ extension ApplicationViewController: NSCollectionViewDataSource {
     func collectionView(_ collectionView: NSCollectionView, itemForRepresentedObjectAt
     indexPath: IndexPath) -> NSCollectionViewItem {
         let item = collectionView.makeItem(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "NSCollectionAppCell"), for: indexPath)
-        let applicationsInSection = applicationsInSections[indexPath.section]
+        var applicationsInSection = [Application]()
 
-        let applicationFromSection = applicationsInSection[indexPath.item]
-
-        if(applicationFromSection.isInvalid) {
-            disabledPaths.append(indexPath)
+        if applicationsInSections.indices.contains(indexPath.section) {
+            applicationsInSection = applicationsInSections[indexPath.section]
         }
 
-        return applicationFromSection.getCollectionViewItem(item: item)
+        if applicationsInSection.indices.contains(indexPath.item) {
+            let applicationFromSection = applicationsInSection[indexPath.item]
+
+            if(applicationFromSection.isInvalid) {
+                disabledPaths.append(indexPath)
+            }
+
+            return applicationFromSection.getCollectionViewItem(item: item)
+        }
+        return item
     }
 
     @objc func startEasterEgg() {

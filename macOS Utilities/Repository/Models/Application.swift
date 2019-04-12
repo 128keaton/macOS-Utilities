@@ -52,6 +52,10 @@ import CocoaLumberjack
         self.init(name: name)
         self.path = path
 
+        if path == "" {
+            self.isInvalid = true
+        }
+
         self.determineUtilityFromPath()
         self.showInApplicationsWindow = showInApplicationsWindow
     }

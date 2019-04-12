@@ -18,7 +18,7 @@ class PreferencesApplicationsViewController: NSViewController {
     private var dragDropType = NSPasteboard.PasteboardType(rawValue: "public.data")
     private var fileNameType = NSPasteboard.PasteboardType(rawValue: "NSFilenamesPboardType")
 
-    private let fileType = ["app"]
+    private let fileTypes = ["app", "plist"]
 
     private var applications = [Application]() {
         didSet {
@@ -103,9 +103,11 @@ extension PreferencesApplicationsViewController: NSTableViewDataSource, NSTableV
         if let board = info.draggingPasteboard.propertyList(forType: fileNameType) as? NSArray {
             if let path = board[0] as? String {
                 let suffix = URL(fileURLWithPath: path).pathExtension
-                for ext in self.fileType {
-                    if ext.lowercased() == suffix {
+                if fileTypes.contains(suffix.lowercased()) {
+                    if suffix.lowercased() == "app" {
                         return addAppAt(path)
+                    } else if suffix.lowercased() == "plist" {
+                        return updateFromLegacyPlist(path)
                     }
                 }
             }
@@ -188,22 +190,106 @@ extension PreferencesApplicationsViewController: NSTableViewDataSource, NSTableV
             applications[row].showInApplicationsWindow = (sender.state == .on)
             updateApplications()
         }
+    }
 
+    @IBAction func appPathUpdated(_ sender: NSTextField) {
+        let row = tableView.row(for: sender)
+
+        if applications.indices.contains(row) {
+            if sender.stringValue != "" || applications[row].name != "" {
+                applications[row].path = sender.stringValue
+                applications[row].isInvalid = !appIsValidAt(applications[row].path)
+            } else {
+                applications.remove(at: row)
+            }
+
+            updateApplications()
+            tableView.reloadData()
+        }
+    }
+
+    @IBAction func appNameUpdated(_ sender: NSTextField) {
+        let row = tableView.row(for: sender)
+
+        if applications.indices.contains(row) {
+            if sender.stringValue != "" || applications[row].path != "" {
+                applications[row].name = sender.stringValue
+                applications[row].isInvalid = !appIsValidAt(applications[row].path)
+            } else {
+                applications.remove(at: row)
+            }
+
+            updateApplications()
+            tableView.reloadData()
+        }
     }
 
     @IBAction func openContainingFolderButtonClicked(_ sender: NSButton) {
-        let selectedIndex = tableView.selectedRow
-        if applications.indices.contains(selectedIndex) {
-            NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: applications[selectedIndex].path)])
-        }
+        let foldersToOpen = tableView.selectedRowIndexes.map { index -> Application? in
+            if applications.indices.contains(index) { return applications[index] } else { return nil }
+        }.filter { $0 != nil }.map { URL(fileURLWithPath: $0!.path) }
+
+        NSWorkspace.shared.activateFileViewerSelecting(foldersToOpen)
     }
 
     @IBAction func appControlButtonClicked(_ sender: NSSegmentedControl) {
         if sender.selectedSegment == 0 {
-            DDLogError("This function is not implemented yet")
+            applications.insert(Application(name: "", path: ""), at: 0)
+
+            tableView.beginUpdates()
+            tableView.insertRows(at: IndexSet(integer: 0), withAnimation: .effectFade)
+            tableView.endUpdates()
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                self.editRowAt(0)
+            }
         } else {
             removeAppSelected()
         }
+    }
+
+    private func editRowAt(_ position: Int) {
+        if let cellAt = tableView.view(atColumn: 1, row: position, makeIfNecessary: false) {
+            if let textField = ( cellAt.subviews.first { type(of: $0) == NSTextField.self }) {
+                textField.becomeFirstResponder()
+            }
+        }
+    }
+
+    private func updateFromLegacyPlist(_ plistPath: String) -> Bool {
+        var serializerFormat = PropertyListSerialization.PropertyListFormat.xml
+        var applicationData = [String: AnyObject]()
+
+        if let plistXML = FileManager.default.contents(atPath: plistPath) {
+            do {
+                applicationData = try PropertyListSerialization.propertyList(from: plistXML, options: .mutableContainersAndLeaves, format: &serializerFormat) as! [String: AnyObject]
+                // Legacy, v1.0 format
+                if let unmappedApplications = applicationData["Applications"] as? [String: [String: String]] {
+                    var applicationNames = [String]()
+                    var addStatus = [Bool]()
+
+                    unmappedApplications.forEach { $1.forEach {
+                        applicationNames.append($0)
+                        addStatus.append(addAppAt($1))
+                    } }
+
+
+                    let errorMessage = addStatus.enumerated().map { (arg) -> String in
+                        let (index, status) = arg
+                        if !status { return "Could not add application \(applicationNames[index]): application already present in list." } else { return "" }
+                    }.joined(separator: "\n")
+
+                    if errorMessage != "" {
+                        DDLogError(errorMessage)
+                    }
+
+                    return true
+                }
+            } catch {
+                DDLogError("Error reading legacy plist: \(error), format: \(serializerFormat)")
+            }
+        }
+        return false
     }
 
     private func appIsValidAt(_ appPath: String?) -> Bool {
@@ -223,7 +309,9 @@ extension PreferencesApplicationsViewController: NSTableViewDataSource, NSTableV
         let appName = String(appPath.split(separator: "/").last!).replacingOccurrences(of: ".app", with: "")
         if (!applications.contains { $0.name == appName }) {
             let newApplication = Application(name: appName, path: appPath)
-            newApplication.showInApplicationsWindow = true
+
+            newApplication.showInApplicationsWindow = appIsValidAt(appPath)
+            newApplication.isInvalid = !appIsValidAt(appPath)
 
             applications.append(newApplication)
             tableView.reloadData()
@@ -235,16 +323,14 @@ extension PreferencesApplicationsViewController: NSTableViewDataSource, NSTableV
     }
 
     private func removeAppSelected() {
-        tableView.selectedRowIndexes.forEach {
-            if applications.indices.contains($0) {
-                let existingApplication = applications[$0]
-                applications.removeAll { $0 == existingApplication }
-                updateApplications()
-            }
-        }
+        let applicationsToRemove = tableView.selectedRowIndexes.map { index -> Application? in
+            if applications.indices.contains(index) { return applications[index] } else { return nil }
+        }.filter { $0 != nil }
+
+        applications = applications.filter { !applicationsToRemove.contains($0) }
+
+        updateApplications()
     }
-
-
 
     func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
         return true
