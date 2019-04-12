@@ -35,6 +35,21 @@ func findIconFor(applicationPath: String) -> NSImage {
     return NSImage(contentsOfFile: imagePath)!
 }
 
+protocol GenericType {
+    func isEqualTo(other: GenericType) -> Bool
+}
+extension GenericType where Self : Equatable {
+    func isEqualTo(other: GenericType) -> Bool {
+        if let o = other as? Self { return self == o }
+        return false
+    }
+}
+
+extension UInt : GenericType {}
+extension String : GenericType {}
+extension Bool : GenericType {}
+
+
 extension NSApplication {
     func isDarkMode(view: NSView?) -> Bool {
         if #available(OSX 10.14, *) {

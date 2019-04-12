@@ -23,7 +23,8 @@ class ItemRepository {
     static let refreshRepository = Notification.Name("NSRefreshRepository")
     static let updatingApplications = Notification.Name("NSUpdatingApplications")
     static let hideApplications = Notification.Name("NSHideApplications")
-    static let showApplications =  Notification.Name("NSShowApplications")
+    static let showApplications = Notification.Name("NSShowApplications")
+    static let newUtility = Notification.Name("NSNewUtility")
 
     private init() {
         DDLogInfo("ItemRepository initialized")
@@ -34,14 +35,14 @@ class ItemRepository {
 
         NotificationCenter.default.addObserver(self, selector: #selector(ItemRepository.reloadAllItems), name: ItemRepository.refreshRepository, object: nil)
     }
-    
+
     @objc public func reloadAllItems() {
         DiskUtility.shared.getAllDisks()
         ApplicationUtility.shared.getApplications()
         ApplicationUtility.shared.getUtilities()
     }
-    
-    
+
+
 
     public func getSelectedInstaller() -> Installer? {
         if let installer = (self.getInstallers().first { $0.isSelected == true }) {
@@ -107,7 +108,7 @@ class ItemRepository {
         if (self.items.contains { ( $0 as? Installer) != nil && ( $0 as! Installer).id == newInstaller.id } == false) {
             DDLogInfo("Adding installer '\(newInstaller.versionName)' to repo")
             self.items.append(newInstaller)
-            NotificationCenter.default.post(name: ItemRepository.newInstaller, object: nil)
+            NotificationCenter.default.post(name: ItemRepository.newInstaller, object: newInstaller)
         }
     }
 
@@ -120,6 +121,7 @@ class ItemRepository {
                 NotificationCenter.default.post(name: ItemRepository.newApplication, object: nil)
             } else {
                 DDLogInfo("Adding utility \(newApplication.name) to repo")
+                NotificationCenter.default.post(name: ItemRepository.newUtility, object: newApplication)
             }
         }
     }

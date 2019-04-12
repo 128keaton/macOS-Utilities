@@ -119,7 +119,6 @@ class Installer: NSObject, Item, NSFilePresenter {
     public func refresh() {
         DispatchQueue.main.sync {
             self.icon = self.findAppIcon()
-            NotificationCenter.default.post(name: ItemRepository.newInstaller, object: nil)
         }
     }
 

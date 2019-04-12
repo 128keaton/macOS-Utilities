@@ -26,9 +26,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     public var preferenceLoader = PreferenceLoader(useBundlePreferences: true)
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.addInstallersToInfoMenu), name: ItemRepository.newInstaller, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.addInstallerToMenu(_:)), name: ItemRepository.newInstaller, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.readPreferences(_:)), name: PreferenceLoader.preferencesLoaded, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.showErrorAlert(notification:)), name: ErrorAlertLogger.showErrorAlert, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.addUtilityToMenu(_:)), name: ItemRepository.newUtility, object: nil)
 
         preferenceLoader = PreferenceLoader(useBundlePreferences: false)
         preferenceLoader.constructLogger()
@@ -79,7 +80,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc private func readPreferences(_ aNotification: Notification? = nil) {
         var semaphore: DispatchSemaphore? = nil
         PreferenceLoader.loaded = true
-        
+
         if let notification = aNotification {
             if notification.object != nil {
                 semaphore = DispatchSemaphore(value: 1)
@@ -109,6 +110,31 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+    @objc private func addUtilityToMenu(_ notification: Notification? = nil) {
+        if let validNotification = notification {
+            if let utility = validNotification.object as? Application {
+                utilitiesMenu?.addItem(withTitle: utility.name, action: #selector(AppDelegate.openApp(_:)), keyEquivalent: "")
+            }
+        }
+    }
+
+    @objc private func addInstallerToMenu(_ notification: Notification? = nil) {
+        if let infoMenu = self.infoMenu {
+            if (infoMenu.items.filter { $0 == NSMenuItem.separator() }).count == 1 {
+                infoMenu.insertItem(NSMenuItem.separator(), at: 0)
+            }
+
+            if let validNotification = notification {
+                if let installer = validNotification.object as? Installer {
+                    let installerItem = NSMenuItem(title: "Install \(installer.versionName)", action: #selector(AppDelegate.startOSInstall(_:)), keyEquivalent: "")
+                    installerItem.image = installer.canInstall ? NSImage(named: "NSStatusAvailable") : NSImage(named: "NSStatusUnavailable")
+                    infoMenu.insertItem(installerItem, at: 0)
+                }
+            }
+        }
+    }
+
+
     public func mountShareFrom(_ installerServer: InstallerServerPreferences) {
         if installerServer.serverType == "NFS" && installerServer.isMountable() {
             DiskUtility.shared.mountNFSShare(shareURL: "\(installerServer.serverIP):\(installerServer.serverPath)", localPath: installerServer.mountPath) { (didSucceed) in
@@ -119,28 +145,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    @objc func openApp(sender: NSMenuItem) {
+    @objc func openApp(_ sender: NSMenuItem) {
         ApplicationUtility.shared.open(sender.title)
     }
 
     private func checkIfReadyToTerminate() {
         if applicationShouldTerminate(NSApplication.shared) == .terminateNow {
             NSApplication.shared.terminate(self)
-        }
-    }
-
-    private func removeInstallersFromInfoMenu() {
-        guard let infoMenu = self.infoMenu
-            else {
-                return
-        }
-
-        if ((infoMenu.items.filter { $0.title.contains("Install") }).count > 1){
-            if (infoMenu.items.filter { $0 == NSMenuItem.separator() }).count > 2 {
-                if let separator = (infoMenu.items.first { $0 == NSMenuItem.separator() }) {
-                    infoMenu.removeItem(separator)
-                }
-            }
         }
     }
 
@@ -158,23 +169,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 pageControllerDelegate.showPageController(initialPage: 1)
             }
         }
-    }
-
-    @objc private func addInstallersToInfoMenu() {
-        removeInstallersFromInfoMenu()
-        installers = ItemRepository.shared.getInstallers()
-
-        #if !DEBUG
-            installers = installers.filter { $0.isFakeInstaller == false }
-        #endif
-
-        installers.forEach {
-            let installerItem = NSMenuItem(title: "Install \($0.versionName)", action: #selector(AppDelegate.startOSInstall(_:)), keyEquivalent: "")
-            installerItem.image = $0.canInstall ? NSImage(named: "NSStatusAvailable") : NSImage(named: "NSStatusUnavailable")
-            infoMenu?.insertItem(installerItem, at: 0)
-        }
-
-        infoMenu?.insertItem(NSMenuItem.separator(), at: (installers.count))
     }
 
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
@@ -201,8 +195,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func buildInfoMenu() {
-        addInstallersToInfoMenu()
-
         if(infoMenu?.items.count ?? 0 > 0) {
             infoMenu?.addItem(NSMenuItem.separator())
         }
