@@ -21,6 +21,9 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     private var applications: [Application] = []
     private var applicationsInSections = [[Application]]()
 
+    private var dispatchQueue: DispatchQueue?
+    private var dispatchWorkItem: DispatchWorkItem?
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -64,8 +67,8 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         if let validNotification = notification {
             guard var newApplications = (validNotification.object as? [Application]) else { return }
 
-            newApplications = newApplications.filter { $0.showInApplicationsWindow == true }.sorted(by: { $0.name > $1.name })
-            
+            newApplications = newApplications.filter { $0.showInApplicationsWindow == true }
+
             NotificationCenter.default.post(name: ItemRepository.hideApplications, object: nil)
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -82,7 +85,7 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
             return
         }
 
-        let newApplications = ItemRepository.shared.getApplications().filter { $0.showInApplicationsWindow == true }.sorted(by: { $0.name > $1.name })
+        let newApplications = ItemRepository.shared.getApplications().filter { $0.showInApplicationsWindow == true }
         setValidApplications(newApplications)
     }
 

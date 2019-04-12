@@ -83,7 +83,7 @@ class ItemRepository {
     }
 
     public func getApplications() -> [Application] {
-        return (items.filter { type(of: $0) == Application.self } as! [Application]).sorted { $0.name < $1.name }
+        return (items.filter { type(of: $0) == Application.self } as! [Application])
     }
 
     public func addToRepository(newDisk: Disk) {

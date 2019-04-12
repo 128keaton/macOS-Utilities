@@ -31,7 +31,8 @@ class PreferencesViewController: NSViewController {
     @IBOutlet weak var sendLogAddressField: NSTextField!
     @IBOutlet weak var deviceIdentifierAPITokenField: NSTextField!
     @IBOutlet weak var savePathLabel: NSTextField!
-
+    @IBOutlet weak var applicationsCountLabel: NSTextField!
+    
     public let preferenceLoader: PreferenceLoader = (NSApplication.shared.delegate as! AppDelegate).preferenceLoader
     private var preferences: Preferences? = nil {
         didSet {
@@ -46,6 +47,8 @@ class PreferencesViewController: NSViewController {
 
         if(preferences == nil) {
             readPreferences()
+        }else{
+            applicationsCountLabel.stringValue = "\(preferences!.getApplications().count) application(s)"
         }
     }
 

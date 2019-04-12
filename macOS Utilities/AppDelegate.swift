@@ -42,7 +42,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         readPreferences()
 
         buildInfoMenu()
-       // ItemRepository.shared.getApplications().filter { $0.isUtility == true }.map { NSMenuItem(title: $0.name, action: #selector(openApp(sender:)), keyEquivalent: "") }.forEach { utilitiesMenu?.addItem($0) }
     }
 
     @objc private func showErrorAlert(notification: Notification) {
