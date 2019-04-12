@@ -44,6 +44,8 @@ class PreferencesApplicationsViewController: NSViewController {
     private func updateApplications() {
         if let currentPreferences = PreferenceLoader.currentPreferences {
             currentPreferences.setApplications(self.applications)
+            PreferenceLoader.save(currentPreferences, notify: false)
+            NotificationCenter.default.post(name: ItemRepository.updatingApplications, object: self.applications)
         }
     }
 
@@ -95,7 +97,7 @@ extension PreferencesApplicationsViewController: NSTableViewDataSource, NSTableV
         let application = applications[row]
 
         if tableColumn == tableView.tableColumns[0] {
-            image = application.isInvalid ? NSImage(named: "NSStatusAvailable") : NSImage(named: "NSStatusUnavailable")
+            image = !application.isInvalid ? NSImage(named: "NSStatusAvailable") : NSImage(named: "NSStatusUnavailable")
             cellIdentifier = CellIdentifiers.ApplicationStatusCell
         } else if tableColumn == tableView.tableColumns[1] {
             text = application.name
@@ -126,7 +128,7 @@ extension PreferencesApplicationsViewController: NSTableViewDataSource, NSTableV
     @IBAction func openContainingFolderButtonClicked(_ sender: NSButton) {
         let selectedIndex = tableView.selectedRow
         if applications.indices.contains(selectedIndex) {
-            applications[selectedIndex].open()
+            NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: applications[selectedIndex].path)])
         }
     }
 
@@ -153,8 +155,10 @@ extension PreferencesApplicationsViewController: NSTableViewDataSource, NSTableV
 
     private func addAppAt(_ appPath: String) {
         let appName = String(appPath.split(separator: "/").last!).replacingOccurrences(of: ".app", with: "")
-        if (applications.contains { $0.name == appName }) {
+        if (!applications.contains { $0.name == appName }) {
             let newApplication = Application(name: appName, path: appPath)
+            newApplication.showInApplicationsWindow = true
+
             applications.append(newApplication)
             tableView.reloadData()
             updateApplications()

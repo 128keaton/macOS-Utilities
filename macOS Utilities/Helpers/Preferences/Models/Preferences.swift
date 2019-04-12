@@ -8,7 +8,29 @@
 
 import Foundation
 
-class Preferences: Codable {
+protocol GenericType {
+    func isEqualTo(other: GenericType) -> Bool
+}
+extension GenericType where Self : Equatable {
+    func isEqualTo(other: GenericType) -> Bool {
+        if let o = other as? Self { return self == o }
+        return false
+    }
+}
+
+extension UInt : GenericType {}
+extension String : GenericType {}
+extension Bool : GenericType {}
+
+
+class Preferences: Codable, NSCopying {
+    
+    func copy(with zone: NSZone? = nil) -> Any {
+        let data = try! PropertyListEncoder().encode(self)
+        return  try! PropertyListDecoder().decode(Preferences.self, from: data)
+    }
+    
+    
     var helpEmailAddress: String?
     var deviceIdentifierAuthenticationToken: String?
     var loggingPreferences: LoggingPreferences
@@ -38,7 +60,6 @@ class Preferences: Codable {
     public func setApplications(_ applications: [Application]){
         self.mappedApplications = applications
     }
-    
 }
 
 enum Dict: Codable, CustomStringConvertible {

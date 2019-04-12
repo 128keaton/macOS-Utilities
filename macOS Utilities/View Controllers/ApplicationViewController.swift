@@ -36,8 +36,9 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     }
 
     private func registerForNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.getApplications), name: ItemRepository.newApplication, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.readPreferences), name: PreferenceLoader.preferencesLoaded, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.updatingApplications), name: ItemRepository.updatingApplications, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.getApplications), name: ItemRepository.newApplications, object: nil)
     }
 
     @objc private func readPreferences() {
@@ -52,6 +53,27 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         }
     }
 
+    @objc public func updatingApplications(_ notification: Notification?) {
+        if !Thread.isMainThread {
+            DispatchQueue.main.async {
+                self.updatingApplications(notification)
+            }
+            return
+        }
+
+        if let validNotification = notification {
+            guard var newApplications = (validNotification.object as? [Application]) else { return }
+
+            newApplications = newApplications.filter { $0.showInApplicationsWindow == true }.sorted(by: { $0.name > $1.name })
+            
+            NotificationCenter.default.post(name: ItemRepository.hideApplications, object: nil)
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.setValidApplications(newApplications)
+            }
+        }
+    }
+
     @objc public func getApplications() {
         if !Thread.isMainThread {
             DispatchQueue.main.async {
@@ -61,20 +83,27 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         }
 
         let newApplications = ItemRepository.shared.getApplications().filter { $0.showInApplicationsWindow == true }.sorted(by: { $0.name > $1.name })
+        setValidApplications(newApplications)
+    }
 
+    private func setValidApplications(_ newApplications: [Application]) {
         if(newApplications.count > applications.count) {
             applications.append(contentsOf: newApplications.filter { applications.contains($0) == false })
         } else if (newApplications.count < applications.count) {
             applications.removeAll { !newApplications.contains($0) }
+        } else if newApplications.count == 0 {
+            applications.removeAll()
         }
+
 
         applicationsInSections = applications.count > 4 ? applications.chunked(into: 4) : [applications]
 
-   
-        configureCollectionView()
+        if(applications.count > 0 && applicationsInSections.count > 0 && applicationsInSections.first!.count > 0) {
+            configureCollectionView()
+        }
+
         self.collectionView?.reloadData()
     }
-
 
     private func addEasterEgg() {
         let quintClickGesture = NSClickGestureRecognizer(target: self, action: #selector(startEasterEgg))
@@ -86,37 +115,37 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         // collectionView width is 660
         // inner available width is 640 (insets are 10.0 left/right)
 
-        DispatchQueue.main.async {
-            let flowLayout = NSCollectionViewFlowLayout()
 
-            let collectionViewWidth = 640
-            let collectionViewHeight = 291.0
+        let flowLayout = NSCollectionViewFlowLayout()
 
-            let itemWidth = 100
-            let itemHeight = 120
+        let collectionViewWidth = 640
+        let collectionViewHeight = 291.0
 
-            let totalNumberOfItems = Double(self.applications.count)
-            let numberOfItemsInSections = self.applicationsInSections.map { $0.count }
+        let itemWidth = 100
+        let itemHeight = 120
 
-            let itemSpacing = (collectionViewWidth - (numberOfItemsInSections.first! * itemWidth)) / numberOfItemsInSections.first!
+        let totalNumberOfItems = Double(self.applications.count)
+        let numberOfItemsInSections = self.applicationsInSections.map { $0.count }
 
-            flowLayout.itemSize = NSSize(width: itemWidth, height: itemHeight)
+        let itemSpacing = (collectionViewWidth - (numberOfItemsInSections.first! * itemWidth)) / numberOfItemsInSections.first!
 
-            if totalNumberOfItems <= 4.0 {
-                flowLayout.minimumLineSpacing = 0.0
-                flowLayout.sectionInset = NSEdgeInsets(top: CGFloat(collectionViewHeight / 4.0), left: 10.0, bottom: 10.0, right: 10.0)
-            } else {
-                flowLayout.minimumLineSpacing = 3.0
-                flowLayout.sectionInset = NSEdgeInsets(top: 0.0, left: 10.0, bottom: 10.0, right: 10.0)
-            }
+        flowLayout.itemSize = NSSize(width: itemWidth, height: itemHeight)
 
-
-            print("Item spacing: \(itemSpacing)")
-
-            flowLayout.minimumInteritemSpacing = CGFloat(itemSpacing)
-            self.collectionView.collectionViewLayout = flowLayout
+        if totalNumberOfItems <= 4.0 {
+            flowLayout.minimumLineSpacing = 0.0
+            flowLayout.sectionInset = NSEdgeInsets(top: CGFloat(collectionViewHeight / 4.0), left: 10.0, bottom: 10.0, right: 10.0)
+        } else {
+            flowLayout.minimumLineSpacing = 3.0
+            flowLayout.sectionInset = NSEdgeInsets(top: 0.0, left: 10.0, bottom: 10.0, right: 10.0)
         }
+
+
+        print("Item spacing: \(itemSpacing)")
+
+        flowLayout.minimumInteritemSpacing = CGFloat(itemSpacing)
+        self.collectionView.collectionViewLayout = flowLayout
     }
+
 
     @IBAction func ejectCDTray(_ sender: NSMenuItem) {
         let ejectProcess = Process()

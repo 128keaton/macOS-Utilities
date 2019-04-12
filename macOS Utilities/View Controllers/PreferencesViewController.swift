@@ -127,8 +127,6 @@ class PreferencesViewController: NSViewController {
     }
 
     private func savePreferences() {
-        NotificationCenter.default.post(name: ItemRepository.updatingApplications, object: nil)
-
         if let preferences = self.preferences {
             preferences.installerServerPreferences.serverIP = installerServerIPField.stringValue
             preferences.installerServerPreferences.serverPath = installerServerPathField.stringValue
@@ -146,7 +144,6 @@ class PreferencesViewController: NSViewController {
 
             preferenceLoader.save(preferences)
         }
-
     }
 
     @IBAction func closePreferences(_ sender: NSButton) {

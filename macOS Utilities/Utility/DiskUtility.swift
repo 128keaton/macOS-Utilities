@@ -246,7 +246,8 @@ class DiskUtility: NSObject, NSFilePresenter {
                             self.mountedInstallers.removeAll { $0 == currentDisk }
                             DDLogInfo("Ejected disk image: \(currentDisk.deviceIdentifier) \(diskUtilOutput)")
                             if(self.mountedInstallers.count == 0) {
-                                NotificationCenter.default.post(name: ItemRepository.refreshRepository, object: nil)
+                                // FIXME: 
+                             //   NotificationCenter.default.post(name: ItemRepository.refreshRepository, object: nil)
                                 DDLogInfo("Unmounting NFS shares now")
                                 if self.mountedShares.count > 0 {
                                     for share in self.mountedShares {

@@ -16,11 +16,13 @@ class ItemRepository {
     private var fakeItems: [Any] = []
 
     static let newApplication = Notification.Name("NSNewApplication")
+    static let newApplications = Notification.Name("NSNewApplications")
     static let newDisk = Notification.Name("NSNewDisk")
     static let newInstaller = Notification.Name("NSNewInstaller")
     static let newVolume = Notification.Name("NSNewVolume")
     static let refreshRepository = Notification.Name("NSRefreshRepository")
     static let updatingApplications = Notification.Name("NSUpdatingApplications")
+    static let hideApplications = Notification.Name("NSHideApplications")
 
     private init() {
         DDLogInfo("ItemRepository initialized")
@@ -30,21 +32,15 @@ class ItemRepository {
         }
 
         NotificationCenter.default.addObserver(self, selector: #selector(ItemRepository.reloadAllItems), name: ItemRepository.refreshRepository, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ItemRepository.reloadApplications), name: PreferenceLoader.preferencesLoaded, object: nil)
     }
-
-    @objc private func reloadApplications() {
-        if PreferenceLoader.loaded {
-            items.removeAll { type(of: $0) == Application.self }
-            ApplicationUtility.shared.getApplications(shouldClear: true)
-        }
-    }
-
+    
     @objc public func reloadAllItems() {
         DiskUtility.shared.getAllDisks()
         ApplicationUtility.shared.getApplications()
         ApplicationUtility.shared.getUtilities()
     }
+    
+    
 
     public func getSelectedInstaller() -> Installer? {
         if let installer = (self.getInstallers().first { $0.isSelected == true }) {
@@ -129,6 +125,6 @@ class ItemRepository {
 
     public func addToRepository(newApplications: [Application]) {
         self.items.append(contentsOf: newApplications)
-        NotificationCenter.default.post(name: ItemRepository.newApplication, object: nil)
+        NotificationCenter.default.post(name: ItemRepository.newApplications, object: nil)
     }
 }

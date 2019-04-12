@@ -14,28 +14,94 @@ class PreferenceLoader {
     static let preferencesLoaded = NSNotification.Name(rawValue: "NSPreferencesLoaded")
     static let preferencesUpdated = NSNotification.Name(rawValue: "NSPreferencesUpdated")
 
-    private let libraryFolder = AppFolder.Library.url.appendingPathComponent("ER2").absoluteString.replacingOccurrences(of: "file://", with: "")
-    private let propertyListName = "com.er2.applications"
+    private static let libraryFolder = AppFolder.Library.url.appendingPathComponent("ER2").absoluteString.replacingOccurrences(of: "file://", with: "")
+    private static let propertyListName = "com.er2.applications"
 
     private (set) public static var currentPreferences: Preferences? = nil
 
     public static var loaded = false
 
+    private static var previousPreferences: Preferences? = nil
+
+
+    static func isDifferentFromRunning(_ preferences: Preferences? = nil) -> Bool {
+        guard let runningPreferences = previousPreferences else { return true }
+
+        var validPreferences: Preferences? = preferences
+
+        if validPreferences == nil {
+            validPreferences = PreferenceLoader.currentPreferences
+        }
+
+        guard let _preferences = validPreferences else { return true }
+
+        if(runningPreferences.installerServerPreferences != _preferences.installerServerPreferences) {
+            return true
+        }
+
+        if(runningPreferences.loggingPreferences != _preferences.loggingPreferences) {
+            return true
+        }
+
+        if(runningPreferences.useDeviceIdentifierAPI != _preferences.useDeviceIdentifierAPI) {
+            return true
+        }
+
+        if(runningPreferences.helpEmailAddress != _preferences.helpEmailAddress) {
+            return true
+        }
+
+        return false
+    }
+
     init(useBundlePreferences: Bool = true) {
         if useBundlePreferences {
             if let bundlePreferences = loadPreferencesFromBundle() {
                 PreferenceLoader.currentPreferences = bundlePreferences
+                PreferenceLoader.previousPreferences = bundlePreferences.copy() as? Preferences
                 NotificationCenter.default.post(name: PreferenceLoader.preferencesLoaded, object: nil)
             }
         } else {
             if let libraryPreferences = loadPreferencesFromLibraryFolder() {
                 PreferenceLoader.currentPreferences = libraryPreferences
+                PreferenceLoader.previousPreferences = libraryPreferences.copy() as? Preferences
                 NotificationCenter.default.post(name: PreferenceLoader.preferencesLoaded, object: nil)
             }
         }
     }
 
-    public func save(_ preferences: Preferences) {
+    public func save(_ preferences: Preferences, notify: Bool = true) {
+        if PreferenceLoader.isDifferentFromRunning() {
+            let encoder = PropertyListEncoder()
+            encoder.outputFormat = .xml
+
+            let libraryPropertyListPath = "\(PreferenceLoader.libraryFolder)/\(PreferenceLoader.propertyListName).plist"
+            let bundlePropertyListPath = Bundle.main.path(forResource: PreferenceLoader.propertyListName, ofType: "plist")!
+
+            do {
+                let data = try encoder.encode(preferences)
+                try data.write(to: URL(fileURLWithPath: libraryPropertyListPath))
+
+                #if !DEBUG
+                    try data.write(to: URL(fileURLWithPath: bundlePropertyListPath))
+                #endif
+
+                if notify {
+                    PreferenceLoader.previousPreferences = preferences
+                    PreferenceLoader.currentPreferences = preferences.copy() as? Preferences
+                    NotificationCenter.default.post(name: PreferenceLoader.preferencesLoaded, object: true)
+                }
+
+                DDLogInfo("Saved preferences to propertly list at path: \(libraryPropertyListPath)")
+                DDLogInfo("Saved preferences to propertly list at path: \(bundlePropertyListPath)")
+            } catch {
+                DDLogError("Could not save preferences to propertly list at path: \(libraryPropertyListPath): \(error)")
+                DDLogError("Could not save preferences to propertly list at path: \(bundlePropertyListPath): \(error)")
+            }
+        }
+    }
+
+    public static func save(_ preferences: Preferences, notify: Bool = true) {
         let encoder = PropertyListEncoder()
         encoder.outputFormat = .xml
 
@@ -50,8 +116,10 @@ class PreferenceLoader {
                 try data.write(to: URL(fileURLWithPath: bundlePropertyListPath))
             #endif
 
-            PreferenceLoader.currentPreferences = preferences
-            NotificationCenter.default.post(name: PreferenceLoader.preferencesLoaded, object: true)
+            if notify {
+                PreferenceLoader.currentPreferences = preferences
+                NotificationCenter.default.post(name: PreferenceLoader.preferencesLoaded, object: true)
+            }
 
             DDLogInfo("Saved preferences to propertly list at path: \(libraryPropertyListPath)")
             DDLogInfo("Saved preferences to propertly list at path: \(bundlePropertyListPath)")
@@ -76,19 +144,19 @@ class PreferenceLoader {
     }
 
     public func loadPreferencesFromBundle() -> Preferences? {
-        if let bundlePropertyListPath = Bundle.main.path(forResource: propertyListName, ofType: "plist") {
+        if let bundlePropertyListPath = Bundle.main.path(forResource: PreferenceLoader.propertyListName, ofType: "plist") {
             return loadPreferences(bundlePropertyListPath)
         }
         return nil
     }
 
     public func loadPreferencesFromLibraryFolder() -> Preferences? {
-        let libraryPropertyListPath = "\(libraryFolder)/\(propertyListName).plist"
+        let libraryPropertyListPath = "\(PreferenceLoader.libraryFolder)/\(PreferenceLoader.propertyListName).plist"
         if FileManager.default.fileExists(atPath: libraryPropertyListPath) {
             return loadPreferences(libraryPropertyListPath)
         } else {
-            if let bundlePropertyListPath = Bundle.main.path(forResource: propertyListName, ofType: "plist") {
-                copyPlist(from: bundlePropertyListPath, to: libraryFolder)
+            if let bundlePropertyListPath = Bundle.main.path(forResource: PreferenceLoader.propertyListName, ofType: "plist") {
+                copyPlist(from: bundlePropertyListPath, to: PreferenceLoader.libraryFolder)
                 return loadPreferencesFromBundle()
             }
         }
@@ -98,7 +166,7 @@ class PreferenceLoader {
 
     // MARK: Folder Creation
     private func createLibraryFolder() {
-        try! FileManager.default.createDirectory(atPath: libraryFolder, withIntermediateDirectories: true, attributes: nil)
+        try! FileManager.default.createDirectory(atPath: PreferenceLoader.libraryFolder, withIntermediateDirectories: true, attributes: nil)
     }
 
     private func copyPlist(from: String, to: String) {

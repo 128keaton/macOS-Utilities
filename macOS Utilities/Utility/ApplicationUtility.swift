@@ -18,7 +18,7 @@ class ApplicationUtility {
     public let preferenceLoader: PreferenceLoader? = (NSApplication.shared.delegate as! AppDelegate).preferenceLoader
 
     private init() {
-        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationUtility.getApplications), name: PreferenceLoader.preferencesLoaded, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationUtility.getApplications(_:)), name: PreferenceLoader.preferencesLoaded, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ApplicationUtility.forceReloadApplications), name: PreferenceLoader.preferencesUpdated, object: nil)
         DDLogInfo("Initializing Applications Manager Shared Instance")
     }
@@ -29,17 +29,15 @@ class ApplicationUtility {
         allApplications.append(contentsOf: utilitiesPaths.filter { $0 != ".DS_Store" && $0 != ".localized" }.map { Application(name: $0, isUtility: true) })
     }
 
-    @objc public func getApplications(shouldClear: Bool = false) {
-        if(shouldClear == true) {
-            return forceReloadApplications()
+    @objc public func getApplications(_ notification: Notification? = nil) {
+        if notification == nil{
+            guard let applications = PreferenceLoader.currentPreferences?.getApplications() else { return }
+            
+            allApplications.append(contentsOf: applications)
+            allApplications.forEach { $0.showInApplicationsWindow = true }
+            
+            ItemRepository.shared.addToRepository(newApplications: allApplications)
         }
-
-        guard let applications = PreferenceLoader.currentPreferences?.getApplications() else { return }
-
-        allApplications.append(contentsOf: applications)
-        allApplications.forEach { $0.showInApplicationsWindow = true }
-
-        ItemRepository.shared.addToRepository(newApplications: allApplications)
     }
 
     @objc public func forceReloadApplications() {
