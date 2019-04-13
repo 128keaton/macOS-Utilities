@@ -194,19 +194,19 @@
 				8A6F28EF221B9F5C00FF9DB3 /* InstallViewController.swift */,
 				8ABAE3102252A46300E537D3 /* DiskSelectionDialogViewController.swift */,
 				8A6C645F225DB39500CD6DCF /* DeviceInformationViewController.swift */,
-				8A12391F226110A9008E551A /* New Group */,
+				8A12391F226110A9008E551A /* Preferences */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
 		};
-		8A12391F226110A9008E551A /* New Group */ = {
+		8A12391F226110A9008E551A /* Preferences */ = {
 			isa = PBXGroup;
 			children = (
 				8A6C646F225E9FA100CD6DCF /* PreferencesViewController.swift */,
 				8A175AAD225F2BE70018C977 /* PreferencesApplicationsViewController.swift */,
 				8A123920226110CA008E551A /* RemoteConfigurationViewController.swift */,
 			);
-			path = "New Group";
+			path = Preferences;
 			sourceTree = "<group>";
 		};
 		8A6C6457225D305700CD6DCF /* NSPageController */ = {
