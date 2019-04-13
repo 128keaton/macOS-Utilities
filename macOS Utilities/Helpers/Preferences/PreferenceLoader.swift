@@ -61,32 +61,19 @@ class PreferenceLoader {
         return false
     }
 
-    init(useBundlePreferences: Bool = false) {
+    init() {
         PreferenceLoader.sharedInstance = self
 
         constructLogger()
         if checkAndPerformInitialCopy() {
             libraryPropertyListExists = true
-
-            if useBundlePreferences {
-                if let bundlePreferences = loadPreferencesFromBundle() {
-                    loadingFromBundle = true
-                    PreferenceLoader.currentPreferences = bundlePreferences
-                    PreferenceLoader.previousPreferences = bundlePreferences.copy() as? Preferences
-                    constructRemoteLogger()
-                    NotificationCenter.default.post(name: PreferenceLoader.preferencesLoaded, object: nil)
-                }
-            } else {
-                if let libraryPreferences = loadPreferencesFromLibraryFolder() {
-                    loadingFromBundle = false
-                    PreferenceLoader.currentPreferences = libraryPreferences
-                    PreferenceLoader.previousPreferences = libraryPreferences.copy() as? Preferences
-                    constructRemoteLogger()
-                    NotificationCenter.default.post(name: PreferenceLoader.preferencesLoaded, object: nil)
-                }
+            if let libraryPreferences = loadPreferencesFromLibraryFolder() {
+                loadingFromBundle = false
+                PreferenceLoader.currentPreferences = libraryPreferences
+                PreferenceLoader.previousPreferences = libraryPreferences.copy() as? Preferences
+                constructRemoteLogger()
+                NotificationCenter.default.post(name: PreferenceLoader.preferencesLoaded, object: nil)
             }
-        } else {
-            DDLogError("Could not perform initial copy of property list.")
         }
     }
 
@@ -124,16 +111,6 @@ class PreferenceLoader {
 
         return true
     }
-
-    public func libraryFolderExists() -> Bool {
-        var isDirectory: ObjCBool = true
-        if FileManager.default.fileExists(atPath: PreferenceLoader.libraryFolder, isDirectory: &isDirectory) {
-            return true
-        }
-
-        return false
-    }
-
     public func verifyLibraryPreferencesExists() -> Bool {
         if FileManager.default.fileExists(atPath: libraryPropertyListPath) {
             libraryPropertyListExists = true
@@ -173,23 +150,23 @@ class PreferenceLoader {
 
     public static func saveRemoteConfigurationToDownloads(_ remoteConfiguration: RemoteConfigurationPreferences, fileName: String, createFolder: Bool = false, folderName: String = "") -> Bool {
         var dynamicFileURL: URL? = nil
-        
+
         if createFolder == true {
             if let fileFolderContainingPath = self.createFolderInDownloadsForFile(folderName: folderName, fileName: fileName, fileExtension: "plist") {
                 dynamicFileURL = fileFolderContainingPath
             }
-        }else{
+        } else {
             dynamicFileURL = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first!.appendingPathComponent(fileName).appendingPathExtension("plist")
         }
 
         do {
             let fileData = try PropertyListEncoder().encode(remoteConfiguration)
-            
-            if let fileURL = dynamicFileURL{
+
+            if let fileURL = dynamicFileURL {
                 let filePath = fileURL.absoluteString.replacingOccurrences(of: "file://", with: "")
                 return FileManager.default.createFile(atPath: filePath, contents: fileData, attributes: nil)
             }
-            
+
             return false
         } catch {
             DDLogError(error.localizedDescription)
@@ -201,7 +178,7 @@ class PreferenceLoader {
         let downloadsURL = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first!
         let folderURL = downloadsURL.appendingPathComponent(folderName, isDirectory: true)
         let folderPath = folderURL.absoluteString.replacingOccurrences(of: "file://", with: "")
-        
+
         var isDirectory: ObjCBool = true
         if FileManager.default.fileExists(atPath: folderPath, isDirectory: &isDirectory) {
             return folderURL.appendingPathComponent(fileName).appendingPathExtension(fileExtension)
@@ -219,23 +196,23 @@ class PreferenceLoader {
 
     public static func savePreferencesToDownloads(_ preferences: Preferences, fileName: String, createFolder: Bool = false, folderName: String = "") -> Bool {
         var dynamicFileURL: URL? = nil
-        
+
         if createFolder == true {
             if let fileFolderContainingPath = self.createFolderInDownloadsForFile(folderName: folderName, fileName: fileName, fileExtension: "plist") {
                 dynamicFileURL = fileFolderContainingPath
             }
-        }else{
+        } else {
             dynamicFileURL = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first!.appendingPathComponent(fileName).appendingPathExtension("plist")
         }
 
         do {
             let fileData = try PropertyListEncoder().encode(preferences)
-            
-            if let fileURL = dynamicFileURL{
+
+            if let fileURL = dynamicFileURL {
                 let filePath = fileURL.absoluteString.replacingOccurrences(of: "file://", with: "")
                 return FileManager.default.createFile(atPath: filePath, contents: fileData, attributes: nil)
             }
-            
+
             return false
         } catch {
             DDLogError(error.localizedDescription)

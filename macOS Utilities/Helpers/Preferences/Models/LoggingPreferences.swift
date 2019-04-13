@@ -20,7 +20,7 @@ class LoggingPreferences: Codable, Equatable {
 
         for i in 0..<mLhs.count {
             guard let valLhs = mLhs[i].value as? GenericType, let valRhs = mRhs[i].value as? GenericType else {
-                print("Invalid: Properties 'lhs.\(mLhs[i].label!)' and/or 'rhs.\(mRhs[i].label!)' are not of 'MyGenericType' types.")
+                print("Invalid: Properties 'lhs.\(mLhs[i].label!)' and/or 'rhs.\(mRhs[i].label!)' are not of 'GenericType' types.")
                 return false
             }
             if !valLhs.isEqualTo(other: valRhs) {
