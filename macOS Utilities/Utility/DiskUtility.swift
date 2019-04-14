@@ -40,7 +40,7 @@ class DiskUtility: NSObject, NSFilePresenter {
     }
 
     public func getAllDisks() {
-        TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["list", "-plist"]) { (output) in
+        /*TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["list", "-plist"]) { (output) in
             if let plistOutput = output {
                 let diskImageInfo = self.parseDiskUtilList(plistOutput)
                 if let allDisks = diskImageInfo["AllDisksAndPartitions"] as? [NSDictionary] {
@@ -52,12 +52,12 @@ class DiskUtility: NSObject, NSFilePresenter {
                     #endif
                 }
             }
-        }
+        }*/
     }
 
     public func addFakeDisk() {
-        let fakeDisk = Disk(isFakeDisk: true)
-        fakeDisks.append(fakeDisk)
+     //   let fakeDisk = Disk(isFakeDisk: true)
+      //  fakeDisks.append(fakeDisk)
     }
 
     public func mountNFSShare(shareURL: String, localPath: String, didSucceed: @escaping (Bool) -> ()) {
@@ -72,7 +72,7 @@ class DiskUtility: NSObject, NSFilePresenter {
             }
 
 
-            TaskHandler.createTask(command: "/sbin/mount", arguments: ["-t", "nfs", shareURL, localPath], timeout: TimeInterval(floatLiteral: 3.0)) { (taskOutput) in
+           /* TaskHandler.createTask(command: "/sbin/mount", arguments: ["-t", "nfs", shareURL, localPath], timeout: TimeInterval(floatLiteral: 3.0)) { (taskOutput) in
                 DDLogInfo("Mount output: \(taskOutput ?? "NO output")")
                 if let mountOutput = taskOutput {
                     self.presentedItemURL = URL(fileURLWithPath: localPath, isDirectory: true)
@@ -90,7 +90,7 @@ class DiskUtility: NSObject, NSFilePresenter {
                         didSucceed(false)
                     }
                 }
-            }
+            }*/
         }
     }
 
@@ -151,8 +151,8 @@ class DiskUtility: NSObject, NSFilePresenter {
                 if let plistOutput = taskOutput {
                     let diskImageInfo = self.parseDiskUtilList(plistOutput)
                     self.diskModificationQueue.sync {
-                        let diskImage = Disk(diskImageDictionary: diskImageInfo)
-                        self.cachedDisks.append(diskImage)
+                     //   let diskImage = Disk(diskImageDictionary: diskImageInfo)
+                      //  self.cachedDisks.append(diskImage)
                     }
                 }
             }
@@ -163,7 +163,7 @@ class DiskUtility: NSObject, NSFilePresenter {
         var validPath = ""
 
         if let validShare = share {
-            validPath = validShare.getMainVolume()!.mountPoint
+         //   validPath = validShare.getMainVolume()!.mountPoint
         }
 
         if let validSharePath = path {
@@ -201,7 +201,7 @@ class DiskUtility: NSObject, NSFilePresenter {
 
     public func erase(_ volume: Volume, newName: String, returnCompletion: @escaping (Bool) -> ()) {
         // TODO: check for APFS container
-        if(volume.parentDisk.isFakeDisk) {
+        /*if(volume.parentDisk.isFakeDisk) {
             DDLogInfo("Starting demo erase on FakeVolume: \(volume)")
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 DDLogInfo("Finished demo erase on FakeVolume: \(volume)")
@@ -224,12 +224,12 @@ class DiskUtility: NSObject, NSFilePresenter {
                     returnCompletion(false)
                 }
             }
-        }
+        }*/
     }
 
 
     public func ejectAll(didComplete: @escaping (Bool) -> ()) {
-        mountedShares = self.cachedDisks.filter { $0.content == "NFS" }
+      /*  mountedShares = self.cachedDisks.filter { $0.content == "NFS" }
         mountedInstallers = self.cachedDisks.filter { $0.getMainVolume()?.containsInstaller == true }
 
         if(allSharesAndInstallersUnmounted) {
@@ -267,6 +267,7 @@ class DiskUtility: NSObject, NSFilePresenter {
                 }
             })
         }
+ */
     }
 
     public func diskIsAPFS( _ disk: Disk, completion: @escaping (NSDictionary?) -> ()) {

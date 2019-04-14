@@ -34,6 +34,7 @@
 		8A6C6477225EA19200CD6DCF /* InstallerServerPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C6476225EA19200CD6DCF /* InstallerServerPreferences.swift */; };
 		8A6C6479225EA1EA00CD6DCF /* PreferenceLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C6478225EA1EA00CD6DCF /* PreferenceLoader.swift */; };
 		8A6F28F0221B9F5C00FF9DB3 /* InstallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6F28EF221B9F5C00FF9DB3 /* InstallViewController.swift */; };
+		8A6F8D8A2263D35B00077172 /* Partition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6F8D892263D35B00077172 /* Partition.swift */; };
 		8A87B8B521A47D8C004496AA /* ModelYearDetermination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87B8B421A47D8C004496AA /* ModelYearDetermination.swift */; };
 		8A87B8B721A47DD8004496AA /* CwlSysctl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87B8B621A47DD8004496AA /* CwlSysctl.swift */; };
 		8A8B59A5224E9FD100CD4094 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A8B59A4224E9FD100CD4094 /* Application.swift */; };
@@ -90,6 +91,7 @@
 		8A6C6476225EA19200CD6DCF /* InstallerServerPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallerServerPreferences.swift; sourceTree = "<group>"; };
 		8A6C6478225EA1EA00CD6DCF /* PreferenceLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceLoader.swift; sourceTree = "<group>"; };
 		8A6F28EF221B9F5C00FF9DB3 /* InstallViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallViewController.swift; sourceTree = "<group>"; };
+		8A6F8D892263D35B00077172 /* Partition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Partition.swift; sourceTree = "<group>"; };
 		8A87B8B421A47D8C004496AA /* ModelYearDetermination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelYearDetermination.swift; sourceTree = "<group>"; };
 		8A87B8B621A47DD8004496AA /* CwlSysctl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CwlSysctl.swift; sourceTree = "<group>"; };
 		8A8B59A4224E9FD100CD4094 /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
@@ -314,6 +316,7 @@
 				8ABAE31C2252DA5800E537D3 /* Installer.swift */,
 				8A9370CE2256B7F4002B3838 /* Disk.swift */,
 				8A9370D02256BB5A002B3838 /* Volume.swift */,
+				8A6F8D892263D35B00077172 /* Partition.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -530,6 +533,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A6F8D8A2263D35B00077172 /* Partition.swift in Sources */,
 				8A9D9A962262F24A00E4D36F /* IPAddressChooserDialog.swift in Sources */,
 				8A6C6463225DB40A00CD6DCF /* DeviceIdentifier.swift in Sources */,
 				8A9370CF2256B7F4002B3838 /* Disk.swift in Sources */,

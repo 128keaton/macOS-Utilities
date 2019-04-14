@@ -53,7 +53,7 @@ class DeviceInformationViewController: NSViewController {
     }
 
     private func getVolumes() {
-        allVolumes = ItemRepository.shared.getDisks().filter { $0.getMainVolume() !== nil }.map { $0.getMainVolume()! }.filter { $0.containsInstaller == false && $0.isValid == true }
+       // allVolumes = ItemRepository.shared.getDisks().filter { $0.getMainVolume() !== nil }.map { $0.getMainVolume()! }.filter { $0.containsInstaller == false && $0.isValid == true }
     }
 
     private func updateView() {

@@ -47,7 +47,7 @@ class DiskSelectionDialogViewController: NSViewController {
 
     private func getDisks() {
         diskProgressIndicator?.startSpinning()
-        installableVolumes = ItemRepository.shared.getDisks().filter { $0.isInstallable == true && $0.getMainVolume() != nil && $0.getMainVolume()!.isInstallable == true }.map { $0.getMainVolume()! }
+      //  installableVolumes = ItemRepository.shared.getDisks().filter { $0.isInstallable == true && $0.getMainVolume() != nil && $0.getMainVolume()!.isInstallable == true }.map { $0.getMainVolume()! }
     }
 
     @IBAction func openDiskUtility(_ sender: NSButton) {

@@ -23,10 +23,11 @@ class Volume: Item {
     var id: String = String.random(12).md5Value
     var measurementUnit: String = "GB"
     var content: String = "Apple_HFS"
-    var parentDisk: Disk
+    var parentDisk: Disk?
 
     var description: String {
-        return parentDisk.isFakeDisk ? "FakeVolume \n\t FakeDisk: \n\t\t\(self.parentDisk)" : "Volume: \n\t Device Identifier: \(self.deviceIdentifier) \n\t Disk UUID: \(self.diskUUID) \n\t Installable: \(self.isInstallable) \n\t Mount Point: \(self.mountPoint)\n\t   Volume Name: \(self.volumeName)\n\t Volume UUID: \(self.volumeUUID)\n\t  Installer: \(self.installer == nil ? "None" : self.installer!.description)\n\t   Size: \(self.size) \(self.measurementUnit) \n"
+        //  return parentDisk.isFakeDisk ? "FakeVolume \n\t FakeDisk: \n\t\t\(self.parentDisk)" : "Volume: \n\t Device Identifier: \(self.deviceIdentifier) \n\t Disk UUID: \(self.diskUUID) \n\t Installable: \(self.isInstallable) \n\t Mount Point: \(self.mountPoint)\n\t   Volume Name: \(self.volumeName)\n\t Volume UUID: \(self.volumeUUID)\n\t  Installer: \(self.installer == nil ? "None" : self.installer!.description)\n\t   Size: \(self.size) \(self.measurementUnit) \n"
+        return ""
     }
 
     var isValid: Bool {
@@ -34,7 +35,8 @@ class Volume: Item {
     }
 
     var isInstallable: Bool {
-        return ((measurementUnit == "GB" ? size > 150.0: true) && !invalidDiskPropertyValues.contains(content)) || parentDisk.isFakeDisk == true
+        //  return ((measurementUnit == "GB" ? size > 150.0: true) && !invalidDiskPropertyValues.contains(content)) || parentDisk.isFakeDisk == true
+        return false
     }
 
     init(_ volumeDictionary: NSDictionary, disk: Disk) {
@@ -117,7 +119,7 @@ class Volume: Item {
     }
 
     init(disk: Disk) {
-        if(disk.isFakeDisk) {
+        /*  if(disk.isFakeDisk) {
             self.mountPoint = "/tmp"
             self.volumeName = "FakeDisk"
             self.content = "FakeDisk_Null"
@@ -128,7 +130,8 @@ class Volume: Item {
         self.size = disk.size
         self.measurementUnit = disk.measurementUnit
         self.parentDisk = disk
-        self.addToRepo()
+        self.addToRepo()*/
+        self.parentDisk = nil
     }
 
     public func updateWithAPFSData(_ apfsDataArray: [NSDictionary]) {
