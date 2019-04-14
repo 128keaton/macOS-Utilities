@@ -310,18 +310,20 @@ class PreferencesViewController: NSViewController {
         if let preferences = self.preferences,
             let copiedPreferences = preferences.copy() as? Preferences {
 
-            KBTextFieldDialog.show(self, doneButtonText: "Done", textFieldPlaceholder: "Remote configuration name", dialogTitle: "Create a Remote Configuration") { (newConfigurationName) in
-                copiedPreferences.isRemoteConfiguration = true
-                let newFolderName = newConfigurationName.dashedFileName + "-RemoteConfiguration"
-                let newRemoteConfigurationName = newConfigurationName.dashedFileName + "-remoteConfig"
-                let newConfigurationURL = URL(string: "\(newConfigurationName.escaped).utilconf")!
-                
-                let newRemoteConfig = RemoteConfigurationPreferences(hostURL: nil, configurationURL: newConfigurationURL, name: newRemoteConfigurationName)
-                let didSavePreferences = PreferenceLoader.savePreferencesToDownloads(copiedPreferences, fileName: newConfigurationName, createFolder: true, folderName: newFolderName)
-                let didSaveConfig = PreferenceLoader.saveRemoteConfigurationToDownloads(newRemoteConfig, fileName: newRemoteConfigurationName, createFolder: true, folderName: newFolderName)
-                
-                if(!didSaveConfig || !didSavePreferences) {
-                    // TODO
+            KBTextFieldDialog.show(self, doneButtonText: "Done", textFieldPlaceholder: "Remote configuration name", dialogTitle: "Create a Remote Configuration", additionalTextFieldPlaceholder: "http://me.is/the/best/programmer/", additionalDialogTitle: "Full host URL") { (newConfigurationName, newHostURL) in
+                if let hostURL = URL(string: newHostURL){
+                    copiedPreferences.isRemoteConfiguration = true
+                    let newFolderName = newConfigurationName.dashedFileName + "-RemoteConfiguration"
+                    let newRemoteConfigurationName = newConfigurationName.dashedFileName + "-remoteConfig"
+                    let newConfigurationURL = URL(string: "\(newConfigurationName.escaped).utilconf")!
+                    
+                    let newRemoteConfig = RemoteConfigurationPreferences(hostURL: hostURL, configurationURL: newConfigurationURL, name: newRemoteConfigurationName)
+                    let didSavePreferences = PreferenceLoader.savePreferencesToDownloads(copiedPreferences, fileName: newConfigurationName, createFolder: true, folderName: newFolderName)
+                    let didSaveConfig = PreferenceLoader.saveRemoteConfigurationToDownloads(newRemoteConfig, fileName: newRemoteConfigurationName, createFolder: true, folderName: newFolderName)
+                    
+                    if(!didSaveConfig || !didSavePreferences) {
+                        // TODO
+                    }
                 }
             }
         }

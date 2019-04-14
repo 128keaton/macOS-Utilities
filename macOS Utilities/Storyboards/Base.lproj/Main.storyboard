@@ -296,6 +296,13 @@
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="sbP-hP-eoY"/>
+                                        <menuItem title="Test URL Scheme" allowsKeyEquivalentWhenHidden="YES" id="aR6-Zx-Qlx">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="testURLScheme:" target="Voe-Tx-rLC" id="M14-HG-lWx"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="2BW-R3-D05"/>
                                         <menuItem title="Create Installable FakeInstaller" id="pgc-ka-9qo">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>

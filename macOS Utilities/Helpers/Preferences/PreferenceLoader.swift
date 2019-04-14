@@ -132,9 +132,20 @@ class PreferenceLoader {
 
         do {
             let fileData = try JSONEncoder().encode(remoteConfiguration)
-
+            var htmlData: Data? = nil
+            #if DEBUG
+                if let htmlString = remoteConfiguration.generateTestHTMLContent(){
+                    htmlData = htmlString.data(using: .utf8)
+                }
+            #endif
+            
             if let fileURL = dynamicFileURL {
                 let filePath = fileURL.absolutePath
+                if let testHTMLData = htmlData{
+                    let htmlFilePath = fileURL.deletingLastPathComponent().appendingPathComponent("test.html", isDirectory: false).absolutePath
+                    FileManager.default.createFile(atPath: htmlFilePath, contents: testHTMLData, attributes: nil)
+                }
+                
                 return FileManager.default.createFile(atPath: filePath, contents: fileData, attributes: nil)
             }
 

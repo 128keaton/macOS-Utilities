@@ -35,4 +35,17 @@ class RemoteConfigurationPreferences: Codable, Equatable {
     convenience init(){
         self.init(hostURL: nil, configurationURL: nil, name: nil)
     }
+    
+    func generateTestHTMLContent() -> String?{
+        if let fileURL = self.configurationURL{
+            var urlScheme = "open-utilities://"
+        
+            #if DEBUG
+                urlScheme = "news://"
+            #endif
+        
+            return "<a href=\"\(urlScheme)\(self.hostURL!)\(fileURL.absolutePath.dashedFileName)\">\(self.name)</a>"
+        }
+        return nil
+    }
 }

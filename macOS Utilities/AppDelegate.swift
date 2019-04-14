@@ -49,6 +49,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         buildInfoMenu()
     }
 
+    func applicationWillFinishLaunching(_ notification: Notification) {
+        NSAppleEventManager.shared().setEventHandler(self, andSelector: #selector(self.handleAppleEvent(event:replyEvent:)), forEventClass: AEEventClass(kInternetEventClass), andEventID: AEEventID(kAEGetURL))
+    }
+    
     private func registerForNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.addInstallerToMenu(_:)), name: ItemRepository.newInstaller, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.showErrorAlert(notification:)), name: ErrorAlertLogger.showErrorAlert, object: nil)
@@ -275,6 +279,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         ItemRepository.shared.addFakeInstaller(canInstallOnMachine: true)
     }
 
+    @IBAction func testURLScheme(_ sender: NSMenuItem){
+        // I'M NOT MAD I JUST DONT WANNA TALK ABOUT IT
+        var testURL = URL(string: "open-utilities://test")!
+        #if DEBUG
+            testURL = URL(string: "news://test")!
+        #endif
+        
+        NSWorkspace.shared.open(testURL)
+    }
 
     // MARK: Info menu functions
     // Unfortunately, this is rate limited :/
@@ -328,5 +341,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         
         return false
+    }
+    
+    @objc func handleAppleEvent(event: NSAppleEventDescriptor, replyEvent: NSAppleEventDescriptor) {
+        if let aeEventDescriptor = event.paramDescriptor(forKeyword: AEKeyword(keyDirectObject)) {
+            if let fullURL = aeEventDescriptor.stringValue{
+                let configPath = fullURL.replacingOccurrences(of: "open-utilities://", with: "").replacingOccurrences(of: "news://", with: "")
+                if configPath.contains("file://"){
+                    if !PreferenceLoader.loadPreferences(configPath.replacingOccurrences(of: "file://", with: ""), updatingRunning: true){
+                        DDLogError("Could not validate configuration file \(configPath)")
+                    }
+                }else{
+                    if let configURL = URL(string: configPath){
+                        if !PreferenceLoader.loadPreferences(configURL, updatingRunning: true){
+                            DDLogError("Could not validate configuration file \(configPath)")
+                        }
+                    }
+                }
+            }
+        }
     }
 }

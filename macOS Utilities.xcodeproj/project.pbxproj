@@ -44,10 +44,10 @@
 		8A9370D62256D604002B3838 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9370D52256D604002B3838 /* Item.swift */; };
 		8A9D9A962262F24A00E4D36F /* IPAddressChooserDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9D9A952262F24A00E4D36F /* IPAddressChooserDialog.swift */; };
 		8A9D9A982262FB5F00E4D36F /* IPAddressChooserDialog.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A9D9A972262FB5F00E4D36F /* IPAddressChooserDialog.xib */; };
-		8A9D9A9A226307CD00E4D36F /* KBTextFieldDialog.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A9D9A99226307CD00E4D36F /* KBTextFieldDialog.xib */; };
+		8A9D9A9A226307CD00E4D36F /* KBTextFieldDialog-small.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A9D9A99226307CD00E4D36F /* KBTextFieldDialog-small.xib */; };
 		8A9D9A9C2263084600E4D36F /* KBTextFieldDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9D9A9B2263084600E4D36F /* KBTextFieldDialog.swift */; };
-		8A9D9AA52263140200E4D36F /* config-icon-64.png in Resources */ = {isa = PBXBuildFile; fileRef = 8A9D9AA42263140200E4D36F /* config-icon-64.png */; };
-		8A9D9AA72263140700E4D36F /* config-icon-128.png in Resources */ = {isa = PBXBuildFile; fileRef = 8A9D9AA62263140600E4D36F /* config-icon-128.png */; };
+		8A9D9AAC22632B4700E4D36F /* config-file-icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 8A9D9AAB22632B4700E4D36F /* config-file-icon.icns */; };
+		8A9D9AAE2263370800E4D36F /* KBTextFieldDialog-large.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A9D9AAD2263370800E4D36F /* KBTextFieldDialog-large.xib */; };
 		8ABAE30F22527B9100E537D3 /* ApplicationUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE30E22527B9100E537D3 /* ApplicationUtility.swift */; };
 		8ABAE3112252A46300E537D3 /* DiskSelectionDialogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE3102252A46300E537D3 /* DiskSelectionDialogViewController.swift */; };
 		8ABAE3132252C1D800E537D3 /* TaskHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE3122252C1D800E537D3 /* TaskHandler.swift */; };
@@ -100,10 +100,10 @@
 		8A9370D52256D604002B3838 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		8A9D9A952262F24A00E4D36F /* IPAddressChooserDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IPAddressChooserDialog.swift; sourceTree = "<group>"; };
 		8A9D9A972262FB5F00E4D36F /* IPAddressChooserDialog.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IPAddressChooserDialog.xib; sourceTree = "<group>"; };
-		8A9D9A99226307CD00E4D36F /* KBTextFieldDialog.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = KBTextFieldDialog.xib; sourceTree = "<group>"; };
+		8A9D9A99226307CD00E4D36F /* KBTextFieldDialog-small.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = "KBTextFieldDialog-small.xib"; sourceTree = "<group>"; };
 		8A9D9A9B2263084600E4D36F /* KBTextFieldDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KBTextFieldDialog.swift; sourceTree = "<group>"; };
-		8A9D9AA42263140200E4D36F /* config-icon-64.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "config-icon-64.png"; sourceTree = "<group>"; };
-		8A9D9AA62263140600E4D36F /* config-icon-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "config-icon-128.png"; sourceTree = "<group>"; };
+		8A9D9AAB22632B4700E4D36F /* config-file-icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = "config-file-icon.icns"; sourceTree = "<group>"; };
+		8A9D9AAD2263370800E4D36F /* KBTextFieldDialog-large.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = "KBTextFieldDialog-large.xib"; sourceTree = "<group>"; };
 		8ABAE30E22527B9100E537D3 /* ApplicationUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationUtility.swift; sourceTree = "<group>"; };
 		8ABAE3102252A46300E537D3 /* DiskSelectionDialogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskSelectionDialogViewController.swift; sourceTree = "<group>"; };
 		8ABAE3122252C1D800E537D3 /* TaskHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskHandler.swift; sourceTree = "<group>"; };
@@ -178,7 +178,6 @@
 			isa = PBXGroup;
 			children = (
 				8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */,
-				8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */,
 			);
 			path = NSCollectionAppCell;
 			sourceTree = "<group>";
@@ -197,7 +196,8 @@
 			children = (
 				8ACB65DA21063E6F004B9C5A /* Main.storyboard */,
 				8A9D9A972262FB5F00E4D36F /* IPAddressChooserDialog.xib */,
-				8A9D9A99226307CD00E4D36F /* KBTextFieldDialog.xib */,
+				8A9D9AAF2263370E00E4D36F /* KBTextFieldDialog (don't hurt me) */,
+				8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -318,6 +318,45 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		8A9D9AA822632A2900E4D36F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8A9D9AAA22632A7900E4D36F /* Default Settings */,
+				8A9D9AA922632A6A00E4D36F /* Icons */,
+				8A175AAF225FD8770018C977 /* macOS Utilities.entitlements */,
+				8ACB65D821063E6F004B9C5A /* Assets.xcassets */,
+				8ACB65DD21063E6F004B9C5A /* Info.plist */,
+				8ACB65DE21063E6F004B9C5A /* macOS_Utilities.entitlements */,
+				8A6C6452225BADC900CD6DCF /* macOS-Utilities-Bridging-Header.h */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		8A9D9AA922632A6A00E4D36F /* Icons */ = {
+			isa = PBXGroup;
+			children = (
+				8A9D9AAB22632B4700E4D36F /* config-file-icon.icns */,
+			);
+			name = Icons;
+			sourceTree = "<group>";
+		};
+		8A9D9AAA22632A7900E4D36F /* Default Settings */ = {
+			isa = PBXGroup;
+			children = (
+				8A39D35F2119E81B00437F4E /* com.er2.applications.plist */,
+			);
+			name = "Default Settings";
+			sourceTree = "<group>";
+		};
+		8A9D9AAF2263370E00E4D36F /* KBTextFieldDialog (don't hurt me) */ = {
+			isa = PBXGroup;
+			children = (
+				8A9D9A99226307CD00E4D36F /* KBTextFieldDialog-small.xib */,
+				8A9D9AAD2263370800E4D36F /* KBTextFieldDialog-large.xib */,
+			);
+			path = "KBTextFieldDialog (don't hurt me)";
+			sourceTree = "<group>";
+		};
 		8ACB65C821063E6F004B9C5A = {
 			isa = PBXGroup;
 			children = (
@@ -339,21 +378,14 @@
 		8ACB65D321063E6F004B9C5A /* macOS Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				8A175AAF225FD8770018C977 /* macOS Utilities.entitlements */,
-				8ACB65D821063E6F004B9C5A /* Assets.xcassets */,
-				8A9D9AA42263140200E4D36F /* config-icon-64.png */,
-				8A9D9AA62263140600E4D36F /* config-icon-128.png */,
+				8ACB65D421063E6F004B9C5A /* AppDelegate.swift */,
 				8A0138C7221703BC00C77DA0 /* Compatibility */,
 				8A0138C8221703CC00C77DA0 /* Helpers */,
 				8A9370D22256D5E6002B3838 /* Repository */,
 				8A0138D32217623200C77DA0 /* Storyboards */,
 				8A0138D2221757B200C77DA0 /* Utility */,
 				8A0138D42217623700C77DA0 /* View Controllers */,
-				8ACB65D421063E6F004B9C5A /* AppDelegate.swift */,
-				8ACB65DD21063E6F004B9C5A /* Info.plist */,
-				8ACB65DE21063E6F004B9C5A /* macOS_Utilities.entitlements */,
-				8A39D35F2119E81B00437F4E /* com.er2.applications.plist */,
-				8A6C6452225BADC900CD6DCF /* macOS-Utilities-Bridging-Header.h */,
+				8A9D9AA822632A2900E4D36F /* Resources */,
 			);
 			path = "macOS Utilities";
 			sourceTree = "<group>";
@@ -427,11 +459,11 @@
 			files = (
 				8ACB65D921063E6F004B9C5A /* Assets.xcassets in Resources */,
 				8A47DEDB210A3418003F5CC3 /* NSCollectionAppCell.xib in Resources */,
-				8A9D9AA72263140700E4D36F /* config-icon-128.png in Resources */,
+				8A9D9AAE2263370800E4D36F /* KBTextFieldDialog-large.xib in Resources */,
 				8A39D3602119E81B00437F4E /* com.er2.applications.plist in Resources */,
 				8A9D9A982262FB5F00E4D36F /* IPAddressChooserDialog.xib in Resources */,
-				8A9D9A9A226307CD00E4D36F /* KBTextFieldDialog.xib in Resources */,
-				8A9D9AA52263140200E4D36F /* config-icon-64.png in Resources */,
+				8A9D9A9A226307CD00E4D36F /* KBTextFieldDialog-small.xib in Resources */,
+				8A9D9AAC22632B4700E4D36F /* config-file-icon.icns in Resources */,
 				8ACB65DC21063E6F004B9C5A /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -35,6 +35,21 @@
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>2.65</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLIconFile</key>
+			<string>config-file-icon</string>
+			<key>CFBundleURLName</key>
+			<string>com.keatonburleson.macOS-Utilities.openUtilities</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>open-utilities</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>2</string>
 	<key>LSApplicationCategoryType</key>
@@ -50,17 +65,14 @@
 	<key>UTExportedTypeDeclarations</key>
 	<array>
 		<dict>
-			<key>UTTypeIconFiles</key>
-			<array>
-				<string>config-icon-64.png</string>
-				<string>config-icon-128.png</string>
-			</array>
 			<key>UTTypeConformsTo</key>
 			<array>
 				<string>public.data</string>
 			</array>
 			<key>UTTypeDescription</key>
 			<string>macOS Utilities Configuration File</string>
+			<key>UTTypeIconFile</key>
+			<string>config-file-icon</string>
 			<key>UTTypeIdentifier</key>
 			<string>com.keatonburleson.macOS-Utilities.utilconf</string>
 			<key>UTTypeTagSpecification</key>
