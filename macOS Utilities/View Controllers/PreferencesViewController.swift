@@ -34,6 +34,9 @@ class PreferencesViewController: NSViewController {
     @IBOutlet weak var deviceIdentifierAPITokenField: NSTextField!
     @IBOutlet weak var savePathLabel: NSTextField!
     @IBOutlet weak var applicationsCountLabel: NSTextField!
+    
+    @IBOutlet weak var remoteConfigurationPreferencesPopup: NSPopUpButton!
+    @IBOutlet weak var remoteConfigurationAmountLabel: NSTextField!
 
     public var preferenceLoader: PreferenceLoader? = nil
     private var preferences: Preferences? = nil {
@@ -64,7 +67,6 @@ class PreferencesViewController: NSViewController {
         } else {
             readPreferences()
         }
-        updateView()
     }
 
     override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
@@ -79,6 +81,7 @@ class PreferencesViewController: NSViewController {
     override func viewWillAppear() {
         super.viewWillAppear()
         view.window!.styleMask.remove(.resizable)
+        updateView()
     }
 
     public func configureView() {
@@ -153,6 +156,9 @@ class PreferencesViewController: NSViewController {
                 } else {
                     self.deviceIdentifierAPITokenField.stringValue = ""
                 }
+                
+                self.updateRemoteConfigurationsView(preferences.remoteConfigurationPreferences)
+                
                 self.updateOtherLabels()
             }
         }
@@ -202,6 +208,18 @@ class PreferencesViewController: NSViewController {
             installerServerTypePopup.selectItem(at: serverType)
         }
     }
+    
+    private func updateRemoteConfigurationsView(_ remoteConfigurationPreferences: [RemoteConfigurationPreferences]?){
+        self.remoteConfigurationPreferencesPopup.removeAllItems()
+        if let _remoteConfigurationPreferences = remoteConfigurationPreferences{
+            self.remoteConfigurationPreferencesPopup.isEnabled = true
+            self.remoteConfigurationAmountLabel.stringValue = "\(_remoteConfigurationPreferences.count) configurations"
+            self.remoteConfigurationPreferencesPopup.addItems(withTitles: _remoteConfigurationPreferences.map { $0.name })
+        }else{
+            self.remoteConfigurationAmountLabel.stringValue = "0 configurations"
+            self.remoteConfigurationPreferencesPopup.isEnabled = false
+        }
+    }
 
     @IBAction func installerCheckboxToggled(_ sender: NSButton) {
         if let preferences = self.preferences {
@@ -232,7 +250,6 @@ class PreferencesViewController: NSViewController {
     @objc public func readPreferences() {
         if let preferences = PreferenceLoader.currentPreferences {
             self.preferences = preferences
-            updateView()
         }
     }
 

@@ -74,7 +74,10 @@ extension IPAddressChooserDialog: NSTableViewDelegate, NSTableViewDataSource, NS
     }
 
     func tableView(_ tableView: NSTableView, objectValueFor tableColumn: NSTableColumn?, row: Int) -> Any? {
-        return self.ipAddresses[row]
+        if tableColumn == tableView.tableColumns.first!{
+            return self.ipAddresses[row]
+        }
+        return "(local)"
     }
 
     func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {

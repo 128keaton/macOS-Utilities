@@ -632,7 +632,7 @@
                                 </constraints>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Edit Applications" id="4Xl-D3-kqt">
                                     <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
@@ -912,6 +912,18 @@
                                     <action selector="setServerHostToCurrentIPAddress:" target="9AW-rl-Ecm" id="bBR-kX-C45"/>
                                 </connections>
                             </button>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="kgw-wd-bit">
+                                <rect key="frame" x="18" y="127" width="170" height="17"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="17" id="Ded-hY-rT3"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="166" id="wUn-D8-fGa"/>
+                                </constraints>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="0 configurations" id="RRu-cF-4sE">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                         </subviews>
                         <constraints>
                             <constraint firstItem="kSf-it-eci" firstAttribute="leading" secondItem="beL-8A-yeA" secondAttribute="trailing" constant="14" id="0E0-i4-iFU"/>
@@ -927,6 +939,7 @@
                             <constraint firstItem="ZFa-0P-ct1" firstAttribute="trailing" secondItem="dLr-am-B6H" secondAttribute="trailing" id="4N0-Yx-NyY"/>
                             <constraint firstAttribute="trailing" secondItem="5V4-NG-Ey4" secondAttribute="trailing" constant="20" id="4Xe-Y1-KNT"/>
                             <constraint firstItem="aoo-ss-dNo" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Vbp-lB-fBE" secondAttribute="trailing" constant="8" symbolic="YES" id="4YJ-So-t6N"/>
+                            <constraint firstItem="kgw-wd-bit" firstAttribute="baseline" secondItem="beL-8A-yeA" secondAttribute="baseline" id="4d1-Iz-QJ9"/>
                             <constraint firstItem="2rO-bA-Uri" firstAttribute="trailing" secondItem="8zF-eQ-ZXG" secondAttribute="trailing" id="52Q-UA-D8N"/>
                             <constraint firstItem="L0P-vp-8go" firstAttribute="top" secondItem="Vbp-lB-fBE" secondAttribute="bottom" constant="12" id="52q-cJ-qBo"/>
                             <constraint firstItem="a8L-GJ-YE6" firstAttribute="top" secondItem="LPu-Sm-40d" secondAttribute="bottom" constant="24" id="56c-MQ-g8p"/>
@@ -937,6 +950,7 @@
                             <constraint firstItem="Vbp-lB-fBE" firstAttribute="centerY" secondItem="aoo-ss-dNo" secondAttribute="centerY" id="7ER-o6-KuP"/>
                             <constraint firstItem="Vbp-lB-fBE" firstAttribute="leading" secondItem="352-65-pMQ" secondAttribute="leading" id="7uL-8b-dkJ"/>
                             <constraint firstItem="MEb-Sw-ATv" firstAttribute="leading" secondItem="aoo-ss-dNo" secondAttribute="leading" id="8pF-Z8-teD"/>
+                            <constraint firstItem="kgw-wd-bit" firstAttribute="trailing" secondItem="aUk-bB-ks1" secondAttribute="trailing" id="900-Iz-N51"/>
                             <constraint firstItem="eGo-tp-oag" firstAttribute="leading" secondItem="kSf-it-eci" secondAttribute="trailing" constant="14" id="9Xn-pw-92Y"/>
                             <constraint firstItem="OSQ-RY-4rJ" firstAttribute="leading" secondItem="CNd-XI-wrq" secondAttribute="trailing" constant="26" id="9kg-h6-6VI"/>
                             <constraint firstItem="Zyu-Kx-pIy" firstAttribute="top" secondItem="fey-pC-GAn" secondAttribute="top" id="9qS-iN-1A2"/>
@@ -949,6 +963,7 @@
                             <constraint firstItem="LPu-Sm-40d" firstAttribute="leading" secondItem="E3Q-Nt-7D5" secondAttribute="leading" id="Cbi-Sd-6jU"/>
                             <constraint firstItem="beL-8A-yeA" firstAttribute="leading" secondItem="lyq-Vz-OSl" secondAttribute="leading" constant="212" id="Cnf-af-PP9"/>
                             <constraint firstItem="KsZ-df-0qg" firstAttribute="leading" secondItem="PNX-dY-m2l" secondAttribute="leading" id="D96-iB-L0b"/>
+                            <constraint firstItem="kgw-wd-bit" firstAttribute="leading" secondItem="PNX-dY-m2l" secondAttribute="leading" id="F9a-XA-bxB"/>
                             <constraint firstItem="aUk-bB-ks1" firstAttribute="top" secondItem="5V4-NG-Ey4" secondAttribute="top" id="FGv-x6-t8x"/>
                             <constraint firstItem="352-65-pMQ" firstAttribute="top" secondItem="lyq-Vz-OSl" secondAttribute="top" constant="195" id="FaG-it-0d7"/>
                             <constraint firstItem="LPu-Sm-40d" firstAttribute="trailing" secondItem="dmT-v6-PZd" secondAttribute="trailing" id="G9Y-DH-9k5"/>
@@ -1078,6 +1093,8 @@
                         <outlet property="loggingSectionLabel" destination="Pay-3a-hXn" id="a4I-Js-TNZ"/>
                         <outlet property="loggingURLField" destination="E3Q-Nt-7D5" id="nML-Ts-cAD"/>
                         <outlet property="loggingURLLabel" destination="Aod-2C-RJ1" id="D9f-lG-z3o"/>
+                        <outlet property="remoteConfigurationAmountLabel" destination="kgw-wd-bit" id="3Ty-Og-oXW"/>
+                        <outlet property="remoteConfigurationPreferencesPopup" destination="Qrg-Ev-kpn" id="QBo-8d-xD7"/>
                         <outlet property="savePathLabel" destination="Zyu-Kx-pIy" id="fri-hO-Wtt"/>
                         <outlet property="sendLogAddressField" destination="9Ij-Wj-WML" id="2Hh-fa-Y7T"/>
                     </connections>
