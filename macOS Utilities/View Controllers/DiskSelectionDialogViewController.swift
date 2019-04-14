@@ -78,7 +78,7 @@ class DiskSelectionDialogViewController: NSViewController {
     override func viewWillAppear() {
         updateBackButton()
     }
-    
+
     private func updateBackButton() {
         if PageController.shared.isInitialPage(self) {
             backButton.title = "Cancel"

@@ -100,13 +100,13 @@ class PreferenceLoader {
                 #endif
 
                 // I might've broke something here
-                
+
                 PreferenceLoader.previousPreferences = preferences
                 PreferenceLoader.currentPreferences = preferences.copy() as? Preferences
-                
+
                 if notify {
                     NotificationCenter.default.post(name: PreferenceLoader.preferencesLoaded, object: true)
-                }else{
+                } else {
                     NotificationCenter.default.post(name: PreferenceLoader.preferencesUpdated, object: preferences)
                 }
 
@@ -134,18 +134,18 @@ class PreferenceLoader {
             let fileData = try JSONEncoder().encode(remoteConfiguration)
             var htmlData: Data? = nil
             #if DEBUG
-                if let htmlString = remoteConfiguration.generateTestHTMLContent(){
+                if let htmlString = remoteConfiguration.generateTestHTMLContent() {
                     htmlData = htmlString.data(using: .utf8)
                 }
             #endif
-            
+
             if let fileURL = dynamicFileURL {
                 let filePath = fileURL.absolutePath
-                if let testHTMLData = htmlData{
+                if let testHTMLData = htmlData {
                     let htmlFilePath = fileURL.deletingLastPathComponent().appendingPathComponent("test.html", isDirectory: false).absolutePath
                     FileManager.default.createFile(atPath: htmlFilePath, contents: testHTMLData, attributes: nil)
                 }
-                
+
                 return FileManager.default.createFile(atPath: filePath, contents: fileData, attributes: nil)
             }
 

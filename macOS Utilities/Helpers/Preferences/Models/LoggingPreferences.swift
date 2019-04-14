@@ -33,7 +33,7 @@ class LoggingPreferences: Codable, Equatable {
     func isValid() -> Bool {
         return self.loggingPort != 0 && self.loggingURL != String()
     }
-    
+
     static func isValid(_ loggingPreferences: LoggingPreferences) -> Bool {
         return loggingPreferences.loggingPort != 0 && loggingPreferences.loggingURL != String()
     }

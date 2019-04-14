@@ -127,10 +127,10 @@ class ItemRepository {
     }
 
     public func addToRepository(newApplications: [Application], merge: Bool = false) {
-        if !merge{
+        if !merge {
             self.items.removeAll { type(of: $0) == Application.self }
         }
-        
+
         self.items.append(contentsOf: newApplications)
         NotificationCenter.default.post(name: ItemRepository.newApplications, object: nil)
     }

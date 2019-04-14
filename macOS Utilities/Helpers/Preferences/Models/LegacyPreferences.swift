@@ -43,12 +43,12 @@ class LegacyPreferences: Codable, CustomStringConvertible {
         if let mappedApplications = parseApplications(applications) {
             updatedPreferences.mappedApplications = mappedApplications
         }
-        
-        if let apiToken = self.apiToken{
+
+        if let apiToken = self.apiToken {
             updatedPreferences.deviceIdentifierAuthenticationToken = apiToken
         }
-        
-        if let helpEmailAddress = self.helpEmailAddress{
+
+        if let helpEmailAddress = self.helpEmailAddress {
             updatedPreferences.helpEmailAddress = helpEmailAddress
         }
 
@@ -68,10 +68,10 @@ class LegacyPreferences: Codable, CustomStringConvertible {
             }
         }
 
-        if mappedApplications.count > 0{
+        if mappedApplications.count > 0 {
             return mappedApplications
         }
-        
+
         return nil
     }
 

@@ -63,13 +63,13 @@ class ModelYearDetermination {
     func getIdentifierDigitsFor(_ modelName: String) -> Int {
         return Int(modelIdentifier.replacingOccurrences(of: modelName, with: "").replacingOccurrences(of: ",", with: ""))!
     }
-    
-    public func getInstallableVersions() -> [String]{
+
+    public func getInstallableVersions() -> [String] {
         var installableVersionsAndNames = [String]()
-        for version in installableVersions{
+        for version in installableVersions {
             installableVersionsAndNames.append("\(VersionNumbers.getNameForVersion(version)) (\(version))")
         }
-        
+
         return installableVersionsAndNames
     }
 }

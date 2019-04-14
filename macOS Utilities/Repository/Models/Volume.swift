@@ -11,7 +11,7 @@ import CocoaLumberjack
 
 class Volume: Item {
     private var invalidDiskPropertyValues = ["EFI", "Invalid", "VM", "Apple_APFS"]
-    
+
     var deviceIdentifier: String = ""
     var diskUUID: String = ""
     var mountPoint: String = "Invalid"

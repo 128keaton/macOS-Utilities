@@ -77,7 +77,7 @@ class DeviceInformationViewController: NSViewController {
         if deviceInfo == nil {
             configurationImage?.alphaValue = 0.0
             skuHintLabel?.alphaValue = 0.0
-        }else{
+        } else {
             configurationImage?.alphaValue = 1.0
             skuHintLabel?.alphaValue = 1.0
         }

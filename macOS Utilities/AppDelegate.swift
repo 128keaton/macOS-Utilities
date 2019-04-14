@@ -50,9 +50,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationWillFinishLaunching(_ notification: Notification) {
-        NSAppleEventManager.shared().setEventHandler(self, andSelector: #selector(self.handleAppleEvent(event:replyEvent:)), forEventClass: AEEventClass(kInternetEventClass), andEventID: AEEventID(kAEGetURL))
+        NSAppleEventManager.shared().setEventHandler(self, andSelector: #selector(self.handleAppleEvent(event: replyEvent:)), forEventClass: AEEventClass(kInternetEventClass), andEventID: AEEventID(kAEGetURL))
     }
-    
+
     private func registerForNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.addInstallerToMenu(_:)), name: ItemRepository.newInstaller, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.showErrorAlert(notification:)), name: ErrorAlertLogger.showErrorAlert, object: nil)
@@ -230,18 +230,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         openPanel.allowsOtherFileTypes = false
         openPanel.showsHiddenFiles = true
         openPanel.canChooseDirectories = false
-        
+
         openPanel.title = "Browse for existing configuration property list file"
         openPanel.message = "A legacy configuration file will be automatically updated if selected"
-        
+
         openPanel.begin { (response) in
             if response == .OK {
                 if let propertyListURL = openPanel.url {
                     DispatchQueue.main.async {
                         let didLoad = PreferenceLoader.loadPreferences(propertyListURL, updatingRunning: true)
-                        if didLoad{
+                        if didLoad {
                             DDLogInfo("Loaded preferences from: \(propertyListURL)")
-                        }else{
+                        } else {
                             DDLogError("Failed to load preferences from: \(propertyListURL)")
                         }
                     }
@@ -279,7 +279,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         ItemRepository.shared.addFakeInstaller(canInstallOnMachine: true)
     }
 
-    @IBAction func testURLScheme(_ sender: NSMenuItem){
+    @IBAction func testURLScheme(_ sender: NSMenuItem) {
         NSWorkspace.shared.open(URL(string: "open-utilities://test")!)
     }
 
@@ -321,33 +321,33 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         emailService?.recipients = [helpEmailAddress!]
         emailService?.perform(withItems: items)
     }
-    
+
     func application(_ sender: NSApplication, openFile filename: String) -> Bool {
-        if filename.fileURL.pathExtension == "utilconf"{
+        if filename.fileURL.pathExtension == "utilconf" {
             let didLoad = PreferenceLoader.loadPreferences(filename, updatingRunning: true)
-            if didLoad{
+            if didLoad {
                 DDLogInfo("Loaded preferences from: \(filename)")
-            }else{
+            } else {
                 DDLogError("Failed to load preferences from: \(filename)")
             }
-            
+
             return didLoad
         }
-        
+
         return false
     }
-    
+
     @objc func handleAppleEvent(event: NSAppleEventDescriptor, replyEvent: NSAppleEventDescriptor) {
         if let aeEventDescriptor = event.paramDescriptor(forKeyword: AEKeyword(keyDirectObject)) {
-            if let fullURL = aeEventDescriptor.stringValue{
+            if let fullURL = aeEventDescriptor.stringValue {
                 let configPath = fullURL.replacingOccurrences(of: "open-utilities://", with: "")
-                if configPath.contains("file://"){
-                    if !PreferenceLoader.loadPreferences(configPath.replacingOccurrences(of: "file://", with: ""), updatingRunning: true){
+                if configPath.contains("file://") {
+                    if !PreferenceLoader.loadPreferences(configPath.replacingOccurrences(of: "file://", with: ""), updatingRunning: true) {
                         DDLogError("Could not validate configuration file \(configPath)")
                     }
-                }else{
-                    if let configURL = URL(string: configPath){
-                        if !PreferenceLoader.loadPreferences(configURL, updatingRunning: true){
+                } else {
+                    if let configURL = URL(string: configPath) {
+                        if !PreferenceLoader.loadPreferences(configURL, updatingRunning: true) {
                             DDLogError("Could not validate configuration file \(configPath)")
                         }
                     }

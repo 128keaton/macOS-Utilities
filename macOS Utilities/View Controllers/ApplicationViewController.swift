@@ -51,13 +51,13 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.showInstallMacOSButton), name: ItemRepository.newInstaller, object: nil)
     }
 
-    @objc private func showInstallMacOSButton(){
+    @objc private func showInstallMacOSButton() {
         NSAnimationContext.runAnimationGroup { (context) in
             context.duration = 0.5
             self.installMacOSButton?.animator().alphaValue = 1.0
         }
     }
-    
+
     @objc private func readPreferences() {
         if let preferences = PreferenceLoader.currentPreferences {
             if preferences.useDeviceIdentifierAPI {
@@ -105,8 +105,8 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
             self.applications.append(newApplication)
         }
     }
-    
-    @objc func forceReloadApplications(){
+
+    @objc func forceReloadApplications() {
         if !Thread.isMainThread {
             DispatchQueue.main.async {
                 self.reloadApplications(withNewApplications: nil)
@@ -115,11 +115,11 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         }
         reloadApplications(withNewApplications: nil)
     }
-    
+
     private func reloadApplications(withNewApplications newApplications: [Application]? = nil) {
-        if newApplications == nil{
-               applications = ItemRepository.shared.getApplications()
-        }else if let newApplications = newApplications{
+        if newApplications == nil {
+            applications = ItemRepository.shared.getApplications()
+        } else if let newApplications = newApplications {
             if(newApplications.count > applications.count) {
                 applications.append(contentsOf: newApplications.filter { applications.contains($0) == false })
             } else if (newApplications.count < applications.count) {
@@ -132,16 +132,16 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         }
         reloadCollectionView()
     }
-    
-    @objc public func reloadCollectionView(){
+
+    @objc public func reloadCollectionView() {
         applicationsInSections = applications.count > 4 ? applications.chunked(into: 4) : [applications]
-        
+
         DispatchQueue.main.async {
             if(self.applications.count > 0 && self.applicationsInSections.count > 0 && self.applicationsInSections.first!.count > 0) {
                 self.configureCollectionView()
             }
         }
-        
+
         self.collectionView?.reloadData()
     }
 
@@ -170,7 +170,7 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
 
         flowLayout.itemSize = NSSize(width: itemWidth, height: itemHeight)
 
-        
+
         if totalNumberOfItems < 3.0 {
             flowLayout.minimumLineSpacing = 3.0
             flowLayout.sectionInset = NSEdgeInsets(top: CGFloat(collectionViewHeight / 4.0), left: CGFloat(collectionViewWidth / 8), bottom: 10.0, right: CGFloat(collectionViewWidth / 8))
@@ -191,7 +191,7 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         updateScrollViewContentSize()
     }
 
-    private func updateScrollViewContentSize(){
+    private func updateScrollViewContentSize() {
         if let window = collectionView?.window {
             CATransaction.begin()
             CATransaction.setDisableActions(true)
@@ -254,7 +254,7 @@ extension ApplicationViewController: NSCollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: NSCollectionView, itemForRepresentedObjectAt
-        indexPath: IndexPath) -> NSCollectionViewItem {
+    indexPath: IndexPath) -> NSCollectionViewItem {
         let item = collectionView.makeItem(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "NSCollectionAppCell"), for: indexPath)
         var applicationsInSection = [Application]()
 

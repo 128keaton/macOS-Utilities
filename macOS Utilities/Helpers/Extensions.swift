@@ -59,40 +59,40 @@ extension NSApplication {
         }
         return false
     }
-    
-    public func getName() -> String{
+
+    public func getName() -> String {
         return Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as! String
     }
-    
+
     public func getVersion() -> String {
         return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
     }
-    
+
     public func getBuild() -> String {
-       return  Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
+        return Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
     }
-    
-    public func getVerboseName() -> String{
+
+    public func getVerboseName() -> String {
         return "\(getName())-v\(getVersion())-b\(getBuild())"
     }
 }
 
-extension NSTextField{
-    func setEnabled(_ flag: Bool = true){
-        if flag{
+extension NSTextField {
+    func setEnabled(_ flag: Bool = true) {
+        if flag {
             return self.enable()
         }
         return self.disable()
     }
-    
-    func disable(){
+
+    func disable() {
         NSAnimationContext.runAnimationGroup { (context) in
             context.duration = 0.5
             self.animator().alphaValue = 0.5
         }
     }
-    
-    func enable(){
+
+    func enable() {
         NSAnimationContext.runAnimationGroup { (context) in
             context.duration = 0.5
             self.animator().alphaValue = 1.0
@@ -237,16 +237,16 @@ extension String {
     var fileURL: URL {
         return URL(fileURLWithPath: self)
     }
-    
+
     var escaped: String {
         return self.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
     }
-    
+
     /// Returns a safe file name e.g. "A Cool Document" becomes "A-Cool-Document"
-    var dashedFileName: String{
+    var dashedFileName: String {
         return self.replacingOccurrences(of: " ", with: "-")
     }
-    
+
     var md5Value: String {
         let length = Int(CC_MD5_DIGEST_LENGTH)
         var digest = [UInt8](repeating: 0, count: length)
@@ -279,7 +279,7 @@ extension String {
         do {
             let regex = try NSRegularExpression(pattern: regex)
             let results = regex.matches(in: self,
-                range: NSRange(self.startIndex..., in: self))
+                                        range: NSRange(self.startIndex..., in: self))
             return results.map {
                 String(self[Range($0.range, in: self)!]).replacingOccurrences(of: stripR.joined(separator: "|"), with: "", options: .regularExpression)
             }
@@ -330,19 +330,19 @@ extension URL {
                     // file exists and is a directory
                     filestatus = .isDir
                 }
-                else {
-                    // file exists and is not a directory
-                    filestatus = .isFile
+                    else {
+                        // file exists and is not a directory
+                        filestatus = .isFile
                 }
             }
-            else {
-                // file does not exist
-                filestatus = .isNot
+                else {
+                    // file does not exist
+                    filestatus = .isNot
             }
             return filestatus
         }
     }
-    
+
     /// Absolute path of file from URL
     var absolutePath: String {
         return self.absoluteString.replacingOccurrences(of: "file://", with: "").replacingOccurrences(of: "%20", with: " ")
@@ -355,7 +355,7 @@ func matches(for regex: String, in text: String) -> [String] {
     do {
         let regex = try NSRegularExpression(pattern: regex)
         let results = regex.matches(in: text,
-            range: NSRange(text.startIndex..., in: text))
+                                    range: NSRange(text.startIndex..., in: text))
         return results.map {
             String(text[Range($0.range, in: text)!])
         }

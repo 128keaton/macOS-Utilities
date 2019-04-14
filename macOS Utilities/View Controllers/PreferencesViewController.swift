@@ -34,7 +34,7 @@ class PreferencesViewController: NSViewController {
     @IBOutlet weak var deviceIdentifierAPITokenField: NSTextField!
     @IBOutlet weak var savePathLabel: NSTextField!
     @IBOutlet weak var applicationsCountLabel: NSTextField!
-    
+
     @IBOutlet weak var remoteConfigurationPreferencesPopup: NSPopUpButton!
     @IBOutlet weak var remoteConfigurationAmountLabel: NSTextField!
 
@@ -156,9 +156,9 @@ class PreferencesViewController: NSViewController {
                 } else {
                     self.deviceIdentifierAPITokenField.stringValue = ""
                 }
-                
+
                 self.updateRemoteConfigurationsView(preferences.remoteConfigurationPreferences)
-                
+
                 self.updateOtherLabels()
             }
         }
@@ -208,14 +208,14 @@ class PreferencesViewController: NSViewController {
             installerServerTypePopup.selectItem(at: serverType)
         }
     }
-    
-    private func updateRemoteConfigurationsView(_ remoteConfigurationPreferences: [RemoteConfigurationPreferences]?){
+
+    private func updateRemoteConfigurationsView(_ remoteConfigurationPreferences: [RemoteConfigurationPreferences]?) {
         self.remoteConfigurationPreferencesPopup.removeAllItems()
-        if let _remoteConfigurationPreferences = remoteConfigurationPreferences{
+        if let _remoteConfigurationPreferences = remoteConfigurationPreferences {
             self.remoteConfigurationPreferencesPopup.isEnabled = true
             self.remoteConfigurationAmountLabel.stringValue = "\(_remoteConfigurationPreferences.count) configurations"
             self.remoteConfigurationPreferencesPopup.addItems(withTitles: _remoteConfigurationPreferences.map { $0.name })
-        }else{
+        } else {
             self.remoteConfigurationAmountLabel.stringValue = "0 configurations"
             self.remoteConfigurationPreferencesPopup.isEnabled = false
         }
@@ -311,16 +311,16 @@ class PreferencesViewController: NSViewController {
             let copiedPreferences = preferences.copy() as? Preferences {
 
             KBTextFieldDialog.show(self, doneButtonText: "Done", textFieldPlaceholder: "Remote configuration name", dialogTitle: "Create a Remote Configuration", additionalTextFieldPlaceholder: "http://me.is/the/best/programmer/", additionalDialogTitle: "Full host URL") { (newConfigurationName, newHostURL) in
-                if let hostURL = URL(string: newHostURL){
+                if let hostURL = URL(string: newHostURL) {
                     copiedPreferences.isRemoteConfiguration = true
                     let newFolderName = newConfigurationName.dashedFileName + "-RemoteConfiguration"
                     let newRemoteConfigurationName = newConfigurationName.dashedFileName + "-remoteConfig"
                     let newConfigurationURL = URL(string: "\(newConfigurationName.escaped).utilconf")!
-                    
+
                     let newRemoteConfig = RemoteConfigurationPreferences(hostURL: hostURL, configurationURL: newConfigurationURL, name: newRemoteConfigurationName)
                     let didSavePreferences = PreferenceLoader.savePreferencesToDownloads(copiedPreferences, fileName: newConfigurationName, createFolder: true, folderName: newFolderName)
                     let didSaveConfig = PreferenceLoader.saveRemoteConfigurationToDownloads(newRemoteConfig, fileName: newRemoteConfigurationName, createFolder: true, folderName: newFolderName)
-                    
+
                     if(!didSaveConfig || !didSavePreferences) {
                         // TODO
                     }

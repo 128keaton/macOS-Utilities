@@ -30,25 +30,25 @@ class ApplicationUtility {
     }
 
     @objc public func getApplications(_ notification: Notification? = nil) {
-        if notification == nil{
+        if notification == nil {
             guard let applications = PreferenceLoader.currentPreferences?.getApplications() else { return }
-            
+
             allApplications.append(contentsOf: applications)
-            
+
             ItemRepository.shared.addToRepository(newApplications: allApplications, merge: true)
         }
     }
 
     @objc public func forceReloadApplications(_ notification: Notification? = nil) {
         var applications = [Application]()
-        
+
         if let validNotification = notification,
             let preferences = validNotification.object as? Preferences,
-            let updatedApplications = preferences.getApplications(){
+            let updatedApplications = preferences.getApplications() {
             applications = updatedApplications
-        }else if let updatedApplications = PreferenceLoader.currentPreferences?.getApplications(){
+        } else if let updatedApplications = PreferenceLoader.currentPreferences?.getApplications() {
             applications = updatedApplications
-        }else{
+        } else {
             return
         }
 
@@ -65,12 +65,12 @@ class ApplicationUtility {
             foundApplication.open()
         }
     }
-    
-    private func applicationsContainsName(_ name: String) -> Bool{
-        if (allApplications.contains { $0.name == name }){
+
+    private func applicationsContainsName(_ name: String) -> Bool {
+        if (allApplications.contains { $0.name == name }) {
             return true
         }
-        
+
         return false
     }
 }

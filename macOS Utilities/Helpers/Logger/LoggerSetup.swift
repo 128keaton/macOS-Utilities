@@ -10,19 +10,19 @@ import Foundation
 import CocoaLumberjack
 import PaperTrailLumberjack
 
-class LoggerSetup{
+class LoggerSetup {
     private static var loggerInitialized = false
-    
+
     public static func constructLogger() {
         let fileLogger: DDFileLogger = DDFileLogger()
         fileLogger.rollingFrequency = 60 * 60 * 24
         fileLogger.logFileManager.maximumNumberOfLogFiles = 7
-        
+
         if loggerInitialized == false {
             DDLog.add(fileLogger)
             DDLog.add(ErrorAlertLogger())
             DDLog.add(DDOSLogger.sharedInstance)
-            
+
             DDLogInfo(NSApplication.shared.getVerboseName())
             DDLogInfo("\n")
             DDLogInfo("\n---------------------------LOGGER INITIALIZED---------------------------")
@@ -30,28 +30,28 @@ class LoggerSetup{
             loggerInitialized = true
             return
         }
-        
+
         DDLogVerbose("Logger already initialized, not reinitializing.")
     }
-    
+
     public static func constructRemoteLogger(loggingPreferences: LoggingPreferences, debugMode: Bool = false) {
         if(PreferenceLoader.currentPreferences != nil && PreferenceLoader.currentPreferences?.loggingPreferences?.loggingEnabled == true) {
             let logger = RMPaperTrailLogger.sharedInstance()!
-            
+
             logger.debug = debugMode
             logger.host = loggingPreferences.loggingURL
             logger.port = loggingPreferences.loggingPort
-            
+
             logger.machineName = Host.current().localizedName != nil ? String("\(Host.current().localizedName!)__(\(Sysctl.model)__\(getSystemUUID() ?? ""))") : String("\(Sysctl.model)__(\(getSystemUUID() ?? ""))")
-            
+
             #if DEBUG
-            logger.machineName = logger.machineName! + "__DEBUG__"
+                logger.machineName = logger.machineName! + "__DEBUG__"
             #endif
-            
+
             logger.programName = NSApplication.shared.getVerboseName()
             DDLog.add(logger, with: .debug)
             DDLogInfo("NOTICE: Remote logging enabled")
-            
+
         } else {
             if PreferenceLoader.currentPreferences == nil {
                 DDLogInfo("NOTICE: Remote logging disabled: preferences are nil.")

@@ -32,10 +32,10 @@ class RemoteConfigurationViewController: NSViewController {
     private func updateView() {
         if let remoteConfiguration = self.remoteConfiguration {
             if remoteConfiguration.isValid,
-                let hostURL = remoteConfiguration.hostURL{
+                let hostURL = remoteConfiguration.hostURL {
                 remoteConfigurationURLField.stringValue = hostURL.absoluteString
             }
-            
+
             remoteConfigurationNameField.stringValue = remoteConfiguration.name
             remoteConfigurationNameField.isEnabled = true
             remoteConfigurationNameLabel.setEnabled(true)
@@ -52,7 +52,7 @@ class RemoteConfigurationViewController: NSViewController {
             if fetchedRemoteConfiguration.hostURL == nil {
                 fetchedRemoteConfiguration.hostURL = fromURL
             }
-            
+
             self.remoteConfiguration = fetchedRemoteConfiguration
         } else {
             fetchDoneButton.title = "Cancel"
@@ -91,9 +91,9 @@ class RemoteConfigurationViewController: NSViewController {
     @IBAction func fetchOrFinish(_ sender: NSButton) {
         if remoteConfiguration == nil {
             if let remoteURL = URL(string: remoteConfigurationURLField.stringValue),
-                remoteURL.pathExtension == "plist"{
+                remoteURL.pathExtension == "plist" {
                 getRemoteConfiguration(fromURL: remoteURL)
-            }else{
+            } else {
                 DDLogError("URL cannot be blank or not point to property list!")
             }
         } else {

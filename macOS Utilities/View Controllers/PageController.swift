@@ -154,7 +154,7 @@ class PageController: NSObject {
 
         DDLogInfo("Dismissing NSPageController: \(String(describing: pageController))")
         pageController.dismiss(self)
-        
+
         if !savePosition {
             resetPosition()
         }
@@ -214,15 +214,15 @@ class PageController: NSObject {
             DDLogInfo("finishViewController identifier not present in arrangedObjects \(pageController.arrangedObjects)")
         }
     }
-    
+
     private func buildFinishPage(_ finishController: WizardViewController, finishedText: String, descriptionText: String, otherButtonTitle: String? = nil, otherButtonSelector: Selector? = nil, otherButtonSelectorTarget: AnyObject? = nil, viewMode: WizardViewMode = .loading) {
         finishController.titleText = finishedText
         finishController.descriptionText = descriptionText
-        
-        if let _otherButtonTitle = otherButtonTitle{
+
+        if let _otherButtonTitle = otherButtonTitle {
             finishController.otherButtonTitle = _otherButtonTitle
         }
-        
+
         finishController.viewMode = viewMode
         finishController.otherButtonSelector = otherButtonSelector
         finishController.otherButtonSelectorTarget = otherButtonSelectorTarget

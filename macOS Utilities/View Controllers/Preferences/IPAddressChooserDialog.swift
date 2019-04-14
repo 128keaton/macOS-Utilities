@@ -53,7 +53,7 @@ class IPAddressChooserDialog: NSViewController {
         view.window!.styleMask.remove(.resizable)
         view.window!.styleMask.remove(.closable)
         view.window!.styleMask.remove(.miniaturizable)
-        
+
         super.viewWillAppear()
     }
 
