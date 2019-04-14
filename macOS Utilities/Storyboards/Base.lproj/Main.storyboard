@@ -6,29 +6,6 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Window Controller-->
-        <scene sceneID="Cbc-sw-4lh">
-            <objects>
-                <windowController id="cNd-ep-fqy" sceneMemberID="viewController">
-                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" titlebarAppearsTransparent="YES" titleVisibility="hidden" id="qRl-xc-JdC">
-                        <windowStyleMask key="styleMask" titled="YES" closable="YES" texturedBackground="YES"/>
-                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-                        <rect key="contentRect" x="425" y="526" width="757" height="460"/>
-                        <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1577"/>
-                        <value key="minSize" type="size" width="757" height="460"/>
-                        <value key="maxSize" type="size" width="757" height="460"/>
-                        <connections>
-                            <outlet property="delegate" destination="cNd-ep-fqy" id="2Vz-FN-nXv"/>
-                        </connections>
-                    </window>
-                    <connections>
-                        <segue destination="a4T-XT-RTq" kind="relationship" relationship="window.shadowedContentViewController" id="cZz-om-547"/>
-                    </connections>
-                </windowController>
-                <customObject id="efp-nY-zjZ" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-556" y="-373"/>
-        </scene>
         <!--Device Information View Controller-->
         <scene sceneID="5Ef-y4-MXv">
             <objects>
@@ -203,7 +180,7 @@
                 </viewController>
                 <customObject id="tCA-fY-oXk" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="412.5" y="-373"/>
+            <point key="canvasLocation" x="4" y="1452"/>
         </scene>
         <!--Application-->
         <scene sceneID="JPo-4y-FX3">
@@ -235,6 +212,20 @@
                                                 <action selector="terminate:" target="Ady-hI-5gd" id="Te7-pn-YzF"/>
                                             </connections>
                                         </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="File" id="rvM-NH-rV5">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="File" id="ffP-jd-4Et">
+                                    <items>
+                                        <menuItem title="Load Configuration From File" keyEquivalent="o" id="P0u-hH-iYc">
+                                            <connections>
+                                                <action selector="loadConfigurationFile:" target="Voe-Tx-rLC" id="yft-cI-bjc"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="rEx-QN-O7b"/>
+                                        <menuItem title="Print…" enabled="NO" keyEquivalent="p" id="GuD-Hq-s8G"/>
                                     </items>
                                 </menu>
                             </menuItem>
@@ -297,12 +288,6 @@
                                         <menuItem title="Reload Preferences" keyEquivalent="R" allowsKeyEquivalentWhenHidden="YES" id="JK4-mY-I21">
                                             <connections>
                                                 <action selector="reloadPreferences:" target="Voe-Tx-rLC" id="mk2-gy-DTW"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Load Preferences From Path" id="1xf-Zp-zfB">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="openPropertyListFile:" target="Voe-Tx-rLC" id="8Fp-dv-SPr"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Force Reload All Disks" keyEquivalent="r" allowsKeyEquivalentWhenHidden="YES" id="XrX-XG-Hcw">
@@ -379,7 +364,7 @@
                     <autoresizingMask key="autoresizingMask"/>
                 </view>
             </objects>
-            <point key="canvasLocation" x="75" y="0.0"/>
+            <point key="canvasLocation" x="3" y="-55"/>
         </scene>
         <!--Window Controller-->
         <scene sceneID="jC9-U6-euP">
@@ -402,7 +387,7 @@
                 </windowController>
                 <customObject id="dAp-GP-NWJ" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-868" y="574"/>
+            <point key="canvasLocation" x="-929" y="665"/>
         </scene>
         <!--Applications-->
         <scene sceneID="6AV-Kd-Wxl">
@@ -480,7 +465,7 @@
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                                 <connections>
-                                    <segue destination="cNd-ep-fqy" kind="modal" id="v5E-qB-67K"/>
+                                    <segue destination="a4T-XT-RTq" kind="modal" id="t95-er-6U9"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -510,7 +495,7 @@
                 </viewController>
                 <customObject id="Uhy-ZN-Yif" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3" y="573.5"/>
+            <point key="canvasLocation" x="3" y="665"/>
         </scene>
         <!--Preferences-->
         <scene sceneID="2cQ-Xx-iIz">
@@ -532,7 +517,7 @@
                                 <rect key="frame" x="20" y="757" width="410" height="5"/>
                             </box>
                             <box horizontalHuggingPriority="249" verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="PNX-dY-m2l">
-                                <rect key="frame" x="20" y="205" width="410" height="5"/>
+                                <rect key="frame" x="20" y="206" width="410" height="5"/>
                             </box>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="a8L-GJ-YE6">
                                 <rect key="frame" x="18" y="643" width="173" height="30"/>
@@ -546,7 +531,7 @@
                                 <rect key="frame" x="20" y="631" width="410" height="5"/>
                             </box>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hWT-X1-Lvi">
-                                <rect key="frame" x="17" y="428" width="173" height="31"/>
+                                <rect key="frame" x="17" y="429" width="173" height="31"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="169" id="QGe-6F-NUU"/>
                                 </constraints>
@@ -557,7 +542,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="KsZ-df-0qg">
-                                <rect key="frame" x="18" y="216" width="263" height="31"/>
+                                <rect key="frame" x="18" y="217" width="263" height="31"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="169" id="tBP-N2-N7d"/>
                                 </constraints>
@@ -568,7 +553,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3T3-4e-VUn">
-                                <rect key="frame" x="18" y="308" width="173" height="31"/>
+                                <rect key="frame" x="18" y="309" width="173" height="31"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="169" id="0aL-9Z-WFz"/>
                                 </constraints>
@@ -579,10 +564,10 @@
                                 </textFieldCell>
                             </textField>
                             <box horizontalHuggingPriority="249" verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="tqR-yA-efC">
-                                <rect key="frame" x="19" y="417" width="410" height="5"/>
+                                <rect key="frame" x="19" y="418" width="410" height="5"/>
                             </box>
                             <box horizontalHuggingPriority="249" verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="4le-ej-nRw">
-                                <rect key="frame" x="20" y="297" width="410" height="5"/>
+                                <rect key="frame" x="20" y="298" width="410" height="5"/>
                             </box>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="nxX-Wq-SEq">
                                 <rect key="frame" x="361" y="775" width="71" height="18"/>
@@ -630,7 +615,7 @@
                                 </connections>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ViZ-h6-1T8">
-                                <rect key="frame" x="18" y="392" width="170" height="17"/>
+                                <rect key="frame" x="18" y="393" width="170" height="17"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="17" id="vFj-Jw-Whf"/>
                                 </constraints>
@@ -641,7 +626,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="aUk-bB-ks1">
-                                <rect key="frame" x="18" y="273" width="170" height="17"/>
+                                <rect key="frame" x="18" y="274" width="170" height="17"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="17" id="DP0-xr-NX5"/>
                                 </constraints>
@@ -652,7 +637,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2kw-jd-xUM">
-                                <rect key="frame" x="17" y="168" width="170" height="17"/>
+                                <rect key="frame" x="17" y="169" width="170" height="17"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="17" id="407-Bo-NOJ"/>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="166" id="O6X-Ks-jaP"/>
@@ -664,7 +649,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9Ij-Wj-WML">
-                                <rect key="frame" x="212" y="390" width="218" height="21"/>
+                                <rect key="frame" x="212" y="391" width="218" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="218" id="eXq-NF-Cb6"/>
                                 </constraints>
@@ -678,7 +663,7 @@
                                 </connections>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="CNd-XI-wrq">
-                                <rect key="frame" x="18" y="363" width="170" height="17"/>
+                                <rect key="frame" x="18" y="364" width="170" height="17"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="17" id="XXB-eA-aiN"/>
                                 </constraints>
@@ -689,7 +674,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="OSQ-RY-4rJ">
-                                <rect key="frame" x="212" y="361" width="218" height="21"/>
+                                <rect key="frame" x="212" y="362" width="218" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="218" id="VQy-iP-FNX"/>
                                 </constraints>
@@ -747,7 +732,7 @@
                                 </connections>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="L0P-vp-8go">
-                                <rect key="frame" x="18" y="483" width="149" height="18"/>
+                                <rect key="frame" x="18" y="484" width="149" height="17"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Server IP" id="3Ya-Qb-bkc">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -755,7 +740,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField verticalHuggingPriority="750" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="MEb-Sw-ATv">
-                                <rect key="frame" x="188" y="481" width="242" height="22"/>
+                                <rect key="frame" x="188" y="482" width="242" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="242" id="vWB-3D-zJX"/>
                                 </constraints>
@@ -857,7 +842,7 @@
                                 </textFieldCell>
                             </textField>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5V4-NG-Ey4">
-                                <rect key="frame" x="372" y="266" width="64" height="28"/>
+                                <rect key="frame" x="372" y="267" width="64" height="28"/>
                                 <buttonCell key="cell" type="push" title="Edit" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="E5k-RT-K2i">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -867,7 +852,7 @@
                                 </connections>
                             </button>
                             <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Qrg-Ev-kpn">
-                                <rect key="frame" x="210" y="163" width="223" height="25"/>
+                                <rect key="frame" x="210" y="164" width="223" height="25"/>
                                 <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="PG7-WJ-YhX" id="taW-db-UOo">
                                     <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="menu"/>
@@ -881,7 +866,7 @@
                                 </popUpButtonCell>
                             </popUpButton>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7TQ-tY-HC9">
-                                <rect key="frame" x="386" y="123" width="44" height="21"/>
+                                <rect key="frame" x="386" y="124" width="44" height="21"/>
                                 <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSAddTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="fhs-df-WT9">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -891,14 +876,14 @@
                                 </connections>
                             </button>
                             <button horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="eGo-tp-oag">
-                                <rect key="frame" x="328" y="123" width="44" height="21"/>
+                                <rect key="frame" x="328" y="124" width="44" height="21"/>
                                 <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSAddTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="yT4-WK-sh5">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
                             <button horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="beL-8A-yeA">
-                                <rect key="frame" x="212" y="123" width="44" height="23"/>
+                                <rect key="frame" x="212" y="124" width="44" height="23"/>
                                 <buttonCell key="cell" type="smallSquare" title="G" bezelStyle="smallSquare" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="0sA-tm-lDU">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -908,11 +893,24 @@
                                 </connections>
                             </button>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="kSf-it-eci">
-                                <rect key="frame" x="270" y="123" width="44" height="21"/>
+                                <rect key="frame" x="270" y="124" width="44" height="21"/>
                                 <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSAddTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="eDV-JA-tA6">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
+                            </button>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="VQj-yu-qUN">
+                                <rect key="frame" x="169" y="482" width="13" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="bdO-uU-zEF"/>
+                                </constraints>
+                                <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSAddTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" id="bzm-uF-v1d">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="setServerHostToCurrentIPAddress:" target="9AW-rl-Ecm" id="bBR-kX-C45"/>
+                                </connections>
                             </button>
                         </subviews>
                         <constraints>
@@ -925,6 +923,7 @@
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="hWT-X1-Lvi" secondAttribute="trailing" constant="20" symbolic="YES" id="2VF-fy-bPG"/>
                             <constraint firstItem="eGo-tp-oag" firstAttribute="leading" secondItem="kSf-it-eci" secondAttribute="trailing" constant="14" id="2cv-cG-OJx"/>
                             <constraint firstItem="Vbp-lB-fBE" firstAttribute="top" secondItem="j9G-ay-aeJ" secondAttribute="bottom" constant="14" id="3L2-1B-3Fa"/>
+                            <constraint firstItem="VQj-yu-qUN" firstAttribute="leading" secondItem="L0P-vp-8go" secondAttribute="trailing" constant="4" id="4Lm-je-NMH"/>
                             <constraint firstItem="ZFa-0P-ct1" firstAttribute="trailing" secondItem="dLr-am-B6H" secondAttribute="trailing" id="4N0-Yx-NyY"/>
                             <constraint firstAttribute="trailing" secondItem="5V4-NG-Ey4" secondAttribute="trailing" constant="20" id="4Xe-Y1-KNT"/>
                             <constraint firstItem="aoo-ss-dNo" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Vbp-lB-fBE" secondAttribute="trailing" constant="8" symbolic="YES" id="4YJ-So-t6N"/>
@@ -1041,6 +1040,7 @@
                             <constraint firstItem="9Ij-Wj-WML" firstAttribute="top" secondItem="tqR-yA-efC" secondAttribute="bottom" constant="8" symbolic="YES" id="q3K-Ho-dhe"/>
                             <constraint firstItem="7TQ-tY-HC9" firstAttribute="baseline" secondItem="beL-8A-yeA" secondAttribute="baseline" id="qMx-r1-puQ"/>
                             <constraint firstItem="LPu-Sm-40d" firstAttribute="trailing" secondItem="dLr-am-B6H" secondAttribute="trailing" id="qo9-uH-5aN"/>
+                            <constraint firstItem="VQj-yu-qUN" firstAttribute="bottom" secondItem="MEb-Sw-ATv" secondAttribute="bottom" id="sRK-qp-kXo"/>
                             <constraint firstItem="Vbp-lB-fBE" firstAttribute="trailing" secondItem="qa2-yV-dOJ" secondAttribute="trailing" id="sX7-ZA-UBF"/>
                             <constraint firstItem="4le-ej-nRw" firstAttribute="leading" secondItem="CNd-XI-wrq" secondAttribute="leading" id="tRP-Id-0tr"/>
                             <constraint firstItem="2kw-jd-xUM" firstAttribute="top" secondItem="PNX-dY-m2l" secondAttribute="bottom" constant="22" id="tT7-vq-mkZ"/>
@@ -1048,12 +1048,14 @@
                             <constraint firstItem="7TQ-tY-HC9" firstAttribute="width" secondItem="eGo-tp-oag" secondAttribute="width" id="uOo-DT-oDQ"/>
                             <constraint firstItem="Zyu-Kx-pIy" firstAttribute="leading" secondItem="CNd-XI-wrq" secondAttribute="leading" id="vbv-Me-635"/>
                             <constraint firstItem="Vbp-lB-fBE" firstAttribute="trailing" secondItem="j9G-ay-aeJ" secondAttribute="trailing" id="vel-pg-MIX"/>
+                            <constraint firstItem="MEb-Sw-ATv" firstAttribute="leading" secondItem="VQj-yu-qUN" secondAttribute="trailing" constant="6" id="wCE-Ci-pwM"/>
                             <constraint firstItem="KsZ-df-0qg" firstAttribute="top" secondItem="aUk-bB-ks1" secondAttribute="bottom" constant="26" id="wYa-ZK-UVg"/>
                             <constraint firstItem="8zF-eQ-ZXG" firstAttribute="leading" secondItem="fey-pC-GAn" secondAttribute="trailing" constant="15" id="x8i-ty-n9B"/>
                             <constraint firstItem="aUk-bB-ks1" firstAttribute="leading" secondItem="4le-ej-nRw" secondAttribute="leading" id="xRg-rx-vDJ"/>
                             <constraint firstItem="352-65-pMQ" firstAttribute="firstBaseline" secondItem="s9o-At-naI" secondAttribute="baseline" id="xll-9O-vaY"/>
                             <constraint firstItem="KsZ-df-0qg" firstAttribute="leading" secondItem="aUk-bB-ks1" secondAttribute="leading" id="yBH-51-loj"/>
                             <constraint firstItem="qa2-yV-dOJ" firstAttribute="top" secondItem="Aod-2C-RJ1" secondAttribute="bottom" constant="12" id="yGQ-Bh-XND"/>
+                            <constraint firstItem="VQj-yu-qUN" firstAttribute="centerY" secondItem="MEb-Sw-ATv" secondAttribute="centerY" id="yJF-RW-gwY"/>
                             <constraint firstItem="OSQ-RY-4rJ" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="CNd-XI-wrq" secondAttribute="trailing" constant="8" symbolic="YES" id="znm-tR-hiS"/>
                         </constraints>
                     </view>
@@ -1208,7 +1210,7 @@
                 </viewController>
                 <customObject id="LNd-gv-h3v" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1777" y="-637"/>
+            <point key="canvasLocation" x="1947" y="-645"/>
         </scene>
         <!--Preferences Applications View Controller-->
         <scene sceneID="JdH-Uj-5of">
@@ -1489,7 +1491,7 @@
                 </viewController>
                 <customObject id="WGr-ky-RPu" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1794.5" y="-54"/>
+            <point key="canvasLocation" x="1947" y="-55"/>
         </scene>
         <!--Chose Installer-->
         <scene sceneID="zLL-0j-bSO">
@@ -2011,7 +2013,7 @@ Gw
                 </viewController>
                 <customObject id="FD7-kX-tr6" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2455" y="664"/>
+            <point key="canvasLocation" x="1669" y="1232"/>
         </scene>
         <!--InfoPopoverViewController-->
         <scene sceneID="tiW-Gr-R8k">
@@ -2054,7 +2056,7 @@ Gw
                 </viewController>
                 <customObject id="Lxw-cz-in3" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="739" y="1051.5"/>
+            <point key="canvasLocation" x="3" y="177"/>
         </scene>
         <!--Finish View-->
         <scene sceneID="U4d-dK-0MF">
@@ -2141,7 +2143,7 @@ Gw
                 </viewController>
                 <customObject id="AET-yM-cJX" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3247" y="664"/>
+            <point key="canvasLocation" x="2508" y="1232"/>
         </scene>
     </scenes>
     <resources>

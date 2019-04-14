@@ -57,7 +57,14 @@ class PreferencesViewController: NSViewController {
     }
 
     override func viewDidLoad() {
-        configureView()
+        if let ourPreferences = self.preferences {
+            if PreferenceLoader.isDifferentFromRunning(ourPreferences) {
+                readPreferences()
+            }
+        } else {
+            readPreferences()
+        }
+        updateView()
     }
 
     override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
@@ -96,6 +103,10 @@ class PreferencesViewController: NSViewController {
         loggingPortField.isEnabled = loggingEnabled
         loggingPortLabel.setEnabled(loggingEnabled)
 
+        updateOtherLabels()
+    }
+
+    public func updateOtherLabels() {
         if let sharedPreferenceLoader = PreferenceLoader.sharedInstance {
             savePathLabel.stringValue = sharedPreferenceLoader.getSaveDirectoryPath(relativeToUser: true)
 
@@ -113,7 +124,6 @@ class PreferencesViewController: NSViewController {
                 return
             }
         }
-
         applicationsCountLabel.stringValue = "No applications configured"
     }
 
@@ -134,11 +144,16 @@ class PreferencesViewController: NSViewController {
 
                 if let helpEmailAddress = preferences.helpEmailAddress {
                     self.sendLogAddressField.stringValue = helpEmailAddress
+                } else {
+                    self.sendLogAddressField.stringValue = ""
                 }
 
                 if let deviceIdentifierAPIToken = preferences.deviceIdentifierAuthenticationToken {
                     self.deviceIdentifierAPITokenField.stringValue = deviceIdentifierAPIToken
+                } else {
+                    self.deviceIdentifierAPITokenField.stringValue = ""
                 }
+                self.updateOtherLabels()
             }
         }
     }
@@ -217,6 +232,7 @@ class PreferencesViewController: NSViewController {
     @objc public func readPreferences() {
         if let preferences = PreferenceLoader.currentPreferences {
             self.preferences = preferences
+            updateView()
         }
     }
 
@@ -265,6 +281,12 @@ class PreferencesViewController: NSViewController {
     @IBAction func openSavePath(_ sender: NSButton) {
         sender.state = .off
         NSWorkspace.shared.open(URL(fileURLWithPath: (PreferenceLoader.libraryFolder), isDirectory: true))
+    }
+
+    @IBAction func setServerHostToCurrentIPAddress(_ sender: NSButton) {
+        IPAddressChooserDialog.show(self) { (selectedIPAddress) in
+            self.installerServerIPField.stringValue = selectedIPAddress
+        }
     }
 
     @IBAction func generateRemoteConfigForCurrent(_ sender: NSButton) {

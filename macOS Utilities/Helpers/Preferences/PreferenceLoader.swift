@@ -64,7 +64,7 @@ class PreferenceLoader {
 
         LoggerSetup.constructLogger()
         if checkAndPerformInitialCopy() {
-            if let preferences = loadPreferences(libraryPropertyListPath, forceSave: true) {
+            if let preferences = parsePreferences(libraryPropertyListPath, forceSave: true) {
                 PreferenceLoader.currentPreferences = preferences
                 PreferenceLoader.previousPreferences = preferences.copy() as? Preferences
                 if let loggingPreferences = preferences.loggingPreferences {
@@ -102,7 +102,7 @@ class PreferenceLoader {
     }
 
     public func save(_ preferences: Preferences, notify: Bool = true) {
-        if PreferenceLoader.isDifferentFromRunning(),
+        if PreferenceLoader.isDifferentFromRunning(preferences),
             let bundlePropertyListPath = self.bundlePropertyListPath {
             let encoder = PropertyListEncoder()
             encoder.outputFormat = .xml
@@ -243,13 +243,13 @@ class PreferenceLoader {
     }
 
     // MARK Property List Retreival
-    public func loadPreferences(_ at: String, forceSave: Bool = false) -> Preferences? {
+    public func parsePreferences(_ at: String, forceSave: Bool = false) -> Preferences? {
         if let xml = FileManager.default.contents(atPath: at) {
             do {
                 let preferences = try PropertyListDecoder().decode(Preferences.self, from: xml)
                 return preferences
             } catch let error {
-                let loadLegacyStatus = loadLegacyPreferences(at)
+                let loadLegacyStatus = parseLegacyPreferences(atPath: at, atURL: nil)
                 if loadLegacyStatus.0 == true {
                     if let convertedPreferences = loadLegacyStatus.1,
                         forceSave == true {
@@ -264,30 +264,54 @@ class PreferenceLoader {
         return nil
     }
 
-    public func loadPreferences(_ at: URL) -> Preferences? {
+    public func parsePreferences(_ at: URL, forceSave: Bool = false) -> Preferences? {
         do {
             let _data = try Data(contentsOf: at)
             let _preferences = try PropertyListDecoder().decode(Preferences.self, from: _data)
             return _preferences
         } catch let error {
-            DDLogError("Error parsing preferences: \(error)")
+            let loadLegacyStatus = parseLegacyPreferences(atPath: nil, atURL: at)
+            if loadLegacyStatus.0 == true {
+                if let convertedPreferences = loadLegacyStatus.1,
+                    forceSave == true {
+                    save(convertedPreferences)
+                }
+                return loadLegacyStatus.1
+            } else if loadLegacyStatus.0 == false {
+                DDLogError("Could not load preferences. \(error). \n Attempted to parse as a legacy property list, but that also failed: \(loadLegacyStatus.2!)")
+            }
         }
+
         return nil
     }
 
-    public func loadLegacyPreferences(_ at: String) -> (Bool, Preferences?, Error?) {
-        if let xml = FileManager.default.contents(atPath: at) {
+    public func parseLegacyPreferences(atPath: String?, atURL: URL?) -> (Bool, Preferences?, Error?) {
+        if let at = atPath {
+            if let xml = FileManager.default.contents(atPath: at) {
+                do {
+                    let legacyPreferences = try PropertyListDecoder().decode(LegacyPreferences.self, from: xml)
+                    DDLogInfo("Successfully converted legacy preferences from \(at)")
+                    return (true, legacyPreferences.update(), nil)
+                } catch let error {
+                    return (false, nil, error)
+                }
+            }
+            return (false, nil, nil)
+        } else if let at = atURL {
             do {
+                let xml = try Data(contentsOf: at)
                 let legacyPreferences = try PropertyListDecoder().decode(LegacyPreferences.self, from: xml)
+                DDLogInfo("Successfully converted legacy preferences from \(at)")
                 return (true, legacyPreferences.update(), nil)
             } catch let error {
                 return (false, nil, error)
             }
         }
+
         return (false, nil, nil)
     }
 
-    public func loadRemoteConfiguration(_ url: URL) -> RemoteConfigurationPreferences? {
+    public func fetchRemoteConfiguration(_ url: URL) -> RemoteConfigurationPreferences? {
         do {
             let _data = try Data(contentsOf: url)
             let _preferences = try PropertyListDecoder().decode(RemoteConfigurationPreferences.self, from: _data)
@@ -296,6 +320,26 @@ class PreferenceLoader {
             DDLogError("Error parsing remote configuration: \(error)")
         }
         return nil
+    }
+
+    public static func loadPreferences(_ from: String) -> Bool {
+        if let sharedInstance = self.sharedInstance {
+            if let newPreferences = sharedInstance.parsePreferences(from) {
+                sharedInstance.save(newPreferences, notify: true)
+                return true
+            }
+        }
+        return false
+    }
+
+    public static func loadPreferences(_ from: URL) -> Bool {
+        if let sharedInstance = self.sharedInstance {
+            if let newPreferences = sharedInstance.parsePreferences(from) {
+                sharedInstance.save(newPreferences, notify: true)
+                return true
+            }
+        }
+        return false
     }
 
     // MARK: Folder Creation

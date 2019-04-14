@@ -44,7 +44,7 @@ class RemoteConfigurationViewController: NSViewController {
     }
 
     private func getRemoteConfiguration(fromURL: URL) {
-        if let fetchedRemoteConfiguration = PreferenceLoader.sharedInstance?.loadRemoteConfiguration(fromURL) {
+        if let fetchedRemoteConfiguration = PreferenceLoader.sharedInstance?.fetchRemoteConfiguration(fromURL) {
             if fetchedRemoteConfiguration.remoteURL.absoluteString == "http://invalid.co"{
                 fetchedRemoteConfiguration.remoteURL = fromURL
             }

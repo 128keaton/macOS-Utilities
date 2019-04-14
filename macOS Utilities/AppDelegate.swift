@@ -219,23 +219,26 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     // MARK: File menu functions
-    @IBAction func openPropertyListFile(_ sender: NSMenuItem) {
+    @IBAction func loadConfigurationFile(_ sender: NSMenuItem) {
         let openPanel = NSOpenPanel()
         openPanel.allowedFileTypes = ["plist"]
         openPanel.allowsMultipleSelection = false
         openPanel.allowsOtherFileTypes = false
         openPanel.showsHiddenFiles = true
         openPanel.canChooseDirectories = false
-
+        
         openPanel.title = "Browse for existing configuration property list file"
-
+        openPanel.message = "A legacy configuration file will be automatically updated if selected"
+        
         openPanel.begin { (response) in
             if response == .OK {
                 if let propertyListURL = openPanel.url {
                     DispatchQueue.main.async {
-                        if let preferences = PreferenceLoader.sharedInstance!.loadPreferences(propertyListURL) {
-                            PreferenceLoader.save(preferences, notify: true)
-                            NotificationCenter.default.post(name: ItemRepository.updatingApplications, object: preferences.mappedApplications)
+                        let didLoad = PreferenceLoader.loadPreferences(propertyListURL)
+                        if didLoad{
+                            DDLogInfo("Loaded preferences from: \(propertyListURL)")
+                        }else{
+                            DDLogError("Failed to load preferences from: \(propertyListURL)")
                         }
                     }
                 }

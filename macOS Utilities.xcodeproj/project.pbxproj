@@ -42,6 +42,8 @@
 		8A9370D12256BB5A002B3838 /* Volume.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9370D02256BB5A002B3838 /* Volume.swift */; };
 		8A9370D42256D5F6002B3838 /* ItemRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9370D32256D5F6002B3838 /* ItemRepository.swift */; };
 		8A9370D62256D604002B3838 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9370D52256D604002B3838 /* Item.swift */; };
+		8A9D9A962262F24A00E4D36F /* IPAddressChooserDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9D9A952262F24A00E4D36F /* IPAddressChooserDialog.swift */; };
+		8A9D9A982262FB5F00E4D36F /* IPAddressChooserDialog.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A9D9A972262FB5F00E4D36F /* IPAddressChooserDialog.xib */; };
 		8ABAE30F22527B9100E537D3 /* ApplicationUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE30E22527B9100E537D3 /* ApplicationUtility.swift */; };
 		8ABAE3112252A46300E537D3 /* DiskSelectionDialogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE3102252A46300E537D3 /* DiskSelectionDialogViewController.swift */; };
 		8ABAE3132252C1D800E537D3 /* TaskHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE3122252C1D800E537D3 /* TaskHandler.swift */; };
@@ -92,6 +94,8 @@
 		8A9370D02256BB5A002B3838 /* Volume.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Volume.swift; sourceTree = "<group>"; };
 		8A9370D32256D5F6002B3838 /* ItemRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemRepository.swift; sourceTree = "<group>"; };
 		8A9370D52256D604002B3838 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
+		8A9D9A952262F24A00E4D36F /* IPAddressChooserDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IPAddressChooserDialog.swift; sourceTree = "<group>"; };
+		8A9D9A972262FB5F00E4D36F /* IPAddressChooserDialog.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IPAddressChooserDialog.xib; sourceTree = "<group>"; };
 		8ABAE30E22527B9100E537D3 /* ApplicationUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationUtility.swift; sourceTree = "<group>"; };
 		8ABAE3102252A46300E537D3 /* DiskSelectionDialogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskSelectionDialogViewController.swift; sourceTree = "<group>"; };
 		8ABAE3122252C1D800E537D3 /* TaskHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskHandler.swift; sourceTree = "<group>"; };
@@ -183,6 +187,7 @@
 			isa = PBXGroup;
 			children = (
 				8ACB65DA21063E6F004B9C5A /* Main.storyboard */,
+				8A9D9A972262FB5F00E4D36F /* IPAddressChooserDialog.xib */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -209,6 +214,7 @@
 				8A6C646F225E9FA100CD6DCF /* PreferencesViewController.swift */,
 				8A175AAD225F2BE70018C977 /* PreferencesApplicationsViewController.swift */,
 				8A123920226110CA008E551A /* RemoteConfigurationViewController.swift */,
+				8A9D9A952262F24A00E4D36F /* IPAddressChooserDialog.swift */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
@@ -410,6 +416,7 @@
 				8ACB65D921063E6F004B9C5A /* Assets.xcassets in Resources */,
 				8A47DEDB210A3418003F5CC3 /* NSCollectionAppCell.xib in Resources */,
 				8A39D3602119E81B00437F4E /* com.er2.applications.plist in Resources */,
+				8A9D9A982262FB5F00E4D36F /* IPAddressChooserDialog.xib in Resources */,
 				8ACB65DC21063E6F004B9C5A /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -476,6 +483,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A9D9A962262F24A00E4D36F /* IPAddressChooserDialog.swift in Sources */,
 				8A6C6463225DB40A00CD6DCF /* DeviceIdentifier.swift in Sources */,
 				8A9370CF2256B7F4002B3838 /* Disk.swift in Sources */,
 				8A0138C6221703B700C77DA0 /* Compatibility.swift in Sources */,

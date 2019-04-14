@@ -20,7 +20,8 @@ class LegacyPreferences: Codable, CustomStringConvertible {
     var applications: [String: [String: String]]
     var serverPath: String
     var serverIP: String
-
+    var apiToken: String?
+    var helpEmailAddress: String?
 
     func update() -> Preferences? {
         let updatedPreferences = Preferences(configurationVersion: "2.0")
@@ -35,11 +36,20 @@ class LegacyPreferences: Codable, CustomStringConvertible {
         // InstallerServerPreferences
         installerServerPreferences.serverPath = serverPath
         installerServerPreferences.serverIP = serverIP
+        installerServerPreferences.mountPath = ""
         installerServerPreferences.serverType = "NFS"
         installerServerPreferences.serverEnabled = false
 
         if let mappedApplications = parseApplications(applications) {
             updatedPreferences.mappedApplications = mappedApplications
+        }
+        
+        if let apiToken = self.apiToken{
+            updatedPreferences.deviceIdentifierAuthenticationToken = apiToken
+        }
+        
+        if let helpEmailAddress = self.helpEmailAddress{
+            updatedPreferences.helpEmailAddress = helpEmailAddress
         }
 
         updatedPreferences.loggingPreferences = loggingPreferences
@@ -72,5 +82,7 @@ class LegacyPreferences: Codable, CustomStringConvertible {
         case serverPath = "Server Path"
         case serverIP = "Server IP"
         case applications = "Applications"
+        case helpEmailAddress = "Help Email Address"
+        case apiToken = "DeviceIdentifier Authentication Token"
     }
 }
