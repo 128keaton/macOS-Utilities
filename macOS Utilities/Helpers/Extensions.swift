@@ -197,8 +197,6 @@ class KBTableView: NSTableView {
         let localLocation = convert(globalLocation, from: nil)
         let clickedRow = row(at: localLocation)
 
-        super.mouseDown(with: event)
-
         if clickedRow == -1 {
             self.deselectAll(self)
             if let delegate = self.delegate {
@@ -238,6 +236,15 @@ extension String {
 
     var fileURL: URL {
         return URL(fileURLWithPath: self)
+    }
+    
+    var escaped: String {
+        return self.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
+    }
+    
+    /// Returns a safe file name e.g. "A Cool Document" becomes "A-Cool-Document"
+    var dashedFileName: String{
+        return self.replacingOccurrences(of: " ", with: "-")
     }
     
     var md5Value: String {
@@ -336,10 +343,9 @@ extension URL {
         }
     }
     
-    
     /// Absolute path of file from URL
     var absolutePath: String {
-        return self.absoluteString.replacingOccurrences(of: "file://", with: "")
+        return self.absoluteString.replacingOccurrences(of: "file://", with: "").replacingOccurrences(of: "%20", with: " ")
     }
 }
 

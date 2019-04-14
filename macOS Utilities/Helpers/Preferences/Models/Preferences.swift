@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Preferences: Codable, NSCopying, CustomStringConvertible {
+class Preferences: Codable, NSCopying, CustomStringConvertible, Equatable {
     var description: String {
         return "Preferences: \n\t Help Email Address: \(String(describing: helpEmailAddress)) \n\t DeviceIdentifier API Token: \(deviceIdentifierAuthenticationToken == nil ? "nil" : "\(deviceIdentifierAuthenticationToken!.prefix(12))...") \n\t Logging Preferences: \(String(describing: loggingPreferences))"
     }
@@ -23,7 +23,7 @@ class Preferences: Codable, NSCopying, CustomStringConvertible {
     var configurationVersion: String
 
     var useDeviceIdentifierAPI: Bool {
-        return self.deviceIdentifierAuthenticationToken != nil
+        return self.deviceIdentifierAuthenticationToken != nil && self.deviceIdentifierAuthenticationToken != ""
     }
 
     public func getApplications() -> [Application]? {
@@ -58,5 +58,34 @@ class Preferences: Codable, NSCopying, CustomStringConvertible {
     
     init(configurationVersion: String){
         self.configurationVersion = configurationVersion
+    }
+    
+    static func == (lhs: Preferences, rhs: Preferences) -> Bool {
+        if(lhs.installerServerPreferences != rhs.installerServerPreferences) {
+            return true
+        }
+        
+        if(lhs.loggingPreferences == rhs.loggingPreferences) {
+            return true
+        }
+        
+        if(lhs.useDeviceIdentifierAPI == rhs.useDeviceIdentifierAPI) {
+            return true
+        }
+        
+        if(lhs.helpEmailAddress == rhs.helpEmailAddress) {
+            return true
+        }
+        
+        if(lhs.mappedApplications == rhs.mappedApplications){
+            return true
+        }
+       
+        if let mappedApplicationsA = lhs.mappedApplications,
+            let mappedApplicationsB = rhs.mappedApplications{
+            return mappedApplicationsA.map { $0.showInApplicationsWindow } == mappedApplicationsB.map { $0.showInApplicationsWindow }
+        }
+        
+        return false
     }
 }

@@ -491,6 +491,7 @@
                     <connections>
                         <outlet property="collectionView" destination="e9c-GW-a3y" id="8Ht-qB-bmO"/>
                         <outlet property="getInfoButton" destination="mb6-sD-iTX" id="VWD-Ff-fsM"/>
+                        <outlet property="installMacOSButton" destination="VFu-S9-ocT" id="Yju-Jj-Jbi"/>
                     </connections>
                 </viewController>
                 <customObject id="Uhy-ZN-Yif" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -1253,7 +1254,7 @@
                                     <rect key="frame" x="1" y="0.0" width="623" height="491"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" rowHeight="24" rowSizeStyle="medium" headerView="fsr-mK-shu" viewBased="YES" floatsGroupRows="NO" id="wss-ry-80u">
+                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" rowHeight="24" rowSizeStyle="medium" headerView="fsr-mK-shu" viewBased="YES" floatsGroupRows="NO" id="wss-ry-80u" customClass="KBTableView" customModule="macOS_Utilities" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="623" height="466"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="11"/>
@@ -1783,7 +1784,7 @@ Gw
                                     <rect key="frame" x="1" y="0.0" width="658" height="314"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="22" rowSizeStyle="systemDefault" headerView="e6H-Qs-xEe" viewBased="YES" id="QuU-vC-lkw">
+                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="22" rowSizeStyle="systemDefault" headerView="e6H-Qs-xEe" viewBased="YES" id="QuU-vC-lkw" customClass="KBTableView" customModule="macOS_Utilities" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="658" height="289"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>

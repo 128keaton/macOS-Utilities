@@ -19,7 +19,7 @@ class ApplicationUtility {
 
     private init() {
         NotificationCenter.default.addObserver(self, selector: #selector(ApplicationUtility.getApplications(_:)), name: PreferenceLoader.preferencesLoaded, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationUtility.forceReloadApplications), name: PreferenceLoader.preferencesUpdated, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationUtility.forceReloadApplications(_:)), name: PreferenceLoader.preferencesUpdated, object: nil)
         DDLogInfo("Initializing Applications Manager Shared Instance")
     }
 
@@ -35,25 +35,43 @@ class ApplicationUtility {
             
             allApplications.append(contentsOf: applications)
             
-            ItemRepository.shared.addToRepository(newApplications: allApplications)
+            ItemRepository.shared.addToRepository(newApplications: allApplications, merge: true)
         }
     }
 
-    @objc public func forceReloadApplications() {
-        guard let applications = PreferenceLoader.currentPreferences?.getApplications() else { return }
+    @objc public func forceReloadApplications(_ notification: Notification? = nil) {
+        var applications = [Application]()
+        
+        if let validNotification = notification,
+            let preferences = validNotification.object as? Preferences,
+            let updatedApplications = preferences.getApplications(){
+            applications = updatedApplications
+        }else if let updatedApplications = PreferenceLoader.currentPreferences?.getApplications(){
+            applications = updatedApplications
+        }else{
+            return
+        }
 
         allApplications = []
 
-        allApplications.removeAll { $0.isUtility == false }
+        allApplications.removeAll { $0.isUtility == false && applicationsContainsName($0.name) }
         allApplications.append(contentsOf: applications)
 
-        ItemRepository.shared.addToRepository(newApplications: allApplications)
+        ItemRepository.shared.addToRepository(newApplications: allApplications, merge: false)
     }
 
     public func open(_ name: String) {
         if let foundApplication = (allApplications.filter { $0.name == name }.first) {
             foundApplication.open()
         }
+    }
+    
+    private func applicationsContainsName(_ name: String) -> Bool{
+        if (allApplications.contains { $0.name == name }){
+            return true
+        }
+        
+        return false
     }
 }
 

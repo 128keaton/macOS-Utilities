@@ -40,23 +40,7 @@ class PreferenceLoader {
 
         guard let _preferences = validPreferences else { return true }
 
-        if(runningPreferences.installerServerPreferences != _preferences.installerServerPreferences) {
-            return true
-        }
-
-        if(runningPreferences.loggingPreferences != _preferences.loggingPreferences) {
-            return true
-        }
-
-        if(runningPreferences.useDeviceIdentifierAPI != _preferences.useDeviceIdentifierAPI) {
-            return true
-        }
-
-        if(runningPreferences.helpEmailAddress != _preferences.helpEmailAddress) {
-            return true
-        }
-
-        return false
+        return _preferences == runningPreferences
     }
 
     init() {
@@ -115,10 +99,15 @@ class PreferenceLoader {
                     try data.write(to: URL(fileURLWithPath: bundlePropertyListPath))
                 #endif
 
+                // I might've broke something here
+                
+                PreferenceLoader.previousPreferences = preferences
+                PreferenceLoader.currentPreferences = preferences.copy() as? Preferences
+                
                 if notify {
-                    PreferenceLoader.previousPreferences = preferences
-                    PreferenceLoader.currentPreferences = preferences.copy() as? Preferences
                     NotificationCenter.default.post(name: PreferenceLoader.preferencesLoaded, object: true)
+                }else{
+                    NotificationCenter.default.post(name: PreferenceLoader.preferencesUpdated, object: preferences)
                 }
 
                 DDLogInfo("Saved preferences to propertly list at path: \(libraryPropertyListPath)")
@@ -134,15 +123,15 @@ class PreferenceLoader {
         var dynamicFileURL: URL? = nil
 
         if createFolder == true {
-            if let fileFolderContainingPath = self.createFolderInDownloadsForFile(folderName: folderName, fileName: fileName, fileExtension: "plist") {
+            if let fileFolderContainingPath = self.createFolderInDownloadsForFile(folderName: folderName, fileName: fileName, fileExtension: "json") {
                 dynamicFileURL = fileFolderContainingPath
             }
         } else {
-            dynamicFileURL = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first!.appendingPathComponent(fileName).appendingPathExtension("plist")
+            dynamicFileURL = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first!.appendingPathComponent(fileName).appendingPathExtension("json")
         }
 
         do {
-            let fileData = try PropertyListEncoder().encode(remoteConfiguration)
+            let fileData = try JSONEncoder().encode(remoteConfiguration)
 
             if let fileURL = dynamicFileURL {
                 let filePath = fileURL.absolutePath
@@ -180,18 +169,18 @@ class PreferenceLoader {
         var dynamicFileURL: URL? = nil
 
         if createFolder == true {
-            if let fileFolderContainingPath = self.createFolderInDownloadsForFile(folderName: folderName, fileName: fileName, fileExtension: "plist") {
+            if let fileFolderContainingPath = self.createFolderInDownloadsForFile(folderName: folderName, fileName: fileName, fileExtension: "utilconf") {
                 dynamicFileURL = fileFolderContainingPath
             }
         } else {
-            dynamicFileURL = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first!.appendingPathComponent(fileName).appendingPathExtension("plist")
+            dynamicFileURL = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first!.appendingPathComponent(fileName).appendingPathExtension("utilconf")
         }
 
         do {
             let fileData = try PropertyListEncoder().encode(preferences)
 
             if let fileURL = dynamicFileURL {
-                let filePath = fileURL.absolutePath
+                let filePath = fileURL.absolutePath.dashedFileName
                 return FileManager.default.createFile(atPath: filePath, contents: fileData, attributes: nil)
             }
 
@@ -314,7 +303,7 @@ class PreferenceLoader {
     public func fetchRemoteConfiguration(_ url: URL) -> RemoteConfigurationPreferences? {
         do {
             let _data = try Data(contentsOf: url)
-            let _preferences = try PropertyListDecoder().decode(RemoteConfigurationPreferences.self, from: _data)
+            let _preferences = try JSONDecoder().decode(RemoteConfigurationPreferences.self, from: _data)
             return _preferences
         } catch let error {
             DDLogError("Error parsing remote configuration: \(error)")
@@ -322,20 +311,20 @@ class PreferenceLoader {
         return nil
     }
 
-    public static func loadPreferences(_ from: String) -> Bool {
+    public static func loadPreferences(_ from: String, updatingRunning: Bool = false) -> Bool {
         if let sharedInstance = self.sharedInstance {
             if let newPreferences = sharedInstance.parsePreferences(from) {
-                sharedInstance.save(newPreferences, notify: true)
+                sharedInstance.save(newPreferences, notify: !updatingRunning)
                 return true
             }
         }
         return false
     }
 
-    public static func loadPreferences(_ from: URL) -> Bool {
+    public static func loadPreferences(_ from: URL, updatingRunning: Bool = false) -> Bool {
         if let sharedInstance = self.sharedInstance {
             if let newPreferences = sharedInstance.parsePreferences(from) {
-                sharedInstance.save(newPreferences, notify: true)
+                sharedInstance.save(newPreferences, notify: !updatingRunning)
                 return true
             }
         }

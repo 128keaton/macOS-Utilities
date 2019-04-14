@@ -130,6 +130,5 @@ import CocoaLumberjack
         return lhs.path == rhs.path &&
             lhs.name == rhs.name
     }
-
 }
 

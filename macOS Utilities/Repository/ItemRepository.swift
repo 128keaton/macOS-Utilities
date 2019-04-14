@@ -42,8 +42,6 @@ class ItemRepository {
         ApplicationUtility.shared.getUtilities()
     }
 
-
-
     public func getSelectedInstaller() -> Installer? {
         if let installer = (self.getInstallers().first { $0.isSelected == true }) {
             return installer
@@ -108,7 +106,9 @@ class ItemRepository {
         if (self.items.contains { ( $0 as? Installer) != nil && ( $0 as! Installer).id == newInstaller.id } == false) {
             DDLogInfo("Adding installer '\(newInstaller.versionName)' to repo")
             self.items.append(newInstaller)
-            NotificationCenter.default.post(name: ItemRepository.newInstaller, object: newInstaller)
+            if !newInstaller.isFakeInstaller || (newInstaller.isFakeInstaller && newInstaller.canInstall) {
+                NotificationCenter.default.post(name: ItemRepository.newInstaller, object: newInstaller)
+            }
         }
     }
 
@@ -118,7 +118,7 @@ class ItemRepository {
 
             if(newApplication.isUtility == false) {
                 DDLogInfo("Adding application '\(newApplication.name)' to repo")
-                NotificationCenter.default.post(name: ItemRepository.newApplication, object: nil)
+                NotificationCenter.default.post(name: ItemRepository.newApplication, object: newApplication)
             } else {
                 DDLogInfo("Adding utility \(newApplication.name) to repo")
                 NotificationCenter.default.post(name: ItemRepository.newUtility, object: newApplication)
@@ -126,7 +126,11 @@ class ItemRepository {
         }
     }
 
-    public func addToRepository(newApplications: [Application]) {
+    public func addToRepository(newApplications: [Application], merge: Bool = false) {
+        if !merge{
+            self.items.removeAll { type(of: $0) == Application.self }
+        }
+        
         self.items.append(contentsOf: newApplications)
         NotificationCenter.default.post(name: ItemRepository.newApplications, object: nil)
     }

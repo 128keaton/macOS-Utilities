@@ -31,7 +31,11 @@ class RemoteConfigurationViewController: NSViewController {
 
     private func updateView() {
         if let remoteConfiguration = self.remoteConfiguration {
-            remoteConfigurationURLField.stringValue = "\(remoteConfiguration.remoteURL)"
+            if remoteConfiguration.isValid,
+                let hostURL = remoteConfiguration.hostURL{
+                remoteConfigurationURLField.stringValue = hostURL.absoluteString
+            }
+            
             remoteConfigurationNameField.stringValue = remoteConfiguration.name
             remoteConfigurationNameField.isEnabled = true
             remoteConfigurationNameLabel.setEnabled(true)
@@ -45,8 +49,8 @@ class RemoteConfigurationViewController: NSViewController {
 
     private func getRemoteConfiguration(fromURL: URL) {
         if let fetchedRemoteConfiguration = PreferenceLoader.sharedInstance?.fetchRemoteConfiguration(fromURL) {
-            if fetchedRemoteConfiguration.remoteURL.absoluteString == "http://invalid.co"{
-                fetchedRemoteConfiguration.remoteURL = fromURL
+            if fetchedRemoteConfiguration.hostURL == nil {
+                fetchedRemoteConfiguration.hostURL = fromURL
             }
             
             self.remoteConfiguration = fetchedRemoteConfiguration
@@ -65,8 +69,8 @@ class RemoteConfigurationViewController: NSViewController {
             }
 
             if let updatedURL = URL(string: remoteConfigurationURLField.stringValue),
-                remoteConfiguration.remoteURL != updatedURL {
-                remoteConfiguration.remoteURL = updatedURL
+                remoteConfiguration.hostURL != updatedURL {
+                remoteConfiguration.hostURL = updatedURL
             }
 
 

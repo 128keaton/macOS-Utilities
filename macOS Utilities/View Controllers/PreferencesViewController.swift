@@ -310,19 +310,19 @@ class PreferencesViewController: NSViewController {
         if let preferences = self.preferences,
             let copiedPreferences = preferences.copy() as? Preferences {
 
-            copiedPreferences.isRemoteConfiguration = true
-            let randomName = String.random(12)
-            let folderName = randomName + "RemoteConfiguration"
-            let configurationName = randomName + "-remoteConfig"
-            let configurationURLs = [URL(string: "\(randomName)).plist")!]
-
-            let newRemoteConfig = RemoteConfigurationPreferences(remoteURL: nil, configurationURLs: configurationURLs, name: configurationName)
-
-            let didSavePreferences = PreferenceLoader.savePreferencesToDownloads(copiedPreferences, fileName: randomName, createFolder: true, folderName: folderName)
-            let didSaveConfig = PreferenceLoader.saveRemoteConfigurationToDownloads(newRemoteConfig, fileName: configurationName, createFolder: true, folderName: folderName)
-
-            if(!didSaveConfig || !didSavePreferences) {
-                //
+            KBTextFieldDialog.show(self, doneButtonText: "Done", textFieldPlaceholder: "Remote configuration name", dialogTitle: "Create a Remote Configuration") { (newConfigurationName) in
+                copiedPreferences.isRemoteConfiguration = true
+                let newFolderName = newConfigurationName.dashedFileName + "-RemoteConfiguration"
+                let newRemoteConfigurationName = newConfigurationName.dashedFileName + "-remoteConfig"
+                let newConfigurationURL = URL(string: "\(newConfigurationName.escaped).utilconf")!
+                
+                let newRemoteConfig = RemoteConfigurationPreferences(hostURL: nil, configurationURL: newConfigurationURL, name: newRemoteConfigurationName)
+                let didSavePreferences = PreferenceLoader.savePreferencesToDownloads(copiedPreferences, fileName: newConfigurationName, createFolder: true, folderName: newFolderName)
+                let didSaveConfig = PreferenceLoader.saveRemoteConfigurationToDownloads(newRemoteConfig, fileName: newRemoteConfigurationName, createFolder: true, folderName: newFolderName)
+                
+                if(!didSaveConfig || !didSavePreferences) {
+                    // TODO
+                }
             }
         }
     }

@@ -221,7 +221,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: File menu functions
     @IBAction func loadConfigurationFile(_ sender: NSMenuItem) {
         let openPanel = NSOpenPanel()
-        openPanel.allowedFileTypes = ["plist"]
+        openPanel.allowedFileTypes = ["plist", "utilconf"]
         openPanel.allowsMultipleSelection = false
         openPanel.allowsOtherFileTypes = false
         openPanel.showsHiddenFiles = true
@@ -234,7 +234,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             if response == .OK {
                 if let propertyListURL = openPanel.url {
                     DispatchQueue.main.async {
-                        let didLoad = PreferenceLoader.loadPreferences(propertyListURL)
+                        let didLoad = PreferenceLoader.loadPreferences(propertyListURL, updatingRunning: true)
                         if didLoad{
                             DDLogInfo("Loaded preferences from: \(propertyListURL)")
                         }else{
@@ -313,5 +313,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         emailService?.subject = emailSubject
         emailService?.recipients = [helpEmailAddress!]
         emailService?.perform(withItems: items)
+    }
+    
+    func application(_ sender: NSApplication, openFile filename: String) -> Bool {
+        if filename.fileURL.pathExtension == "utilconf"{
+            let didLoad = PreferenceLoader.loadPreferences(filename, updatingRunning: true)
+            if didLoad{
+                DDLogInfo("Loaded preferences from: \(filename)")
+            }else{
+                DDLogError("Failed to load preferences from: \(filename)")
+            }
+            
+            return didLoad
+        }
+        
+        return false
     }
 }

@@ -13,6 +13,7 @@ import CocoaLumberjack
 class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     @IBOutlet weak var collectionView: NSCollectionView!
     @IBOutlet weak var getInfoButton: NSButton?
+    @IBOutlet weak var installMacOSButton: NSButton?
 
     private var preferenceLoader: PreferenceLoader? = nil
     private let itemRepository = ItemRepository.shared
@@ -28,6 +29,7 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         super.viewDidLoad()
 
         getInfoButton?.alphaValue = 0.0
+        installMacOSButton?.alphaValue = 0.0
 
         if let preferenceLoader = PreferenceLoader.sharedInstance {
             self.preferenceLoader = preferenceLoader
@@ -43,10 +45,19 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
 
     private func registerForNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.readPreferences), name: PreferenceLoader.preferencesLoaded, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.updatingApplications), name: ItemRepository.updatingApplications, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.getApplications), name: ItemRepository.newApplications, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.bulkUpdateApplications(_:)), name: ItemRepository.updatingApplications, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.addApplication(_:)), name: ItemRepository.newApplication, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.forceReloadApplications), name: ItemRepository.newApplications, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.showInstallMacOSButton), name: ItemRepository.newInstaller, object: nil)
     }
 
+    @objc private func showInstallMacOSButton(){
+        NSAnimationContext.runAnimationGroup { (context) in
+            context.duration = 0.5
+            self.installMacOSButton?.animator().alphaValue = 1.0
+        }
+    }
+    
     @objc private func readPreferences() {
         if let preferences = PreferenceLoader.currentPreferences {
             if preferences.useDeviceIdentifierAPI {
@@ -59,10 +70,10 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         }
     }
 
-    @objc public func updatingApplications(_ notification: Notification?) {
+    @objc public func bulkUpdateApplications(_ notification: Notification?) {
         if !Thread.isMainThread {
             DispatchQueue.main.async {
-                self.updatingApplications(notification)
+                self.bulkUpdateApplications(notification)
             }
             return
         }
@@ -75,42 +86,62 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
             NotificationCenter.default.post(name: ItemRepository.hideApplications, object: nil)
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                self.setValidApplications(newApplications)
+                self.reloadApplications(withNewApplications: newApplications)
             }
         }
     }
 
-    @objc public func getApplications() {
-        if !Thread.isMainThread {
+    @objc public func addApplication(_ notification: Notification? = nil) {
+        if !Thread.isMainThread && notification != nil {
             DispatchQueue.main.async {
-                self.getApplications()
+                self.addApplication(notification)
             }
             return
         }
 
-        let newApplications = ItemRepository.shared.getApplications().filter { $0.showInApplicationsWindow == true }
-        setValidApplications(newApplications)
-    }
-
-    private func setValidApplications(_ newApplications: [Application]) {
-        if(newApplications.count > applications.count) {
-            applications.append(contentsOf: newApplications.filter { applications.contains($0) == false })
-        } else if (newApplications.count < applications.count) {
-            applications.removeAll { !newApplications.contains($0) }
-        } else if newApplications.count == 0 {
-            applications.removeAll()
-        } else {
-            applications = newApplications
+        if let validNotification = notification,
+            let newApplication = validNotification.object as? Application,
+            newApplication.showInApplicationsWindow == true {
+            self.applications.append(newApplication)
         }
-
+    }
+    
+    @objc func forceReloadApplications(){
+        if !Thread.isMainThread {
+            DispatchQueue.main.async {
+                self.reloadApplications(withNewApplications: nil)
+            }
+            return
+        }
+        reloadApplications(withNewApplications: nil)
+    }
+    
+    private func reloadApplications(withNewApplications newApplications: [Application]? = nil) {
+        if newApplications == nil{
+               applications = ItemRepository.shared.getApplications()
+        }else if let newApplications = newApplications{
+            if(newApplications.count > applications.count) {
+                applications.append(contentsOf: newApplications.filter { applications.contains($0) == false })
+            } else if (newApplications.count < applications.count) {
+                applications.removeAll { !newApplications.contains($0) }
+            } else if newApplications.count == 0 {
+                applications.removeAll()
+            } else {
+                applications = newApplications
+            }
+        }
+        reloadCollectionView()
+    }
+    
+    @objc public func reloadCollectionView(){
         applicationsInSections = applications.count > 4 ? applications.chunked(into: 4) : [applications]
-
+        
         DispatchQueue.main.async {
             if(self.applications.count > 0 && self.applicationsInSections.count > 0 && self.applicationsInSections.first!.count > 0) {
                 self.configureCollectionView()
             }
         }
-
+        
         self.collectionView?.reloadData()
     }
 
@@ -123,7 +154,6 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     private func configureCollectionView() {
         // collectionView width is 660
         // inner available width is 640 (insets are 10.0 left/right)
-
 
         let flowLayout = NSCollectionViewFlowLayout()
 
@@ -140,6 +170,7 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
 
         flowLayout.itemSize = NSSize(width: itemWidth, height: itemHeight)
 
+        
         if totalNumberOfItems < 3.0 {
             flowLayout.minimumLineSpacing = 3.0
             flowLayout.sectionInset = NSEdgeInsets(top: CGFloat(collectionViewHeight / 4.0), left: CGFloat(collectionViewWidth / 8), bottom: 10.0, right: CGFloat(collectionViewWidth / 8))
@@ -157,8 +188,25 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         flowLayout.minimumInteritemSpacing = CGFloat(itemSpacing)
         self.collectionView.collectionViewLayout = flowLayout
         NotificationCenter.default.post(name: ItemRepository.showApplications, object: nil)
+        updateScrollViewContentSize()
     }
 
+    private func updateScrollViewContentSize(){
+        if let window = collectionView?.window {
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
+            CATransaction.setAnimationDuration(0.0)
+            let originalFrame = window.frame
+            var frame = originalFrame
+            frame.origin.y = frame.origin.y - 0.025
+            frame.size.height = frame.size.height + 0.025
+            window.setFrame(frame, display: false)
+            CATransaction.commit()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.045) {
+                window.setFrame(originalFrame, display: false)
+            }
+        }
+    }
 
     @IBAction func ejectCDTray(_ sender: NSMenuItem) {
         let ejectProcess = Process()
