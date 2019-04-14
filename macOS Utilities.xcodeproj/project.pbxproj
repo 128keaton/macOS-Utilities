@@ -17,6 +17,8 @@
 		8A39D3602119E81B00437F4E /* com.er2.applications.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8A39D35F2119E81B00437F4E /* com.er2.applications.plist */; };
 		8A47DED9210A2D30003F5CC3 /* NSCollectionAppCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */; };
 		8A47DEDB210A3418003F5CC3 /* NSCollectionAppCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */; };
+		8A57BF402262A0C200719E74 /* LegacyPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A57BF3F2262A0C200719E74 /* LegacyPreferences.swift */; };
+		8A57BF432262A1AF00719E74 /* LoggerSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A57BF422262A1AF00719E74 /* LoggerSetup.swift */; };
 		8A6C6459225D324900CD6DCF /* PageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C6458225D324900CD6DCF /* PageController.swift */; };
 		8A6C645C225D4E9900CD6DCF /* InstallerCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C645B225D4E9900CD6DCF /* InstallerCellView.swift */; };
 		8A6C6460225DB39500CD6DCF /* DeviceInformationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C645F225DB39500CD6DCF /* DeviceInformationViewController.swift */; };
@@ -64,6 +66,8 @@
 		8A39D35F2119E81B00437F4E /* com.er2.applications.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = com.er2.applications.plist; sourceTree = "<group>"; };
 		8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSCollectionAppCell.swift; sourceTree = "<group>"; };
 		8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NSCollectionAppCell.xib; sourceTree = "<group>"; };
+		8A57BF3F2262A0C200719E74 /* LegacyPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyPreferences.swift; sourceTree = "<group>"; };
+		8A57BF422262A1AF00719E74 /* LoggerSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerSetup.swift; sourceTree = "<group>"; };
 		8A6C6452225BADC900CD6DCF /* macOS-Utilities-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "macOS-Utilities-Bridging-Header.h"; sourceTree = "<group>"; };
 		8A6C6458225D324900CD6DCF /* PageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PageController.swift; path = "macOS Utilities/View Controllers/PageController.swift"; sourceTree = "<group>"; };
 		8A6C645B225D4E9900CD6DCF /* InstallerCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallerCellView.swift; sourceTree = "<group>"; };
@@ -147,12 +151,12 @@
 		8A0138C8221703CC00C77DA0 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				8A57BF412262A1A300719E74 /* Logger */,
 				8A6C6473225EA0BD00CD6DCF /* Preferences */,
 				8A6C6461225DB3FE00CD6DCF /* DeviceIdentifier */,
 				8A87B8B621A47DD8004496AA /* CwlSysctl.swift */,
 				8ADBB215210A623800C4F1D9 /* Extensions.swift */,
 				8ABAE3122252C1D800E537D3 /* TaskHandler.swift */,
-				8A175AAB225EFEE50018C977 /* ErrorAlertLogger.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -209,6 +213,15 @@
 			path = Preferences;
 			sourceTree = "<group>";
 		};
+		8A57BF412262A1A300719E74 /* Logger */ = {
+			isa = PBXGroup;
+			children = (
+				8A175AAB225EFEE50018C977 /* ErrorAlertLogger.swift */,
+				8A57BF422262A1AF00719E74 /* LoggerSetup.swift */,
+			);
+			path = Logger;
+			sourceTree = "<group>";
+		};
 		8A6C6457225D305700CD6DCF /* NSPageController */ = {
 			isa = PBXGroup;
 			children = (
@@ -263,6 +276,7 @@
 				8A6C6474225EA0CE00CD6DCF /* LoggingPreferences.swift */,
 				8A6C6476225EA19200CD6DCF /* InstallerServerPreferences.swift */,
 				8A12391C22610DBC008E551A /* RemoteConfigurationPreferences.swift */,
+				8A57BF3F2262A0C200719E74 /* LegacyPreferences.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -467,6 +481,7 @@
 				8A0138C6221703B700C77DA0 /* Compatibility.swift in Sources */,
 				8A6C646B225DB49000CD6DCF /* DeviceUniqueID.swift in Sources */,
 				8ABAE3132252C1D800E537D3 /* TaskHandler.swift in Sources */,
+				8A57BF432262A1AF00719E74 /* LoggerSetup.swift in Sources */,
 				8A175AAC225EFEE50018C977 /* ErrorAlertLogger.swift in Sources */,
 				8A87B8B521A47D8C004496AA /* ModelYearDetermination.swift in Sources */,
 				8A6C6479225EA1EA00CD6DCF /* PreferenceLoader.swift in Sources */,
@@ -500,6 +515,7 @@
 				8A9370CD2256B53C002B3838 /* DiskUtility.swift in Sources */,
 				8A12391D22610DBC008E551A /* RemoteConfigurationPreferences.swift in Sources */,
 				8ACB65D521063E6F004B9C5A /* AppDelegate.swift in Sources */,
+				8A57BF402262A0C200719E74 /* LegacyPreferences.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -126,7 +126,7 @@ class DiskUtility: NSObject, NSFilePresenter {
             for file in (fileURLs.filter { $0.pathExtension == "dmg" }) {
                 let fileName = file.lastPathComponent
                 if(fileName.contains(".dmg")) {
-                    let diskImagePath = "\(folderURL.absoluteString.replacingOccurrences(of: "file://", with: ""))\(fileName)"
+                    let diskImagePath = "\(folderURL.absolutePath)"
                     self.mountDiskImage(diskImagePath)
                 } else {
                     DDLogError("\(fileName) is not a valid DMG")

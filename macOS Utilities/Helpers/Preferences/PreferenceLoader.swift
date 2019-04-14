@@ -28,8 +28,6 @@ class PreferenceLoader {
 
     private static var previousPreferences: Preferences? = nil
 
-    private (set) public var loadingFromBundle = true
-    private (set) public var libraryPropertyListExists = false
 
     static func isDifferentFromRunning(_ preferences: Preferences? = nil) -> Bool {
         guard let runningPreferences = previousPreferences else { return true }
@@ -64,57 +62,41 @@ class PreferenceLoader {
     init() {
         PreferenceLoader.sharedInstance = self
 
-        constructLogger()
+        LoggerSetup.constructLogger()
         if checkAndPerformInitialCopy() {
-            libraryPropertyListExists = true
-            if let libraryPreferences = loadPreferencesFromLibraryFolder() {
-                loadingFromBundle = false
-                PreferenceLoader.currentPreferences = libraryPreferences
-                PreferenceLoader.previousPreferences = libraryPreferences.copy() as? Preferences
-                constructRemoteLogger()
+            if let preferences = loadPreferences(libraryPropertyListPath, forceSave: true) {
+                PreferenceLoader.currentPreferences = preferences
+                PreferenceLoader.previousPreferences = preferences.copy() as? Preferences
+                if let loggingPreferences = preferences.loggingPreferences {
+                    LoggerSetup.constructRemoteLogger(loggingPreferences: loggingPreferences)
+                }
                 NotificationCenter.default.post(name: PreferenceLoader.preferencesLoaded, object: nil)
             }
         }
     }
 
     private func checkAndPerformInitialCopy() -> Bool {
-        if libraryPropertyListExists == false {
-            if libraryFolderExists() {
-                DDLogVerbose("Library folder exists at '\(PreferenceLoader.libraryFolder)'")
-                if !verifyLibraryPreferencesExists() {
-                    DDLogVerbose("Property list does not exist at '\(PreferenceLoader.libraryFolder)\(PreferenceLoader.propertyListName).plist'")
-                    if let bundlePropertyListPath = Bundle.main.path(forResource: PreferenceLoader.propertyListName, ofType: "plist") {
-                        DDLogInfo("Copying property list from bundle")
-                        let copyStatus = copyPlist(from: bundlePropertyListPath, to: "\(PreferenceLoader.libraryFolder)/\(PreferenceLoader.propertyListName).plist")
-                        if copyStatus.0 == false {
-                            DDLogError("Could not copy property list from '\(bundlePropertyListPath)' to '\(PreferenceLoader.libraryFolder)': \(copyStatus.1 ?? "No error description")")
-                        } else {
-                            DDLogVerbose("Copied property list from '\(bundlePropertyListPath)' to '\(PreferenceLoader.libraryFolder)' successfully")
-                            return true
-                        }
+        if createLibraryFolder() {
+            DDLogVerbose("Library folder exists at '\(PreferenceLoader.libraryFolder)'")
+            if libraryPropertyListPath.fileURL.filestatus != .isFile {
+                DDLogVerbose("Property list does not exist at '\(PreferenceLoader.libraryFolder)\(PreferenceLoader.propertyListName).plist'")
+                if let bundlePropertyListPath = Bundle.main.path(forResource: PreferenceLoader.propertyListName, ofType: "plist") {
+                    DDLogInfo("Copying property list from bundle")
+                    let copyStatus = copyPlist(from: bundlePropertyListPath, to: "\(PreferenceLoader.libraryFolder)/\(PreferenceLoader.propertyListName).plist")
+                    if copyStatus.0 == false {
+                        DDLogError("Could not copy property list from '\(bundlePropertyListPath)' to '\(PreferenceLoader.libraryFolder)': \(copyStatus.1 ?? "No error description")")
                     } else {
-                        DDLogVerbose("Property list does not exist at '\(Bundle.main)/\(PreferenceLoader.propertyListName).plist'")
-                        DDLogError("Default property list does not exist in bundle.")
+                        DDLogVerbose("Copied property list from '\(bundlePropertyListPath)' to '\(PreferenceLoader.libraryFolder)' successfully")
+                        return true
                     }
                 } else {
-                    DDLogVerbose("Property list exists at '\(PreferenceLoader.libraryFolder)\(PreferenceLoader.propertyListName).plist'")
-                    return true
+                    DDLogVerbose("Property list does not exist at '\(Bundle.main)/\(PreferenceLoader.propertyListName).plist'")
+                    DDLogError("Default property list does not exist in bundle.")
                 }
             } else {
-                DDLogVerbose("Library folder does not exist at '\(PreferenceLoader.libraryFolder)'")
-                if createLibraryFolder() {
-                    return checkAndPerformInitialCopy()
-                }
+                DDLogVerbose("Property list exists at '\(PreferenceLoader.libraryFolder)\(PreferenceLoader.propertyListName).plist'")
+                return true
             }
-            return false
-        }
-
-        return true
-    }
-    public func verifyLibraryPreferencesExists() -> Bool {
-        if FileManager.default.fileExists(atPath: libraryPropertyListPath) {
-            libraryPropertyListExists = true
-            return true
         }
         return false
     }
@@ -143,7 +125,7 @@ class PreferenceLoader {
                 DDLogInfo("Saved preferences to propertly list at path: \(bundlePropertyListPath)")
             } catch {
                 DDLogError("Could not save preferences to propertly list at path: \(libraryPropertyListPath): \(error)")
-                DDLogError("Could not save preferences to propertly list at path: \(bundlePropertyListPath): \(error)")
+                DDLogVerbose("Could not save preferences to propertly list at path: \(bundlePropertyListPath): \(error)")
             }
         }
     }
@@ -163,7 +145,7 @@ class PreferenceLoader {
             let fileData = try PropertyListEncoder().encode(remoteConfiguration)
 
             if let fileURL = dynamicFileURL {
-                let filePath = fileURL.absoluteString.replacingOccurrences(of: "file://", with: "")
+                let filePath = fileURL.absolutePath
                 return FileManager.default.createFile(atPath: filePath, contents: fileData, attributes: nil)
             }
 
@@ -177,7 +159,7 @@ class PreferenceLoader {
     private static func createFolderInDownloadsForFile(folderName: String, fileName: String, fileExtension: String) -> URL? {
         let downloadsURL = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first!
         let folderURL = downloadsURL.appendingPathComponent(folderName, isDirectory: true)
-        let folderPath = folderURL.absoluteString.replacingOccurrences(of: "file://", with: "")
+        let folderPath = folderURL.absolutePath
 
         var isDirectory: ObjCBool = true
         if FileManager.default.fileExists(atPath: folderPath, isDirectory: &isDirectory) {
@@ -209,7 +191,7 @@ class PreferenceLoader {
             let fileData = try PropertyListEncoder().encode(preferences)
 
             if let fileURL = dynamicFileURL {
-                let filePath = fileURL.absoluteString.replacingOccurrences(of: "file://", with: "")
+                let filePath = fileURL.absolutePath
                 return FileManager.default.createFile(atPath: filePath, contents: fileData, attributes: nil)
             }
 
@@ -219,7 +201,6 @@ class PreferenceLoader {
             return false
         }
     }
-
 
     public static func save(_ preferences: Preferences, notify: Bool = true) {
         if let weakSelf = self.sharedInstance,
@@ -251,30 +232,59 @@ class PreferenceLoader {
         }
     }
 
+    public func getSaveDirectoryPath(relativeToUser: Bool = true) -> String {
+        if !relativeToUser {
+            return libraryPropertyListPath
+        }
+
+        let homeDirectory = FileManager.default.homeDirectoryForCurrentUser.absolutePath
+
+        return libraryPropertyListPath.replacingOccurrences(of: homeDirectory, with: "~/")
+    }
+
     // MARK Property List Retreival
-    private func loadPreferences(_ path: String) -> Preferences? {
-        if let xml = FileManager.default.contents(atPath: path) {
+    public func loadPreferences(_ at: String, forceSave: Bool = false) -> Preferences? {
+        if let xml = FileManager.default.contents(atPath: at) {
             do {
                 let preferences = try PropertyListDecoder().decode(Preferences.self, from: xml)
                 return preferences
             } catch let error {
-                DDLogError("\(error)")
-                print("Error parsing preferences: \(error)")
+                let loadLegacyStatus = loadLegacyPreferences(at)
+                if loadLegacyStatus.0 == true {
+                    if let convertedPreferences = loadLegacyStatus.1,
+                        forceSave == true {
+                        save(convertedPreferences)
+                    }
+                    return loadLegacyStatus.1
+                } else if loadLegacyStatus.0 == false {
+                    DDLogError("Could not load preferences. \(error). \n Attempted to parse as a legacy property list, but that also failed: \(loadLegacyStatus.2!)")
+                }
             }
         }
         return nil
     }
 
-    public func loadPreferences(_ url: URL) -> Preferences? {
+    public func loadPreferences(_ at: URL) -> Preferences? {
         do {
-            let _data = try Data(contentsOf: url)
+            let _data = try Data(contentsOf: at)
             let _preferences = try PropertyListDecoder().decode(Preferences.self, from: _data)
             return _preferences
         } catch let error {
-            DDLogError("\(error)")
-            print("Error parsing preferences: \(error)")
+            DDLogError("Error parsing preferences: \(error)")
         }
         return nil
+    }
+
+    public func loadLegacyPreferences(_ at: String) -> (Bool, Preferences?, Error?) {
+        if let xml = FileManager.default.contents(atPath: at) {
+            do {
+                let legacyPreferences = try PropertyListDecoder().decode(LegacyPreferences.self, from: xml)
+                return (true, legacyPreferences.update(), nil)
+            } catch let error {
+                return (false, nil, error)
+            }
+        }
+        return (false, nil, nil)
     }
 
     public func loadRemoteConfiguration(_ url: URL) -> RemoteConfigurationPreferences? {
@@ -283,22 +293,7 @@ class PreferenceLoader {
             let _preferences = try PropertyListDecoder().decode(RemoteConfigurationPreferences.self, from: _data)
             return _preferences
         } catch let error {
-            DDLogError("\(error)")
-            print("Error parsing remote configuration: \(error)")
-        }
-        return nil
-    }
-
-    public func loadPreferencesFromBundle() -> Preferences? {
-        if let bundlePropertyListPath = self.bundlePropertyListPath {
-            return loadPreferences(bundlePropertyListPath)
-        }
-        return nil
-    }
-
-    public func loadPreferencesFromLibraryFolder() -> Preferences? {
-        if libraryPropertyListExists {
-            return loadPreferences(libraryPropertyListPath)
+            DDLogError("Error parsing remote configuration: \(error)")
         }
         return nil
     }
@@ -324,65 +319,5 @@ class PreferenceLoader {
         }
 
         return (true, nil)
-    }
-
-    // MARK: Logger
-    public func constructLogger() {
-        let fileLogger: DDFileLogger = DDFileLogger()
-        fileLogger.rollingFrequency = 60 * 60 * 24
-        fileLogger.logFileManager.maximumNumberOfLogFiles = 7
-
-        if (DDLog.allLoggers.filter { type(of: $0) == DDFileLogger.self }).count == 0 {
-            DDLog.add(fileLogger)
-            DDLog.add(ErrorAlertLogger())
-            DDLog.add(DDOSLogger.sharedInstance)
-
-            DDLogInfo(NSApplication.shared.getVerboseName())
-            DDLogInfo("\n")
-            DDLogInfo("\n---------------------------LOGGER INITIALIZED---------------------------")
-            DDLogInfo("\n")
-            return
-        }
-
-        DDLogVerbose("Logger already initialized, not reinitializing.")
-    }
-
-    public func constructRemoteLogger() {
-        if(PreferenceLoader.currentPreferences != nil && PreferenceLoader.currentPreferences?.loggingPreferences?.loggingEnabled == true) {
-            let logger = RMPaperTrailLogger.sharedInstance()!
-
-            logger.debug = false
-
-            guard let loggerHost = PreferenceLoader.currentPreferences?.loggingPreferences?.loggingURL else { return }
-            guard let loggerPort = PreferenceLoader.currentPreferences?.loggingPreferences?.loggingPort else { return }
-
-            logger.host = loggerHost
-            logger.port = loggerPort
-            logger.machineName = Host.current().localizedName != nil ? String("\(Host.current().localizedName!)__(\(Sysctl.model)__\(getSystemUUID() ?? ""))") : String("\(Sysctl.model)__(\(getSystemUUID() ?? ""))")
-
-            #if DEBUG
-                logger.machineName = logger.machineName! + "__DEBUG__"
-            #endif
-
-            logger.programName = NSApplication.shared.getVerboseName()
-            DDLog.add(logger, with: .debug)
-            DDLogInfo("NOTICE: Remote logging enabled")
-
-        } else {
-            if PreferenceLoader.currentPreferences == nil {
-                DDLogInfo("NOTICE: Remote logging disabled: preferences are nil.")
-            } else if let currentPreferences = PreferenceLoader.currentPreferences,
-                let validLoggingPreferences = currentPreferences.loggingPreferences {
-                if (validLoggingPreferences.loggingEnabled == false) {
-                    DDLogInfo("NOTICE: Remote logging disabled: preferences are set to disable remote logging (remoteLoggingEnabled = \(validLoggingPreferences.loggingEnabled)).")
-                } else if (validLoggingPreferences.loggingPort == 0) {
-                    DDLogInfo("NOTICE: Remote logging disabled: logging port set to zero (loggingPort = \(validLoggingPreferences.loggingPort)).")
-                } else if (validLoggingPreferences.loggingURL == "") {
-                    DDLogInfo("NOTICE: Remote logging disabled: logging url set to empty (loggingURL = \(validLoggingPreferences.loggingURL)).")
-                }
-            } else {
-                DDLogInfo("Remote logging disabled: loggingPreferences are nil.")
-            }
-        }
     }
 }

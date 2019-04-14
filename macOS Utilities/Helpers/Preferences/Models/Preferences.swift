@@ -20,6 +20,7 @@ class Preferences: Codable, NSCopying, CustomStringConvertible {
     var remoteConfigurationPreferences: [RemoteConfigurationPreferences]?
     var mappedApplications: [Application]?
     var isRemoteConfiguration: Bool? = false
+    var configurationVersion: String
 
     var useDeviceIdentifierAPI: Bool {
         return self.deviceIdentifierAuthenticationToken != nil
@@ -53,5 +54,9 @@ class Preferences: Codable, NSCopying, CustomStringConvertible {
         self.loggingPreferences = nil
         self.installerServerPreferences = nil
         self.mappedApplications = nil
+    }
+    
+    init(configurationVersion: String){
+        self.configurationVersion = configurationVersion
     }
 }

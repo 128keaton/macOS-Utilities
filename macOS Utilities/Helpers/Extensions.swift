@@ -236,6 +236,10 @@ extension String {
         return 0.0
     }
 
+    var fileURL: URL {
+        return URL(fileURLWithPath: self)
+    }
+    
     var md5Value: String {
         let length = Int(CC_MD5_DIGEST_LENGTH)
         var digest = [UInt8](repeating: 0, count: length)
@@ -331,7 +335,15 @@ extension URL {
             return filestatus
         }
     }
+    
+    
+    /// Absolute path of file from URL
+    var absolutePath: String {
+        return self.absoluteString.replacingOccurrences(of: "file://", with: "")
+    }
 }
+
+
 
 func matches(for regex: String, in text: String) -> [String] {
     do {

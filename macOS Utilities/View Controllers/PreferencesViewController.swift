@@ -97,8 +97,8 @@ class PreferencesViewController: NSViewController {
         loggingPortLabel.setEnabled(loggingEnabled)
 
         if let sharedPreferenceLoader = PreferenceLoader.sharedInstance {
-            savePathLabel.stringValue = (sharedPreferenceLoader.loadingFromBundle == true ? "\(PreferenceLoader.bundle.resourcePath!)" :  PreferenceLoader.libraryFolder)
-            
+            savePathLabel.stringValue = sharedPreferenceLoader.getSaveDirectoryPath(relativeToUser: true)
+
             if(savePathLabel.stringValue.count > 25) {
                 savePathLabel.font = NSFont.systemFont(ofSize: 10)
             } else {
@@ -177,12 +177,10 @@ class PreferencesViewController: NSViewController {
         installerServerTypePopup.isEnabled = serverEnabled
         installerMountTypeLabel.setEnabled(serverEnabled)
 
-        if installerServerPreferences.isMountable() {
-            installerServerIPField.stringValue = installerServerPreferences.serverIP
-            installerServerPathField.stringValue = installerServerPreferences.serverPath
-            installerMountPathField.stringValue = installerServerPreferences.mountPath
+        installerServerIPField.stringValue = installerServerPreferences.serverIP
+        installerServerPathField.stringValue = installerServerPreferences.serverPath
+        installerMountPathField.stringValue = installerServerPreferences.mountPath
 
-        }
         serverTypes.forEach { installerServerTypePopup.addItem(withTitle: $0) }
 
         if let serverType = serverTypes.firstIndex(of: installerServerPreferences.serverType) {
@@ -266,25 +264,25 @@ class PreferencesViewController: NSViewController {
 
     @IBAction func openSavePath(_ sender: NSButton) {
         sender.state = .off
-        NSWorkspace.shared.open(URL(fileURLWithPath: (preferenceLoader!.loadingFromBundle == true ? "\(PreferenceLoader.bundle.resourcePath!)" :  PreferenceLoader.libraryFolder), isDirectory: true))
+        NSWorkspace.shared.open(URL(fileURLWithPath: (PreferenceLoader.libraryFolder), isDirectory: true))
     }
-    
-    @IBAction func generateRemoteConfigForCurrent(_ sender: NSButton){
+
+    @IBAction func generateRemoteConfigForCurrent(_ sender: NSButton) {
         if let preferences = self.preferences,
-            let copiedPreferences = preferences.copy() as? Preferences{
-            
+            let copiedPreferences = preferences.copy() as? Preferences {
+
             copiedPreferences.isRemoteConfiguration = true
             let randomName = String.random(12)
             let folderName = randomName + "RemoteConfiguration"
             let configurationName = randomName + "-remoteConfig"
             let configurationURLs = [URL(string: "\(randomName)).plist")!]
-            
+
             let newRemoteConfig = RemoteConfigurationPreferences(remoteURL: nil, configurationURLs: configurationURLs, name: configurationName)
-            
+
             let didSavePreferences = PreferenceLoader.savePreferencesToDownloads(copiedPreferences, fileName: randomName, createFolder: true, folderName: folderName)
             let didSaveConfig = PreferenceLoader.saveRemoteConfigurationToDownloads(newRemoteConfig, fileName: configurationName, createFolder: true, folderName: folderName)
-            
-            if(!didSaveConfig || !didSavePreferences){
+
+            if(!didSaveConfig || !didSavePreferences) {
                 //
             }
         }
