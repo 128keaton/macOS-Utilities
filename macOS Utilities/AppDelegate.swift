@@ -280,13 +280,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @IBAction func testURLScheme(_ sender: NSMenuItem){
-        // I'M NOT MAD I JUST DONT WANNA TALK ABOUT IT
-        var testURL = URL(string: "open-utilities://test")!
-        #if DEBUG
-            testURL = URL(string: "news://test")!
-        #endif
-        
-        NSWorkspace.shared.open(testURL)
+        NSWorkspace.shared.open(URL(string: "open-utilities://test")!)
     }
 
     // MARK: Info menu functions
@@ -346,7 +340,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func handleAppleEvent(event: NSAppleEventDescriptor, replyEvent: NSAppleEventDescriptor) {
         if let aeEventDescriptor = event.paramDescriptor(forKeyword: AEKeyword(keyDirectObject)) {
             if let fullURL = aeEventDescriptor.stringValue{
-                let configPath = fullURL.replacingOccurrences(of: "open-utilities://", with: "").replacingOccurrences(of: "news://", with: "")
+                let configPath = fullURL.replacingOccurrences(of: "open-utilities://", with: "")
                 if configPath.contains("file://"){
                     if !PreferenceLoader.loadPreferences(configPath.replacingOccurrences(of: "file://", with: ""), updatingRunning: true){
                         DDLogError("Could not validate configuration file \(configPath)")

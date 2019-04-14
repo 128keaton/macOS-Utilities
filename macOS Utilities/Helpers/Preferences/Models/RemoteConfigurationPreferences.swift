@@ -12,38 +12,33 @@ class RemoteConfigurationPreferences: Codable, Equatable {
     var hostURL: URL?
     var configurationURL: URL?
     var name: String
-    
+
     static func == (lhs: RemoteConfigurationPreferences, rhs: RemoteConfigurationPreferences) -> Bool {
         return lhs.hostURL == rhs.hostURL
     }
-    
-    var isValid: Bool{
+
+    var isValid: Bool {
         return self.configurationURL != nil
     }
-    
-    init(hostURL: URL?, configurationURL: URL?, name: String?){
+
+    init(hostURL: URL?, configurationURL: URL?, name: String?) {
         self.configurationURL = configurationURL
         self.hostURL = hostURL
-        
-        if let _name = name{
+
+        if let _name = name {
             self.name = _name
-        }else{
+        } else {
             self.name = String()
         }
     }
-    
-    convenience init(){
+
+    convenience init() {
         self.init(hostURL: nil, configurationURL: nil, name: nil)
     }
-    
-    func generateTestHTMLContent() -> String?{
-        if let fileURL = self.configurationURL{
-            var urlScheme = "open-utilities://"
-        
-            #if DEBUG
-                urlScheme = "news://"
-            #endif
-        
+
+    func generateTestHTMLContent() -> String? {
+        if let fileURL = self.configurationURL {
+            let urlScheme = "open-utilities://"
             return "<a href=\"\(urlScheme)\(self.hostURL!)\(fileURL.absolutePath.dashedFileName)\">\(self.name)</a>"
         }
         return nil
