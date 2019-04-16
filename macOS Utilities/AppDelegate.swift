@@ -179,7 +179,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
             let installerVersion = String(sender.title.split(separator: " ")[1])
 
-            if let selectedInstaller = (installers.first { $0.versionNumber == installerVersion }) {
+            if let selectedInstaller = (installers.first { $0.versionNumber == Double(installerVersion)! }) {
                 ItemRepository.shared.setSelectedInstaller(selectedInstaller)
                 pageControllerDelegate.showPageController(initialPage: 1)
             }

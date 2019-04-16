@@ -53,7 +53,7 @@ class DeviceInformationViewController: NSViewController {
     }
 
     private func getVolumes() {
-       // allVolumes = ItemRepository.shared.getDisks().filter { $0.getMainVolume() !== nil }.map { $0.getMainVolume()! }.filter { $0.containsInstaller == false && $0.isValid == true }
+        // allVolumes = ItemRepository.shared.getDisks().filter { $0.getMainVolume() !== nil }.map { $0.getMainVolume()! }.filter { $0.containsInstaller == false && $0.isValid == true }
     }
 
     private func updateView() {
@@ -108,13 +108,13 @@ extension DeviceInformationViewController: NSTableViewDelegate, NSTableViewDeleg
         let partition = allPartitions[row]
 
         let size = partition.size
-        let name = partition.getVolumeName()
+        let name = partition.volumeName
 
         if tableColumn == tableView.tableColumns[0] {
             text = name
             cellIdentifier = CellIdentifiers.DiskNameCell
         } else if tableColumn == tableView.tableColumns[1] {
-            text = "\(Int(size))"
+            text = size.getReadableUnit()
             cellIdentifier = CellIdentifiers.DiskSizeCell
         }
 

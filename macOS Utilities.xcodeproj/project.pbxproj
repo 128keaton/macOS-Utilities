@@ -52,6 +52,7 @@
 		8AA841CC22659260009C5948 /* DiskImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841CB22659260009C5948 /* DiskImage.swift */; };
 		8AA841CE226593A1009C5948 /* HDIUtilOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841CD226593A1009C5948 /* HDIUtilOutput.swift */; };
 		8AA841D02265A509009C5948 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841CF2265A509009C5948 /* Units.swift */; };
+		8AA841D322664276009C5948 /* PaddedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841D222664276009C5948 /* PaddedTextField.swift */; };
 		8ABAE30F22527B9100E537D3 /* ApplicationUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE30E22527B9100E537D3 /* ApplicationUtility.swift */; };
 		8ABAE3112252A46300E537D3 /* DiskSelectionDialogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE3102252A46300E537D3 /* DiskSelectionDialogViewController.swift */; };
 		8ABAE3132252C1D800E537D3 /* TaskHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE3122252C1D800E537D3 /* TaskHandler.swift */; };
@@ -113,6 +114,7 @@
 		8AA841CB22659260009C5948 /* DiskImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskImage.swift; sourceTree = "<group>"; };
 		8AA841CD226593A1009C5948 /* HDIUtilOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HDIUtilOutput.swift; sourceTree = "<group>"; };
 		8AA841CF2265A509009C5948 /* Units.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Units.swift; sourceTree = "<group>"; };
+		8AA841D222664276009C5948 /* PaddedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddedTextField.swift; sourceTree = "<group>"; };
 		8ABAE30E22527B9100E537D3 /* ApplicationUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationUtility.swift; sourceTree = "<group>"; };
 		8ABAE3102252A46300E537D3 /* DiskSelectionDialogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskSelectionDialogViewController.swift; sourceTree = "<group>"; };
 		8ABAE3122252C1D800E537D3 /* TaskHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskHandler.swift; sourceTree = "<group>"; };
@@ -177,9 +179,7 @@
 				8A6C6473225EA0BD00CD6DCF /* Preferences */,
 				8A6C6461225DB3FE00CD6DCF /* DeviceIdentifier */,
 				8A87B8B621A47DD8004496AA /* CwlSysctl.swift */,
-				8ADBB215210A623800C4F1D9 /* Extensions.swift */,
 				8ABAE3122252C1D800E537D3 /* TaskHandler.swift */,
-				8A9D9A9B2263084600E4D36F /* KBTextFieldDialog.swift */,
 				8AA841CF2265A509009C5948 /* Units.swift */,
 			);
 			path = Helpers;
@@ -372,6 +372,16 @@
 			path = "KBTextFieldDialog (don't hurt me)";
 			sourceTree = "<group>";
 		};
+		8AA841D122664268009C5948 /* Custom Classes */ = {
+			isa = PBXGroup;
+			children = (
+				8AA841D222664276009C5948 /* PaddedTextField.swift */,
+				8ADBB215210A623800C4F1D9 /* Extensions.swift */,
+				8A9D9A9B2263084600E4D36F /* KBTextFieldDialog.swift */,
+			);
+			path = "Custom Classes";
+			sourceTree = "<group>";
+		};
 		8ACB65C821063E6F004B9C5A = {
 			isa = PBXGroup;
 			children = (
@@ -393,6 +403,7 @@
 		8ACB65D321063E6F004B9C5A /* macOS Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				8AA841D122664268009C5948 /* Custom Classes */,
 				8ACB65D421063E6F004B9C5A /* AppDelegate.swift */,
 				8A0138C7221703BC00C77DA0 /* Compatibility */,
 				8A0138C8221703CC00C77DA0 /* Helpers */,
@@ -588,6 +599,7 @@
 				8A87B8B721A47DD8004496AA /* CwlSysctl.swift in Sources */,
 				8A6C646E225DD2CA00CD6DCF /* WizardViewController.swift in Sources */,
 				8A9370CD2256B53C002B3838 /* DiskUtility.swift in Sources */,
+				8AA841D322664276009C5948 /* PaddedTextField.swift in Sources */,
 				8A12391D22610DBC008E551A /* RemoteConfigurationPreferences.swift in Sources */,
 				8ACB65D521063E6F004B9C5A /* AppDelegate.swift in Sources */,
 				8AA841CE226593A1009C5948 /* HDIUtilOutput.swift in Sources */,

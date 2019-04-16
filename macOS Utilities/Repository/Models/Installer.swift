@@ -20,7 +20,7 @@ class Installer: NSObject, Item, NSFilePresenter {
     var presentedItemURL: URL?
     var presentedItemOperationQueue: OperationQueue = OperationQueue.main
     var appLabel: String = "Not Available"
-    var versionNumber: String = "0.0"
+    var versionNumber: Double = 0.0
     var icon: NSImage = NSImage(named: "stop")!
     var versionName: String = ""
     var partition: Partition? = nil
@@ -28,24 +28,24 @@ class Installer: NSObject, Item, NSFilePresenter {
     var isSelected = false
 
     var isValid: Bool {
-        return appLabel != "Not Available" && versionNumber != "0.0"
+        return appLabel != "Not Available" && versionNumber != 0.0
     }
 
     var id: String {
         get {
-            return versionNumber.md5Value
+            return versionName.md5Value
         }
     }
 
     var canInstall: Bool {
-        if(installableVersions.contains(self.versionNumber)) {
+        if(installableVersions.contains(String(self.versionNumber))) {
             DDLogInfo("\(Sysctl.model) can install \(self.versionNumber)")
         }
-        return installableVersions.contains(self.versionNumber) || fakeInstallerCanInstall
+        return installableVersions.contains(String(self.versionNumber)) || fakeInstallerCanInstall
     }
 
     var comparibleVersionNumber: Int {
-        return Int(versionNumber.replacingOccurrences(of: ".", with: ""))!
+        return Int(String(self.versionNumber).replacingOccurrences(of: ".", with: ""))!
     }
 
     override var description: String {
@@ -84,7 +84,7 @@ class Installer: NSObject, Item, NSFilePresenter {
             self.isFakeInstaller = isFakeInstaller
             self.versionName = "Fake Installer"
             self.appLabel = "Fake Installer.app"
-            self.versionNumber = String.random(10, numericOnly: true)
+            self.versionNumber = Double(String.random(10, numericOnly: true))!
             self.fakeInstallerCanInstall = canInstallOnMachine
             self.icon = NSImage(named: "FakeInstallerIcon")!
 
@@ -118,12 +118,12 @@ class Installer: NSObject, Item, NSFilePresenter {
     }
 
     private func getVersionName() -> String {
-        var parsedName = self.partition?.getVolumeName().replacingOccurrences(of: ".[0-9].*", with: "", options: .regularExpression)
+        var parsedName = self.partition?.volumeName.replacingOccurrences(of: ".[0-9].*", with: "", options: .regularExpression)
         if parsedName == nil {
             parsedName = self.diskImage?.getVolumeName().replacingOccurrences(of: ".[0-9].*", with: "", options: .regularExpression)
         }
         
-        self.versionNumber = VersionNumbers.getVersionForName(parsedName!)
+        self.versionNumber = Double(VersionNumbers.getVersionForName(parsedName!))!
         return parsedName!
     }
 

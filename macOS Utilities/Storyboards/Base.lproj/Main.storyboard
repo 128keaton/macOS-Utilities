@@ -1819,7 +1819,7 @@ Gw
                                                                     <rect key="frame" x="0.0" y="0.0" width="307" height="17"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="GQ0-ZJ-HpE">
                                                                         <font key="font" metaFont="system"/>
-                                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
                                                                 </textField>
@@ -1831,6 +1831,33 @@ Gw
                                                             </constraints>
                                                             <connections>
                                                                 <outlet property="textField" destination="x8c-X2-1So" id="9Gn-Ag-OSN"/>
+                                                            </connections>
+                                                        </tableCellView>
+                                                        <tableCellView identifier="PartitionNameID" id="Rtd-n0-6d6">
+                                                            <rect key="frame" x="1" y="20" width="307" height="17"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <subviews>
+                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="BxR-wY-Y4f">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="307" height="17"/>
+                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="Xex-RO-uLa" customClass="PaddedTextField" customModule="macOS_Utilities" customModuleProvider="target">
+                                                                        <font key="font" metaFont="system"/>
+                                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                        <userDefinedRuntimeAttributes>
+                                                                            <userDefinedRuntimeAttribute type="number" keyPath="leftPadding">
+                                                                                <real key="value" value="25"/>
+                                                                            </userDefinedRuntimeAttribute>
+                                                                        </userDefinedRuntimeAttributes>
+                                                                    </textFieldCell>
+                                                                </textField>
+                                                            </subviews>
+                                                            <constraints>
+                                                                <constraint firstItem="BxR-wY-Y4f" firstAttribute="centerX" secondItem="Rtd-n0-6d6" secondAttribute="centerX" id="Sw5-eq-VRG"/>
+                                                                <constraint firstItem="BxR-wY-Y4f" firstAttribute="leading" secondItem="Rtd-n0-6d6" secondAttribute="leading" constant="2" id="TfG-d0-pjf"/>
+                                                                <constraint firstItem="BxR-wY-Y4f" firstAttribute="centerY" secondItem="Rtd-n0-6d6" secondAttribute="centerY" id="Z0T-6Z-yYu"/>
+                                                            </constraints>
+                                                            <connections>
+                                                                <outlet property="textField" destination="BxR-wY-Y4f" id="qmG-Av-9E8"/>
                                                             </connections>
                                                         </tableCellView>
                                                     </prototypeCellViews>
@@ -1856,7 +1883,7 @@ Gw
                                                                     <rect key="frame" x="0.0" y="0.0" width="345" height="17"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="ygq-su-d5o">
                                                                         <font key="font" metaFont="system"/>
-                                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="textColor" name="tertiaryLabelColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
                                                                 </textField>
@@ -1868,6 +1895,28 @@ Gw
                                                             </constraints>
                                                             <connections>
                                                                 <outlet property="textField" destination="Qt9-n7-be2" id="QWT-oU-pT7"/>
+                                                            </connections>
+                                                        </tableCellView>
+                                                        <tableCellView identifier="PartitionSizeID" id="0RE-7p-kbj">
+                                                            <rect key="frame" x="311" y="20" width="345" height="17"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <subviews>
+                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="q35-AO-5gW">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="345" height="17"/>
+                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="00i-6w-P9M">
+                                                                        <font key="font" metaFont="system"/>
+                                                                        <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                    </textFieldCell>
+                                                                </textField>
+                                                            </subviews>
+                                                            <constraints>
+                                                                <constraint firstItem="q35-AO-5gW" firstAttribute="centerY" secondItem="0RE-7p-kbj" secondAttribute="centerY" id="2tZ-US-Iee"/>
+                                                                <constraint firstItem="q35-AO-5gW" firstAttribute="centerX" secondItem="0RE-7p-kbj" secondAttribute="centerX" id="f5v-fs-BnM"/>
+                                                                <constraint firstItem="q35-AO-5gW" firstAttribute="leading" secondItem="0RE-7p-kbj" secondAttribute="leading" constant="2" id="qlS-WY-1b0"/>
+                                                            </constraints>
+                                                            <connections>
+                                                                <outlet property="textField" destination="q35-AO-5gW" id="Jbz-P2-3YD"/>
                                                             </connections>
                                                         </tableCellView>
                                                     </prototypeCellViews>

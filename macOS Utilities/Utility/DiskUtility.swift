@@ -48,6 +48,10 @@ class DiskUtility: NSObject, NSFilePresenter {
                     let diskUtilityOutput = try PropertyListDecoder().decode(DiskUtilOutput.self, from: plistData)
                     if let allDisks = diskUtilityOutput.allDisksAndPartitions {
                         self.cachedDisks = allDisks
+                        #if DEBUG
+                            self.addDisk(self.generateFakeDisk(withPartition: true))
+                            self.addDisk(self.generateFakeDisk(withPartition: false))
+                        #endif
                         self.cachedDisks.filter { $0.containsInstaller == true }.forEach {
                             let newInstaller = $0.installer
                             if !self.mountedInstallers.contains(newInstaller) {
@@ -71,6 +75,50 @@ class DiskUtility: NSObject, NSFilePresenter {
                 }
             }
         }
+    }
+
+    /// Used for fake disks and other manual disks
+    public func addDisk(_ disk: Disk) {
+        self.cachedDisks.append(disk)
+    }
+
+    public func generateFakeDisk(withPartition: Bool = false) -> Disk {
+        var fakeDiskPartitions = [Partition]()
+        if withPartition {
+            fakeDiskPartitions.append(Partition(content: "FakePartition-\(String.random(5, numericOnly: true))", deviceIdentifier: "FakePartition-\(String.random(5, numericOnly: true))", diskUUID: String.random(12), rawSize: Units(gigabytes: 500).bytes, rawVolumeName: "FakePartition-\(String.random(5, numericOnly: true))", volumeUUID: String.random(12), mountPoint: "/Volumes/FakePartition-\(String.random(5, numericOnly: true))", isFake: true))
+        }
+
+        let fakeDiskIdent = "FakeDisk-\(String.random(5, numericOnly: true))"
+        let fakeDiskSize = Units(gigabytes: 500).bytes
+        return Disk(rawContent: fakeDiskIdent, deviceIdentifier: fakeDiskIdent, regularPartitions: fakeDiskPartitions, apfsPartitions: nil, rawSize: fakeDiskSize, isFake: true)
+    }
+
+    public func updateDiskPartitions(_ disk: Disk, newPartitions: [Partition], isAPFSPartitions: Bool = false) -> Disk? {
+        var newDisk: Disk? = nil
+        self.cachedDisks.removeAll { $0 == disk }
+        do {
+            newDisk = try Disk.copy(disk, regularPartitions: newPartitions)
+            self.cachedDisks.append(newDisk!)
+        } catch let DecodingError.dataCorrupted(context) {
+            print(context)
+        } catch let DecodingError.keyNotFound(key, context) {
+            print("Key '\(key)' not found:", context.debugDescription)
+            print("codingPath:", context.codingPath)
+        } catch let DecodingError.valueNotFound(value, context) {
+            print("Value '\(value)' not found:", context.debugDescription)
+            print("codingPath:", context.codingPath)
+        } catch let DecodingError.typeMismatch(type, context) {
+            print("Type '\(type)' mismatch:", context.debugDescription)
+            print("codingPath:", context.codingPath)
+        } catch {
+            print("error: ", error)
+        }
+        return newDisk
+    }
+    
+    public func addPartitionToDisk(_ disk: Disk, mountPoint: String, volumeName: String, isAPFSPartition: Bool = false) -> Disk? {
+        let newPartition = Partition(content: nil, deviceIdentifier: "\(disk.deviceIdentifier)s2", diskUUID: nil, rawSize: disk.rawSize, rawVolumeName: volumeName, volumeUUID: nil, mountPoint: mountPoint, isFake: disk.isFake)
+        return self.updateDiskPartitions(disk, newPartitions: [newPartition], isAPFSPartitions: isAPFSPartition)
     }
 
     public func mountNFSShare(shareURL: String, localPath: String, didSucceed: @escaping (Bool) -> ()) {
@@ -218,46 +266,133 @@ class DiskUtility: NSObject, NSFilePresenter {
         })
     }
 
-    public func erase(_ volume: Partition, newName: String, returnCompletion: @escaping (Bool) -> ()) {
-        // TODO: check for APFS container
-        /*if(volume.parentDisk.isFakeDisk) {
-            DDLogInfo("Starting demo erase on FakeVolume: \(volume)")
+    public func erase(_ partition: Partition, newName: String? = nil, forInstaller: Installer? = nil, returnCompletion: @escaping (Bool, String?) -> ()) {
+        var format = "APFS"
+        var partitionName = "Macintosh HD"
+
+        if let newPartitionName = newName {
+            partitionName = newPartitionName
+        }
+
+        if let installer = forInstaller {
+            if installer.versionNumber <= 10.13 {
+                format = "JHFS+"
+            }
+        }
+
+        if partition.isFake {
+            DDLogInfo("Starting demo erase on fake partition: \(partition)")
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                DDLogInfo("Finished demo erase on FakeVolume: \(volume)")
-                returnCompletion(true)
+                DDLogInfo("Finished demo erase on fake partition: \(partition)")
+                returnCompletion(true, partition.volumeName)
             }
-        } else {
-            if(volume.containsInstaller == true) {
-                DDLogError("Cannot erase a drive containing an installer")
-                returnCompletion(false)
-                return
-            }
-
-            let devEntry = volume.parentDisk.deviceIdentifier
-
-            TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["eraseDisk", "APFS", newName, devEntry]) { (taskOutput) in
+        } else if partition.containsInstaller == false {
+            TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["eraseVolume", format, partitionName, partition.volumeName]) { (taskOutput) in
                 if let eraseOutput = taskOutput {
                     DDLogInfo(eraseOutput)
-                    returnCompletion(eraseOutput.contains("Finished erase"))
+                    returnCompletion(eraseOutput.contains("Finished erase"), partitionName)
                 } else {
-                    returnCompletion(false)
+                    returnCompletion(false, nil)
                 }
             }
-        }*/
+        } else {
+            DDLogError("Cannot erase a partition containing an installer")
+            returnCompletion(false, nil)
+        }
+    }
+
+    public func erase(_ disk: Disk, newName: String? = nil, forInstaller: Installer? = nil, returnCompletion: @escaping (Bool, String?) -> ()) {
+        var format = "APFS"
+        var diskName = "Macintosh HD"
+
+        if let newDiskName = newName {
+            diskName = newDiskName
+        }
+
+        if let installer = forInstaller {
+            if installer.versionNumber <= 10.13 {
+                format = "JHFS+"
+            }
+        }
+
+        if disk.isFake {
+            DDLogInfo("Starting demo erase on fake disk: \(disk)")
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                DDLogInfo("Finished demo erase on fake disk: \(disk)")
+                var fakeDiskPartitions = [Partition]()
+                fakeDiskPartitions.append(Partition(content: "FakePartition-\(String.random(5, numericOnly: true))", deviceIdentifier: "FakePartition-\(String.random(5, numericOnly: true))", diskUUID: String.random(12), rawSize: Units(gigabytes: 500).bytes, rawVolumeName: "FakePartition-\(String.random(5, numericOnly: true))", volumeUUID: String.random(12), mountPoint: "/Volumes/FakePartition-\(String.random(5, numericOnly: true))", isFake: true))
+                if let updatedDisk = self.updateDiskPartitions(disk, newPartitions: fakeDiskPartitions) {
+                    returnCompletion(true, updatedDisk.volumeName)
+                }
+            }
+        } else if disk.containsInstaller == false {
+            TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["eraseDisk", format, diskName, disk.deviceIdentifier]) { (taskOutput) in
+                if let eraseOutput = taskOutput {
+                    DDLogInfo(eraseOutput)
+                    // MARK: beta..might break
+                    // TODO: fix issues that arise with this..since I'm S M R T smart
+                    if let updatedDisk = self.addPartitionToDisk(disk, mountPoint: "/Volumes/\(diskName)", volumeName: diskName) {
+                        returnCompletion(eraseOutput.contains("Finished erase"), updatedDisk.installablePartition?.volumeName)
+                    }
+                } else {
+                    returnCompletion(false, nil)
+                }
+            }
+        } else {
+            DDLogError("Cannot erase a disk containing an installer")
+            returnCompletion(false, nil)
+        }
+    }
+
+    public static func diskIsFormattedFor(_ disk: Disk, installer: Installer) -> Bool {
+        if installer.versionNumber >= 10.13 {
+            if disk.apfsPartitions != nil {
+                return true
+            }
+        } else {
+            return (disk.content == "GUID_partition_scheme")
+        }
+        return false
+    }
+
+    public static func partitionIsFormattedFor(_ partition: Partition, installer: Installer) -> Bool {
+        if installer.versionNumber >= 10.13 {
+            return partition.isAPFS
+        } else if let content = partition.content {
+            return content == "Apple_HFS"
+        }
+        return false
+    }
+
+    public func getAllDisksAndPartitions(_ installablePartitionOnly: Bool = true) -> [Any] {
+        var allDiskAndPartitions = [Any]()
+        self.cachedDisks.filter { $0.installablePartition != nil || $0.isFake }.forEach {
+            let aDisk = $0
+            allDiskAndPartitions.append(aDisk)
+            if !installablePartitionOnly {
+                aDisk.partitions.forEach {
+                    let aPartition = $0
+                    allDiskAndPartitions.append(aPartition)
+                }
+            } else if let installablePartition = aDisk.installablePartition {
+                allDiskAndPartitions.append(installablePartition)
+            }
+        }
+        return allDiskAndPartitions
     }
 
     public func ejectAll(didComplete: @escaping (Bool) -> ()) {
         if(allSharesAndInstallersUnmounted) {
             didComplete(true)
         }
-        
+
         self.ejectAllDiskImages { (allDiskImagesEjected) in
             self.ejectAllShares(didComplete: { (allSharesCompleted) in
                 didComplete(allDiskImagesEjected && allDiskImagesEjected)
             })
         }
     }
-    
+
     public func ejectAllDiskImages(didComplete: @escaping (Bool) -> ()) {
         if(allSharesAndInstallersUnmounted) {
             didComplete(true)
