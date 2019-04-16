@@ -98,7 +98,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if let notification = aNotification {
             if notification.object != nil {
                 semaphore = DispatchSemaphore(value: 1)
-                DiskUtility.shared.ejectAll { (didComplete) in
+                DiskUtility.shared.ejectAll() { (didComplete) in
                     semaphore?.signal()
                 }
             }
@@ -189,7 +189,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         if(DiskUtility.shared.allSharesAndInstallersUnmounted == false) {
             DDLogInfo("Terminating application..waiting for disks to eject")
-            DiskUtility.shared.ejectAll { (didComplete) in
+            DiskUtility.shared.ejectAll() { (didComplete) in
                 DDLogInfo("Finished ejecting? \(didComplete)")
                 self.checkIfReadyToTerminate()
             }
@@ -256,13 +256,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @IBAction func ejectAll(_ sender: NSMenuItem) {
-        DiskUtility.shared.ejectAll { (didComplete) in
+        DiskUtility.shared.ejectAll() { (didComplete) in
             DDLogInfo("Finished ejecting? \(didComplete)")
         }
     }
 
     @IBAction func forceReloadAllDisks(_ sender: NSMenuItem) {
-        DiskUtility.shared.ejectAll { (didComplete) in
+        DiskUtility.shared.ejectAll() { (didComplete) in
             DDLogInfo("Finished ejecting? \(didComplete)")
             if let preferences = PreferenceLoader.currentPreferences,
                 let installerServerPreferences = preferences.installerServerPreferences {

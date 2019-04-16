@@ -14,9 +14,10 @@ class DiskUtility: NSObject, NSFilePresenter {
     var presentedItemOperationQueue: OperationQueue = OperationQueue.main
 
     public static let shared = DiskUtility()
-    private var cachedDisks = [Disk]()
-    private var mountedShares = [Disk]()
-    private var mountedInstallers = [Disk]()
+    private (set) public var cachedDisks = [Disk]()
+    private var mountedShares = [Share]()
+    private var mountedInstallers = [Installer]()
+    private var diskImage = [DiskImage]()
     private var fakeDisks = [Disk]()
 
     public var allSharesAndInstallersUnmounted: Bool {
@@ -40,24 +41,36 @@ class DiskUtility: NSObject, NSFilePresenter {
     }
 
     public func getAllDisks() {
-        /*TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["list", "-plist"]) { (output) in
-            if let plistOutput = output {
-                let diskImageInfo = self.parseDiskUtilList(plistOutput)
-                if let allDisks = diskImageInfo["AllDisksAndPartitions"] as? [NSDictionary] {
-                    self.cachedDisks = allDisks.map { Disk(diskDictionary: $0) }
-                    self.mountedInstallers = self.cachedDisks.filter { $0.getMainVolume() !== nil && $0.getMainVolume()?.containsInstaller == true }
-
-                    #if DEBUG
-                        self.addFakeDisk()
-                    #endif
+        TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["list", "-plist"]) { (output) in
+            if let plistOutput = output,
+                let plistData = plistOutput.data(using: .utf8) {
+                do {
+                    let diskUtilityOutput = try PropertyListDecoder().decode(DiskUtilOutput.self, from: plistData)
+                    if let allDisks = diskUtilityOutput.allDisksAndPartitions {
+                        self.cachedDisks = allDisks
+                        self.cachedDisks.filter { $0.containsInstaller == true }.forEach {
+                            let newInstaller = $0.installer
+                            if !self.mountedInstallers.contains(newInstaller) {
+                                self.mountedInstallers.append(newInstaller)
+                            }
+                        }
+                    }
+                } catch let DecodingError.dataCorrupted(context) {
+                    print(context)
+                } catch let DecodingError.keyNotFound(key, context) {
+                    print("Key '\(key)' not found:", context.debugDescription)
+                    print("codingPath:", context.codingPath)
+                } catch let DecodingError.valueNotFound(value, context) {
+                    print("Value '\(value)' not found:", context.debugDescription)
+                    print("codingPath:", context.codingPath)
+                } catch let DecodingError.typeMismatch(type, context) {
+                    print("Type '\(type)' mismatch:", context.debugDescription)
+                    print("codingPath:", context.codingPath)
+                } catch {
+                    print("error: ", error)
                 }
             }
-        }*/
-    }
-
-    public func addFakeDisk() {
-     //   let fakeDisk = Disk(isFakeDisk: true)
-      //  fakeDisks.append(fakeDisk)
+        }
     }
 
     public func mountNFSShare(shareURL: String, localPath: String, didSucceed: @escaping (Bool) -> ()) {
@@ -71,15 +84,14 @@ class DiskUtility: NSObject, NSFilePresenter {
                 return
             }
 
-
-           /* TaskHandler.createTask(command: "/sbin/mount", arguments: ["-t", "nfs", shareURL, localPath], timeout: TimeInterval(floatLiteral: 3.0)) { (taskOutput) in
+            TaskHandler.createTask(command: "/sbin/mount", arguments: ["-t", "nfs", shareURL, localPath], timeout: TimeInterval(floatLiteral: 3.0)) { (taskOutput) in
                 DDLogInfo("Mount output: \(taskOutput ?? "NO output")")
                 if let mountOutput = taskOutput {
                     self.presentedItemURL = URL(fileURLWithPath: localPath, isDirectory: true)
                     if (!["can't", "denied", "error", "killed"].map { mountOutput.contains($0) }.contains(true)) {
-                        let nfsShare = Disk(deviceIdentifier: "NFS", content: "NFS", mountPoint: localPath)
-                        DDLogInfo("Share mounted: \(nfsShare)")
-                        self.mountedShares.append(nfsShare)
+                        let newShare = Share(type: "NFS", mountPoint: localPath)
+                        DDLogInfo("Share mounted: \(newShare)")
+                        self.mountedShares.append(newShare)
                         didSucceed(true)
                     } else {
                         if(mountOutput.contains("killed")) {
@@ -90,7 +102,7 @@ class DiskUtility: NSObject, NSFilePresenter {
                         didSucceed(false)
                     }
                 }
-            }*/
+            }
         }
     }
 
@@ -126,7 +138,8 @@ class DiskUtility: NSObject, NSFilePresenter {
             for file in (fileURLs.filter { $0.pathExtension == "dmg" }) {
                 let fileName = file.lastPathComponent
                 if(fileName.contains(".dmg")) {
-                    let diskImagePath = "\(folderURL.absolutePath)"
+                    let diskImagePath = "\(file.absolutePath)"
+                    print("Disk image path? \(diskImagePath)")
                     self.mountDiskImage(diskImagePath)
                 } else {
                     DDLogError("\(fileName) is not a valid DMG")
@@ -148,22 +161,28 @@ class DiskUtility: NSObject, NSFilePresenter {
             if((taskOutput?.contains("hdiutil: mount failed"))!) {
                 DDLogError("Disk \(at) could not be mounted: \(taskOutput ?? "No output from hdiutil")")
             } else {
-                if let plistOutput = taskOutput {
-                    let diskImageInfo = self.parseDiskUtilList(plistOutput)
-                    self.diskModificationQueue.sync {
-                     //   let diskImage = Disk(diskImageDictionary: diskImageInfo)
-                      //  self.cachedDisks.append(diskImage)
+                if let plistOutput = taskOutput,
+                    let plistData = plistOutput.data(using: .utf8) {
+                    do {
+                        let hdiUtilOutput = try PropertyListDecoder().decode(HDIUtilOutput.self, from: plistData)
+                        self.diskImage = hdiUtilOutput.systemEntities.filter { $0.potentiallyMountable == true }
+                        self.mountedInstallers = self.diskImage.filter { $0.containsInstaller == true }.map { Installer(diskImage: $0) }
+                        print(self.diskImage)
+                    } catch {
+                        DDLogError("Could not mount disk image at :\(at)")
                     }
                 }
             }
         }
     }
 
-    private func unmountNFSShare(_ share: Disk?, path: String? = nil, didComplete: @escaping (Bool) -> ()) {
+    private func unMountShare(_ share: Share?, path: String? = nil, didComplete: @escaping (Bool) -> ()) {
         var validPath = ""
 
         if let validShare = share {
-         //   validPath = validShare.getMainVolume()!.mountPoint
+            if let mountPoint = validShare.mountPoint {
+                validPath = mountPoint
+            }
         }
 
         if let validSharePath = path {
@@ -199,7 +218,7 @@ class DiskUtility: NSObject, NSFilePresenter {
         })
     }
 
-    public func erase(_ volume: Volume, newName: String, returnCompletion: @escaping (Bool) -> ()) {
+    public func erase(_ volume: Partition, newName: String, returnCompletion: @escaping (Bool) -> ()) {
         // TODO: check for APFS container
         /*if(volume.parentDisk.isFakeDisk) {
             DDLogInfo("Starting demo erase on FakeVolume: \(volume)")
@@ -227,47 +246,56 @@ class DiskUtility: NSObject, NSFilePresenter {
         }*/
     }
 
-
     public func ejectAll(didComplete: @escaping (Bool) -> ()) {
-      /*  mountedShares = self.cachedDisks.filter { $0.content == "NFS" }
-        mountedInstallers = self.cachedDisks.filter { $0.getMainVolume()?.containsInstaller == true }
+        if(allSharesAndInstallersUnmounted) {
+            didComplete(true)
+        }
+        
+        self.ejectAllDiskImages { (allDiskImagesEjected) in
+            self.ejectAllShares(didComplete: { (allSharesCompleted) in
+                didComplete(allDiskImagesEjected && allDiskImagesEjected)
+            })
+        }
+    }
+    
+    public func ejectAllDiskImages(didComplete: @escaping (Bool) -> ()) {
+        if(allSharesAndInstallersUnmounted) {
+            didComplete(true)
+        }
+        self.diskImage.forEach {
+            let currentDisk = $0
+            if let deviceIdentifier = currentDisk.devEntry {
+                TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["eject", deviceIdentifier], returnEscaping: { (taskOutput) in
+                    if let diskUtilOutput = taskOutput {
+                        if diskUtilOutput.contains("ejected") {
+                            self.diskModificationQueue.sync {
+                                self.diskImage.removeAll { $0 == currentDisk }
+                            }
+                        } else {
+                            DDLogError("Unable to eject disk image: \(deviceIdentifier) \(diskUtilOutput)")
+                        }
+                    }
+                })
+            }
+        }
+    }
 
+    public func ejectAllShares(didComplete: @escaping (Bool) -> ()) {
         if(allSharesAndInstallersUnmounted) {
             didComplete(true)
         }
 
-        mountedInstallers.forEach {
-            let currentDisk = $0
-
-            TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["eject", $0.deviceIdentifier], returnEscaping: { (taskOutput) in
-                if let diskUtilOutput = taskOutput {
-                    if diskUtilOutput.contains("ejected") {
-                        self.diskModificationQueue.sync {
-                            self.mountedInstallers.removeAll { $0 == currentDisk }
-                            DDLogInfo("Ejected disk image: \(currentDisk.deviceIdentifier) \(diskUtilOutput)")
-                            if(self.mountedInstallers.count == 0) {
-                                // FIXME:
-                                //   NotificationCenter.default.post(name: ItemRepository.refreshRepository, object: nil)
-                                DDLogInfo("Unmounting NFS shares now")
-                                if self.mountedShares.count > 0 {
-                                    for share in self.mountedShares {
-                                        self.unmountNFSShare(share, didComplete: { (nfsComplete) in
-                                            didComplete(nfsComplete)
-                                        })
-                                    }
-                                } else {
-                                    didComplete(true)
-                                }
-                            }
-                        }
-                    } else {
-                        didComplete(true)
-                        DDLogError("Unable to eject disk image: \(currentDisk.deviceIdentifier) \(diskUtilOutput)")
+        self.mountedShares.forEach {
+            let currentShare = $0
+            if let mountPoint = currentShare.mountPoint {
+                TaskHandler.createTask(command: "/sbin/umount", arguments: [mountPoint], returnEscaping: { (taskOutput) in
+                    self.diskModificationQueue.sync {
+                        self.mountedShares.removeAll { $0 == currentShare }
                     }
-                }
-            })
+                    didComplete(true)
+                })
+            }
         }
- */
     }
 
     public func diskIsAPFS( _ disk: Disk, completion: @escaping (NSDictionary?) -> ()) {

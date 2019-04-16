@@ -73,10 +73,10 @@ class ItemRepository {
         return (items.filter { type(of: $0) == Disk.self } as! [Disk]).sorted { $0.deviceIdentifier < $1.deviceIdentifier }
     }
 
-    public func getVolumes() -> [Volume] {
+ /*   public func getVolumes() -> [Volume] {
         return (items.filter { type(of: $0) == Volume.self } as! [Volume]).sorted { $0.volumeName < $1.volumeName }
     }
-
+*/
     public func getInstallers() -> [Installer] {
         print(items.filter { type(of: $0) == Installer.self })
         return (items.filter { type(of: $0) == Installer.self } as! [Installer]).sorted { $0.comparibleVersionNumber < $1.comparibleVersionNumber }
@@ -94,13 +94,13 @@ class ItemRepository {
         }
     }
 
-    public func addToRepository(newVolume: Volume) {
+  /*  public func addToRepository(newVolume: Volume) {
         if(self.items.contains { ( $0 as? Volume) != nil && ( $0 as! Volume).id == newVolume.id } == false) {
             DDLogInfo("Adding volume '\(newVolume.volumeName)' to repo")
             self.items.append(newVolume)
             NotificationCenter.default.post(name: ItemRepository.newVolume, object: nil)
         }
-    }
+    }*/
 
     public func addToRepository(newInstaller: Installer) {
         if (self.items.contains { ( $0 as? Installer) != nil && ( $0 as! Installer).id == newInstaller.id } == false) {

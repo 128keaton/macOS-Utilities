@@ -20,12 +20,12 @@ class DiskSelectionDialogViewController: NSViewController {
     private let diskUtility = DiskUtility.shared
 
     private var selectedInstaller: Installer? = nil
-    private var installableVolumes = [Volume]() {
+    private var installablePartitions = [Partition]() {
         didSet {
             reloadTableView()
         }
     }
-    private var selectedVolume: Volume? = nil
+    private var selectedPartition: Partition? = nil
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,7 +47,8 @@ class DiskSelectionDialogViewController: NSViewController {
 
     private func getDisks() {
         diskProgressIndicator?.startSpinning()
-      //  installableVolumes = ItemRepository.shared.getDisks().filter { $0.isInstallable == true && $0.getMainVolume() != nil && $0.getMainVolume()!.isInstallable == true }.map { $0.getMainVolume()! }
+        //  installableVolumes = ItemRepository.shared.getDisks().filter { $0.isInstallable == true && $0.getMainVolume() != nil && $0.getMainVolume()!.isInstallable == true }.map { $0.getMainVolume()! }
+        installablePartitions = DiskUtility.shared.cachedDisks.filter { $0.installablePartition != nil }.map { $0.installablePartition! }
     }
 
     @IBAction func openDiskUtility(_ sender: NSButton) {
@@ -111,17 +112,16 @@ extension DiskSelectionDialogViewController: NSTableViewDelegate, NSTableViewDel
         var text: String = ""
         var cellIdentifier: String = ""
 
-        let installableVolume = installableVolumes[row]
+        let installableVolume = installablePartitions[row]
 
         let size = installableVolume.size
-        let measurementUnit = installableVolume.measurementUnit
-        let name = installableVolume.volumeName
+        let name = installableVolume.getVolumeName()
 
         if tableColumn == tableView.tableColumns[0] {
             text = name
             cellIdentifier = CellIdentifiers.DiskNameCell
         } else if tableColumn == tableView.tableColumns[1] {
-            text = "\(Int(size)) \(measurementUnit)"
+            text = Units(bytes: size).getReadableUnit()
             cellIdentifier = CellIdentifiers.DiskSizeCell
         }
 
@@ -134,8 +134,8 @@ extension DiskSelectionDialogViewController: NSTableViewDelegate, NSTableViewDel
 
     func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
         self.tableView?.deselectAll(self)
-        DDLogInfo("Disk Selected: \(self.installableVolumes[row])")
-        self.selectedVolume = self.installableVolumes[row]
+        DDLogInfo("Disk Selected: \(self.installablePartitions[row])")
+        self.selectedPartition = self.installablePartitions[row]
         nextButton?.isEnabled = true
 
         return true
@@ -145,7 +145,7 @@ extension DiskSelectionDialogViewController: NSTableViewDelegate, NSTableViewDel
         if(didDeselectAllRows) {
             nextButton?.isEnabled = false
             DDLogInfo("Deselecting all disks/rows in \(self)")
-            selectedVolume = nil
+            selectedPartition = nil
         }
     }
 
@@ -162,16 +162,16 @@ extension DiskSelectionDialogViewController: NSTableViewDelegate, NSTableViewDel
     }
 
     @IBAction func nextButtonClicked(_ sender: NSButton) {
-        if let volume = self.selectedVolume {
-            let userConfirmedErase = self.showConfirmationAlert(question: "Confirm Disk Destruction", text: "Are you sure you want to erase disk \(volume.volumeName)? This will make all the data on \(volume.volumeName) unrecoverable.")
+        if let volume = self.selectedPartition {
+            let userConfirmedErase = self.showConfirmationAlert(question: "Confirm Disk Destruction", text: "Are you sure you want to erase disk \(volume.getVolumeName())? This will make all the data on \(volume.getVolumeName()) unrecoverable.")
 
             if(userConfirmedErase) {
-                PageController.shared.goToLoadingPage(loadingText: "Erasing Disk \"\(volume.volumeName)\"")
+                PageController.shared.goToLoadingPage(loadingText: "Erasing Disk \"\(volume.getVolumeName())\"")
                 sender.isEnabled = false
 
-                diskUtility.erase(volume, newName: volume.volumeName) { (didFinish) in
+                diskUtility.erase(volume, newName: volume.getVolumeName()) { (didFinish) in
                     if(didFinish) {
-                        PageController.shared.goToFinishPage(finishedText: "Erase Completed", descriptionText: "Please use the disk \"\(volume.volumeName)\" when installing macOS.", otherButtonTitle: "Open Installer", otherButtonSelector: #selector(DiskSelectionDialogViewController.openInstaller), otherButtonSelectorTarget: self)
+                        PageController.shared.goToFinishPage(finishedText: "Erase Completed", descriptionText: "Please use the disk \"\(volume.getVolumeName())\" when installing macOS.", otherButtonTitle: "Open Installer", otherButtonSelector: #selector(DiskSelectionDialogViewController.openInstaller), otherButtonSelectorTarget: self)
                     }
                 }
             }
@@ -181,6 +181,6 @@ extension DiskSelectionDialogViewController: NSTableViewDelegate, NSTableViewDel
 
 extension DiskSelectionDialogViewController: NSTableViewDataSource {
     func numberOfRows(in tableView: NSTableView) -> Int {
-        return installableVolumes.count
+        return installablePartitions.count
     }
 }

@@ -345,6 +345,7 @@ extension URL {
 
     /// Absolute path of file from URL
     var absolutePath: String {
+        print(self.absoluteString.replacingOccurrences(of: "file://", with: "").replacingOccurrences(of: "%20", with: " "))
         return self.absoluteString.replacingOccurrences(of: "file://", with: "").replacingOccurrences(of: "%20", with: " ")
     }
 }

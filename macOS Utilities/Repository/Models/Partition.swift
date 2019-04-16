@@ -9,37 +9,53 @@
 import Foundation
 import AppKit
 
-class Partition: Codable, Item {
-    var content: String
+struct Partition: Codable, Item {
+    var content: String?
     var deviceIdentifier: String
-    var diskUUID: String
-    var size: Int
-    var volumeName: String? = nil
-    var volumeUUID: String? = nil
+    var diskUUID: String?
+    var size: Int64
+    var volumeName: String?
+    var volumeUUID: String?
+    var mountPoint: String?
     var id: String {
-        return volumeUUID ?? diskUUID
+        return volumeUUID ?? diskUUID ?? String.random(12)
     }
 
     var description: String {
-        return "Partition \(volumeName ?? diskUUID) \(deviceIdentifier)"
+        var aDescription = "\n\t\tPartition \(self.id) \n\t\t\tDevice Identifier: \(deviceIdentifier)\n"
+        aDescription += "\n\t\t\tContent: \(self.content ?? "None")"
+        aDescription += "\n\t\t\tSize: \(self.size)kb"
+        aDescription += "\n\t\t\tVolume Name: \(self.volumeName ?? "None")"
+        aDescription += "\n\t\t\tMount Point: \(self.mountPoint ?? "Not mounted")\n"
+        
+        return aDescription
     }
-
+    
+    var containsInstaller: Bool {
+        if let mountPoint = self.mountPoint{
+            return mountPoint.contains("Install macOS") || mountPoint.contains("Install OS X")
+        }
+        return false
+    }
+    
+    var isMounted: Bool {
+        return self.volumeName != nil && self.mountPoint != nil
+    }
 
     func addToRepo() {
         print(self)
     }
 
-    static func == (lhs: Partition, rhs: Partition) -> Bool {
-        return lhs.volumeUUID == rhs.volumeUUID && lhs.diskUUID == rhs.diskUUID
+    func getVolumeName() -> String{
+        return self.volumeName ?? "Not mounted"
     }
     
-    init() {
-        self.content = "Content"
-        self.deviceIdentifier = "DeviceID"
-        self.diskUUID = "DiskUUID"
-        self.size = 0
-        self.volumeName = nil
-        self.volumeUUID = nil
+    func getMountPoint() -> String{
+        return self.mountPoint ?? "Not mounted"
+    }
+    
+    static func == (lhs: Partition, rhs: Partition) -> Bool {
+        return lhs.volumeUUID == rhs.volumeUUID && lhs.diskUUID == rhs.diskUUID
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -49,5 +65,6 @@ class Partition: Codable, Item {
         case size = "Size"
         case volumeName = "VolumeName"
         case volumeUUID = "VolumeUUID"
+        case mountPoint = "MountPoint"
     }
 }

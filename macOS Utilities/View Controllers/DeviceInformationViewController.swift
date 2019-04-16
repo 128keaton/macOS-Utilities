@@ -22,7 +22,7 @@ class DeviceInformationViewController: NSViewController {
         }
     }
 
-    private var allVolumes = [Volume]() {
+    private var allPartitions = [Partition]() {
         didSet {
             reloadTableView()
         }
@@ -105,17 +105,16 @@ extension DeviceInformationViewController: NSTableViewDelegate, NSTableViewDeleg
         var text: String = ""
         var cellIdentifier: String = ""
 
-        let volume = allVolumes[row]
+        let partition = allPartitions[row]
 
-        let size = volume.size
-        let measurementUnit = volume.measurementUnit
-        let name = volume.volumeName
+        let size = partition.size
+        let name = partition.getVolumeName()
 
         if tableColumn == tableView.tableColumns[0] {
             text = name
             cellIdentifier = CellIdentifiers.DiskNameCell
         } else if tableColumn == tableView.tableColumns[1] {
-            text = "\(Int(size)) \(measurementUnit)"
+            text = "\(Int(size))"
             cellIdentifier = CellIdentifiers.DiskSizeCell
         }
 
@@ -133,6 +132,6 @@ extension DeviceInformationViewController: NSTableViewDelegate, NSTableViewDeleg
 
 extension DeviceInformationViewController: NSTableViewDataSource {
     func numberOfRows(in tableView: NSTableView) -> Int {
-        return allVolumes.count
+        return allPartitions.count
     }
 }

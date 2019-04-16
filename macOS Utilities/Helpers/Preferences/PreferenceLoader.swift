@@ -105,7 +105,7 @@ class PreferenceLoader {
                 PreferenceLoader.currentPreferences = preferences.copy() as? Preferences
 
                 if notify {
-                    NotificationCenter.default.post(name: PreferenceLoader.preferencesLoaded, object: true)
+                //    NotificationCenter.default.post(name: PreferenceLoader.preferencesLoaded, object: true)
                 } else {
                     NotificationCenter.default.post(name: PreferenceLoader.preferencesUpdated, object: preferences)
                 }
