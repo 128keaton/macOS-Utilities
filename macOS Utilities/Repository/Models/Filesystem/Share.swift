@@ -17,7 +17,7 @@ struct Share: Item {
     }
     
     func addToRepo() {
-        print(self)
+        ItemRepository.shared.addToRepository(newShare: self)
     }
     
     var description: String {

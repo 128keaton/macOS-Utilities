@@ -78,7 +78,7 @@ struct Partition: Item, Codable {
     }
 
     func addToRepo() {
-        print(self)
+        ItemRepository.shared.addToRepository(newPartition: self)
     }
 
     func getMountPoint() -> String {

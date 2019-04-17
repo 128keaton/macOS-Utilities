@@ -75,6 +75,47 @@ extension NSApplication {
     public func getVerboseName() -> String {
         return "\(getName())-v\(getVersion())-b\(getBuild())"
     }
+
+    public func getSerialNumber() -> String? {
+        let platformExpert = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IOPlatformExpertDevice"))
+
+        guard platformExpert > 0 else {
+            return nil
+        }
+
+        guard let serialNumber = (IORegistryEntryCreateCFProperty(platformExpert, kIOPlatformSerialNumberKey as CFString, kCFAllocatorDefault, 0).takeUnretainedValue() as? String) else {
+            return nil
+        }
+
+        IOObjectRelease(platformExpert)
+        return serialNumber
+    }
+
+    public func showErrorAlertOnCurrentWindow(title: String, message: String) {
+        // Thank you https://github.com/sparkle-project/Sparkle/compare/1.19.0...1.20.0#diff-79d37b7d406b6534ddab8fa541dfc3e7
+        if !Thread.isMainThread {
+            DispatchQueue.main.async {
+                self.showErrorAlertOnCurrentWindow(title: title, message: message)
+            }
+            return
+        }
+
+        var aWindow: NSWindow? = nil
+
+        if let keyWindow = NSApplication.shared.keyWindow {
+            aWindow = keyWindow
+        } else if let mainWindow = NSApplication.shared.mainWindow {
+            aWindow = mainWindow
+        } else if let firstWindow = NSApplication.shared.windows.first {
+            aWindow = firstWindow
+        }
+
+        if let window = aWindow {
+            if let contentViewController = window.contentViewController {
+                contentViewController.showErrorAlert(title: title, message: message)
+            }
+        }
+    }
 }
 
 extension NSTextField {
@@ -279,7 +320,7 @@ extension String {
         do {
             let regex = try NSRegularExpression(pattern: regex)
             let results = regex.matches(in: self,
-                                        range: NSRange(self.startIndex..., in: self))
+                range: NSRange(self.startIndex..., in: self))
             return results.map {
                 String(self[Range($0.range, in: self)!]).replacingOccurrences(of: stripR.joined(separator: "|"), with: "", options: .regularExpression)
             }
@@ -330,14 +371,14 @@ extension URL {
                     // file exists and is a directory
                     filestatus = .isDir
                 }
-                    else {
-                        // file exists and is not a directory
-                        filestatus = .isFile
+                else {
+                    // file exists and is not a directory
+                    filestatus = .isFile
                 }
             }
-                else {
-                    // file does not exist
-                    filestatus = .isNot
+            else {
+                // file does not exist
+                filestatus = .isNot
             }
             return filestatus
         }
@@ -356,7 +397,7 @@ func matches(for regex: String, in text: String) -> [String] {
     do {
         let regex = try NSRegularExpression(pattern: regex)
         let results = regex.matches(in: text,
-                                    range: NSRange(text.startIndex..., in: text))
+            range: NSRange(text.startIndex..., in: text))
         return results.map {
             String(text[Range($0.range, in: text)!])
         }

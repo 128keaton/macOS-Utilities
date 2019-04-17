@@ -90,7 +90,7 @@ struct Disk: Item, Codable {
     }
 
     func addToRepo() {
-        print(self)
+        ItemRepository.shared.addToRepository(newDisk: self)
     }
 
     static func copy(_ aDisk: Disk) throws -> Disk {
