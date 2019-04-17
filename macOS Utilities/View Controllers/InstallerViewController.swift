@@ -10,7 +10,7 @@ import Foundation
 import AppKit
 import CocoaLumberjack
 
-class InstallViewController: NSViewController {
+class InstallerViewController: NSViewController {
     @IBOutlet weak var metalStatus: NSButton!
     @IBOutlet weak var hddStatus: NSButton!
     @IBOutlet weak var memoryStatus: NSButton!
@@ -27,7 +27,7 @@ class InstallViewController: NSViewController {
     public var selectedVersion: Installer? = nil
 
     override func awakeFromNib() {
-        NotificationCenter.default.addObserver(self, selector: #selector(InstallViewController.getInstallableVersions), name: ItemRepository.newInstaller, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(InstallerViewController.getInstallableVersions), name: ItemRepository.newInstaller, object: nil)
     }
 
     override func viewDidLoad() {
@@ -119,12 +119,12 @@ class InstallViewController: NSViewController {
             if(compatibilityChecker.hasFormattedHDD && compatibilityChecker.hasLargeEnoughHDD) {
                 popoverController.message = "This machine has a primary storage device with a capacity of \(compatibilityChecker.storageDeviceSize) GB."
                 #if DEBUG
-                    popoverController.buttonAction = #selector(InstallViewController.openDiskUtility)
+                    popoverController.buttonAction = #selector(InstallerViewController.openDiskUtility)
                     popoverController.buttonText = "Open Disk Utility"
                 #endif
             } else if(!compatibilityChecker.hasFormattedHDD && !compatibilityChecker.hasLargeEnoughHDD) {
                 popoverController.message = "Your machine does not have an installable storage device, or the storage device is improperly formatted"
-                popoverController.buttonAction = #selector(InstallViewController.openDiskUtility)
+                popoverController.buttonAction = #selector(InstallerViewController.openDiskUtility)
                 popoverController.buttonText = "Open Disk Utility"
             } else if(compatibilityChecker.hasFormattedHDD && !compatibilityChecker.hasLargeEnoughHDD) {
                 popoverController.message = "This machine's HDD space is too low (\(compatibilityChecker.storageDeviceSize) GB)."
@@ -142,8 +142,8 @@ class InstallViewController: NSViewController {
         popover.animates = true
         popover.contentViewController = popoverController
 
-        let entryRect = sender.convert(sender.bounds, to: NSApp.mainWindow?.contentView)
-        popover.show(relativeTo: entryRect, of: (NSApp.mainWindow?.contentView)!, preferredEdge: .minY)
+        let entryRect = sender.convert(sender.bounds, to: NSApp.keyWindow?.contentView)
+        popover.show(relativeTo: entryRect, of: (NSApp.keyWindow?.contentView)!, preferredEdge: .minY)
     }
 
     @objc func openDiskUtility() {
@@ -159,13 +159,13 @@ class InstallViewController: NSViewController {
     }
 }
 
-extension InstallViewController: NSTableViewDataSource {
+extension InstallerViewController: NSTableViewDataSource {
     func numberOfRows(in tableView: NSTableView) -> Int {
         return installers.count
     }
 }
 
-extension InstallViewController: NSTableViewDelegate, NSTableViewDelegateDeselectListener {
+extension InstallerViewController: NSTableViewDelegate, NSTableViewDelegateDeselectListener {
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         let installer = installers[row]
 

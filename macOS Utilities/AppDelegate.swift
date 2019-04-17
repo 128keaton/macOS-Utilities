@@ -23,12 +23,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     public let modelYearDetermination = ModelYearDetermination()
     public let pageControllerDelegate: PageController = PageController.shared
-
-    #if DEBUG
-        public var preferenceLoader: PreferenceLoader? = PreferenceLoader()
-    #else
-        public var preferenceLoader: PreferenceLoader? = PreferenceLoader(useBundlePreferences: true)
-    #endif
+    
+    public var preferenceLoader: PreferenceLoader? = PreferenceLoader()
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         registerForNotifications()
@@ -40,12 +36,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         pageControllerDelegate.setPageController(pageController: self.pageController)
 
-        #if DEBUG
-            ItemRepository.shared.addFakeInstaller()
-        #endif
-
         readPreferences()
-
         buildInfoMenu()
     }
 
