@@ -14,6 +14,7 @@
 		8A123921226110CA008E551A /* RemoteConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A123920226110CA008E551A /* RemoteConfigurationViewController.swift */; };
 		8A175AAC225EFEE50018C977 /* ErrorAlertLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A175AAB225EFEE50018C977 /* ErrorAlertLogger.swift */; };
 		8A175AAE225F2BE70018C977 /* PreferencesApplicationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A175AAD225F2BE70018C977 /* PreferencesApplicationsViewController.swift */; };
+		8A2B05F32266888A0089F3A3 /* MenuHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2B05F22266888A0089F3A3 /* MenuHandler.swift */; };
 		8A39D3602119E81B00437F4E /* com.er2.applications.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8A39D35F2119E81B00437F4E /* com.er2.applications.plist */; };
 		8A47DED9210A2D30003F5CC3 /* NSCollectionAppCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */; };
 		8A47DEDB210A3418003F5CC3 /* NSCollectionAppCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */; };
@@ -75,6 +76,7 @@
 		8A175AAB225EFEE50018C977 /* ErrorAlertLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorAlertLogger.swift; sourceTree = "<group>"; };
 		8A175AAD225F2BE70018C977 /* PreferencesApplicationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PreferencesApplicationsViewController.swift; path = ../PreferencesApplicationsViewController.swift; sourceTree = "<group>"; };
 		8A175AAF225FD8770018C977 /* macOS Utilities.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "macOS Utilities.entitlements"; sourceTree = "<group>"; };
+		8A2B05F22266888A0089F3A3 /* MenuHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuHandler.swift; sourceTree = "<group>"; };
 		8A39D35F2119E81B00437F4E /* com.er2.applications.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = com.er2.applications.plist; sourceTree = "<group>"; };
 		8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSCollectionAppCell.swift; sourceTree = "<group>"; };
 		8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NSCollectionAppCell.xib; sourceTree = "<group>"; };
@@ -240,6 +242,27 @@
 			path = Preferences;
 			sourceTree = "<group>";
 		};
+		8A2B05F0226685DC0089F3A3 /* Output Parsers */ = {
+			isa = PBXGroup;
+			children = (
+				8AFCCD8722654E4B0026CFE6 /* DiskUtilityOutput.swift */,
+				8AA841CD226593A1009C5948 /* HDIUtilOutput.swift */,
+			);
+			path = "Output Parsers";
+			sourceTree = "<group>";
+		};
+		8A2B05F1226685E90089F3A3 /* Filesystem */ = {
+			isa = PBXGroup;
+			children = (
+				8A2B05F0226685DC0089F3A3 /* Output Parsers */,
+				8A9370CE2256B7F4002B3838 /* Disk.swift */,
+				8A9370D02256BB5A002B3838 /* Share.swift */,
+				8A6F8D892263D35B00077172 /* Partition.swift */,
+				8AA841CB22659260009C5948 /* DiskImage.swift */,
+			);
+			path = Filesystem;
+			sourceTree = "<group>";
+		};
 		8A57BF412262A1A300719E74 /* Logger */ = {
 			isa = PBXGroup;
 			children = (
@@ -323,12 +346,7 @@
 				8A9370D52256D604002B3838 /* Item.swift */,
 				8A8B59A4224E9FD100CD4094 /* Application.swift */,
 				8ABAE31C2252DA5800E537D3 /* Installer.swift */,
-				8A9370CE2256B7F4002B3838 /* Disk.swift */,
-				8A9370D02256BB5A002B3838 /* Share.swift */,
-				8A6F8D892263D35B00077172 /* Partition.swift */,
-				8AFCCD8722654E4B0026CFE6 /* DiskUtilityOutput.swift */,
-				8AA841CB22659260009C5948 /* DiskImage.swift */,
-				8AA841CD226593A1009C5948 /* HDIUtilOutput.swift */,
+				8A2B05F1226685E90089F3A3 /* Filesystem */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -405,6 +423,7 @@
 			children = (
 				8AA841D122664268009C5948 /* Custom Classes */,
 				8ACB65D421063E6F004B9C5A /* AppDelegate.swift */,
+				8A2B05F22266888A0089F3A3 /* MenuHandler.swift */,
 				8A0138C7221703BC00C77DA0 /* Compatibility */,
 				8A0138C8221703CC00C77DA0 /* Helpers */,
 				8A9370D22256D5E6002B3838 /* Repository */,
@@ -591,6 +610,7 @@
 				8A6C645C225D4E9900CD6DCF /* InstallerCellView.swift in Sources */,
 				8A9370D42256D5F6002B3838 /* ItemRepository.swift in Sources */,
 				8A175AAE225F2BE70018C977 /* PreferencesApplicationsViewController.swift in Sources */,
+				8A2B05F32266888A0089F3A3 /* MenuHandler.swift in Sources */,
 				8A0138D62217624700C77DA0 /* InfoPopoverViewController.swift in Sources */,
 				8ABAE3112252A46300E537D3 /* DiskSelectionDialogViewController.swift in Sources */,
 				8A8B59A5224E9FD100CD4094 /* Application.swift in Sources */,

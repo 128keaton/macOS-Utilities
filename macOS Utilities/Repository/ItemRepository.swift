@@ -62,6 +62,10 @@ class ItemRepository {
     public func addFakeInstaller(canInstallOnMachine: Bool = false) {
         let fakeInstaller = Installer(isFakeInstaller: true, canInstallOnMachine: canInstallOnMachine)
         fakeItems.append(fakeInstaller)
+        if fakeInstaller.canInstall {
+            self.items.append(fakeInstaller)
+            NotificationCenter.default.post(name: ItemRepository.newInstaller, object: fakeInstaller)
+        }
     }
 
     public func updateDisk(_ disk: Disk) {
@@ -71,6 +75,14 @@ class ItemRepository {
 
     public func getDisks() -> [Disk] {
         return (items.filter { type(of: $0) == Disk.self } as! [Disk]).sorted { $0.deviceIdentifier < $1.deviceIdentifier }
+    }
+
+    public func getDiskImages() -> [DiskImage] {
+        return (items.filter { type(of: $0) == DiskImage.self } as! [DiskImage])
+    }
+
+    public func getPartitions() -> [Partition] {
+        return (items.filter { type(of: $0) == Partition.self } as! [Partition]).sorted { $0.volumeName < $1.volumeName }
     }
 
     public func getInstallers() -> [Installer] {
@@ -83,15 +95,39 @@ class ItemRepository {
     }
 
     public func addToRepository(newDisk: Disk) {
-        if(self.items.contains { ( $0 as? Disk) != nil && ( $0 as! Disk).id == newDisk.id } == false) {
+        if(self.items.contains { ($0 as? Disk) != nil && ($0 as! Disk).id == newDisk.id } == false) {
             DDLogInfo("Adding disk '\(newDisk.deviceIdentifier)' to repo")
             self.items.append(newDisk)
             NotificationCenter.default.post(name: ItemRepository.newDisk, object: nil)
         }
     }
 
+    public func addToRepository(newDiskImage: DiskImage) {
+        if(self.items.contains { ($0 as? DiskImage) != nil && ($0 as! DiskImage).id == newDiskImage.id } == false) {
+            DDLogInfo("Adding volume '\(newDiskImage.volumeName)' to repo")
+            self.items.append(newDiskImage)
+            //    NotificationCenter.default.post(name: ItemRepository.newVolume, object: nil)
+        }
+    }
+
+    public func addToRepository(newPartition: Partition) {
+        if(self.items.contains { ($0 as? Partition) != nil && ($0 as! Partition).id == newPartition.id } == false) {
+            DDLogInfo("Adding volume '\(newPartition.volumeName)' to repo")
+            self.items.append(newPartition)
+            //  NotificationCenter.default.post(name: ItemRepository.newVolume, object: nil)
+        }
+    }
+
+    public func addToRepository(newShare: Share) {
+        if(self.items.contains { ($0 as? Share) != nil && ($0 as! Share).id == newShare.id } == false) {
+            DDLogInfo("Adding volume '\(newShare.mountPoint ?? "No point point")' to repo")
+            self.items.append(newShare)
+            //    NotificationCenter.default.post(name: ItemRepository.newVolume, object: nil)
+        }
+    }
+
     public func addToRepository(newInstaller: Installer) {
-        if (self.items.contains { ( $0 as? Installer) != nil && ( $0 as! Installer).id == newInstaller.id } == false) {
+        if (self.items.contains { ($0 as? Installer) != nil && ($0 as! Installer).id == newInstaller.id } == false) {
             DDLogInfo("Adding installer '\(newInstaller.versionName)' to repo")
             self.items.append(newInstaller)
             if !newInstaller.isFakeInstaller || (newInstaller.isFakeInstaller && newInstaller.canInstall) {
@@ -101,7 +137,7 @@ class ItemRepository {
     }
 
     public func addToRepository(newApplication: Application) {
-        if (self.items.contains { ( $0 as? Application) != nil && ( $0 as! Application).id == newApplication.id } == false) {
+        if (self.items.contains { ($0 as? Application) != nil && ($0 as! Application).id == newApplication.id } == false) {
             self.items.append(newApplication)
 
             if(newApplication.isUtility == false) {

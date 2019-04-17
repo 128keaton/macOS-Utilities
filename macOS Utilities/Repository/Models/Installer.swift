@@ -120,7 +120,7 @@ class Installer: NSObject, Item, NSFilePresenter {
     private func getVersionName() -> String {
         var parsedName = self.partition?.volumeName.replacingOccurrences(of: ".[0-9].*", with: "", options: .regularExpression)
         if parsedName == nil {
-            parsedName = self.diskImage?.getVolumeName().replacingOccurrences(of: ".[0-9].*", with: "", options: .regularExpression)
+            parsedName = self.diskImage?.volumeName.replacingOccurrences(of: ".[0-9].*", with: "", options: .regularExpression)
         }
         
         self.versionNumber = Double(VersionNumbers.getVersionForName(parsedName!))!

@@ -17,6 +17,10 @@ struct DiskImage: Item, Codable{
     var id: String{
         return unmappedContentHint ?? String.random(12).md5Value
     }
+    var volumeName: String{
+       return self.mountPoint == nil ? "Not mounted" : String(self.mountPoint!.split(separator: "/").last!)
+    }
+    
     var isMounted: Bool {
         return self.mountPoint != nil
     }
@@ -29,15 +33,11 @@ struct DiskImage: Item, Codable{
     }
     
     func addToRepo() {
-        print(self)
+        ItemRepository.shared.addToRepository(newDiskImage: self)
     }
     
     func getMountPoint() -> String{
         return self.mountPoint ?? "Not mounted"
-    }
-    
-    func getVolumeName() -> String{
-        return self.mountPoint == nil ? "Not mounted" : String(self.mountPoint!.split(separator: "/").last!)
     }
     
     var description: String {
