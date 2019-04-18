@@ -12,7 +12,6 @@ import CocoaLumberjack
 
 class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     @IBOutlet weak var collectionView: NSCollectionView!
-    @IBOutlet weak var getInfoButton: NSButton?
     @IBOutlet weak var installMacOSButton: NSButton?
 
     private var preferenceLoader: PreferenceLoader? = nil
@@ -28,7 +27,6 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-      //  getInfoButton?.alphaValue = 0.0
         installMacOSButton?.alphaValue = 0.0
 
         if let preferenceLoader = PreferenceLoader.sharedInstance {
@@ -62,10 +60,6 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         if let preferences = PreferenceLoader.currentPreferences {
             if preferences.useDeviceIdentifierAPI {
                 DeviceIdentifier.setup(authenticationToken: preferences.deviceIdentifierAuthenticationToken!)
-                NSAnimationContext.runAnimationGroup { (context) in
-                    context.duration = 0.5
-                    self.getInfoButton?.animator().alphaValue = 1.0
-                }
             }
         }
     }

@@ -322,7 +322,7 @@
                 </viewController>
                 <customObject id="tCA-fY-oXk" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-319.5" y="1420"/>
+            <point key="canvasLocation" x="-754" y="89"/>
         </scene>
         <!--Application-->
         <scene sceneID="JPo-4y-FX3">
@@ -620,30 +620,17 @@
                                     <action selector="installMacOSButtonClicked:" target="Xny-k9-8PW" id="Tug-Dz-r3w"/>
                                 </connections>
                             </button>
-                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="mb6-sD-iTX">
-                                <rect key="frame" x="442" y="13" width="89" height="32"/>
-                                <buttonCell key="cell" type="push" title="Get Info" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Wfq-83-T4P">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <segue destination="a4T-XT-RTq" kind="modal" id="t95-er-6U9"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="qEG-Vb-Iz3" firstAttribute="trailing" secondItem="Ath-4B-XY8" secondAttribute="trailing" id="2Qh-U3-RQE"/>
-                            <constraint firstItem="VFu-S9-ocT" firstAttribute="leading" secondItem="mb6-sD-iTX" secondAttribute="trailing" constant="43" id="2mP-af-w0I"/>
                             <constraint firstAttribute="bottom" secondItem="cPQ-Xw-iZP" secondAttribute="bottom" constant="20" symbolic="YES" id="3tG-bi-1fU"/>
                             <constraint firstItem="VFu-S9-ocT" firstAttribute="trailing" secondItem="Ath-4B-XY8" secondAttribute="trailing" id="HTk-9f-H5r"/>
                             <constraint firstItem="cPQ-Xw-iZP" firstAttribute="centerX" secondItem="rmT-8I-ks0" secondAttribute="centerX" constant="-269.5" id="Iyv-4z-aX0"/>
                             <constraint firstItem="cPQ-Xw-iZP" firstAttribute="top" secondItem="Ath-4B-XY8" secondAttribute="bottom" constant="53" id="RNK-Br-WOt"/>
                             <constraint firstItem="Ath-4B-XY8" firstAttribute="top" secondItem="rmT-8I-ks0" secondAttribute="top" constant="71" id="Y0M-hD-DHI"/>
-                            <constraint firstItem="mb6-sD-iTX" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="cPQ-Xw-iZP" secondAttribute="trailing" constant="8" symbolic="YES" id="Yl3-Bl-qPa"/>
                             <constraint firstItem="qEG-Vb-Iz3" firstAttribute="leading" secondItem="Ath-4B-XY8" secondAttribute="leading" id="aog-vy-ydE"/>
                             <constraint firstItem="VFu-S9-ocT" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="cPQ-Xw-iZP" secondAttribute="trailing" id="ig3-tW-JdG"/>
                             <constraint firstItem="Ath-4B-XY8" firstAttribute="leading" secondItem="rmT-8I-ks0" secondAttribute="leading" constant="20" symbolic="YES" id="lqm-Zb-5Qs"/>
-                            <constraint firstItem="mb6-sD-iTX" firstAttribute="baseline" secondItem="VFu-S9-ocT" secondAttribute="baseline" id="sLj-99-JAH"/>
                             <constraint firstItem="VFu-S9-ocT" firstAttribute="bottom" secondItem="cPQ-Xw-iZP" secondAttribute="bottom" id="sez-UL-STd"/>
                             <constraint firstItem="cPQ-Xw-iZP" firstAttribute="centerX" secondItem="Ath-4B-XY8" secondAttribute="centerX" constant="-269.5" id="tmZ-d3-FJK"/>
                             <constraint firstItem="Ath-4B-XY8" firstAttribute="top" secondItem="qEG-Vb-Iz3" secondAttribute="bottom" constant="16" id="w6R-oT-3zS"/>
@@ -652,7 +639,6 @@
                     </view>
                     <connections>
                         <outlet property="collectionView" destination="e9c-GW-a3y" id="8Ht-qB-bmO"/>
-                        <outlet property="getInfoButton" destination="mb6-sD-iTX" id="VWD-Ff-fsM"/>
                         <outlet property="installMacOSButton" destination="VFu-S9-ocT" id="Yju-Jj-Jbi"/>
                     </connections>
                 </viewController>
@@ -2386,7 +2372,4 @@ Gw
         <image name="NSStopProgressFreestandingTemplate" width="14" height="14"/>
         <image name="SuccessIcon" width="300" height="350"/>
     </resources>
-    <inferredMetricsTieBreakers>
-        <segue reference="x65-mW-0Vf"/>
-    </inferredMetricsTieBreakers>
 </document>
