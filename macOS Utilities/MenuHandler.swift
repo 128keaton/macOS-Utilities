@@ -10,12 +10,8 @@ import Foundation
 import Cocoa
 import CocoaLumberjack
 
-class MenuHandler {
-    public var utilitiesMenu: NSMenu? {
-        didSet {
-
-        }
-    }
+class MenuHandler: NSObject {
+    public var utilitiesMenu: NSMenu?
     public var infoMenu: NSMenu? {
         didSet {
             self.buildInfoMenu()
@@ -35,7 +31,8 @@ class MenuHandler {
 
     public static let shared = MenuHandler()
 
-    private init() {
+    private override init() {
+        super.init()
         registerForNotifications()
     }
 
@@ -45,17 +42,15 @@ class MenuHandler {
     }
 
     // MARK: Menu Builders
-    func buildUtilitiesMenu() {
-       // if let itemRepository.
-    }
-
     func buildHelpMenu() {
-        if helpEmailAddress == nil {
-            helpMenu!.items.removeAll { $0.title == "Send Log" }
-            DDLogInfo("Disabling 'Send Log' menu item. helpEmailAddress is nil")
-        } else {
-            if (helpMenu?.items.filter { $0.title == "Send Log" })!.count == 0 {
-                infoMenu?.addItem(withTitle: "Send Log", action: #selector(MenuHandler.sendLog(_:)), keyEquivalent: "")
+        if self.helpMenu != nil {
+            if helpEmailAddress == nil {
+                helpMenu!.items.removeAll { $0.title == "Send Log" }
+                DDLogInfo("Disabling 'Send Log' menu item. helpEmailAddress is nil")
+            } else {
+                if (helpMenu?.items.filter { $0.title == "Send Log" })!.count == 0 {
+                    infoMenu?.addItem(withTitle: "Send Log", action: #selector(MenuHandler.sendLog(_:)), keyEquivalent: "")
+                }
             }
         }
     }
@@ -69,10 +64,12 @@ class MenuHandler {
         if let serial = NSApplication.shared.getSerialNumber() {
             infoMenu?.addItem(withTitle: serial, action: nil, keyEquivalent: "")
             infoMenu?.addItem(NSMenuItem.separator())
-            infoMenu?.addItem(withTitle: "Check Warranty", action: #selector(MenuHandler.openCoverageLink), keyEquivalent: "")
+
+            let checkWarrantyItem = NSMenuItem(title: "Check Warranty", action: #selector(MenuHandler.openCoverageLink), keyEquivalent: "")
+            checkWarrantyItem.target = self
+            infoMenu?.addItem(checkWarrantyItem)
         }
     }
-
 
     // MARK: File menu functions
     @IBAction func loadConfigurationFile(_ sender: NSMenuItem) {
@@ -182,7 +179,9 @@ class MenuHandler {
     @objc private func addUtilityToMenu(_ notification: Notification? = nil) {
         if let validNotification = notification {
             if let utility = validNotification.object as? Application {
-                utilitiesMenu?.addItem(withTitle: utility.name, action: #selector(MenuHandler.openApp(_:)), keyEquivalent: "")
+                let newItem = NSMenuItem(title: utility.name, action: #selector(MenuHandler.openApp(_:)), keyEquivalent: "")
+                newItem.target = self
+                utilitiesMenu?.addItem(newItem)
             }
         }
     }
@@ -190,12 +189,13 @@ class MenuHandler {
     @objc private func addInstallerToMenu(_ notification: Notification? = nil) {
         if let infoMenu = self.infoMenu {
             if (infoMenu.items.filter { $0 == NSMenuItem.separator() }).count == 1 {
-                infoMenu.insertItem(NSMenuItem.separator(), at: 0)
+                infoMenu.insertItem(NSMenuItem.separator(), at: 1)
             }
 
             if let validNotification = notification {
                 if let installer = validNotification.object as? Installer {
                     let installerItem = NSMenuItem(title: "Install \(installer.versionName)", action: #selector(MenuHandler.startOSInstall(_:)), keyEquivalent: "")
+                    installerItem.target = self
                     installerItem.image = installer.canInstall ? NSImage(named: "NSStatusAvailable") : NSImage(named: "NSStatusUnavailable")
                     infoMenu.insertItem(installerItem, at: 0)
                 }

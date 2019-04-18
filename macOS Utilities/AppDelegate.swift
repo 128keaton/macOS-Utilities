@@ -15,6 +15,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var infoMenu: NSMenu?
     @IBOutlet weak var pageController: NSPageController!
     @IBOutlet weak var helpMenu: NSMenu?
+    @IBOutlet weak var menuHandler: MenuHandler?
 
     private let itemRepository = ItemRepository.shared
 
@@ -41,10 +42,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func setupMenuHandler(){
-        let menuHandler = MenuHandler.shared
-        menuHandler.infoMenu = self.infoMenu
-        menuHandler.helpMenu = self.helpMenu
-        menuHandler.utilitiesMenu = self.utilitiesMenu
+        menuHandler?.infoMenu = self.infoMenu
+        menuHandler?.helpMenu = self.helpMenu
+        menuHandler?.utilitiesMenu = self.utilitiesMenu
     }
 
     func applicationWillFinishLaunching(_ notification: Notification) {
@@ -94,8 +94,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             if preferences.useDeviceIdentifierAPI == true {
                 DeviceIdentifier.setup(authenticationToken: preferences.deviceIdentifierAuthenticationToken!)
             }
-            
-           MenuHandler.shared.buildHelpMenu()
         }
     }
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="b80-1g-jvc">
     <dependencies>
+        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -29,13 +30,13 @@
                                 </constraints>
                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="AlertIcon" id="eiQ-fL-HAV"/>
                             </imageView>
-                            <scrollView autohidesScrollers="YES" horizontalLineScroll="26" horizontalPageScroll="10" verticalLineScroll="26" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PCQ-5k-5Oi">
+                            <scrollView autohidesScrollers="YES" horizontalLineScroll="24" horizontalPageScroll="10" verticalLineScroll="24" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PCQ-5k-5Oi">
                                 <rect key="frame" x="20" y="20" width="228" height="208"/>
                                 <clipView key="contentView" drawsBackground="NO" id="wUf-sl-par">
                                     <rect key="frame" x="1" y="0.0" width="226" height="207"/>
-                                    <autoresizingMask key="autoresizingMask"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnSelection="YES" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="24" rowSizeStyle="systemDefault" headerView="SbL-xm-kgI" viewBased="YES" id="gK3-2d-iuU">
+                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnSelection="YES" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="22" rowSizeStyle="systemDefault" headerView="SbL-xm-kgI" viewBased="YES" id="gK3-2d-iuU">
                                             <rect key="frame" x="0.0" y="0.0" width="226" height="182"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
@@ -203,7 +204,7 @@
                                         <menuItem isSeparatorItem="YES" id="kCx-OE-vgT"/>
                                         <menuItem title="Eject ⏏" keyEquivalent="" id="myb-xu-JBl">
                                             <connections>
-                                                <action selector="ejectCDTray:" target="bdE-iv-NZw" id="n4V-6F-4C0"/>
+                                                <action selector="ejectAll:" target="FXb-Ej-UYn" id="kxK-qY-nWg"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Quit macOS Utilities" keyEquivalent="q" id="4sb-4s-VLi">
@@ -220,7 +221,7 @@
                                     <items>
                                         <menuItem title="Load Configuration From File" keyEquivalent="o" id="P0u-hH-iYc">
                                             <connections>
-                                                <action selector="loadConfigurationFile:" target="Voe-Tx-rLC" id="yft-cI-bjc"/>
+                                                <action selector="loadConfigurationFile:" target="FXb-Ej-UYn" id="XJu-Ee-PRV"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="rEx-QN-O7b"/>
@@ -286,39 +287,39 @@
                                     <items>
                                         <menuItem title="Reload Preferences" keyEquivalent="R" allowsKeyEquivalentWhenHidden="YES" id="JK4-mY-I21">
                                             <connections>
-                                                <action selector="reloadPreferences:" target="Voe-Tx-rLC" id="mk2-gy-DTW"/>
+                                                <action selector="reloadPreferences:" target="FXb-Ej-UYn" id="E38-dw-Tje"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Force Reload All Disks" keyEquivalent="r" allowsKeyEquivalentWhenHidden="YES" id="XrX-XG-Hcw">
                                             <connections>
-                                                <action selector="forceReloadAllDisks:" target="Voe-Tx-rLC" id="Bie-Wy-vnB"/>
+                                                <action selector="forceReloadAllDisks:" target="FXb-Ej-UYn" id="ndz-jD-d47"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="sbP-hP-eoY"/>
                                         <menuItem title="Test URL Scheme" allowsKeyEquivalentWhenHidden="YES" id="aR6-Zx-Qlx">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="testURLScheme:" target="Voe-Tx-rLC" id="M14-HG-lWx"/>
+                                                <action selector="testURLScheme:" target="FXb-Ej-UYn" id="avp-J4-MHX"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="2BW-R3-D05"/>
                                         <menuItem title="Create Installable FakeInstaller" id="pgc-ka-9qo">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="createFakeInstaller:" target="Voe-Tx-rLC" id="Pkq-f5-avL"/>
+                                                <action selector="createFakeInstaller:" target="FXb-Ej-UYn" id="svP-kM-OrI"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Create Non-Installable FakeInstaller" id="U7j-uH-HHG">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="createFakeInstallerNonInstallable:" target="Voe-Tx-rLC" id="sbb-vd-0ce"/>
+                                                <action selector="createFakeInstallerNonInstallable:" target="FXb-Ej-UYn" id="h5U-NJ-ool"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="NdI-Zg-5Ek"/>
                                         <menuItem title="Eject Shares and Installers" keyEquivalent="" allowsKeyEquivalentWhenHidden="YES" id="JnW-n4-prs">
                                             <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
                                             <connections>
-                                                <action selector="ejectAll:" target="Voe-Tx-rLC" id="onb-3i-W6s"/>
+                                                <action selector="ejectAll:" target="FXb-Ej-UYn" id="wtM-4U-9Wu"/>
                                             </connections>
                                         </menuItem>
                                     </items>
@@ -336,7 +337,7 @@
                                         <menuItem title="Send Log" allowsKeyEquivalentWhenHidden="YES" id="aen-O5-oBn">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="sendLog:" target="Voe-Tx-rLC" id="jEE-5e-GxF"/>
+                                                <action selector="sendLog:" target="FXb-Ej-UYn" id="8E1-yx-OJe"/>
                                             </connections>
                                         </menuItem>
                                     </items>
@@ -352,11 +353,13 @@
                     <connections>
                         <outlet property="helpMenu" destination="5zT-1s-3Zp" id="0Fm-ZP-rnG"/>
                         <outlet property="infoMenu" destination="VuQ-BV-BSY" id="V4P-bd-qA1"/>
+                        <outlet property="menuHandler" destination="FXb-Ej-UYn" id="hgE-Kt-g82"/>
                         <outlet property="pageController" destination="fhx-CL-3aL" id="gCW-pg-dJm"/>
                         <outlet property="utilitiesMenu" destination="lyY-dF-bR4" id="wZr-Mk-Lv2"/>
                     </connections>
                 </customObject>
                 <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
+                <customObject id="FXb-Ej-UYn" customClass="MenuHandler" customModule="macOS_Utilities" customModuleProvider="target"/>
                 <customObject id="bdE-iv-NZw" customClass="ApplicationViewController" customModule="macOS_Utilities" customModuleProvider="target"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <customObject id="fhx-CL-3aL" customClass="NSPageController">
@@ -407,7 +410,7 @@
                                 <rect key="frame" x="20" y="91" width="660" height="293"/>
                                 <clipView key="contentView" id="QTn-WZ-CYg">
                                     <rect key="frame" x="1" y="1" width="658" height="291"/>
-                                    <autoresizingMask key="autoresizingMask"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <collectionView selectable="YES" allowsEmptySelection="NO" id="e9c-GW-a3y">
                                             <rect key="frame" x="0.0" y="0.0" width="658" height="291"/>
@@ -1175,7 +1178,7 @@
                                 <rect key="frame" x="20" y="59" width="349" height="73"/>
                                 <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="gmL-xx-nR9">
                                     <rect key="frame" x="0.0" y="0.0" width="349" height="73"/>
-                                    <autoresizingMask key="autoresizingMask"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" spellingCorrection="YES" smartInsertDelete="YES" id="az3-sc-0HM">
                                             <rect key="frame" x="0.0" y="0.0" width="349" height="73"/>
@@ -1258,7 +1261,7 @@
                                 <rect key="frame" x="20" y="61" width="625" height="492"/>
                                 <clipView key="contentView" id="C8W-pO-ydh">
                                     <rect key="frame" x="1" y="0.0" width="623" height="491"/>
-                                    <autoresizingMask key="autoresizingMask"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" rowHeight="24" rowSizeStyle="medium" headerView="fsr-mK-shu" viewBased="YES" floatsGroupRows="NO" id="wss-ry-80u" customClass="KBTableView" customModule="macOS_Utilities" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="623" height="466"/>
@@ -1540,7 +1543,7 @@
                                 <rect key="frame" x="432" y="85" width="248" height="270"/>
                                 <clipView key="contentView" id="vLk-oO-MYV">
                                     <rect key="frame" x="1" y="1" width="246" height="268"/>
-                                    <autoresizingMask key="autoresizingMask"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="65" rowSizeStyle="automatic" viewBased="YES" id="tPV-pI-jig">
                                             <rect key="frame" x="0.0" y="0.0" width="246" height="268"/>
@@ -1784,13 +1787,13 @@ Gw
                         <rect key="frame" x="0.0" y="0.0" width="700" height="450"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <scrollView autohidesScrollers="YES" horizontalLineScroll="26" horizontalPageScroll="10" verticalLineScroll="26" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vCG-cE-ag0">
+                            <scrollView autohidesScrollers="YES" horizontalLineScroll="24" horizontalPageScroll="10" verticalLineScroll="24" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vCG-cE-ag0">
                                 <rect key="frame" x="20" y="58" width="660" height="315"/>
                                 <clipView key="contentView" drawsBackground="NO" id="Ivg-1D-hjB">
                                     <rect key="frame" x="1" y="0.0" width="658" height="314"/>
-                                    <autoresizingMask key="autoresizingMask"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="24" rowSizeStyle="systemDefault" headerView="e6H-Qs-xEe" viewBased="YES" id="QuU-vC-lkw" customClass="KBTableView" customModule="macOS_Utilities" customModuleProvider="target">
+                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="22" rowSizeStyle="systemDefault" headerView="e6H-Qs-xEe" viewBased="YES" id="QuU-vC-lkw" customClass="KBTableView" customModule="macOS_Utilities" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="658" height="289"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
