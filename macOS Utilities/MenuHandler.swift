@@ -22,7 +22,7 @@ class MenuHandler: NSObject {
             self.buildHelpMenu()
         }
     }
-    
+
     public var installers = [Installer]()
     public var helpEmailAddress: String? = nil
     public var pageControllerDelegate: NSPageController? = nil
@@ -70,6 +70,14 @@ class MenuHandler: NSObject {
     }
 
     // MARK: File menu functions
+    @IBAction func exportCurrentConfiguration(_ sender: NSMenuItem) {
+        if PreferenceLoader.savePreferencesToDownloads(PreferenceLoader.currentPreferences!, fileName: "exported-\(String.random(5, numericOnly: true))") {
+            DDLogInfo("Exported configuration successfully")
+            return
+        }
+        DDLogError("Could not export current configuration")
+    }
+
     @IBAction func loadConfigurationFile(_ sender: NSMenuItem) {
         let openPanel = NSOpenPanel()
         openPanel.allowedFileTypes = ["plist", "utilconf"]

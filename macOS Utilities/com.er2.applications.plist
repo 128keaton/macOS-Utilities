@@ -2,78 +2,142 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>DeviceIdentifier Authentication Token</key>
-	<string></string>
-	<key>Help Email Address</key>
-	<string>support@me.com</string>
-	<key>Logging Enabled</key>
-	<true/>
-	<key>Logging Port</key>
-	<integer>1234</integer>
-	<key>Logging URL</key>
-	<string>logs.papertrailapp.com</string>
-	<key>Applications</key>
+	<key>configurationVersion</key>
+	<string>2.0</string>
+	<key>helpEmailAddress</key>
+	<string>help@me.com</string>
+	<key>installerServerPreferences</key>
 	<dict>
-		<key>Prime95</key>
-		<dict>
-			<key>Section</key>
-			<string>Basic</string>
-			<key>Path</key>
-			<string>/Applications/Prime95.app</string>
-		</dict>
-		<key>FurMark</key>
-		<dict>
-			<key>Section</key>
-			<string>Basic</string>
-			<key>Path</key>
-			<string>/Applications/FurMark.app</string>
-		</dict>
-		<key>Print Label</key>
-		<dict>
-			<key>Section</key>
-			<string>Basic</string>
-			<key>Path</key>
-			<string>/Applications/Print Label.app</string>
-		</dict>
-		<key>KillDisk</key>
-		<dict>
-			<key>Section</key>
-			<string>Basic</string>
-			<key>Path</key>
-			<string>/Applications/KillDisk.app</string>
-		</dict>
-		<key>Safari</key>
-		<dict>
-			<key>Section</key>
-			<string>Utilities</string>
-			<key>Path</key>
-			<string>/Applications/Safari.app</string>
-		</dict>
-		<key>Disk Utility</key>
-		<dict>
-			<key>Section</key>
-			<string>Utilities</string>
-			<key>Path</key>
-			<string>/Applications/Utilities/Disk Utility.app</string>
-		</dict>
-		<key>Terminal</key>
-		<dict>
-			<key>Path</key>
-			<string>/Applications/Utilities/Terminal.app</string>
-			<key>Section</key>
-			<string>Utilities</string>
-		</dict>
-		<key>AVTest</key>
-		<dict>
-			<key>Section</key>
-			<string>Utilities</string>
-			<key>Path</key>
-			<string>/Applications/AVTest.app</string>
-		</dict>
+		<key>mountPath</key>
+		<string>/var/tmp/Installers</string>
+		<key>serverEnabled</key>
+		<true/>
+		<key>serverIP</key>
+		<string>172.16.5.5</string>
+		<key>serverPath</key>
+		<string>/Library/Server/Web/Data/Sites/Default/Installers</string>
+		<key>serverType</key>
+		<string>NFS</string>
 	</dict>
-	<key>Server Path</key>
-	<string>/Library/Server/Web/Data/Sites/Default/Installers</string>
-	<key>Server IP</key>
-	<string>172.16.5.5</string>
+	<key>loggingPreferences</key>
+	<dict>
+		<key>loggingEnabled</key>
+		<true/>
+		<key>loggingPort</key>
+		<integer>46937</integer>
+		<key>loggingURL</key>
+		<string>logs.papertrailapp.com</string>
+	</dict>
+	<key>mappedApplications</key>
+	<array>
+		<dict>
+			<key>isInvalid</key>
+			<true/>
+			<key>isUtility</key>
+			<false/>
+			<key>name</key>
+			<string>KillDisk</string>
+			<key>path</key>
+			<string>/Applications/KillDisk.app</string>
+			<key>showInApplicationsWindow</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>isInvalid</key>
+			<true/>
+			<key>isUtility</key>
+			<false/>
+			<key>name</key>
+			<string>Prime95</string>
+			<key>path</key>
+			<string>/Applications/Prime95.app</string>
+			<key>showInApplicationsWindow</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>isInvalid</key>
+			<true/>
+			<key>isUtility</key>
+			<false/>
+			<key>name</key>
+			<string>FurMark</string>
+			<key>path</key>
+			<string>/Applications/FurMark.app</string>
+			<key>showInApplicationsWindow</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>isInvalid</key>
+			<true/>
+			<key>isUtility</key>
+			<false/>
+			<key>name</key>
+			<string>AVTest</string>
+			<key>path</key>
+			<string>/Applications/AVTest.app</string>
+			<key>showInApplicationsWindow</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>isInvalid</key>
+			<false/>
+			<key>isUtility</key>
+			<true/>
+			<key>name</key>
+			<string>Disk Utility</string>
+			<key>path</key>
+			<string>/Applications/Utilities/Disk Utility.app</string>
+			<key>showInApplicationsWindow</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>isInvalid</key>
+			<true/>
+			<key>isUtility</key>
+			<false/>
+			<key>name</key>
+			<string>Print Label</string>
+			<key>path</key>
+			<string>/Applications/Print Label.app</string>
+			<key>showInApplicationsWindow</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>isInvalid</key>
+			<false/>
+			<key>isUtility</key>
+			<true/>
+			<key>name</key>
+			<string>Terminal</string>
+			<key>path</key>
+			<string>/Applications/Utilities/Terminal.app</string>
+			<key>showInApplicationsWindow</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>isInvalid</key>
+			<false/>
+			<key>isUtility</key>
+			<false/>
+			<key>name</key>
+			<string>Safari</string>
+			<key>path</key>
+			<string>/Applications/Safari.app</string>
+			<key>showInApplicationsWindow</key>
+			<true/>
+		</dict>
+	</array>
+	<key>remoteConfigurationPreferences</key>
+	<array>
+		<dict>
+			<key>filePath</key>
+			<dict>
+				<key>relative</key>
+				<string>file:///Users/keatonburleson/Desktop/good.plist</string>
+			</dict>
+			<key>name</key>
+			<string>Good Configuration 2</string>
+		</dict>
+	</array>
 </dict>
 </plist>

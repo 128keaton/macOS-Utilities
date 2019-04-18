@@ -126,7 +126,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
             return didLoad
         }
-
         return false
     }
 

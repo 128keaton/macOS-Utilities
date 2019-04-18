@@ -372,6 +372,11 @@
                                                 <action selector="loadConfigurationFile:" target="FXb-Ej-UYn" id="MHv-3k-Wm7"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Export Current Configuration To File" keyEquivalent="e" id="faL-4y-4uV">
+                                            <connections>
+                                                <action selector="exportCurrentConfiguration:" target="FXb-Ej-UYn" id="7XY-v4-oed"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem title="Add Remote Configuration" keyEquivalent="a" id="40o-nf-J6u">
                                             <connections>
                                                 <segue destination="5Xo-sq-8VW" kind="show" id="hKe-zu-BHM"/>
