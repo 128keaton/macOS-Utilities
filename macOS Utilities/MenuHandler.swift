@@ -22,9 +22,7 @@ class MenuHandler: NSObject {
             self.buildHelpMenu()
         }
     }
-
-    private let itemRepository = ItemRepository.shared
-
+    
     public var installers = [Installer]()
     public var helpEmailAddress: String? = nil
     public var pageControllerDelegate: NSPageController? = nil

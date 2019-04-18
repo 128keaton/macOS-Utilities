@@ -64,17 +64,17 @@ class Installer: NSObject, Item, NSFilePresenter {
 
         self.addToRepo()
     }
-    
-    init(diskImage: DiskImage){
+
+    init(diskImage: DiskImage) {
         self.diskImage = diskImage
         super.init()
-        
+
         self.versionName = self.getVersionName()
         self.appLabel = self.versionName + ".app"
         self.icon = self.findAppIcon()
-        
+
         self.presentedItemURL = URL(fileURLWithPath: "\(self.diskImage!.getMountPoint())", isDirectory: false)
-        
+
         self.addToRepo()
     }
 
@@ -82,9 +82,10 @@ class Installer: NSObject, Item, NSFilePresenter {
         if(isFakeInstaller) {
             super.init()
             self.isFakeInstaller = isFakeInstaller
-            self.versionName = "Fake Installer"
-            self.appLabel = "Fake Installer.app"
-            self.versionNumber = Double(String.random(10, numericOnly: true))!
+            let fakeVersionString = String.random(4, numericOnly: true)
+            self.versionName = "Fake-Installer-\(fakeVersionString)"
+            self.appLabel = "Fake-Installer-\(fakeVersionString).app"
+            self.versionNumber = Double(fakeVersionString)!
             self.fakeInstallerCanInstall = canInstallOnMachine
             self.icon = NSImage(named: "FakeInstallerIcon")!
 
@@ -122,7 +123,7 @@ class Installer: NSObject, Item, NSFilePresenter {
         if parsedName == nil {
             parsedName = self.diskImage?.volumeName.replacingOccurrences(of: ".[0-9].*", with: "", options: .regularExpression)
         }
-        
+
         self.versionNumber = Double(VersionNumbers.getVersionForName(parsedName!))!
         return parsedName!
     }
@@ -145,7 +146,7 @@ class Installer: NSObject, Item, NSFilePresenter {
         if volumePath == nil {
             volumePath = self.diskImage?.getMountPoint()
         }
-        
+
         var path = "\(volumePath!)/\(self.appLabel)/Contents/Info.plist"
         var infoDictionary = NSDictionary()
 

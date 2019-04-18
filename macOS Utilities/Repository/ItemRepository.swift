@@ -62,10 +62,6 @@ class ItemRepository {
     public func addFakeInstaller(canInstallOnMachine: Bool = false) {
         let fakeInstaller = Installer(isFakeInstaller: true, canInstallOnMachine: canInstallOnMachine)
         fakeItems.append(fakeInstaller)
-        if fakeInstaller.canInstall {
-            self.items.append(fakeInstaller)
-            NotificationCenter.default.post(name: ItemRepository.newInstaller, object: fakeInstaller)
-        }
     }
 
     public func updateDisk(_ disk: Disk) {
@@ -130,9 +126,8 @@ class ItemRepository {
         if (self.items.contains { ($0 as? Installer) != nil && ($0 as! Installer).id == newInstaller.id } == false) {
             DDLogInfo("Adding installer '\(newInstaller.versionName)' to repo")
             self.items.append(newInstaller)
-            if !newInstaller.isFakeInstaller || (newInstaller.isFakeInstaller && newInstaller.canInstall) {
-                NotificationCenter.default.post(name: ItemRepository.newInstaller, object: newInstaller)
-            }
+
+            NotificationCenter.default.post(name: ItemRepository.newInstaller, object: newInstaller)
         }
     }
 
