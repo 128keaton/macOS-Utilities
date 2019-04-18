@@ -130,7 +130,7 @@ class Compatibility {
     }
 
     // Gets all of the GPUs on the PCIe bus
-    private func getAllGPUs() -> [String] {
+    public func getAllGPUs() -> [String] {
         let devices = IOServiceMatching("IOPCIDevice")
         var entryIterator: io_iterator_t = 0
         var gpus = [String]()

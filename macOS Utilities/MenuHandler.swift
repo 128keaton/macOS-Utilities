@@ -85,12 +85,10 @@ class MenuHandler: NSObject {
             if response == .OK {
                 if let propertyListURL = openPanel.url {
                     DispatchQueue.main.async {
-                        let didLoad = PreferenceLoader.loadPreferences(propertyListURL, updatingRunning: true)
-                        if didLoad {
-                            DDLogInfo("Loaded preferences from: \(propertyListURL)")
-                        } else {
-                            DDLogError("Failed to load preferences from: \(propertyListURL)")
-                        }
+                        KBTextFieldDialog.show(NSApp.keyWindow!.contentViewController!, doneButtonText: "Done", textFieldPlaceholder: "New Configuration Name", dialogTitle: "Load configuration from URL", completionHandler: { (newConfigurationName) in
+                            let newConfiguration = RemoteConfigurationPreferences(filePath: propertyListURL, name: newConfigurationName)
+                            PreferenceLoader.sharedInstance?.addRemoteConfiguration(newConfiguration)
+                        })
                     }
                 }
             }

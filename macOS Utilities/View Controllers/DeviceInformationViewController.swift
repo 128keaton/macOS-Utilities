@@ -13,6 +13,8 @@ class DeviceInformationViewController: NSViewController {
     @IBOutlet weak var configurationImage: NSImageView?
     @IBOutlet weak var skuHintLabel: NSTextField?
     @IBOutlet weak var tableView: NSTableView?
+    @IBOutlet weak var gpuTableView: NSTableView?
+    @IBOutlet weak var otherSpecsLabel: NSTextField?
 
     private var deviceInfo: DeviceInfo? = nil {
         didSet {
@@ -22,7 +24,13 @@ class DeviceInformationViewController: NSViewController {
         }
     }
 
-    private var allPartitions = [Partition]() {
+    private var allDiskAndPartitions = [Any]() {
+        didSet {
+            self.tableView?.reloadData()
+        }
+    }
+
+    private var GPUs = [String]() {
         didSet {
             reloadTableView()
         }
@@ -52,8 +60,13 @@ class DeviceInformationViewController: NSViewController {
         return serialNumber
     }
 
-    private func getVolumes() {
-        // allVolumes = ItemRepository.shared.getDisks().filter { $0.getMainVolume() !== nil }.map { $0.getMainVolume()! }.filter { $0.containsInstaller == false && $0.isValid == true }
+    private func getAllData() {
+        GPUs = Compatibility().getAllGPUs()
+        getPartitions()
+    }
+
+    @objc func getPartitions() {
+        allDiskAndPartitions = DiskUtility.shared.getAllDisksAndPartitions()
     }
 
     private func updateView() {
@@ -71,8 +84,14 @@ class DeviceInformationViewController: NSViewController {
         }
     }
 
+    override func viewDidAppear() {
+        self.getPartitions()
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        NotificationCenter.default.addObserver(self, selector: #selector(getPartitions), name: ItemRepository.newPartition, object: nil)
 
         if deviceInfo == nil {
             configurationImage?.alphaValue = 0.0
@@ -82,11 +101,23 @@ class DeviceInformationViewController: NSViewController {
             skuHintLabel?.alphaValue = 1.0
         }
 
+        let amountOfRAM = Units(bytes: Int64(ProcessInfo.processInfo.physicalMemory))
+
+        otherSpecsLabel?.stringValue = "\(amountOfRAM) of RAM"
+
+        TaskHandler.createTask(command: "/usr/sbin/sysctl", arguments: ["-n", "machdep.cpu.brand_string"]) { (cpuInfo) in
+            if let cpuModel = cpuInfo {
+                DispatchQueue.main.async {
+                    self.otherSpecsLabel?.stringValue = "\(self.otherSpecsLabel!.stringValue) - \(cpuModel)"
+                }
+            }
+        }
+
         DeviceIdentifier.shared.lookupAppleSerial(serialNumber!) { (deviceInfo) in
             self.deviceInfo = deviceInfo
         }
 
-        getVolumes()
+        getAllData()
     }
 
     @IBAction func openSerialLink(_ sender: NSButton) {
@@ -99,23 +130,48 @@ extension DeviceInformationViewController: NSTableViewDelegate, NSTableViewDeleg
     fileprivate enum CellIdentifiers {
         static let DiskNameCell = "DiskNameID"
         static let DiskSizeCell = "DiskSizeID"
+        static let GPUNameCell = "GPUNameID"
+        static let PartitionNameCell = "PartitionNameID"
+        static let PartitionSizeCell = "PartitionSizeID"
     }
 
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         var text: String = ""
         var cellIdentifier: String = ""
 
-        let partition = allPartitions[row]
+        if tableView == self.tableView {
+            let item = allDiskAndPartitions[row]
+            if type(of: item) == Disk.self {
+                let disk = item as! Disk
 
-        let size = partition.size
-        let name = partition.volumeName
+                if tableColumn == tableView.tableColumns[0] {
+                    text = disk.deviceIdentifier
+                    cellIdentifier = CellIdentifiers.DiskNameCell
+                } else if tableColumn == tableView.tableColumns[1] {
+                    text = disk.size.getReadableUnit()
+                    cellIdentifier = CellIdentifiers.DiskSizeCell
+                }
 
-        if tableColumn == tableView.tableColumns[0] {
-            text = name
-            cellIdentifier = CellIdentifiers.DiskNameCell
-        } else if tableColumn == tableView.tableColumns[1] {
-            text = size.getReadableUnit()
-            cellIdentifier = CellIdentifiers.DiskSizeCell
+            } else if type(of: item) == Partition.self {
+                let partition = item as! Partition
+
+                if tableColumn == tableView.tableColumns[0] {
+                    text = partition.volumeName
+                    cellIdentifier = CellIdentifiers.PartitionNameCell
+                } else if tableColumn == tableView.tableColumns[1] {
+                    text = partition.size.getReadableUnit()
+                    cellIdentifier = CellIdentifiers.PartitionSizeCell
+                }
+                if let cell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: cellIdentifier), owner: nil) as? NSTableCellView {
+                    cell.textField?.stringValue = text
+                    return cell
+                }
+            }
+        } else if tableView == gpuTableView {
+            let GPU = self.GPUs[row]
+
+            text = GPU
+            cellIdentifier = CellIdentifiers.GPUNameCell
         }
 
         if let cell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: cellIdentifier), owner: nil) as? NSTableCellView {
@@ -132,6 +188,9 @@ extension DeviceInformationViewController: NSTableViewDelegate, NSTableViewDeleg
 
 extension DeviceInformationViewController: NSTableViewDataSource {
     func numberOfRows(in tableView: NSTableView) -> Int {
-        return allPartitions.count
+        if tableView == self.tableView {
+            return allDiskAndPartitions.count
+        }
+        return GPUs.count
     }
 }

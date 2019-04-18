@@ -28,7 +28,7 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        getInfoButton?.alphaValue = 0.0
+      //  getInfoButton?.alphaValue = 0.0
         installMacOSButton?.alphaValue = 0.0
 
         if let preferenceLoader = PreferenceLoader.sharedInstance {

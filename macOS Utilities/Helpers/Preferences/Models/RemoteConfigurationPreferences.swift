@@ -11,6 +11,7 @@ import Foundation
 class RemoteConfigurationPreferences: Codable, Equatable {
     var hostURL: URL?
     var configurationURL: URL?
+    var filePath: URL?
     var name: String
 
     static func == (lhs: RemoteConfigurationPreferences, rhs: RemoteConfigurationPreferences) -> Bool {
@@ -25,6 +26,18 @@ class RemoteConfigurationPreferences: Codable, Equatable {
         self.configurationURL = configurationURL
         self.hostURL = hostURL
 
+        if let _name = name {
+            self.name = _name
+        } else {
+            self.name = String()
+        }
+    }
+    
+    convenience init(filePath: URL, name: String?) {
+        self.init(hostURL: nil, configurationURL: nil, name: nil)
+        
+        self.filePath = filePath
+        
         if let _name = name {
             self.name = _name
         } else {

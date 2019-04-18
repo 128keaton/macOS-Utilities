@@ -24,7 +24,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     public let modelYearDetermination = ModelYearDetermination()
     public let pageControllerDelegate: PageController = PageController.shared
-    
+
     public var preferenceLoader: PreferenceLoader? = PreferenceLoader()
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
@@ -40,8 +40,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         readPreferences()
         setupMenuHandler()
     }
-    
-    func setupMenuHandler(){
+
+    func setupMenuHandler() {
         menuHandler?.infoMenu = self.infoMenu
         menuHandler?.helpMenu = self.helpMenu
         menuHandler?.utilitiesMenu = self.utilitiesMenu
@@ -64,7 +64,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc private func readPreferences(_ aNotification: Notification? = nil) {
         var semaphore: DispatchSemaphore? = nil
         PreferenceLoader.loaded = true
-        
+
         if let notification = aNotification {
             if notification.object != nil {
                 semaphore = DispatchSemaphore(value: 1)
@@ -73,11 +73,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 }
             }
         }
-        
+
         if let validSemaphore = semaphore {
             validSemaphore.wait()
         }
-        
+
         if let preferences = PreferenceLoader.currentPreferences {
             if let installerServer = preferences.installerServerPreferences {
                 DiskUtility.shared.mountNFSShare(shareURL: "\(installerServer.serverIP):\(installerServer.serverPath)", localPath: installerServer.mountPath) { (didSucceed) in
@@ -86,11 +86,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     }
                 }
             }
-            
+
             if let helpEmailAddress = preferences.helpEmailAddress {
                 self.helpEmailAddress = helpEmailAddress
             }
-            
+
             if preferences.useDeviceIdentifierAPI == true {
                 DeviceIdentifier.setup(authenticationToken: preferences.deviceIdentifierAuthenticationToken!)
             }
@@ -135,14 +135,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             if let fullURL = aeEventDescriptor.stringValue {
                 let configPath = fullURL.replacingOccurrences(of: "open-utilities://", with: "")
                 if configPath.contains("file://") {
-                    if !PreferenceLoader.loadPreferences(configPath.replacingOccurrences(of: "file://", with: ""), updatingRunning: true) {
-                        DDLogError("Could not validate configuration file \(configPath)")
-                    }
+                    let newConfiguration = RemoteConfigurationPreferences(filePath: configPath.fileURL, name: "Test 2")
+                    PreferenceLoader.sharedInstance?.addRemoteConfiguration(newConfiguration)
                 } else {
                     if let configURL = URL(string: configPath) {
-                        if !PreferenceLoader.loadPreferences(configURL, updatingRunning: true) {
-                            DDLogError("Could not validate configuration file \(configPath)")
-                        }
+                        let newConfiguration = RemoteConfigurationPreferences(filePath: configURL, name: "Test 1")
+                        PreferenceLoader.sharedInstance?.addRemoteConfiguration(newConfiguration)
                     }
                 }
             }

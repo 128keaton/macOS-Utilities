@@ -19,7 +19,9 @@ class ItemRepository {
     static let newApplications = Notification.Name("NSNewApplications")
     static let newDisk = Notification.Name("NSNewDisk")
     static let newInstaller = Notification.Name("NSNewInstaller")
-    static let newVolume = Notification.Name("NSNewVolume")
+    static let newPartition = Notification.Name("NSNewPartition")
+    static let newDiskImage = Notification.Name("NSNewDiskImage")
+    static let newShare = Notification.Name("NSNewShare")
     static let refreshRepository = Notification.Name("NSRefreshRepository")
     static let updatingApplications = Notification.Name("NSUpdatingApplications")
     static let hideApplications = Notification.Name("NSHideApplications")
@@ -102,7 +104,7 @@ class ItemRepository {
         if(self.items.contains { ($0 as? DiskImage) != nil && ($0 as! DiskImage).id == newDiskImage.id } == false) {
             DDLogInfo("Adding volume '\(newDiskImage.volumeName)' to repo")
             self.items.append(newDiskImage)
-            //    NotificationCenter.default.post(name: ItemRepository.newVolume, object: nil)
+            NotificationCenter.default.post(name: ItemRepository.newDiskImage, object: nil)
         }
     }
 
@@ -110,7 +112,7 @@ class ItemRepository {
         if(self.items.contains { ($0 as? Partition) != nil && ($0 as! Partition).id == newPartition.id } == false) {
             DDLogInfo("Adding volume '\(newPartition.volumeName)' to repo")
             self.items.append(newPartition)
-            //  NotificationCenter.default.post(name: ItemRepository.newVolume, object: nil)
+            NotificationCenter.default.post(name: ItemRepository.newPartition, object: nil)
         }
     }
 
@@ -118,7 +120,7 @@ class ItemRepository {
         if(self.items.contains { ($0 as? Share) != nil && ($0 as! Share).id == newShare.id } == false) {
             DDLogInfo("Adding volume '\(newShare.mountPoint ?? "No point point")' to repo")
             self.items.append(newShare)
-            //    NotificationCenter.default.post(name: ItemRepository.newVolume, object: nil)
+            NotificationCenter.default.post(name: ItemRepository.newShare, object: nil)
         }
     }
 

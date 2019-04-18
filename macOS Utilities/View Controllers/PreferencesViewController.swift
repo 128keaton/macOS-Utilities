@@ -277,6 +277,10 @@ class PreferencesViewController: NSViewController {
         }
     }
 
+    @IBAction func selectedPreferencesDidChange(_ sender: NSPopUpButton){
+        
+    }
+    
     @IBAction func closePreferences(_ sender: NSButton) {
         savePreferences()
         self.view.window?.windowController?.close()

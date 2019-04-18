@@ -88,33 +88,41 @@ class PreferenceLoader {
     public func save(_ preferences: Preferences, notify: Bool = true) {
         if PreferenceLoader.isDifferentFromRunning(preferences),
             let bundlePropertyListPath = self.bundlePropertyListPath {
+            let temporaryPath = "/var/tmp/\(PreferenceLoader.propertyListName).plist"
             let encoder = PropertyListEncoder()
             encoder.outputFormat = .xml
 
+            let writeToBundle = FileManager.default.isWritableFile(atPath: bundlePropertyListPath)
+            let writeToLibrary = FileManager.default.isWritableFile(atPath: libraryPropertyListPath)
+
+            DDLogVerbose("Can save preferences in bundle? \(writeToBundle)")
+
             do {
                 let data = try encoder.encode(preferences)
-                try data.write(to: URL(fileURLWithPath: libraryPropertyListPath))
-
-                #if !DEBUG
+                if writeToBundle {
                     try data.write(to: URL(fileURLWithPath: bundlePropertyListPath))
-                #endif
+                    DDLogVerbose("Saved preferences to propertly list at path: \(bundlePropertyListPath)")
+                }
 
-                // I might've broke something here
-
-                PreferenceLoader.previousPreferences = preferences
-                PreferenceLoader.currentPreferences = preferences.copy() as? Preferences
+                if writeToLibrary {
+                    try data.write(to: URL(fileURLWithPath: libraryPropertyListPath))
+                    DDLogVerbose("Saved preferences to propertly list at path: \(libraryPropertyListPath)")
+                } else if FileManager.default.isWritableFile(atPath: temporaryPath) {
+                    DDLogVerbose("Writing to temporary preferences path")
+                    try data.write(to: URL(fileURLWithPath: temporaryPath))
+                    DDLogVerbose("Saved preferences to propertly list at path: \(temporaryPath)")
+                } else {
+                    DDLogError("Could not find a suitable place to save the preferences")
+                }
 
                 if notify {
-                //    NotificationCenter.default.post(name: PreferenceLoader.preferencesLoaded, object: true)
+                    PreferenceLoader.currentPreferences = preferences
+                    NotificationCenter.default.post(name: PreferenceLoader.preferencesLoaded, object: true)
                 } else {
                     NotificationCenter.default.post(name: PreferenceLoader.preferencesUpdated, object: preferences)
                 }
-
-                DDLogInfo("Saved preferences to propertly list at path: \(libraryPropertyListPath)")
-                DDLogInfo("Saved preferences to propertly list at path: \(bundlePropertyListPath)")
             } catch {
-                DDLogError("Could not save preferences to propertly list at path: \(libraryPropertyListPath): \(error)")
-                DDLogVerbose("Could not save preferences to propertly list at path: \(bundlePropertyListPath): \(error)")
+                DDLogError("Could not save preferences: \(error)")
             }
         }
     }
@@ -207,27 +215,55 @@ class PreferenceLoader {
             let bundlePropertyListPath = weakSelf.bundlePropertyListPath {
             let libraryPropertyListPath = weakSelf.libraryPropertyListPath
 
+            let temporaryPath = "/var/tmp/\(PreferenceLoader.propertyListName).plist"
             let encoder = PropertyListEncoder()
             encoder.outputFormat = .xml
 
+            let writeToBundle = FileManager.default.isWritableFile(atPath: bundlePropertyListPath)
+            let writeToLibrary = FileManager.default.isWritableFile(atPath: libraryPropertyListPath)
+
+            DDLogVerbose("Can save preferences in bundle? \(writeToBundle)")
+
             do {
                 let data = try encoder.encode(preferences)
-                try data.write(to: URL(fileURLWithPath: libraryPropertyListPath))
-
-                #if !DEBUG
+                if writeToBundle {
                     try data.write(to: URL(fileURLWithPath: bundlePropertyListPath))
-                #endif
+                    DDLogVerbose("Saved preferences to propertly list at path: \(bundlePropertyListPath)")
+                }
+
+                if writeToLibrary {
+                    try data.write(to: URL(fileURLWithPath: libraryPropertyListPath))
+                    DDLogVerbose("Saved preferences to propertly list at path: \(libraryPropertyListPath)")
+                } else if FileManager.default.isWritableFile(atPath: temporaryPath) {
+                    DDLogVerbose("Writing to temporary preferences path")
+                    try data.write(to: URL(fileURLWithPath: temporaryPath))
+                    DDLogVerbose("Saved preferences to propertly list at path: \(temporaryPath)")
+                } else {
+                    DDLogError("Could not find a suitable place to save the preferences")
+                }
 
                 if notify {
                     PreferenceLoader.currentPreferences = preferences
                     NotificationCenter.default.post(name: PreferenceLoader.preferencesLoaded, object: true)
+                } else {
+                    NotificationCenter.default.post(name: PreferenceLoader.preferencesUpdated, object: preferences)
                 }
 
-                DDLogInfo("Saved preferences to propertly list at path: \(libraryPropertyListPath)")
-                DDLogInfo("Saved preferences to propertly list at path: \(bundlePropertyListPath)")
             } catch {
-                DDLogError("Could not save preferences to propertly list at path: \(libraryPropertyListPath): \(error)")
-                DDLogError("Could not save preferences to propertly list at path: \(bundlePropertyListPath): \(error)")
+                DDLogError("Could not save preferences: \(error)")
+            }
+        }
+    }
+
+    public func addRemoteConfiguration(_ newConfiguration: RemoteConfigurationPreferences) {
+        if let currentPreferences = PreferenceLoader.currentPreferences {
+            if var existingRemoteConfigurations = currentPreferences.remoteConfigurationPreferences {
+                existingRemoteConfigurations.append(newConfiguration)
+                currentPreferences.remoteConfigurationPreferences = existingRemoteConfigurations
+                save(currentPreferences, notify: true)
+            } else {
+                currentPreferences.remoteConfigurationPreferences = [newConfiguration]
+                save(currentPreferences, notify: true)
             }
         }
     }

@@ -31,6 +31,11 @@ class KBTextFieldDialog: NSViewController {
     private var additionalDialogTitle = "Text"
 
     override func viewDidLoad() {
+        self.title = ""
+        view.window!.styleMask.remove(.resizable)
+        view.window!.styleMask.remove(.closable)
+        view.window!.styleMask.remove(.miniaturizable)
+        
         self.doneButton.isEnabled = false
         self.textField.delegate = self
         if let additionalTextField = self.additionalTextField {

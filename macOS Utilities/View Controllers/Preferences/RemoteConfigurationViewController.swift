@@ -87,6 +87,12 @@ class RemoteConfigurationViewController: NSViewController {
             }
         }
     }
+    
+    @IBAction override func dismiss(_ sender: Any?){
+        if let window = self.view.window{
+            window.close()
+        }
+    }
 
     @IBAction func fetchOrFinish(_ sender: NSButton) {
         if remoteConfiguration == nil {
