@@ -31,14 +31,6 @@ struct Disk: Item, Codable {
         return regularPartitions == nil
     }
 
-    var containsInstaller: Bool {
-        return getInstaller() != nil
-    }
-
-    var installer: Installer {
-        return self.getInstaller()!
-    }
-
     var canErase: Bool {
         var userConfirmedErase = true
         if let mainWindow = NSApplication.shared.mainWindow,
@@ -46,14 +38,7 @@ struct Disk: Item, Codable {
             userConfirmedErase = contentViewController.showConfirmationAlert(question: "Confirm Disk Destruction", text: "Are you sure you want to erase disk \(self.deviceIdentifier)? This will make all the data on \(self.deviceIdentifier) unrecoverable.")
         }
 
-        return !self.containsInstaller && userConfirmedErase
-    }
-
-    private func getInstaller() -> Installer? {
-        if let installerPartition = self.partitions.first(where: { $0.containsInstaller == true }) {
-            return Installer.init(partition: installerPartition)
-        }
-        return nil
+        return userConfirmedErase
     }
 
     var partitions: [Partition] {

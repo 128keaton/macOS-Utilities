@@ -291,7 +291,7 @@ class MachineInformation {
         return self.RAM.gigabytes >= 8.0 ? NSImage(named: "NSStatusAvailable")! : NSImage(named: "NSStatusUnavailable")!
     }
 
-    public var allDisksAndPartitions: [Any] {
+    public var allDisksAndPartitions: [Disk] {
         if let diskUtility = self.diskUtility {
             return diskUtility.getAllDisksAndPartitions()
         }

@@ -29,6 +29,8 @@ class DiskUtility: NSObject, NSFilePresenter {
     private let diskModificationQueue = DispatchQueue(label: "NSDiskModificationQueue")
 
     private override init() {
+        super.init()
+        NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(didMount(_:)), name: NSWorkspace.didMountNotification, object: nil)
         DDLogInfo("Disk Utility Instance Created")
     }
 
@@ -50,6 +52,14 @@ class DiskUtility: NSObject, NSFilePresenter {
                     let diskUtilityOutput = try PropertyListDecoder().decode(DiskUtilOutput.self, from: plistData)
                     if let allDisks = diskUtilityOutput.allDisksAndPartitions {
                         self.cachedDisks = allDisks
+                        self.cachedDisks.forEach {
+                            $0.partitions.forEach {
+                                if let validInstaller = $0.getInstaller() {
+                                    self.mountedInstallers.append(validInstaller)
+                                }
+                            }
+                        }
+
                         #if DEBUG
                             self.addDisk(self.generateFakeDisk(withPartition: true))
                             self.addDisk(self.generateFakeDisk(withPartition: false))
@@ -59,12 +69,12 @@ class DiskUtility: NSObject, NSFilePresenter {
                             NotificationCenter.default.post(name: DiskUtility.bootDiskAvailable, object: bootDisk)
                         }
 
-                        self.cachedDisks.filter { $0.containsInstaller == true }.forEach {
+                        /*self.cachedDisks.filter { $0.containsInstaller == true }.forEach {
                             let newInstaller = $0.installer
                             if !self.mountedInstallers.contains(newInstaller) {
                                 self.mountedInstallers.append(newInstaller)
                             }
-                        }
+                        }*/
                     }
                 } catch let DecodingError.dataCorrupted(context) {
                     print(context)
@@ -254,8 +264,9 @@ class DiskUtility: NSObject, NSFilePresenter {
                     if let validOutput = hdiUtilOutput,
                         let mountableDiskImage = (validOutput.systemEntities.first { $0.potentiallyMountable == true }) {
                         DDLogVerbose("New Disk Image: \(mountableDiskImage)")
-                        self.diskImage.append(mountableDiskImage)
-                        self.mountedInstallers = self.diskImage.filter { $0.containsInstaller == true }.map { Installer(diskImage: $0) }
+                        self.diskModificationQueue.sync {
+                            self.diskImage.append(mountableDiskImage)
+                        }
                     }
                 }
             }
@@ -363,7 +374,7 @@ class DiskUtility: NSObject, NSFilePresenter {
                     returnCompletion(true, updatedDisk.volumeName)
                 }
             }
-        } else if disk.containsInstaller == false {
+        } else {
             TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["eraseDisk", format, diskName, disk.deviceIdentifier]) { (taskOutput) in
                 if let eraseOutput = taskOutput {
                     DDLogInfo(eraseOutput)
@@ -376,9 +387,6 @@ class DiskUtility: NSObject, NSFilePresenter {
                     returnCompletion(false, nil)
                 }
             }
-        } else {
-            DDLogError("Cannot erase a disk containing an installer")
-            returnCompletion(false, nil)
         }
     }
 
@@ -402,18 +410,19 @@ class DiskUtility: NSObject, NSFilePresenter {
         return false
     }
 
-    public func getAllDisksAndPartitions(_ installablePartitionOnly: Bool = true) -> [Any] {
-        var allDiskAndPartitions = [Any]()
-        self.cachedDisks.filter { $0.installablePartition != nil || $0.isFake }.forEach {
-            let aDisk = $0
-            allDiskAndPartitions.append(aDisk)
-            if !installablePartitionOnly {
-                aDisk.partitions.forEach {
-                    let aPartition = $0
-                    allDiskAndPartitions.append(aPartition)
-                }
-            } else if let installablePartition = aDisk.installablePartition {
-                allDiskAndPartitions.append(installablePartition)
+    public func getAllDisksAndPartitions(_ installablePartitionOnly: Bool = true) -> [Disk] {
+        var allDiskAndPartitions = [Disk]()
+        if installablePartitionOnly {
+            self.cachedDisks.filter { $0.installablePartition != nil || $0.isFake }.forEach {
+                let aDisk = $0
+                allDiskAndPartitions.append(aDisk)
+
+            }
+        } else {
+            self.cachedDisks.filter { $0.isFake }.forEach {
+                let aDisk = $0
+                allDiskAndPartitions.append(aDisk)
+
             }
         }
         return allDiskAndPartitions
@@ -570,5 +579,16 @@ class DiskUtility: NSObject, NSFilePresenter {
         }
 
         return validDictionary
+    }
+
+
+    @objc func didMount(_ notification: NSNotification) {
+        if let volumePath = notification.userInfo!["NSDevicePath"] as? String,
+            let installAppName = notification.userInfo!["NSWorkspaceVolumeLocalizedNameKey"] as? String {
+            if (volumePath.contains("Install macOS") || volumePath.contains("Install OS X")) {
+                let newInstaller = Installer(volumePath: volumePath, mountPoint: volumePath.fileURL, appName: installAppName)
+                self.mountedInstallers.append(newInstaller)
+            }
+        }
     }
 }

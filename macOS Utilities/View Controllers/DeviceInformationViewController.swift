@@ -12,12 +12,15 @@ import AppKit
 class DeviceInformationViewController: NSViewController {
     @IBOutlet weak var configurationImage: NSImageView?
     @IBOutlet weak var skuHintLabel: NSTextField?
-    @IBOutlet weak var disksAndPartitionsTableView: NSTableView?
+    @IBOutlet weak var disksTableView: NSTableView?
+    @IBOutlet weak var partitionsTableView: NSTableView?
+
     @IBOutlet weak var graphicsCardTableView: NSTableView?
     @IBOutlet weak var otherSpecsLabel: NSTextField?
     @IBOutlet weak var serialNumberLabel: NSTextField?
 
     private var isShowingFullSerial = false
+    private var previousItem: Any? = nil
 
     private var machineInformation: MachineInformation? = nil {
         didSet {
@@ -25,9 +28,20 @@ class DeviceInformationViewController: NSViewController {
         }
     }
 
-    private var allDiskAndPartitions = [Any]() {
+    private var allPartitions = [Partition]() {
         didSet {
-            self.reloadTableView(self.disksAndPartitionsTableView)
+            self.reloadTableView(self.partitionsTableView)
+        }
+    }
+    private var allDisks = [Disk]() {
+        didSet {
+            // TODO: make this mappable
+            self.allDisks.forEach {
+                $0.partitions.forEach {
+                    self.allPartitions.append($0)
+                }
+            }
+            self.reloadTableView(self.disksTableView)
         }
     }
 
@@ -38,8 +52,8 @@ class DeviceInformationViewController: NSViewController {
     }
 
     private func reloadTableView(_ tableView: NSTableView?) {
-        if tableView == self.disksAndPartitionsTableView,
-            let _tableView = self.disksAndPartitionsTableView {
+        if tableView == self.disksTableView,
+            let _tableView = self.disksTableView {
             DispatchQueue.main.async {
                 _tableView.reloadData()
             }
@@ -47,6 +61,13 @@ class DeviceInformationViewController: NSViewController {
 
         if tableView == self.graphicsCardTableView,
             let _tableView = self.graphicsCardTableView {
+            DispatchQueue.main.async {
+                _tableView.reloadData()
+            }
+        }
+
+        if tableView == self.partitionsTableView,
+            let _tableView = self.partitionsTableView {
             DispatchQueue.main.async {
                 _tableView.reloadData()
             }
@@ -120,7 +141,7 @@ class DeviceInformationViewController: NSViewController {
             }
 
             allGraphicsCards = machineInformation.allGraphicsCards
-            allDiskAndPartitions = machineInformation.allDisksAndPartitions
+            allDisks = machineInformation.allDisksAndPartitions
 
             self.showLabels()
         }
@@ -164,7 +185,7 @@ class DeviceInformationViewController: NSViewController {
         self.serialNumberLabel?.addGestureRecognizer(serialClickHandler)
 
         self.graphicsCardTableView?.sizeToFit()
-        self.disksAndPartitionsTableView?.sizeToFit()
+        self.disksTableView?.sizeToFit()
 
         NotificationCenter.default.addObserver(self, selector: #selector(updateView), name: ItemRepository.newPartition, object: nil)
     }
@@ -185,38 +206,31 @@ extension DeviceInformationViewController: NSTableViewDelegate, NSTableViewDeleg
         static let PartitionSizeCell = "PartitionSizeID"
     }
 
+
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         var text: String = ""
         var cellIdentifier: String = ""
         var image: NSImage? = nil
 
-        if tableView == self.disksAndPartitionsTableView {
-            let item = allDiskAndPartitions[row]
-            if type(of: item) == Disk.self {
-                let disk = item as! Disk
+        if tableView == self.disksTableView {
+            let disk = allDisks[row]
 
-                if tableColumn == tableView.tableColumns[0] {
-                    text = disk.deviceIdentifier
-                    cellIdentifier = CellIdentifiers.DiskNameCell
-                } else if tableColumn == tableView.tableColumns[1] {
-                    text = disk.size.getReadableUnit()
-                    cellIdentifier = CellIdentifiers.DiskSizeCell
-                }
+            if tableColumn == tableView.tableColumns[0] {
+                text = disk.deviceIdentifier
+                cellIdentifier = CellIdentifiers.DiskNameCell
+            } else if tableColumn == tableView.tableColumns[1] {
+                text = disk.size.getReadableUnit()
+                cellIdentifier = CellIdentifiers.DiskSizeCell
+            }
+        } else if tableView == partitionsTableView {
+            let partition = allPartitions[row]
 
-            } else if type(of: item) == Partition.self {
-                let partition = item as! Partition
-
-                if tableColumn == tableView.tableColumns[0] {
-                    text = partition.volumeName
-                    cellIdentifier = CellIdentifiers.PartitionNameCell
-                } else if tableColumn == tableView.tableColumns[1] {
-                    text = partition.size.getReadableUnit()
-                    cellIdentifier = CellIdentifiers.PartitionSizeCell
-                }
-                if let cell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: cellIdentifier), owner: nil) as? NSTableCellView {
-                    cell.textField?.stringValue = text
-                    return cell
-                }
+            if tableColumn == tableView.tableColumns[0] {
+                text = partition.volumeName
+                cellIdentifier = CellIdentifiers.PartitionNameCell
+            } else if tableColumn == tableView.tableColumns[1] {
+                text = partition.size.getReadableUnit()
+                cellIdentifier = CellIdentifiers.PartitionSizeCell
             }
         } else if tableView == graphicsCardTableView {
             let GPU = self.allGraphicsCards[row]
@@ -253,8 +267,10 @@ extension DeviceInformationViewController: NSTableViewDelegate, NSTableViewDeleg
 
 extension DeviceInformationViewController: NSTableViewDataSource {
     func numberOfRows(in tableView: NSTableView) -> Int {
-        if tableView == self.disksAndPartitionsTableView {
-            return allDiskAndPartitions.count
+        if tableView == self.disksTableView {
+            return allDisks.count
+        } else if tableView == self.partitionsTableView {
+            return allPartitions.count
         }
         return allGraphicsCards.count
     }

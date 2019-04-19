@@ -91,6 +91,14 @@ struct Partition: Item, Codable {
         }
     }
     
+    public func getInstaller() -> Installer?{
+        if self.volumeName.contains("Install macOS") || self.volumeName.contains("Install OS X"){
+            let volumePath = "/Volumes/\(self.volumeName)"
+            return Installer(volumePath: volumePath, mountPoint: volumePath.fileURL, appName: self.volumeName)
+        }
+        return nil
+    }
+    
     static func == (lhs: Partition, rhs: Partition) -> Bool {
         return lhs.volumeUUID == rhs.volumeUUID && lhs.diskUUID == rhs.diskUUID
     }

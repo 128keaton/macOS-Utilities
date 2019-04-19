@@ -23,8 +23,7 @@ class Installer: NSObject, Item, NSFilePresenter {
     var versionNumber: Double = 0.0
     var icon: NSImage = NSImage(named: "NSHaltIcon")!
     var versionName: String = ""
-    var partition: Partition? = nil
-    var diskImage: DiskImage? = nil
+    var volumePath: String
     var isSelected = false
 
     var isValid: Bool {
@@ -52,34 +51,23 @@ class Installer: NSObject, Item, NSFilePresenter {
         return isFakeInstaller ? "FakeInstaller - Can Install: \(self.canInstall) - Icon: \(icon == prohibatoryIcon ? "no" : "yes") - ID: \(self.id)" : "Installer - \(versionNumber) - \(versionName) - Icon: \(icon == prohibatoryIcon ? "no" : "yes") - Valid: \(isValid) - Can Install: \(self.canInstall) - ID: \(self.id)"
     }
 
-    init(partition: Partition) {
-        self.partition = partition
+
+    init(volumePath: String, mountPoint: URL, appName: String) {
+        self.volumePath = volumePath
+        self.presentedItemURL = mountPoint
+        self.appLabel = "\(appName).app"
+        
         super.init()
 
-        self.versionName = self.getVersionName()
-        self.appLabel = self.versionName + ".app"
-        self.icon = self.findAppIcon()
-
-        self.presentedItemURL = URL(fileURLWithPath: "\(self.partition!.getMountPoint())", isDirectory: false)
-
-        self.addToRepo()
-    }
-
-    init(diskImage: DiskImage) {
-        self.diskImage = diskImage
-        super.init()
-
-        self.versionName = self.getVersionName()
-        self.appLabel = self.versionName + ".app"
-        self.icon = self.findAppIcon()
-
-        self.presentedItemURL = URL(fileURLWithPath: "\(self.diskImage!.getMountPoint())", isDirectory: false)
+        self.determineVersion()
+        self.findAppIcon()
 
         self.addToRepo()
     }
 
     init(isFakeInstaller: Bool = true, canInstallOnMachine: Bool) {
         if(isFakeInstaller) {
+            self.volumePath = ""
             super.init()
             self.isFakeInstaller = isFakeInstaller
             let fakeVersionString = String.random(4, numericOnly: true)
@@ -118,14 +106,10 @@ class Installer: NSObject, Item, NSFilePresenter {
         }
     }
 
-    private func getVersionName() -> String {
-        var parsedName = self.partition?.volumeName.replacingOccurrences(of: ".[0-9].*", with: "", options: .regularExpression)
-        if parsedName == nil {
-            parsedName = self.diskImage?.volumeName.replacingOccurrences(of: ".[0-9].*", with: "", options: .regularExpression)
-        }
-
-        self.versionNumber = Double(VersionNumbers.getVersionForName(parsedName!))!
-        return parsedName!
+    private func determineVersion() {
+        let parsedName = self.appLabel.replacingOccurrences(of: ".[0-9].*", with: "", options: .regularExpression).replacingOccurrences(of: ".app", with: "")
+        self.versionNumber = Double(VersionNumbers.getVersionForName(parsedName))!
+        self.versionName = parsedName
     }
 
     public func launch() {
@@ -137,17 +121,12 @@ class Installer: NSObject, Item, NSFilePresenter {
 
     public func refresh() {
         DispatchQueue.main.sync {
-            self.icon = self.findAppIcon()
+            self.findAppIcon()
         }
     }
 
-    private func findAppIcon() -> NSImage {
-        var volumePath = self.partition?.getMountPoint()
-        if volumePath == nil {
-            volumePath = self.diskImage?.getMountPoint()
-        }
-
-        var path = "\(volumePath!)/\(self.appLabel)/Contents/Info.plist"
+    private func findAppIcon() {
+        var path = "\(volumePath)/\(self.appLabel)/Contents/Info.plist"
         var infoDictionary = NSDictionary()
 
         if let potentialInfoDictionary = NSDictionary(contentsOfFile: path) {
@@ -156,26 +135,28 @@ class Installer: NSObject, Item, NSFilePresenter {
             infoDictionary = potentialInfoDictionary
             path = "/Volumes/\(self.versionName)\(path)"
         } else {
-            return prohibatoryIcon!
+            self.icon = prohibatoryIcon!
+            return
         }
 
         guard let imageName = (infoDictionary["CFBundleIconFile"] as? String)
             else {
-                return prohibatoryIcon!
+                self.icon = prohibatoryIcon!
+                return
         }
 
-        var imagePath = "\(volumePath!)/\(self.appLabel)/Contents/Resources/\(imageName)"
+        var imagePath = "\(volumePath)/\(self.appLabel)/Contents/Resources/\(imageName)"
 
         if !imageName.contains(".icns") {
             imagePath = imagePath + ".icns"
         }
 
-        return NSImage(contentsOfFile: imagePath)!
+        self.icon = NSImage(contentsOfFile: imagePath)!
     }
 
 
     static func == (lhs: Installer, rhs: Installer) -> Bool {
         return lhs.versionNumber == rhs.versionNumber &&
-            lhs.versionName == rhs.versionName && lhs.icon == rhs.icon
+            lhs.versionName == rhs.versionName
     }
 }
