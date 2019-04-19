@@ -101,11 +101,11 @@ class PreferenceLoader {
                 let data = try encoder.encode(preferences)
                 if writeToBundle {
                     let bundlePreferences = (preferences.copy() as! Preferences)
-                    if let applications = bundlePreferences.mappedApplications{
-                        applications.forEach { $0.isInvalid = false }
+                    if let applications = bundlePreferences.mappedApplications {
+                        applications.forEach { $0.isInvalid = false; $0.showInApplicationsWindow = true }
                         bundlePreferences.mappedApplications = applications
                     }
-                    
+
                     let bundleData = try encoder.encode(bundlePreferences)
                     try bundleData.write(to: URL(fileURLWithPath: bundlePropertyListPath))
                     DDLogVerbose("Saved preferences to propertly list at path: \(bundlePropertyListPath)")
@@ -123,11 +123,11 @@ class PreferenceLoader {
                 }
 
                 if notify {
+                    PreferenceLoader.currentPreferences = preferences
                     NotificationCenter.default.post(name: PreferenceLoader.preferencesLoaded, object: true)
                 } else {
                     NotificationCenter.default.post(name: PreferenceLoader.preferencesUpdated, object: preferences)
                 }
-                PreferenceLoader.currentPreferences = preferences
             } catch {
                 DDLogError("Could not save preferences: \(error)")
             }
@@ -199,11 +199,11 @@ class PreferenceLoader {
                 let data = try encoder.encode(preferences)
                 if writeToBundle {
                     let bundlePreferences = (preferences.copy() as! Preferences)
-                    if let applications = bundlePreferences.mappedApplications{
-                        applications.forEach { $0.isInvalid = false }
+                    if let applications = bundlePreferences.mappedApplications {
+                        applications.forEach { $0.isInvalid = false; $0.showInApplicationsWindow = true }
                         bundlePreferences.mappedApplications = applications
                     }
-                    
+
                     let bundleData = try encoder.encode(bundlePreferences)
                     try bundleData.write(to: URL(fileURLWithPath: bundlePropertyListPath))
                     DDLogVerbose("Saved preferences to propertly list at path: \(bundlePropertyListPath)")
@@ -269,8 +269,8 @@ class PreferenceLoader {
         do {
             let _data = try Data(contentsOf: at)
             let _preferences = try PropertyListDecoder().decode(Preferences.self, from: _data)
-            
-            if var applications = _preferences.mappedApplications{
+
+            if var applications = _preferences.mappedApplications {
                 applications.removeAll { $0.path == "" || !$0.path.contains(".app") }
                 _preferences.mappedApplications = applications
             }
@@ -281,7 +281,7 @@ class PreferenceLoader {
             if loadLegacyStatus.0 == true {
                 if let convertedPreferences = loadLegacyStatus.1,
                     forceSave == true {
-                    if var applications = convertedPreferences.mappedApplications{
+                    if var applications = convertedPreferences.mappedApplications {
                         applications.removeAll { $0.path == "" || !$0.path.contains(".app") }
                         convertedPreferences.mappedApplications = applications
                     }
@@ -326,6 +326,7 @@ class PreferenceLoader {
         if let sharedInstance = self.sharedInstance {
             if let newPreferences = sharedInstance.parsePreferences(from) {
                 sharedInstance.save(newPreferences, notify: !updatingRunning)
+                PreferenceLoader.currentPreferences = newPreferences
                 return true
             }
         }
@@ -336,6 +337,7 @@ class PreferenceLoader {
         if let sharedInstance = self.sharedInstance {
             if let newPreferences = sharedInstance.parsePreferences(from) {
                 sharedInstance.save(newPreferences, notify: !updatingRunning)
+                PreferenceLoader.currentPreferences = newPreferences
                 return true
             }
         }

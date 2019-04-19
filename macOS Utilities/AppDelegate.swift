@@ -109,6 +109,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 validSemaphore.signal()
                 self.preferencesMenuItem?.isEnabled = true
             }
+            
+            if preferences.mappedApplications != nil {
+                NotificationCenter.default.post(name: ApplicationViewController.reloadApplications, object: nil)
+            }
         }
     }
 

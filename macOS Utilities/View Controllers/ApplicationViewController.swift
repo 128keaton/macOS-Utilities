@@ -23,6 +23,8 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
 
     private var dispatchQueue: DispatchQueue?
     private var dispatchWorkItem: DispatchWorkItem?
+    
+    static let reloadApplications = Notification.Name("ReloadApplications")
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,6 +48,7 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.bulkUpdateApplications(_:)), name: ItemRepository.updatingApplications, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.addApplication(_:)), name: ItemRepository.newApplication, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.forceReloadApplications), name: ItemRepository.newApplications, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.forceReloadApplications), name: ApplicationViewController.reloadApplications, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.checkForInstallers), name: ItemRepository.newInstaller, object: nil)
     }
 

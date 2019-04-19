@@ -8,11 +8,15 @@
 
 import Foundation
 
-class HDIUtilOutput: Decodable {
+class HDIUtilOutput: Decodable, CustomStringConvertible {
     var systemEntities: [DiskImage]
     
     init() {
         self.systemEntities = []
+    }
+    
+    var description: String {
+        return "HDIUtilOutput: \n System Entities: \n\t \(self.systemEntities.map { $0.description })"
     }
     
     required init(from decoder: Decoder) throws {

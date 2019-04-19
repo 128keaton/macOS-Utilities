@@ -32,10 +32,13 @@ class ApplicationUtility {
     @objc public func getApplications(_ notification: Notification? = nil) {
         if notification == nil {
             guard let applications = PreferenceLoader.currentPreferences?.getApplications() else { return }
-
+            self.allApplications = []
             allApplications.append(contentsOf: applications)
 
-            ItemRepository.shared.addToRepository(newApplications: allApplications, merge: true)
+            ItemRepository.shared.addToRepository(newApplications: allApplications, merge: false)
+        } else if let aNotification = notification {
+            DDLogVerbose("Will use this later")
+            print(aNotification)
         }
     }
 

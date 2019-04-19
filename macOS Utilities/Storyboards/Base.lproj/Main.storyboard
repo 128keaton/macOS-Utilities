@@ -527,7 +527,13 @@
                                                 <action selector="reloadPreferences:" target="FXb-Ej-UYn" id="E38-dw-Tje"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Force Reload All Disks" keyEquivalent="r" allowsKeyEquivalentWhenHidden="YES" id="XrX-XG-Hcw">
+                                        <menuItem title="Reload Applications" keyEquivalent="r" allowsKeyEquivalentWhenHidden="YES" id="VkR-JJ-osd">
+                                            <connections>
+                                                <action selector="reloadApplications:" target="FXb-Ej-UYn" id="P2V-eS-6hS"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Force Reload All Disks" allowsKeyEquivalentWhenHidden="YES" id="XrX-XG-Hcw">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="forceReloadAllDisks:" target="FXb-Ej-UYn" id="ndz-jD-d47"/>
                                             </connections>

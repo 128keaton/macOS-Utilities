@@ -23,7 +23,7 @@ class DiskUtility: NSObject, NSFilePresenter {
     private var fakeDisks = [Disk]()
 
     public var allSharesAndInstallersUnmounted: Bool {
-        return self.mountedShares.count == 0 && self.mountedInstallers.count == 0
+        return self.mountedShares.count == 0 && self.diskImage.count == 0
     }
 
     private let diskModificationQueue = DispatchQueue(label: "NSDiskModificationQueue")
@@ -158,6 +158,8 @@ class DiskUtility: NSObject, NSFilePresenter {
 
             if (alreadyExisted == true && (contents.filter { $0.contains(".dmg") }).count > 0) {
                 // NFS mount already exists AND has our DMGs
+                let newShare = Share(type: "NFS", mountPoint: localPath)
+                self.mountedShares.append(newShare)
                 didSucceed(true)
                 return
             }
@@ -247,9 +249,11 @@ class DiskUtility: NSObject, NSFilePresenter {
                     } catch {
                         DDLogError("Could not mount disk image at :\(at)")
                     }
-                    
-                    if let validOutput = hdiUtilOutput{
-                        self.diskImage = validOutput.systemEntities.filter { $0.potentiallyMountable == true }
+
+                    if let validOutput = hdiUtilOutput,
+                        let mountableDiskImage = (validOutput.systemEntities.first { $0.potentiallyMountable == true }) {
+                        DDLogVerbose("New Disk Image: \(mountableDiskImage)")
+                        self.diskImage.append(mountableDiskImage)
                         self.mountedInstallers = self.diskImage.filter { $0.containsInstaller == true }.map { Installer(diskImage: $0) }
                     }
                 }
@@ -430,14 +434,21 @@ class DiskUtility: NSObject, NSFilePresenter {
         if(allSharesAndInstallersUnmounted) {
             didComplete(true)
         }
+        DDLogVerbose("Ejecting disk images: \(self.diskImage)")
         self.diskImage.forEach {
             let currentDisk = $0
+            DDLogVerbose("Ejecting disk image: \(currentDisk)")
             if let deviceIdentifier = currentDisk.devEntry {
                 TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["eject", deviceIdentifier], returnEscaping: { (taskOutput) in
                         if let diskUtilOutput = taskOutput {
                             if diskUtilOutput.contains("ejected") {
                                 self.diskModificationQueue.sync {
+                                    DDLogVerbose("Ejected disk image: \(currentDisk)")
                                     self.diskImage.removeAll { $0 == currentDisk }
+                                    self.diskImage.removeAll { $0.isMounted == false }
+                                    if self.diskImage.count == 0 {
+                                        didComplete(true)
+                                    }
                                 }
                             } else {
                                 DDLogError("Unable to eject disk image: \(deviceIdentifier) \(diskUtilOutput)")
@@ -445,6 +456,9 @@ class DiskUtility: NSObject, NSFilePresenter {
                         }
                     })
             }
+        }
+        if self.diskImage.count == 0 {
+            didComplete(true)
         }
     }
 
@@ -459,8 +473,10 @@ class DiskUtility: NSObject, NSFilePresenter {
                 TaskHandler.createTask(command: "/sbin/umount", arguments: [mountPoint], returnEscaping: { (taskOutput) in
                         self.diskModificationQueue.sync {
                             self.mountedShares.removeAll { $0 == currentShare }
+                            if self.mountedShares.count == 0 {
+                                didComplete(true)
+                            }
                         }
-                        didComplete(true)
                     })
             }
         }

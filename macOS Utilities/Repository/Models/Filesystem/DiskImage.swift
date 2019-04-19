@@ -41,7 +41,7 @@ struct DiskImage: Item, Codable{
     }
     
     var description: String {
-        return "Disk Image: \(self.devEntry ?? "BAD DMG")"
+        return "Disk Image: \n\t Device Identifier: \(self.devEntry ?? "BAD DMG") \n\t Mount Point: \(self.mountPoint ?? "Not mounted") \n\t ID: \(self.id)\n"
     }
     
     private enum CodingKeys: String, CodingKey {
