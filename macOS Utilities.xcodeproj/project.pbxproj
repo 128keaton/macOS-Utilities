@@ -61,6 +61,7 @@
 		8ACB65D921063E6F004B9C5A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8ACB65D821063E6F004B9C5A /* Assets.xcassets */; };
 		8ACB65DC21063E6F004B9C5A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8ACB65DA21063E6F004B9C5A /* Main.storyboard */; };
 		8ADBB216210A623800C4F1D9 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ADBB215210A623800C4F1D9 /* Extensions.swift */; };
+		8ADFB00F226A76D900B637E5 /* DiskOrPartition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ADFB00E226A76D900B637E5 /* DiskOrPartition.swift */; };
 		8AED6288393102F645E0F76B /* Pods_macOS_Utilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E87587563FA0C9207B973F8E /* Pods_macOS_Utilities.framework */; };
 		8AFCCD8822654E4B0026CFE6 /* DiskUtilityOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AFCCD8722654E4B0026CFE6 /* DiskUtilityOutput.swift */; };
 /* End PBXBuildFile section */
@@ -125,6 +126,7 @@
 		8ACB65DD21063E6F004B9C5A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8ACB65DE21063E6F004B9C5A /* macOS_Utilities.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macOS_Utilities.entitlements; sourceTree = "<group>"; };
 		8ADBB215210A623800C4F1D9 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		8ADFB00E226A76D900B637E5 /* DiskOrPartition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskOrPartition.swift; sourceTree = "<group>"; };
 		8AFCCD8722654E4B0026CFE6 /* DiskUtilityOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskUtilityOutput.swift; sourceTree = "<group>"; };
 		D04B207FCA2163F7FF4B0B6B /* Pods-macOS Utilities.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-macOS Utilities.debug.xcconfig"; path = "Pods/Target Support Files/Pods-macOS Utilities/Pods-macOS Utilities.debug.xcconfig"; sourceTree = "<group>"; };
 		D8A022574234BFBF730A7F5C /* Pods-macOS Utilities.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-macOS Utilities.release.xcconfig"; path = "Pods/Target Support Files/Pods-macOS Utilities/Pods-macOS Utilities.release.xcconfig"; sourceTree = "<group>"; };
@@ -254,6 +256,7 @@
 				8A9370D02256BB5A002B3838 /* Share.swift */,
 				8A6F8D892263D35B00077172 /* Partition.swift */,
 				8AA841CB22659260009C5948 /* DiskImage.swift */,
+				8ADFB00E226A76D900B637E5 /* DiskOrPartition.swift */,
 			);
 			path = Filesystem;
 			sourceTree = "<group>";
@@ -591,6 +594,7 @@
 				8A6C6477225EA19200CD6DCF /* InstallerServerPreferences.swift in Sources */,
 				8A6C6459225D324900CD6DCF /* PageController.swift in Sources */,
 				8A6C6475225EA0CE00CD6DCF /* LoggingPreferences.swift in Sources */,
+				8ADFB00F226A76D900B637E5 /* DiskOrPartition.swift in Sources */,
 				8A6C6470225E9FA100CD6DCF /* PreferencesViewController.swift in Sources */,
 				8A6F28F0221B9F5C00FF9DB3 /* InstallerViewController.swift in Sources */,
 				8ABAE31D2252DA5800E537D3 /* Installer.swift in Sources */,

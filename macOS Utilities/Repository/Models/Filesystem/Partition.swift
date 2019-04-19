@@ -9,7 +9,13 @@
 import Foundation
 import AppKit
 
-struct Partition: Item, Codable {
+struct Partition: Item, DiskOrPartition, Codable {
+    var dataType: DataType {
+        return .partition
+    }
+    private var nonInstallableDriveNames: [String] {
+        return ["System Reserved", "EFI", "Recovery", "VM", "Preboot", "Time Machine"]
+    }
     var content: String?
     var deviceIdentifier: String
     var diskUUID: String?
@@ -63,7 +69,7 @@ struct Partition: Item, Codable {
     }
 
     var installable: Bool {
-        return self.size.gigabytes >= 120.0 && self.volumeName != "System Reserved" && self.isMounted
+        return self.size.gigabytes >= 120.0 && !self.nonInstallableDriveNames.contains(self.volumeName) && self.isMounted
     }
 
     var containsInstaller: Bool {

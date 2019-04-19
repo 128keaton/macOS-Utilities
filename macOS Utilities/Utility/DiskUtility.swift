@@ -410,21 +410,23 @@ class DiskUtility: NSObject, NSFilePresenter {
         return false
     }
 
-    public func getAllDisksAndPartitions(_ installablePartitionOnly: Bool = true) -> [Disk] {
-        var allDiskAndPartitions = [Disk]()
-        if installablePartitionOnly {
+    public func getAllDisksAndPartitions(_ installablePartitionOnly: Bool = true) -> [DiskOrPartition] {
+        var allDiskAndPartitions = [DiskOrPartition]()
+        if installablePartitionOnly{
             self.cachedDisks.filter { $0.installablePartition != nil || $0.isFake }.forEach {
                 let aDisk = $0
                 allDiskAndPartitions.append(aDisk)
-
+                allDiskAndPartitions.append(contentsOf: aDisk.partitions.filter { $0.installable })
+                
             }
-        } else {
+        }else{
             self.cachedDisks.filter { $0.isFake }.forEach {
                 let aDisk = $0
                 allDiskAndPartitions.append(aDisk)
-
+                allDiskAndPartitions.append(contentsOf: aDisk.partitions)
             }
         }
+        
         return allDiskAndPartitions
     }
 

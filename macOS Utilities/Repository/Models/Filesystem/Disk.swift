@@ -9,7 +9,7 @@
 import Foundation
 import CocoaLumberjack
 
-struct Disk: Item, Codable {
+struct Disk: Item, DiskOrPartition, Codable {
     var rawContent: String? = nil
     var deviceIdentifier: String
     var regularPartitions: [Partition]?
@@ -23,6 +23,10 @@ struct Disk: Item, Codable {
         return self.rawContent ?? "None"
     }
 
+    var dataType: DataType{
+        return .disk
+    }
+    
     var id: String {
         return String("\(deviceIdentifier)-\(size)-\(content)").md5Value
     }

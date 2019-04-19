@@ -21,21 +21,13 @@ class DiskSelectionViewController: NSViewController {
     private var defaultItemIdentifiers: [NSTouchBarItem.Identifier] = [.backPageController]
 
     private var selectedInstaller: Installer? = nil
-    private var allPartitions = [Partition]() {
+
+    private var allDisksAndPartitions = [DiskOrPartition]() {
         didSet {
-            self.tableView?.reloadData()
+            self.reloadTableView()
         }
     }
-    private var allDisks = [Disk]() {
-        didSet {
-            // TODO: make this mappable
-            self.allDisks.forEach {
-                if let installablePartition = $0.installablePartition{
-                    self.allPartitions.append(installablePartition)
-                }
-            }
-        }
-    }
+
     private var selectedPartition: Partition? = nil
     private var selectedDisk: Disk? = nil
 
@@ -62,7 +54,7 @@ class DiskSelectionViewController: NSViewController {
 
     private func getDisks() {
         diskProgressIndicator?.startSpinning()
-        allDisks = DiskUtility.shared.getAllDisksAndPartitions()
+        allDisksAndPartitions = DiskUtility.shared.getAllDisksAndPartitions(true)
     }
 
     @IBAction @objc func openDiskUtility(_ sender: NSButton) {
@@ -141,14 +133,26 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
         var text: String = ""
         var cellIdentifier: String = ""
 
-        let partition = allPartitions[row]
+        let diskOrPartition = allDisksAndPartitions[row]
 
-        if tableColumn == tableView.tableColumns[0] {
-            text = partition.volumeName
-            cellIdentifier = CellIdentifiers.DiskNameCell
-        } else if tableColumn == tableView.tableColumns[1] {
-            text = partition.size.getReadableUnit()
-            cellIdentifier = CellIdentifiers.DiskSizeCell
+        if diskOrPartition.dataType == .disk {
+            let disk = diskOrPartition as! Disk
+            if tableColumn == tableView.tableColumns[0] {
+                text = disk.deviceIdentifier
+                cellIdentifier = CellIdentifiers.DiskNameCell
+            } else if tableColumn == tableView.tableColumns[1] {
+                text = disk.size.getReadableUnit()
+                cellIdentifier = CellIdentifiers.DiskSizeCell
+            }
+        } else if diskOrPartition.dataType == .partition {
+            let partition = diskOrPartition as! Partition
+            if tableColumn == tableView.tableColumns[0] {
+                text = partition.volumeName
+                cellIdentifier = CellIdentifiers.PartitionNameCell
+            } else if tableColumn == tableView.tableColumns[1] {
+                text = partition.size.getReadableUnit()
+                cellIdentifier = CellIdentifiers.PartitionSizeCell
+            }
         }
 
         if let cell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: cellIdentifier), owner: nil) as? NSTableCellView {
@@ -160,15 +164,32 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
 
     func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
         self.tableView?.deselectAll(self)
-        DDLogInfo("Disk/Partition Selected: \(self.allDisks[row])")
+        DDLogInfo("Disk/Partition Selected: \(self.allDisksAndPartitions[row])")
 
-        let selectedPartition = allPartitions[row]
-        self.selectedPartition = selectedPartition
-        
-        if !DiskUtility.partitionIsFormattedFor(self.selectedPartition!, installer: self.selectedInstaller!) {
-            nextButton?.title = "Reformat"
-        } else {
-            nextButton?.title = "Next"
+        let diskOrPartition = allDisksAndPartitions[row]
+
+        if diskOrPartition.dataType == .disk {
+            self.selectedPartition = nil
+            self.selectedDisk = (diskOrPartition as! Disk)
+        } else if diskOrPartition.dataType == .partition {
+            self.selectedDisk = nil
+            self.selectedPartition = (diskOrPartition as! Partition)
+        }
+
+        if let selectedInstaller = self.selectedInstaller {
+            if let selectedDisk = self.selectedDisk {
+                if !DiskUtility.diskIsFormattedFor(selectedDisk, installer: selectedInstaller) {
+                    nextButton?.title = "Reformat"
+                } else {
+                    nextButton?.title = "Next"
+                }
+            } else if let selectedPartition = self.selectedPartition {
+                if !DiskUtility.partitionIsFormattedFor(selectedPartition, installer: selectedInstaller) {
+                    nextButton?.title = "Reformat"
+                } else {
+                    nextButton?.title = "Next"
+                }
+            }
         }
 
         nextButton?.isEnabled = true
@@ -240,7 +261,7 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
 
 extension DiskSelectionViewController: NSTableViewDataSource {
     func numberOfRows(in tableView: NSTableView) -> Int {
-        return allPartitions.count
+        return allDisksAndPartitions.count
     }
 }
 
