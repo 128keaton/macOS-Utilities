@@ -34,8 +34,17 @@ class ItemRepository {
         DispatchQueue.main.async {
             self.reloadAllItems()
         }
-
+        
         NotificationCenter.default.addObserver(self, selector: #selector(ItemRepository.reloadAllItems), name: ItemRepository.refreshRepository, object: nil)
+    }
+    
+    public func createFakeInstallers(){
+        #if DEBUG
+            addFakeInstaller()
+            addFakeInstaller(canInstallOnMachine: true)
+        #else
+            DDLogError("Should only be called when debugging in Xcode. Thnx")
+        #endif
     }
 
     @objc public func reloadAllItems() {

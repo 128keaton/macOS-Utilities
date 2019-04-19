@@ -25,6 +25,10 @@ class PageController: NSObject {
         self.setArrangedObjects()
     }
 
+    @objc private func goBack() {
+        self.goToPreviousPage()
+    }
+
     public func setPageController(pageController: NSPageController) {
         pageController.delegate = self
 
@@ -266,5 +270,28 @@ extension PageController: NSPageControllerDelegate {
 
         DDLogInfo("Page Controller changed pages to \(pageController.arrangedObjects[currentPageIndex])")
         pageController.completeTransition()
+    }
+}
+
+
+@available(OSX 10.12.1, *)
+extension PageController: NSTouchBarDelegate {
+    func makeTouchBar() -> NSTouchBar? {
+        let touchBar = NSTouchBar()
+        touchBar.delegate = self
+        touchBar.defaultItemIdentifiers = [.backPageController]
+        return touchBar
+    }
+
+    func touchBar(_ touchBar: NSTouchBar, makeItemForIdentifier identifier: NSTouchBarItem.Identifier) -> NSTouchBarItem? {
+        switch identifier {
+
+        case NSTouchBarItem.Identifier.backPageController:
+            let item = NSCustomTouchBarItem(identifier: identifier)
+            item.view = NSButton(image: NSImage(named: "NSTouchBarGoBackTemplate")!, target: self, action: #selector(goBack))
+            return item
+
+        default: return nil
+        }
     }
 }

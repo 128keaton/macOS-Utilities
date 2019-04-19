@@ -18,7 +18,6 @@ class PreferencesViewController: NSViewController {
     @IBOutlet weak var loggingPortLabel: NSTextField!
     @IBOutlet weak var loggingCheckBox: NSButton!
 
-
     @IBOutlet weak var installerSectionLabel: NSTextField!
     @IBOutlet weak var installerMountPathField: NSTextField!
     @IBOutlet weak var installerServerIPField: NSTextField!
@@ -157,8 +156,6 @@ class PreferencesViewController: NSViewController {
                     self.deviceIdentifierAPITokenField.stringValue = ""
                 }
 
-                self.updateRemoteConfigurationsView(preferences.remoteConfigurationPreferences)
-
                 self.updateOtherLabels()
             }
         }
@@ -203,22 +200,12 @@ class PreferencesViewController: NSViewController {
         installerMountPathField.stringValue = installerServerPreferences.mountPath
 
         serverTypes.forEach { installerServerTypePopup.addItem(withTitle: $0) }
-
+        
         if let serverType = serverTypes.firstIndex(of: installerServerPreferences.serverType) {
             installerServerTypePopup.selectItem(at: serverType)
         }
-    }
-
-    private func updateRemoteConfigurationsView(_ remoteConfigurationPreferences: [RemoteConfigurationPreferences]?) {
-        self.remoteConfigurationPreferencesPopup.removeAllItems()
-        if let _remoteConfigurationPreferences = remoteConfigurationPreferences {
-            self.remoteConfigurationPreferencesPopup.isEnabled = true
-            self.remoteConfigurationAmountLabel.stringValue = "\(_remoteConfigurationPreferences.count) configurations"
-            self.remoteConfigurationPreferencesPopup.addItems(withTitles: _remoteConfigurationPreferences.map { $0.name })
-        } else {
-            self.remoteConfigurationAmountLabel.stringValue = "0 configurations"
-            self.remoteConfigurationPreferencesPopup.isEnabled = false
-        }
+        
+        installerServerTypePopup.isEnabled = (serverTypes.count > 1)
     }
 
     @IBAction func installerCheckboxToggled(_ sender: NSButton) {
@@ -276,10 +263,6 @@ class PreferencesViewController: NSViewController {
             validPreferenceLoader.save(preferences)
         }
     }
-
-    @IBAction func selectedPreferencesDidChange(_ sender: NSPopUpButton){
-        
-    }
     
     @IBAction func closePreferences(_ sender: NSButton) {
         savePreferences()
@@ -307,29 +290,6 @@ class PreferencesViewController: NSViewController {
     @IBAction func setServerHostToCurrentIPAddress(_ sender: NSButton) {
         IPAddressChooserDialog.show(self) { (selectedIPAddress) in
             self.installerServerIPField.stringValue = selectedIPAddress
-        }
-    }
-
-    @IBAction func generateRemoteConfigForCurrent(_ sender: NSButton) {
-        if let preferences = self.preferences,
-            let copiedPreferences = preferences.copy() as? Preferences {
-
-            KBTextFieldDialog.show(self, doneButtonText: "Done", textFieldPlaceholder: "Remote configuration name", dialogTitle: "Create a Remote Configuration", additionalTextFieldPlaceholder: "http://me.is/the/best/programmer/", additionalDialogTitle: "Full host URL") { (newConfigurationName, newHostURL) in
-                if let hostURL = URL(string: newHostURL) {
-                    copiedPreferences.isRemoteConfiguration = true
-                    let newFolderName = newConfigurationName.dashedFileName + "-RemoteConfiguration"
-                    let newRemoteConfigurationName = newConfigurationName.dashedFileName + "-remoteConfig"
-                    let newConfigurationURL = URL(string: "\(newConfigurationName.escaped).utilconf")!
-
-                    let newRemoteConfig = RemoteConfigurationPreferences(hostURL: hostURL, configurationURL: newConfigurationURL, name: newRemoteConfigurationName)
-                    let didSavePreferences = PreferenceLoader.savePreferencesToDownloads(copiedPreferences, fileName: newConfigurationName, createFolder: true, folderName: newFolderName)
-                    let didSaveConfig = PreferenceLoader.saveRemoteConfigurationToDownloads(newRemoteConfig, fileName: newRemoteConfigurationName, createFolder: true, folderName: newFolderName)
-
-                    if(!didSaveConfig || !didSavePreferences) {
-                        // TODO
-                    }
-                }
-            }
         }
     }
 }

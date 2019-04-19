@@ -22,6 +22,8 @@ class MenuHandler: NSObject {
             self.buildHelpMenu()
         }
     }
+    
+    public var fileMenu: NSMenu?
 
     public var installers = [Installer]()
     public var helpEmailAddress: String? = nil
@@ -68,7 +70,7 @@ class MenuHandler: NSObject {
             infoMenu?.addItem(checkWarrantyItem)
         }
     }
-
+    
     // MARK: File menu functions
     @IBAction func exportCurrentConfiguration(_ sender: NSMenuItem) {
         if PreferenceLoader.savePreferencesToDownloads(PreferenceLoader.currentPreferences!, fileName: "exported-\(String.random(5, numericOnly: true))") {
@@ -93,10 +95,12 @@ class MenuHandler: NSObject {
             if response == .OK {
                 if let propertyListURL = openPanel.url {
                     DispatchQueue.main.async {
-                        KBTextFieldDialog.show(NSApp.keyWindow!.contentViewController!, doneButtonText: "Done", textFieldPlaceholder: "New Configuration Name", dialogTitle: "Load configuration from URL", completionHandler: { (newConfigurationName) in
-                            let newConfiguration = RemoteConfigurationPreferences(filePath: propertyListURL, name: newConfigurationName)
-                            PreferenceLoader.sharedInstance?.addRemoteConfiguration(newConfiguration)
-                        })
+                        let didLoad = PreferenceLoader.loadPreferences(propertyListURL, updatingRunning: true)
+                        if didLoad {
+                            DDLogInfo("Loaded preferences from: \(propertyListURL)")
+                        } else {
+                            DDLogError("Failed to load preferences from: \(propertyListURL)")
+                        }
                     }
                 }
             }
@@ -139,8 +143,8 @@ class MenuHandler: NSObject {
 
 
     // MARK: Info menu functions
-    // Unfortunately, this is rate limited :/
     @objc func openCoverageLink() {
+        // Unfortunately, this is rate limited :/
         if let serial = NSApplication.shared.getSerialNumber() {
             NSWorkspace().open(URL(string: "https://checkcoverage.apple.com/us/en/?sn=\(serial)")!)
         }

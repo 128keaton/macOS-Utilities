@@ -17,7 +17,6 @@ class Preferences: Codable, NSCopying, CustomStringConvertible, Equatable {
     var deviceIdentifierAuthenticationToken: String?
     var loggingPreferences: LoggingPreferences?
     var installerServerPreferences: InstallerServerPreferences?
-    var remoteConfigurationPreferences: [RemoteConfigurationPreferences]?
     var mappedApplications: [Application]?
     var isRemoteConfiguration: Bool? = false
     var configurationVersion: String

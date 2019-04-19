@@ -46,13 +46,22 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.bulkUpdateApplications(_:)), name: ItemRepository.updatingApplications, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.addApplication(_:)), name: ItemRepository.newApplication, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.forceReloadApplications), name: ItemRepository.newApplications, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.showInstallMacOSButton), name: ItemRepository.newInstaller, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.checkForInstallers), name: ItemRepository.newInstaller, object: nil)
     }
 
-    @objc private func showInstallMacOSButton() {
-        NSAnimationContext.runAnimationGroup { (context) in
-            context.duration = 0.5
-            self.installMacOSButton?.animator().alphaValue = 1.0
+    @objc private func checkForInstallers() {
+        if itemRepository.getInstallers().count > 0{
+            NSAnimationContext.runAnimationGroup { (context) in
+                context.duration = 0.5
+                self.installMacOSButton?.animator().alphaValue = 1.0
+            }
+            self.addTouchBarInstallButton()
+        }else{
+            NSAnimationContext.runAnimationGroup { (context) in
+                context.duration = 0.5
+                self.installMacOSButton?.animator().alphaValue = 0.0
+            }
+            self.removeTouchBarInstallButton()
         }
     }
 
@@ -210,7 +219,35 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     }
 
     @IBAction func installMacOSButtonClicked(_ sender: NSButton) {
+        self.startMacOSInstall()
+    }
+
+    @objc private func startMacOSInstall() {
         PageController.shared.showPageController()
+    }
+
+    @objc private func openPreferences() {
+        if let preferencesWindow = NSStoryboard(name: "Main", bundle: nil).instantiateController(withIdentifier: "preferencesWindowController") as? NSWindowController {
+            preferencesWindow.showWindow(self)
+        }
+    }
+
+    @objc private func getInfo() {
+        if let getInfoWindow = NSStoryboard(name: "Main", bundle: nil).instantiateController(withIdentifier: "getInfoWindowController") as? NSWindowController {
+            getInfoWindow.showWindow(self)
+        }
+    }
+
+    func removeTouchBarInstallButton() {
+        if let touchBar = self.touchBar {
+            touchBar.defaultItemIdentifiers = [.getInfo, .openPreferences]
+        }
+    }
+
+    func addTouchBarInstallButton() {
+        if let touchBar = self.touchBar {
+            touchBar.defaultItemIdentifiers = [.installMacOS, .getInfo, .openPreferences]
+        }
     }
 }
 
@@ -248,7 +285,7 @@ extension ApplicationViewController: NSCollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: NSCollectionView, itemForRepresentedObjectAt
-    indexPath: IndexPath) -> NSCollectionViewItem {
+        indexPath: IndexPath) -> NSCollectionViewItem {
         let item = collectionView.makeItem(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "NSCollectionAppCell"), for: indexPath)
         var applicationsInSection = [Application]()
 
@@ -302,5 +339,49 @@ extension ApplicationViewController: NSCollectionViewDataSource {
 
         view.layer?.position = position!
         view.layer?.anchorPoint = anchorPoint
+    }
+}
+
+@available(OSX 10.12.1, *)
+extension NSTouchBarItem.Identifier {
+    static let installMacOS = NSTouchBarItem.Identifier("com.keaton.utilities.installMacOS")
+    static let getInfo = NSTouchBarItem.Identifier("com.keaton.utilities.getInfo")
+    static let closeCurrentWindow = NSTouchBarItem.Identifier("com.keaton.utilities.closeCurrentWindow")
+    static let backPageController = NSTouchBarItem.Identifier("com.keaton.utilities.back")
+    static let nextPageController = NSTouchBarItem.Identifier("com.keaton.utilities.next")
+    static let openPreferences = NSTouchBarItem.Identifier("com.keaton.utilities.openPreferences")
+}
+
+@available(OSX 10.12.1, *)
+extension ApplicationViewController: NSTouchBarDelegate {
+
+    override func makeTouchBar() -> NSTouchBar? {
+        let touchBar = NSTouchBar()
+        touchBar.delegate = self
+        touchBar.defaultItemIdentifiers = [.getInfo, .openPreferences]
+
+        return touchBar
+    }
+
+    func touchBar(_ touchBar: NSTouchBar, makeItemForIdentifier identifier: NSTouchBarItem.Identifier) -> NSTouchBarItem? {
+        switch identifier {
+
+        case NSTouchBarItem.Identifier.installMacOS:
+            let item = NSCustomTouchBarItem(identifier: identifier)
+            item.view = NSButton(image: NSImage(named: "NSInstallIcon")!, target: self, action: #selector(startMacOSInstall))
+            return item
+
+        case NSTouchBarItem.Identifier.getInfo:
+            let item = NSCustomTouchBarItem(identifier: identifier)
+            item.view = NSButton(image: NSImage(named: "NSTouchBarGetInfoTemplate")!, target: self, action: #selector(getInfo))
+            return item
+
+        case NSTouchBarItem.Identifier.openPreferences:
+            let item = NSCustomTouchBarItem(identifier: identifier)
+            item.view = NSButton(image: NSImage(named: "NSActionTemplate")!, target: self, action: #selector(openPreferences))
+            return item
+
+        default: return nil
+        }
     }
 }

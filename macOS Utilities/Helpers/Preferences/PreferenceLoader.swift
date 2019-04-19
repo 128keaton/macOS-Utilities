@@ -127,42 +127,6 @@ class PreferenceLoader {
         }
     }
 
-    public static func saveRemoteConfigurationToDownloads(_ remoteConfiguration: RemoteConfigurationPreferences, fileName: String, createFolder: Bool = false, folderName: String = "") -> Bool {
-        var dynamicFileURL: URL? = nil
-
-        if createFolder == true {
-            if let fileFolderContainingPath = self.createFolderInDownloadsForFile(folderName: folderName, fileName: fileName, fileExtension: "json") {
-                dynamicFileURL = fileFolderContainingPath
-            }
-        } else {
-            dynamicFileURL = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first!.appendingPathComponent(fileName).appendingPathExtension("json")
-        }
-
-        do {
-            let fileData = try JSONEncoder().encode(remoteConfiguration)
-            var htmlData: Data? = nil
-            #if DEBUG
-                if let htmlString = remoteConfiguration.generateTestHTMLContent() {
-                    htmlData = htmlString.data(using: .utf8)
-                }
-            #endif
-
-            if let fileURL = dynamicFileURL {
-                let filePath = fileURL.absolutePath
-                if let testHTMLData = htmlData {
-                    let htmlFilePath = fileURL.deletingLastPathComponent().appendingPathComponent("test.html", isDirectory: false).absolutePath
-                    FileManager.default.createFile(atPath: htmlFilePath, contents: testHTMLData, attributes: nil)
-                }
-
-                return FileManager.default.createFile(atPath: filePath, contents: fileData, attributes: nil)
-            }
-
-            return false
-        } catch {
-            DDLogError(error.localizedDescription)
-            return false
-        }
-    }
 
     private static func createFolderInDownloadsForFile(folderName: String, fileName: String, fileExtension: String) -> URL? {
         let downloadsURL = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first!
@@ -255,19 +219,6 @@ class PreferenceLoader {
         }
     }
 
-    public func addRemoteConfiguration(_ newConfiguration: RemoteConfigurationPreferences) {
-        if let currentPreferences = PreferenceLoader.currentPreferences {
-            if var existingRemoteConfigurations = currentPreferences.remoteConfigurationPreferences {
-                existingRemoteConfigurations.append(newConfiguration)
-                currentPreferences.remoteConfigurationPreferences = existingRemoteConfigurations
-                save(currentPreferences, notify: true)
-            } else {
-                currentPreferences.remoteConfigurationPreferences = [newConfiguration]
-                save(currentPreferences, notify: true)
-            }
-        }
-    }
-
     public func getSaveDirectoryPath(relativeToUser: Bool = true) -> String {
         if !relativeToUser {
             return libraryPropertyListPath
@@ -345,17 +296,6 @@ class PreferenceLoader {
         }
 
         return (false, nil, nil)
-    }
-
-    public func fetchRemoteConfiguration(_ url: URL) -> RemoteConfigurationPreferences? {
-        do {
-            let _data = try Data(contentsOf: url)
-            let _preferences = try JSONDecoder().decode(RemoteConfigurationPreferences.self, from: _data)
-            return _preferences
-        } catch let error {
-            DDLogError("Error parsing remote configuration: \(error)")
-        }
-        return nil
     }
 
     public static func loadPreferences(_ from: String, updatingRunning: Bool = false) -> Bool {

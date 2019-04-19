@@ -13,6 +13,7 @@ import PaperTrailLumberjack
 class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var utilitiesMenu: NSMenu?
     @IBOutlet weak var infoMenu: NSMenu?
+    @IBOutlet weak var fileMenu: NSMenu?
     @IBOutlet weak var pageController: NSPageController!
     @IBOutlet weak var helpMenu: NSMenu?
     @IBOutlet weak var menuHandler: MenuHandler?
@@ -29,10 +30,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         registerForNotifications()
+        MachineInformation.setup()
 
         if let preferenceLoader = PreferenceLoader.sharedInstance {
             self.preferenceLoader = preferenceLoader
             NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.readPreferences(_:)), name: PreferenceLoader.preferencesLoaded, object: nil)
+        }
+
+        if #available(OSX 10.12.2, *) {
+            NSApplication.shared.isAutomaticCustomizeTouchBarMenuItemEnabled = true
         }
 
         pageControllerDelegate.setPageController(pageController: self.pageController)
@@ -44,6 +50,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func setupMenuHandler() {
         menuHandler?.infoMenu = self.infoMenu
         menuHandler?.helpMenu = self.helpMenu
+        menuHandler?.fileMenu = self.fileMenu
         menuHandler?.utilitiesMenu = self.utilitiesMenu
     }
 
@@ -93,7 +100,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
             if preferences.useDeviceIdentifierAPI == true {
                 DeviceIdentifier.setup(authenticationToken: preferences.deviceIdentifierAuthenticationToken!)
+                MachineInformation.setup(deviceIdentifier: DeviceIdentifier.shared)
             }
+            
+            self.itemRepository.createFakeInstallers()
         }
     }
 
@@ -134,12 +144,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             if let fullURL = aeEventDescriptor.stringValue {
                 let configPath = fullURL.replacingOccurrences(of: "open-utilities://", with: "")
                 if configPath.contains("file://") {
-                    let newConfiguration = RemoteConfigurationPreferences(filePath: configPath.fileURL, name: "Test 2")
-                    PreferenceLoader.sharedInstance?.addRemoteConfiguration(newConfiguration)
+                    if !PreferenceLoader.loadPreferences(configPath.replacingOccurrences(of: "file://", with: ""), updatingRunning: true) {
+                        DDLogError("Could not validate configuration file \(configPath)")
+                    }
                 } else {
                     if let configURL = URL(string: configPath) {
-                        let newConfiguration = RemoteConfigurationPreferences(filePath: configURL, name: "Test 1")
-                        PreferenceLoader.sharedInstance?.addRemoteConfiguration(newConfiguration)
+                        if !PreferenceLoader.loadPreferences(configURL, updatingRunning: true) {
+                            DDLogError("Could not validate configuration file \(configPath)")
+                        }
                     }
                 }
             }

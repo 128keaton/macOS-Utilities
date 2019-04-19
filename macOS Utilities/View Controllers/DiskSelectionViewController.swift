@@ -10,7 +10,7 @@ import Foundation
 import AppKit
 import CocoaLumberjack
 
-class DiskSelectionDialogViewController: NSViewController {
+class DiskSelectionViewController: NSViewController {
     @IBOutlet weak var tableView: NSTableView?
     @IBOutlet weak var nextButton: NSButton?
     @IBOutlet weak var diskProgressIndicator: NSProgressIndicator?
@@ -31,11 +31,11 @@ class DiskSelectionDialogViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         updateBackButton()
         getSelectedInstaller()
         getDisks()
     }
+
 
     private func getSelectedInstaller() {
         if let selectedInstaller = ItemRepository.shared.getSelectedInstaller() {
@@ -52,11 +52,11 @@ class DiskSelectionDialogViewController: NSViewController {
         allDiskAndPartitions = DiskUtility.shared.getAllDisksAndPartitions()
     }
 
-    @IBAction func openDiskUtility(_ sender: NSButton) {
+    @IBAction @objc func openDiskUtility(_ sender: NSButton) {
         ApplicationUtility.shared.open("Disk Utility")
     }
 
-    @IBAction func backButtonClicked(_ sender: NSButton) {
+    @IBAction @objc func backButtonClicked(_ sender: NSButton) {
         if PageController.shared.isInitialPage(self) {
             PageController.shared.dismissPageController()
         } else {
@@ -78,6 +78,8 @@ class DiskSelectionDialogViewController: NSViewController {
     }
 
     override func viewWillAppear() {
+        super.viewWillAppear()
+
         updateBackButton()
     }
 
@@ -100,9 +102,20 @@ class DiskSelectionDialogViewController: NSViewController {
         NotificationCenter.default.removeObserver(self)
     }
 
+    func removeTouchBarNextButton() {
+        if let touchBar = self.touchBar {
+            touchBar.defaultItemIdentifiers = [.backPageController]
+        }
+    }
+
+    func addTouchBarNextButton() {
+        if let touchBar = self.touchBar {
+            touchBar.defaultItemIdentifiers = [.backPageController, .nextPageController]
+        }
+    }
 }
 
-extension DiskSelectionDialogViewController: NSTableViewDelegate, NSTableViewDelegateDeselectListener {
+extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateDeselectListener {
 
     fileprivate enum CellIdentifiers {
         static let DiskNameCell = "DiskNameID"
@@ -177,6 +190,8 @@ extension DiskSelectionDialogViewController: NSTableViewDelegate, NSTableViewDel
         }
 
         nextButton?.isEnabled = true
+        self.addTouchBarNextButton()
+
         return true
     }
 
@@ -193,6 +208,7 @@ extension DiskSelectionDialogViewController: NSTableViewDelegate, NSTableViewDel
             nextButton?.title = "Next"
             DDLogInfo("Deselecting all disks/rows in \(self)")
             selectedPartition = nil
+            self.removeTouchBarNextButton()
         }
     }
 
@@ -217,10 +233,10 @@ extension DiskSelectionDialogViewController: NSTableViewDelegate, NSTableViewDel
                 if(userConfirmedErase) {
                     PageController.shared.goToLoadingPage(loadingText: "Erasing Disk \"\(volumeName)\"")
                     sender.isEnabled = false
-                    
+
                     partition.erase(newName: nil, forInstaller: selectedInstaller) { (didFinish, newVolumeName) in
                         if(didFinish), let volumeName = newVolumeName {
-                            PageController.shared.goToFinishPage(finishedText: "Erase Completed", descriptionText: "Please use the disk \"\(volumeName)\" when installing macOS.", otherButtonTitle: "Open Installer", otherButtonSelector: #selector(DiskSelectionDialogViewController.openInstaller), otherButtonSelectorTarget: self)
+                            PageController.shared.goToFinishPage(finishedText: "Erase Completed", descriptionText: "Please use the disk \"\(volumeName)\" when installing macOS.", otherButtonTitle: "Open Installer", otherButtonSelector: #selector(DiskSelectionViewController.openInstaller), otherButtonSelectorTarget: self)
                         }
                     }
 
@@ -232,7 +248,7 @@ extension DiskSelectionDialogViewController: NSTableViewDelegate, NSTableViewDel
 
                 disk.erase(newName: nil, forInstaller: selectedInstaller) { (didFinish, newDiskName) in
                     if(didFinish), let diskName = newDiskName {
-                        PageController.shared.goToFinishPage(finishedText: "Erase Completed", descriptionText: "Please use the disk \"\(diskName)\" when installing macOS.", otherButtonTitle: "Open Installer", otherButtonSelector: #selector(DiskSelectionDialogViewController.openInstaller), otherButtonSelectorTarget: self)
+                        PageController.shared.goToFinishPage(finishedText: "Erase Completed", descriptionText: "Please use the disk \"\(diskName)\" when installing macOS.", otherButtonTitle: "Open Installer", otherButtonSelector: #selector(DiskSelectionViewController.openInstaller), otherButtonSelectorTarget: self)
                     }
                 }
             }
@@ -240,9 +256,37 @@ extension DiskSelectionDialogViewController: NSTableViewDelegate, NSTableViewDel
     }
 }
 
-
-extension DiskSelectionDialogViewController: NSTableViewDataSource {
+extension DiskSelectionViewController: NSTableViewDataSource {
     func numberOfRows(in tableView: NSTableView) -> Int {
         return allDiskAndPartitions.count
+    }
+}
+
+
+@available(OSX 10.12.1, *)
+extension DiskSelectionViewController: NSTouchBarDelegate {
+    override func makeTouchBar() -> NSTouchBar? {
+        let touchBar = NSTouchBar()
+        touchBar.delegate = self
+        touchBar.defaultItemIdentifiers = [.backPageController]
+        
+        return touchBar
+    }
+
+    func touchBar(_ touchBar: NSTouchBar, makeItemForIdentifier identifier: NSTouchBarItem.Identifier) -> NSTouchBarItem? {
+        switch identifier {
+
+        case NSTouchBarItem.Identifier.backPageController:
+            let item = NSCustomTouchBarItem(identifier: identifier)
+            item.view = NSButton(image: NSImage(named: "NSTouchBarGoBackTemplate")!, target: self, action: #selector(backButtonClicked(_:)))
+            return item
+
+        case NSTouchBarItem.Identifier.nextPageController:
+            let item = NSCustomTouchBarItem(identifier: identifier)
+            item.view = NSButton(image: NSImage(named: "NSTouchBarGoForwardTemplate")!, target: self, action: #selector(nextButtonClicked(_:)))
+            return item
+
+        default: return nil
+        }
     }
 }

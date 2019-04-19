@@ -12,117 +12,113 @@ import AppKit
 class DeviceInformationViewController: NSViewController {
     @IBOutlet weak var configurationImage: NSImageView?
     @IBOutlet weak var skuHintLabel: NSTextField?
-    @IBOutlet weak var tableView: NSTableView?
-    @IBOutlet weak var gpuTableView: NSTableView?
+    @IBOutlet weak var disksAndPartitionsTableView: NSTableView?
+    @IBOutlet weak var graphicsCardTableView: NSTableView?
     @IBOutlet weak var otherSpecsLabel: NSTextField?
 
-    private var deviceInfo: DeviceInfo? = nil {
+    private var machineInformation: MachineInformation? = nil {
         didSet {
-            DispatchQueue.main.async {
-                self.updateView()
-            }
+            self.updateView()
         }
     }
 
     private var allDiskAndPartitions = [Any]() {
         didSet {
-            self.tableView?.reloadData()
+            self.reloadTableView(self.disksAndPartitionsTableView)
         }
     }
 
-    private var GPUs = [String]() {
+    private var allGraphicsCards = [String]() {
         didSet {
-            reloadTableView()
+            self.reloadTableView(self.graphicsCardTableView)
         }
     }
 
-    private func reloadTableView() {
-        if let _tableView = self.tableView {
+    private func reloadTableView(_ tableView: NSTableView?) {
+        if tableView == self.disksAndPartitionsTableView,
+            let _tableView = self.disksAndPartitionsTableView {
+            DispatchQueue.main.async {
+                _tableView.reloadData()
+            }
+        }
+
+        if tableView == self.graphicsCardTableView,
+            let _tableView = self.graphicsCardTableView {
             DispatchQueue.main.async {
                 _tableView.reloadData()
             }
         }
     }
 
+    private func hideLabels() {
+        DispatchQueue.main.async {
+            NSAnimationContext.runAnimationGroup { (context) in
+                context.duration = 0.5
+                self.configurationImage?.animator().alphaValue = 0.0
+            }
 
-    private var serialNumber: String? {
-        let platformExpert = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IOPlatformExpertDevice"))
+            NSAnimationContext.runAnimationGroup { (context) in
+                context.duration = 0.5
+                self.skuHintLabel?.animator().alphaValue = 0.0
+            }
 
-        guard platformExpert > 0 else {
-            return nil
+            NSAnimationContext.runAnimationGroup { (context) in
+                context.duration = 0.5
+                self.otherSpecsLabel?.animator().alphaValue = 0.0
+            }
         }
-
-        guard let serialNumber = (IORegistryEntryCreateCFProperty(platformExpert, kIOPlatformSerialNumberKey as CFString, kCFAllocatorDefault, 0).takeUnretainedValue() as? String) else {
-            return nil
-        }
-
-        IOObjectRelease(platformExpert)
-        return serialNumber
     }
 
-    private func getAllData() {
-        GPUs = Compatibility().getAllGPUs()
-        getPartitions()
-    }
-
-    @objc func getPartitions() {
-        allDiskAndPartitions = DiskUtility.shared.getAllDisksAndPartitions()
-    }
-
-    private func updateView() {
-        if let deviceInfo = self.deviceInfo {
-            configurationImage?.image = deviceInfo.configurationCode.image
-            skuHintLabel?.stringValue = deviceInfo.configurationCode.skuHint
+    private func showLabels() {
+        DispatchQueue.main.async {
             NSAnimationContext.runAnimationGroup { (context) in
                 context.duration = 0.5
                 self.configurationImage?.animator().alphaValue = 1.0
             }
+
             NSAnimationContext.runAnimationGroup { (context) in
                 context.duration = 0.5
                 self.skuHintLabel?.animator().alphaValue = 1.0
             }
+
+            NSAnimationContext.runAnimationGroup { (context) in
+                context.duration = 0.5
+                self.otherSpecsLabel?.animator().alphaValue = 1.0
+            }
         }
     }
 
-    override func viewDidAppear() {
-        self.getPartitions()
+    @objc private func updateView() {
+        if let machineInformation = self.machineInformation {
+            self.hideLabels()
+            configurationImage?.image = machineInformation.productImage
+            skuHintLabel?.stringValue = machineInformation.displayName
+            otherSpecsLabel?.stringValue = "\(machineInformation.RAM) GB of RAM - \(machineInformation.CPU)"
+
+            allGraphicsCards = machineInformation.allGraphicsCards
+            allDiskAndPartitions = machineInformation.allDisksAndPartitions
+
+            self.showLabels()
+        }
     }
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        NotificationCenter.default.addObserver(self, selector: #selector(getPartitions), name: ItemRepository.newPartition, object: nil)
-
-        if deviceInfo == nil {
-            configurationImage?.alphaValue = 0.0
-            skuHintLabel?.alphaValue = 0.0
+        if MachineInformation.isConfigured {
+            self.machineInformation = MachineInformation.shared
         } else {
-            configurationImage?.alphaValue = 1.0
-            skuHintLabel?.alphaValue = 1.0
+            MachineInformation.setup()
+            self.machineInformation = MachineInformation.shared
         }
 
-        let amountOfRAM = Units(bytes: Int64(ProcessInfo.processInfo.physicalMemory))
-
-        otherSpecsLabel?.stringValue = "\(amountOfRAM) of RAM"
-
-        TaskHandler.createTask(command: "/usr/sbin/sysctl", arguments: ["-n", "machdep.cpu.brand_string"]) { (cpuInfo) in
-            if let cpuModel = cpuInfo {
-                DispatchQueue.main.async {
-                    self.otherSpecsLabel?.stringValue = "\(self.otherSpecsLabel!.stringValue) - \(cpuModel)"
-                }
-            }
-        }
-
-        DeviceIdentifier.shared.lookupAppleSerial(serialNumber!) { (deviceInfo) in
-            self.deviceInfo = deviceInfo
-        }
-
-        getAllData()
+        NotificationCenter.default.addObserver(self, selector: #selector(updateView), name: ItemRepository.newPartition, object: nil)
     }
 
     @IBAction func openSerialLink(_ sender: NSButton) {
-        if let coverageURL = deviceInfo?.coverageURL {
-            NSWorkspace().open(coverageURL)
+        if let machineInformation = self.machineInformation {
+            machineInformation.openWarrantyLink()
         }
     }
 }
@@ -139,7 +135,7 @@ extension DeviceInformationViewController: NSTableViewDelegate, NSTableViewDeleg
         var text: String = ""
         var cellIdentifier: String = ""
 
-        if tableView == self.tableView {
+        if tableView == self.disksAndPartitionsTableView {
             let item = allDiskAndPartitions[row]
             if type(of: item) == Disk.self {
                 let disk = item as! Disk
@@ -167,8 +163,8 @@ extension DeviceInformationViewController: NSTableViewDelegate, NSTableViewDeleg
                     return cell
                 }
             }
-        } else if tableView == gpuTableView {
-            let GPU = self.GPUs[row]
+        } else if tableView == graphicsCardTableView {
+            let GPU = self.allGraphicsCards[row]
 
             text = GPU
             cellIdentifier = CellIdentifiers.GPUNameCell
@@ -184,13 +180,43 @@ extension DeviceInformationViewController: NSTableViewDelegate, NSTableViewDeleg
     func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
         return false
     }
+    
+    @objc func closeWindow(){
+        if let window = self.view.window{
+            window.close()
+        }
+    }
 }
 
 extension DeviceInformationViewController: NSTableViewDataSource {
     func numberOfRows(in tableView: NSTableView) -> Int {
-        if tableView == self.tableView {
+        if tableView == self.disksAndPartitionsTableView {
             return allDiskAndPartitions.count
         }
-        return GPUs.count
+        return allGraphicsCards.count
+    }
+}
+
+@available(OSX 10.12.1, *)
+extension DeviceInformationViewController: NSTouchBarDelegate {
+    
+    override func makeTouchBar() -> NSTouchBar? {
+        let touchBar = NSTouchBar()
+        touchBar.delegate = self
+        touchBar.defaultItemIdentifiers = [.closeCurrentWindow]
+        
+        return touchBar
+    }
+    
+    func touchBar(_ touchBar: NSTouchBar, makeItemForIdentifier identifier: NSTouchBarItem.Identifier ) -> NSTouchBarItem? {
+        switch identifier {
+            
+        case NSTouchBarItem.Identifier.closeCurrentWindow:
+            let item = NSCustomTouchBarItem(identifier: identifier)
+            item.view = NSButton(image: NSImage(named: "NSTouchBarGoBackTemplate")!, target: self, action: #selector(closeWindow))
+            return item
+            
+        default: return nil
+        }
     }
 }

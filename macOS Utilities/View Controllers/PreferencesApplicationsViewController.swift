@@ -102,6 +102,7 @@ extension PreferencesApplicationsViewController: NSTableViewDataSource, NSTableV
 
     func tableView(_ tableView: NSTableView, acceptDrop info: NSDraggingInfo, row: Int, dropOperation: NSTableView.DropOperation) -> Bool {
         if let board = info.draggingPasteboard.propertyList(forType: fileNameType) as? NSArray {
+            print(board)
             if let path = board[0] as? String {
                 let suffix = URL(fileURLWithPath: path).pathExtension
                 if fileTypes.contains(suffix.lowercased()) {

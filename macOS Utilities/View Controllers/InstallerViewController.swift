@@ -17,7 +17,6 @@ class InstallerViewController: NSViewController {
     @IBOutlet weak var tableView: NSTableView!
     @IBOutlet weak var installButton: NSButton!
 
-    private var compatibilityChecker: Compatibility = Compatibility()
     private var versionNumbers: VersionNumbers = VersionNumbers()
     private var installers = [Installer]()
 
@@ -31,9 +30,9 @@ class InstallerViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        checkForMetal()
-        verifyMemoryAmount()
-        verifyHDDSize()
+        //  checkForMetal()
+        //  verifyMemoryAmount()
+        // verifyHDDSize()
         getInstallableVersions()
     }
 
@@ -57,8 +56,10 @@ class InstallerViewController: NSViewController {
     private func deselectAllInstallers(shouldDisableInstallButton: Bool = true) {
         if(shouldDisableInstallButton && installButton.isEnabled) {
             installButton.isEnabled = false
+            removeTouchBarNextButton()
         } else if (!shouldDisableInstallButton && !installButton.isEnabled) {
             installButton.isEnabled = true
+            addTouchBarNextButton()
         }
 
         ItemRepository.shared.unsetAllSelectedInstallers()
@@ -71,11 +72,12 @@ class InstallerViewController: NSViewController {
                 self.tableView.selectRowIndexes(IndexSet(integer: firstInstallableIndex), byExtendingSelection: false)
                 ItemRepository.shared.setSelectedInstaller(firstInstallable)
                 self.installButton.isEnabled = true
+                addTouchBarNextButton()
             }
         }
     }
 
-    func checkForMetal() {
+    /*  func checkForMetal() {
         if compatibilityChecker.hasMetalGPU {
             metalStatus.image = NSImage(named: "SuccessIcon")
         } else {
@@ -97,12 +99,12 @@ class InstallerViewController: NSViewController {
         } else {
             hddStatus.image = NSImage(named: "AlertIcon")
         }
-    }
+    }*/
 
     @IBAction func showPopover(sender: NSButton) {
         let popoverController = storyboard?.instantiateController(withIdentifier: "InfoPopoverViewController") as! InfoPopoverViewController
 
-        if(sender == memoryStatus) {
+        /* if(sender == memoryStatus) {
             if(compatibilityChecker.hasEnoughMemory) {
                 popoverController.message = "This machine has more than 8GB of RAM."
             } else {
@@ -142,19 +144,31 @@ class InstallerViewController: NSViewController {
         popover.contentViewController = popoverController
 
         let entryRect = sender.convert(sender.bounds, to: NSApp.keyWindow?.contentView)
-        popover.show(relativeTo: entryRect, of: (NSApp.keyWindow?.contentView)!, preferredEdge: .minY)
+        popover.show(relativeTo: entryRect, of: (NSApp.keyWindow?.contentView)!, preferredEdge: .minY)*/
     }
 
     @objc func openDiskUtility() {
         ApplicationUtility.shared.open("Disk Utility")
     }
 
-    @IBAction func cancelButtonClicked(_ sender: NSButton) {
+    @IBAction @objc func cancelButtonClicked(_ sender: Any?) {
         PageController.shared.goToPreviousPage()
     }
 
-    @IBAction func nextButtonClicked(_ sender: NSButton) {
+    @IBAction @objc func nextButtonClicked(_ sender: Any?) {
         PageController.shared.goToNextPage()
+    }
+
+    func removeTouchBarNextButton() {
+        if let touchBar = self.touchBar {
+            touchBar.defaultItemIdentifiers = [.backPageController]
+        }
+    }
+
+    func addTouchBarNextButton() {
+        if let touchBar = self.touchBar {
+            touchBar.defaultItemIdentifiers = [.backPageController, .nextPageController]
+        }
     }
 }
 
@@ -187,6 +201,7 @@ extension InstallerViewController: NSTableViewDelegate, NSTableViewDelegateDesel
             potentialInstaller.isSelected = true
         } else {
             installButton.isEnabled = false
+            removeTouchBarNextButton()
             DDLogInfo("Unable to install \(potentialInstaller) on machine \(Sysctl.model) ")
         }
 
@@ -201,3 +216,31 @@ extension InstallerViewController: NSTableViewDelegate, NSTableViewDelegateDesel
     }
 }
 
+@available(OSX 10.12.1, *)
+extension InstallerViewController: NSTouchBarDelegate {
+
+    override func makeTouchBar() -> NSTouchBar? {
+        let touchBar = NSTouchBar()
+        touchBar.delegate = self
+        touchBar.defaultItemIdentifiers = [.backPageController]
+
+        return touchBar
+    }
+
+    func touchBar(_ touchBar: NSTouchBar, makeItemForIdentifier identifier: NSTouchBarItem.Identifier) -> NSTouchBarItem? {
+        switch identifier {
+
+        case NSTouchBarItem.Identifier.backPageController:
+            let item = NSCustomTouchBarItem(identifier: identifier)
+            item.view = NSButton(image: NSImage(named: "NSTouchBarGoBackTemplate")!, target: self, action: #selector(cancelButtonClicked(_:)))
+            return item
+
+        case NSTouchBarItem.Identifier.nextPageController:
+            let item = NSCustomTouchBarItem(identifier: identifier)
+            item.view = NSButton(image: NSImage(named: "NSTouchBarGoForwardTemplate")!, target: self, action: #selector(nextButtonClicked(_:)))
+            return item
+
+        default: return nil
+        }
+    }
+}
