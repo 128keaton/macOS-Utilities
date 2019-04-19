@@ -16,7 +16,7 @@ class LoggerSetup {
     public static func constructLogger() {
         let fileLogger: DDFileLogger = DDFileLogger()
         fileLogger.rollingFrequency = 60 * 60 * 24
-        fileLogger.logFileManager.maximumNumberOfLogFiles = 7
+        fileLogger.logFileManager.maximumNumberOfLogFiles = 1
 
         if loggerInitialized == false {
             DDLog.add(fileLogger)

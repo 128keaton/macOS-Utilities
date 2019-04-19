@@ -159,18 +159,19 @@ class DiskUtility: NSObject, NSFilePresenter {
             if (alreadyExisted == true && (contents.filter { $0.contains(".dmg") }).count > 0) {
                 // NFS mount already exists AND has our DMGs
                 let newShare = Share(type: "NFS", mountPoint: localPath)
+                DDLogVerbose("Adding existing share: \(newShare)")
                 self.mountedShares.append(newShare)
                 didSucceed(true)
                 return
             }
 
             TaskHandler.createTask(command: "/sbin/mount", arguments: ["-t", "nfs", shareURL, localPath], timeout: TimeInterval(floatLiteral: 3.0)) { (taskOutput) in
-                DDLogInfo("Mount output: \(taskOutput ?? "NO output")")
+                DDLogVerbose("Mount output: \(taskOutput ?? "NO output")")
                 if let mountOutput = taskOutput {
                     self.presentedItemURL = URL(fileURLWithPath: localPath, isDirectory: true)
                     if (!["can't", "denied", "error", "killed"].map { mountOutput.contains($0) }.contains(true)) {
                         let newShare = Share(type: "NFS", mountPoint: localPath)
-                        DDLogInfo("Share mounted: \(newShare)")
+                        DDLogVerbose("Creating new share from mount: \(newShare)")
                         self.mountedShares.append(newShare)
                         didSucceed(true)
                     } else {

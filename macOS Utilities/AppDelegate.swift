@@ -111,7 +111,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
             
             if preferences.mappedApplications != nil {
-                NotificationCenter.default.post(name: ApplicationViewController.reloadApplications, object: nil)
+                // BAD
+                // BAD BAD
+                // BAD BAD BAD
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    NotificationCenter.default.post(name: ApplicationViewController.reloadApplications, object: nil)
+                }
             }
         }
     }

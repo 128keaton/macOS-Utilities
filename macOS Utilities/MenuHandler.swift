@@ -159,18 +159,19 @@ class MenuHandler: NSObject {
     }
 
     @objc func startOSInstall(_ sender: NSMenuItem) {
-        if let indexOfSender = infoMenu?.items.firstIndex(of: sender) {
-            guard installers.indices.contains(indexOfSender) == true
-                else {
-                    return
-            }
+        installers = ItemRepository.shared.getInstallers()
+        let versionName = sender.title.replacingOccurrences(of: "Install ", with: "")
 
-            let versionName = sender.title.replacingOccurrences(of: "Install ", with: "")
+        DDLogVerbose("Attempting macOS Install: \(versionName)")
 
-            if let selectedInstaller = (installers.first { $0.versionName == versionName }) {
-                ItemRepository.shared.setSelectedInstaller(selectedInstaller)
-                PageController.shared.showPageController(initialPage: 1)
-            }
+        if let indexOfSender = infoMenu?.items.firstIndex(of: sender),
+            installers.indices.contains(indexOfSender) == true,
+            let selectedInstaller = (installers.first { $0.versionName == versionName }) {
+            
+            ItemRepository.shared.setSelectedInstaller(selectedInstaller)
+            PageController.shared.showPageController(initialPage: 1)
+        } else {
+            DDLogError("Could not start macOS Install: Unable to find installer for \(versionName)")
         }
     }
 
@@ -191,6 +192,12 @@ class MenuHandler: NSObject {
         emailService?.perform(withItems: items)
     }
 
+    @IBAction func showLog(_ sender: NSMenuItem){
+        if let logFilePath = (DDLog.allLoggers.first { $0 is DDFileLogger } as! DDFileLogger).logFileManager.sortedLogFilePaths.first{
+            NSWorkspace.shared.open(logFilePath.fileURL)
+        }
+    }
+    
     // MARK: Data Functions
     @objc private func addUtilityToMenu(_ notification: Notification? = nil) {
         if let validNotification = notification {

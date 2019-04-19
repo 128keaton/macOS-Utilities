@@ -583,6 +583,12 @@
                                                 <action selector="sendLog:" target="FXb-Ej-UYn" id="8E1-yx-OJe"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Open Log in Console" allowsKeyEquivalentWhenHidden="YES" id="bQP-DA-bHS">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="showLog:" target="FXb-Ej-UYn" id="7wg-vB-SKn"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>

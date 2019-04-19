@@ -23,7 +23,7 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
 
     private var dispatchQueue: DispatchQueue?
     private var dispatchWorkItem: DispatchWorkItem?
-    
+
     static let reloadApplications = Notification.Name("ReloadApplications")
 
     override func viewDidLoad() {
@@ -49,22 +49,19 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.addApplication(_:)), name: ItemRepository.newApplication, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.forceReloadApplications), name: ItemRepository.newApplications, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.forceReloadApplications), name: ApplicationViewController.reloadApplications, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.checkForInstallers), name: ItemRepository.newInstaller, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.addInstaller(_:)), name: ItemRepository.newInstaller, object: nil)
     }
 
-    @objc private func checkForInstallers() {
-        if itemRepository.getInstallers().count > 0 {
+    @objc private func addInstaller(_ aNotification: Notification? = nil) {
+        guard let notification = aNotification else { return }
+        if (notification.object as? Installer) != nil{
+            DDLogVerbose("New Installer added: \(notification.object!)")
+            
             NSAnimationContext.runAnimationGroup { (context) in
                 context.duration = 0.5
                 self.installMacOSButton?.animator().alphaValue = 1.0
             }
             self.addTouchBarInstallButton()
-        } else {
-            NSAnimationContext.runAnimationGroup { (context) in
-                context.duration = 0.5
-                self.installMacOSButton?.animator().alphaValue = 0.0
-            }
-            self.removeTouchBarInstallButton()
         }
     }
 
