@@ -25,6 +25,7 @@ class MachineInformation {
     private var diskUtility: DiskUtility? = nil
     private var deviceIdentifier: DeviceIdentifier? = nil
     private var deviceInfo: DeviceInfo? = nil
+    private var bootDisk: Disk? = nil
 
     private (set) public var metalGPUs: [String] = []
     private (set) public var nonMetalGPUs: [String] = []
@@ -38,13 +39,50 @@ class MachineInformation {
         if let deviceInfo = MachineInformation.config.deviceInfo {
             self.deviceInfo = deviceInfo
         }
-        
+
         if let CPU = MachineInformation.config.CPU {
             self.CPU = CPU
         }
+
+        NotificationCenter.default.addObserver(self, selector: #selector(bootDiskAvailable(_:)), name: DiskUtility.bootDiskAvailable, object: nil)
+        parseGPUInfo()
     }
 
     // MARK: Functions
+    @objc private func bootDiskAvailable(_ aNotification: Notification? = nil) {
+        if let notification = aNotification,
+            let bootDisk = notification.object as? Disk {
+            self.bootDisk = bootDisk
+        } else if let bootDisk = DiskUtility.shared.bootDisk {
+            self.bootDisk = bootDisk
+        }
+    }
+
+    private func parseGPUInfo() {
+        if #available(OSX 10.11, *) {
+            let metalDevices = MTLCopyAllDevices()
+            for metalDevice in metalDevices {
+                let gpuName = stripGPUName(name: metalDevice.name)!
+                if(!metalGPUs.contains(gpuName)) {
+                    metalGPUs.append(gpuName)
+                }
+            }
+        }
+
+        let allGPUs = uniq(source: self.allGraphicsCards)
+
+        metalGPUs = uniq(source: metalGPUs)
+        nonMetalGPUs = allGPUs.filter { !metalGPUs.contains($0) }
+
+        if(nonMetalGPUs.count > 0) {
+            for(gpuName) in nonMetalGPUs {
+                DDLogInfo(gpuName + " is not metal compatible")
+            }
+        }
+
+        DDLogVerbose("No non-metal GPUs")
+    }
+
     static func setup(deviceIdentifier: DeviceIdentifier) {
         MachineInformation.config.deviceIdentifier = deviceIdentifier
         MachineInformation.config.diskUtility = DiskUtility.shared
@@ -117,6 +155,25 @@ class MachineInformation {
         }
     }
 
+    private func initializeDeviceInfo() {
+        if self.deviceIdentifier == nil && DeviceIdentifier.isConfigured {
+            self.deviceIdentifier = DeviceIdentifier.shared
+        } else {
+            DDLogInfo("No device identifier set")
+        }
+
+        if self.deviceInfo == nil,
+            let deviceIdentifier = self.deviceIdentifier {
+            self.deviceInfo = deviceIdentifier.getCachedDeviceFor(serialNumber: self.serialNumber)
+        } else if self.deviceIdentifier == nil {
+            DDLogInfo("No device identifier set")
+        }
+    }
+
+    public func graphicsCardIsMetal(_ graphicsCard: String) -> Bool {
+        return self.metalGPUs.contains(graphicsCard)
+    }
+
     public func openWarrantyLink() {
         var warrantyLink: URL? = nil
         if let deviceInfo = self.deviceInfo {
@@ -146,6 +203,15 @@ class MachineInformation {
         return NSApplication.shared.getSerialNumber() ?? "No serial found for machine \(Sysctl.model)"
     }
 
+    public var anonymisedSerialNumber: String {
+        self.initializeDeviceInfo()
+        if let deviceInfo = self.deviceInfo {
+            return deviceInfo.anonymised
+        }
+
+        return NSApplication.shared.getSerialNumber() ?? "No serial found for machine \(Sysctl.model)"
+    }
+
     public var displayName: String {
         if let deviceInfo = self.deviceInfo {
             return deviceInfo.configurationCode.skuHint
@@ -157,6 +223,60 @@ class MachineInformation {
         return self.modelIdentifier
     }
 
+    public var GPUInformation: String {
+        if self.nonMetalGPUs.count > 0 {
+            return "This machine has a non-Metal compatible graphics card installed: \n \(self.nonMetalGPUs.joined(separator: "\n"))"
+        }
+
+        if self.metalGPUs.count > 0 {
+            return "This machine has a Metal compatible graphics card installed: \n \(self.metalGPUs.joined(separator: "\n"))"
+        }
+
+        return "Could not determine what graphics cards are installed"
+    }
+
+    public var RAMInformation: String {
+        if self.RAM.gigabytes >= 8.0 {
+            return "This machine has more than 8 GB of RAM"
+        }
+
+        return "This machine has \(Int(self.RAM.gigabytes)) GB of RAM"
+    }
+
+    public var HDDInformation: String {
+        if let bootDisk = self.bootDisk {
+            if bootDisk.volumeName == "Macintosh HD" && bootDisk.size.gigabytes >= 110.0 {
+                return "\(bootDisk.volumeName) is available and has a size of \(bootDisk.size.getReadableUnit())"
+            } else if bootDisk.volumeName == "Macintosh HD" {
+                return "\(bootDisk.volumeName) is available but does not have enough space for installation. (110 GB > \(bootDisk.size.getReadableUnit()))"
+            } else {
+                return "\(bootDisk.volumeName) needs to be \"Macintosh HD\""
+            }
+        }
+
+        return "No installable hard drive found"
+    }
+
+    public var HDDStatus: NSImage {
+        return self.bootHDDIsValid ? NSImage(named: "NSStatusAvailable")! : NSImage(named: "NSStatusUnavailable")!
+    }
+
+    public var GPUStatus: NSImage {
+        if self.nonMetalGPUs.count > 0 {
+            return NSImage(named: "NSStatusUnavailable")!
+        }
+
+        if self.metalGPUs.count > 0 {
+            return NSImage(named: "NSStatusAvailable")!
+        }
+
+        return NSImage(named: "NSStatusUnavailable")!
+    }
+
+    public var RAMStatus: NSImage {
+        return self.RAM.gigabytes >= 8.0 ? NSImage(named: "NSStatusAvailable")! : NSImage(named: "NSStatusUnavailable")!
+    }
+
     public var allDisksAndPartitions: [Any] {
         if let diskUtility = self.diskUtility {
             return diskUtility.getAllDisksAndPartitions()
@@ -166,14 +286,19 @@ class MachineInformation {
     }
 
     public var productImage: NSImage? {
+        self.initializeDeviceInfo()
         if let deviceInfo = self.deviceInfo {
-            return deviceInfo.configurationCode.image
-        } else if let deviceIdentifier = self.deviceIdentifier,
-            let cachedDeviceInfo = deviceIdentifier.getCachedDeviceFor(serialNumber: self.serialNumber) {
-            return cachedDeviceInfo.configurationCode.image
+            if let productImage = deviceInfo.configurationCode.image {
+                return productImage
+            } else if deviceInfo.configurationCode.imageURL != nil {
+                deviceInfo.configurationCode.getImage()
+                if let productImage = deviceInfo.configurationCode.image {
+                    return productImage
+                }
+            }
         }
 
-        return NSImage(named: "AppleLogo")
+        return nil
     }
 
     public var hasEnoughRAMForInstall: Bool {
@@ -184,45 +309,23 @@ class MachineInformation {
         return Units(bytes: Int64(ProcessInfo.processInfo.physicalMemory))
     }
 
-    public var bootHDD: Disk? {
-        let path = "/"
-        let mountPoint = path.cString(using: .utf8)! as [Int8]
-        var unsafeMountPoint = mountPoint.map { UInt8(bitPattern: $0) }
+    public var hasBootHDD: Bool {
+        return self.bootDisk != nil
+    }
 
-        if let fileURL = CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault, &unsafeMountPoint, Int(strlen(mountPoint)), true),
-            let daSession = DASessionCreate(kCFAllocatorDefault),
-            let daDisk = DADiskCreateFromVolumePath(kCFAllocatorDefault, daSession, fileURL) {
-            print(daDisk)
+    public var bootHDDIsValid: Bool {
+        if let bootDisk = self.bootDisk {
+            return (bootDisk.volumeName == "Macintosh HD" && bootDisk.size.gigabytes >= 110.0)
         }
 
-        return nil
+        return false
     }
 
     public var isMetalCompatible: Bool {
-        if #available(OSX 10.11, *) {
-            let metalDevices = MTLCopyAllDevices()
-            for metalDevice in metalDevices {
-                let gpuName = stripGPUName(name: metalDevice.name)!
-                if(!metalGPUs.contains(gpuName)) {
-                    metalGPUs.append(gpuName)
-                }
-            }
+        if self.metalGPUs.count > 0 && self.nonMetalGPUs.count == 0 {
+            return true
         }
-
-        let allGPUs = uniq(source: self.allGraphicsCards)
-
-        metalGPUs = uniq(source: metalGPUs)
-        nonMetalGPUs = allGPUs.filter { !metalGPUs.contains($0) }
-
-        if(nonMetalGPUs.count > 0) {
-            for(gpuName) in nonMetalGPUs {
-                DDLogInfo(gpuName + " is not metal compatible")
-                return false
-            }
-        }
-
-        DDLogVerbose("No non-metal GPUs")
-        return true
+        return false
     }
 
 

@@ -11,7 +11,7 @@ import AppKit
 import CocoaLumberjack
 
 @objcMembers class Application: NSObject, Item, Codable {
-    static let prohibatoryIcon = NSImage(named: "stop")
+    static let prohibatoryIcon = NSImage(named: "NSHaltIcon")
     var name: String
     var isUtility: Bool = false
     var path: String

@@ -15,6 +15,9 @@ class DeviceInformationViewController: NSViewController {
     @IBOutlet weak var disksAndPartitionsTableView: NSTableView?
     @IBOutlet weak var graphicsCardTableView: NSTableView?
     @IBOutlet weak var otherSpecsLabel: NSTextField?
+    @IBOutlet weak var serialNumberLabel: NSTextField?
+
+    private var isShowingFullSerial = false
 
     private var machineInformation: MachineInformation? = nil {
         didSet {
@@ -66,6 +69,11 @@ class DeviceInformationViewController: NSViewController {
                 context.duration = 0.5
                 self.otherSpecsLabel?.animator().alphaValue = 0.0
             }
+
+            NSAnimationContext.runAnimationGroup { (context) in
+                context.duration = 0.5
+                self.serialNumberLabel?.animator().alphaValue = 0.0
+            }
         }
     }
 
@@ -85,15 +93,26 @@ class DeviceInformationViewController: NSViewController {
                 context.duration = 0.5
                 self.otherSpecsLabel?.animator().alphaValue = 1.0
             }
+
+            NSAnimationContext.runAnimationGroup { (context) in
+                context.duration = 0.5
+                self.serialNumberLabel?.animator().alphaValue = 1.0
+            }
         }
     }
 
     @objc private func updateView() {
         if let machineInformation = self.machineInformation {
             self.hideLabels()
-            configurationImage?.image = machineInformation.productImage
+            if let productImage = machineInformation.productImage {
+                configurationImage?.image = productImage
+            } else {
+                print("No product image")
+            }
+
             skuHintLabel?.stringValue = machineInformation.displayName
             otherSpecsLabel?.stringValue = "\(machineInformation.RAM) GB of RAM - \(machineInformation.CPU)"
+            serialNumberLabel?.stringValue = "Serial Number: \(machineInformation.anonymisedSerialNumber)"
 
             allGraphicsCards = machineInformation.allGraphicsCards
             allDiskAndPartitions = machineInformation.allDisksAndPartitions
@@ -102,6 +121,27 @@ class DeviceInformationViewController: NSViewController {
         }
     }
 
+    @objc func toggleFullSerial() {
+        NSAnimationContext.runAnimationGroup { (context) in
+            context.duration = 0.5
+            self.serialNumberLabel?.animator().alphaValue = 0.0
+        }
+
+        if let machineInformation = self.machineInformation {
+            if isShowingFullSerial == true {
+                isShowingFullSerial = false
+                serialNumberLabel?.stringValue = "Serial Number: \(machineInformation.anonymisedSerialNumber)"
+            } else {
+                isShowingFullSerial = true
+                serialNumberLabel?.stringValue = "Serial Number: \(machineInformation.serialNumber)"
+            }
+        }
+
+        NSAnimationContext.runAnimationGroup { (context) in
+            context.duration = 0.5
+            self.serialNumberLabel?.animator().alphaValue = 1.0
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -113,6 +153,12 @@ class DeviceInformationViewController: NSViewController {
             self.machineInformation = MachineInformation.shared
         }
 
+        let serialClickHandler = NSClickGestureRecognizer(target: self, action: #selector(toggleFullSerial))
+        self.serialNumberLabel?.addGestureRecognizer(serialClickHandler)
+
+        self.graphicsCardTableView?.sizeToFit()
+        self.disksAndPartitionsTableView?.sizeToFit()
+        
         NotificationCenter.default.addObserver(self, selector: #selector(updateView), name: ItemRepository.newPartition, object: nil)
     }
 
@@ -127,6 +173,7 @@ extension DeviceInformationViewController: NSTableViewDelegate, NSTableViewDeleg
         static let DiskNameCell = "DiskNameID"
         static let DiskSizeCell = "DiskSizeID"
         static let GPUNameCell = "GPUNameID"
+        static let GPUMetalStatusCell = "GPUMetalStatusID"
         static let PartitionNameCell = "PartitionNameID"
         static let PartitionSizeCell = "PartitionSizeID"
     }
@@ -134,6 +181,7 @@ extension DeviceInformationViewController: NSTableViewDelegate, NSTableViewDeleg
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         var text: String = ""
         var cellIdentifier: String = ""
+        var image: NSImage? = nil
 
         if tableView == self.disksAndPartitionsTableView {
             let item = allDiskAndPartitions[row]
@@ -166,12 +214,20 @@ extension DeviceInformationViewController: NSTableViewDelegate, NSTableViewDeleg
         } else if tableView == graphicsCardTableView {
             let GPU = self.allGraphicsCards[row]
 
-            text = GPU
-            cellIdentifier = CellIdentifiers.GPUNameCell
+            if tableColumn == tableView.tableColumns[0] {
+                text = GPU
+                cellIdentifier = CellIdentifiers.GPUNameCell
+            } else if tableColumn == tableView.tableColumns[1] {
+                image = MachineInformation.shared.graphicsCardIsMetal(GPU) ? NSImage(named: "NSStatusAvailable")! : NSImage(named: "NSStatusUnavailable")!
+                cellIdentifier = CellIdentifiers.GPUMetalStatusCell
+            }
         }
 
         if let cell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: cellIdentifier), owner: nil) as? NSTableCellView {
             cell.textField?.stringValue = text
+            if let cellImage = image{
+                cell.imageView?.image = cellImage
+            }
             return cell
         }
         return nil
@@ -180,9 +236,9 @@ extension DeviceInformationViewController: NSTableViewDelegate, NSTableViewDeleg
     func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
         return false
     }
-    
-    @objc func closeWindow(){
-        if let window = self.view.window{
+
+    @objc func closeWindow() {
+        if let window = self.view.window {
             window.close()
         }
     }
@@ -199,23 +255,23 @@ extension DeviceInformationViewController: NSTableViewDataSource {
 
 @available(OSX 10.12.1, *)
 extension DeviceInformationViewController: NSTouchBarDelegate {
-    
+
     override func makeTouchBar() -> NSTouchBar? {
         let touchBar = NSTouchBar()
         touchBar.delegate = self
         touchBar.defaultItemIdentifiers = [.closeCurrentWindow]
-        
+
         return touchBar
     }
-    
-    func touchBar(_ touchBar: NSTouchBar, makeItemForIdentifier identifier: NSTouchBarItem.Identifier ) -> NSTouchBarItem? {
+
+    func touchBar(_ touchBar: NSTouchBar, makeItemForIdentifier identifier: NSTouchBarItem.Identifier) -> NSTouchBarItem? {
         switch identifier {
-            
+
         case NSTouchBarItem.Identifier.closeCurrentWindow:
             let item = NSCustomTouchBarItem(identifier: identifier)
             item.view = NSButton(image: NSImage(named: "NSStopProgressTemplate")!, target: self, action: #selector(closeWindow))
             return item
-            
+
         default: return nil
         }
     }

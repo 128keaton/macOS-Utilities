@@ -21,7 +21,7 @@ class Installer: NSObject, Item, NSFilePresenter {
     var presentedItemOperationQueue: OperationQueue = OperationQueue.main
     var appLabel: String = "Not Available"
     var versionNumber: Double = 0.0
-    var icon: NSImage = NSImage(named: "stop")!
+    var icon: NSImage = NSImage(named: "NSHaltIcon")!
     var versionName: String = ""
     var partition: Partition? = nil
     var diskImage: DiskImage? = nil
@@ -87,7 +87,7 @@ class Installer: NSObject, Item, NSFilePresenter {
             self.appLabel = "Fake-Installer-\(fakeVersionString).app"
             self.versionNumber = Double(fakeVersionString)!
             self.fakeInstallerCanInstall = canInstallOnMachine
-            self.icon = NSImage(named: "FakeInstallerIcon")!
+            self.icon = NSImage(named: "NSDefaultInstallerIcon")!
 
             if(!canInstall) {
                 DispatchQueue.main.async {

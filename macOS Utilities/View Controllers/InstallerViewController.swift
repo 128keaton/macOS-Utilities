@@ -19,6 +19,7 @@ class InstallerViewController: NSViewController {
 
     private var versionNumbers: VersionNumbers = VersionNumbers()
     private var installers = [Installer]()
+    private var cachedPopover: NSPopover? = nil
 
     private let preferenceLoader: PreferenceLoader? = (NSApplication.shared.delegate as! AppDelegate).preferenceLoader
 
@@ -26,14 +27,26 @@ class InstallerViewController: NSViewController {
 
     override func awakeFromNib() {
         NotificationCenter.default.addObserver(self, selector: #selector(InstallerViewController.getInstallableVersions), name: ItemRepository.newInstaller, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateStatusImages(_:)), name: DiskUtility.bootDiskAvailable, object: nil)
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        //  checkForMetal()
-        //  verifyMemoryAmount()
-        // verifyHDDSize()
+        updateStatusImages()
         getInstallableVersions()
+    }
+
+    @objc func updateStatusImages(_ aNotification: Notification? = nil) {
+        if !Thread.isMainThread {
+            DispatchQueue.main.async {
+               self.updateStatusImages()
+            }
+            return
+        }
+        
+        metalStatus.image = MachineInformation.shared.GPUStatus
+        memoryStatus.image = MachineInformation.shared.RAMStatus
+        hddStatus.image = MachineInformation.shared.HDDStatus
     }
 
     @objc func getInstallableVersions() {
@@ -77,74 +90,51 @@ class InstallerViewController: NSViewController {
         }
     }
 
-    /*  func checkForMetal() {
-        if compatibilityChecker.hasMetalGPU {
-            metalStatus.image = NSImage(named: "SuccessIcon")
-        } else {
-            metalStatus.image = NSImage(named: "AlertIcon")
-        }
-    }
-
-    func verifyMemoryAmount() {
-        if compatibilityChecker.hasEnoughMemory {
-            memoryStatus.image = NSImage(named: "SuccessIcon")
-        } else {
-            memoryStatus.image = NSImage(named: "AlertIcon")
-        }
-    }
-
-    func verifyHDDSize() {
-        if compatibilityChecker.hasLargeEnoughHDD {
-            hddStatus.image = NSImage(named: "SuccessIcon")
-        } else {
-            hddStatus.image = NSImage(named: "AlertIcon")
-        }
-    }*/
-
     @IBAction func showPopover(sender: NSButton) {
-        let popoverController = storyboard?.instantiateController(withIdentifier: "InfoPopoverViewController") as! InfoPopoverViewController
+        if let popoverContentViewController = storyboard?.instantiateController(withIdentifier: "InfoPopoverViewController") as? InfoPopoverViewController {
+            var addDiskUtilityButton = (sender == hddStatus && !MachineInformation.shared.bootHDDIsValid)
+            #if DEBUG
+                addDiskUtilityButton = (sender == hddStatus)
+            #endif
 
-        /* if(sender == memoryStatus) {
-            if(compatibilityChecker.hasEnoughMemory) {
-                popoverController.message = "This machine has more than 8GB of RAM."
-            } else {
-                popoverController.message = "This machine has less than 8GB of RAM. You can install, but the machine's performance might be dismal."
+            if(sender == memoryStatus) {
+                popoverContentViewController.message = MachineInformation.shared.RAMInformation
             }
-        } else if(sender == metalStatus) {
-            if(compatibilityChecker.hasMetalGPU) {
-                popoverController.message = "This machine has only Metal compatible GPUs installed."
-            } else {
-                popoverController.message = "This machine has no Metal compatible GPUs or has a non-Metal compatible GPU installed."
+
+            if(sender == metalStatus) {
+                popoverContentViewController.message = MachineInformation.shared.GPUInformation
             }
-        } else {
-            if(compatibilityChecker.hasFormattedHDD && compatibilityChecker.hasLargeEnoughHDD) {
-                popoverController.message = "This machine has a primary storage device with a capacity of \(compatibilityChecker.storageDeviceSize) GB."
-                #if DEBUG
-                    popoverController.buttonAction = #selector(InstallerViewController.openDiskUtility)
-                    popoverController.buttonText = "Open Disk Utility"
-                #endif
-            } else if(!compatibilityChecker.hasFormattedHDD && !compatibilityChecker.hasLargeEnoughHDD) {
-                popoverController.message = "Your machine does not have an installable storage device, or the storage device is improperly formatted"
-                popoverController.buttonAction = #selector(InstallerViewController.openDiskUtility)
-                popoverController.buttonText = "Open Disk Utility"
-            } else if(compatibilityChecker.hasFormattedHDD && !compatibilityChecker.hasLargeEnoughHDD) {
-                popoverController.message = "This machine's HDD space is too low (\(compatibilityChecker.storageDeviceSize) GB)."
+
+            if(sender == hddStatus) {
+                popoverContentViewController.message = MachineInformation.shared.HDDInformation
+            }
+
+
+            if self.cachedPopover == nil {
+                let aPopover = NSPopover()
+                aPopover.behavior = .transient
+                aPopover.contentViewController = popoverContentViewController
+                aPopover.animates = true
+                self.cachedPopover = aPopover
+            }
+
+            if let popover = self.cachedPopover {
+                if popover.contentViewController == nil || popover.contentViewController != popoverContentViewController {
+                    popover.contentViewController = popoverContentViewController
+                }
+
+                if (addDiskUtilityButton) {
+                    popoverContentViewController.buttonText = "Open Disk Utility"
+                    popoverContentViewController.buttonAction = #selector(openDiskUtility)
+                    popover.contentSize = NSSize(width: 350, height: 150)
+                } else {
+                    popover.contentSize = NSSize(width: 350, height: 115)
+                }
+
+                let entryRect = sender.convert(sender.bounds, to: NSApp.keyWindow?.contentView)
+                popover.show(relativeTo: entryRect, of: (NSApp.keyWindow?.contentView)!, preferredEdge: .minY)
             }
         }
-
-        let popover = NSPopover()
-        if(popoverController.buttonText != nil && popoverController.buttonAction != nil) {
-            popover.contentSize = NSSize(width: 250, height: 150)
-        } else {
-            popover.contentSize = NSSize(width: 250, height: 111)
-        }
-
-        popover.behavior = .transient
-        popover.animates = true
-        popover.contentViewController = popoverController
-
-        let entryRect = sender.convert(sender.bounds, to: NSApp.keyWindow?.contentView)
-        popover.show(relativeTo: entryRect, of: (NSApp.keyWindow?.contentView)!, preferredEdge: .minY)*/
     }
 
     @objc func openDiskUtility() {

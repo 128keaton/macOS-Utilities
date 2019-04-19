@@ -14,6 +14,8 @@ class DiskUtility: NSObject, NSFilePresenter {
     var presentedItemOperationQueue: OperationQueue = OperationQueue.main
 
     public static let shared = DiskUtility()
+    public static let bootDiskAvailable = Notification.Name("NSBootDiskAvailable")
+
     private (set) public var cachedDisks = [Disk]()
     private var mountedShares = [Share]()
     private var mountedInstallers = [Installer]()
@@ -52,6 +54,11 @@ class DiskUtility: NSObject, NSFilePresenter {
                             self.addDisk(self.generateFakeDisk(withPartition: true))
                             self.addDisk(self.generateFakeDisk(withPartition: false))
                         #endif
+
+                        if let bootDisk = self.bootDisk {
+                            NotificationCenter.default.post(name: DiskUtility.bootDiskAvailable, object: bootDisk)
+                        }
+
                         self.cachedDisks.filter { $0.containsInstaller == true }.forEach {
                             let newInstaller = $0.installer
                             if !self.mountedInstallers.contains(newInstaller) {
@@ -80,6 +87,29 @@ class DiskUtility: NSObject, NSFilePresenter {
     /// Used for fake disks and other manual disks
     public func addDisk(_ disk: Disk) {
         self.cachedDisks.append(disk)
+    }
+
+    public var bootDisk: Disk? {
+        let path = "/"
+        let mountPoint = path.cString(using: .utf8)! as [Int8]
+        var unsafeMountPoint = mountPoint.map { UInt8(bitPattern: $0) }
+
+        if let fileURL = CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault, &unsafeMountPoint, Int(strlen(mountPoint)), true),
+            let daSession = DASessionCreate(kCFAllocatorDefault),
+            let daDisk = DADiskCreateFromVolumePath(kCFAllocatorDefault, daSession, fileURL) {
+            if let description = DADiskCopyDescription(daDisk) {
+                if let volumeName = (description as NSDictionary)[kDADiskDescriptionVolumeNameKey] as? String {
+                    if let disk = (self.getAllDisksAndPartitions().first { ($0 as! Disk).volumeName == volumeName } as? Disk) {
+                        return disk
+                    } else if let partition = (self.getAllDisksAndPartitions().first { ($0 as! Partition).volumeName == volumeName } as? Partition) {
+                        print("Found partition:\(partition)")
+                        return nil
+                    }
+                }
+            }
+        }
+
+        return nil
     }
 
     public func generateFakeDisk(withPartition: Bool = false) -> Disk {
@@ -115,7 +145,7 @@ class DiskUtility: NSObject, NSFilePresenter {
         }
         return newDisk
     }
-    
+
     public func addPartitionToDisk(_ disk: Disk, mountPoint: String, volumeName: String, isAPFSPartition: Bool = false) -> Disk? {
         let newPartition = Partition(content: nil, deviceIdentifier: "\(disk.deviceIdentifier)s2", diskUUID: nil, rawSize: disk.rawSize, rawVolumeName: volumeName, volumeUUID: nil, mountPoint: mountPoint, isFake: disk.isFake)
         return self.updateDiskPartitions(disk, newPartitions: [newPartition], isAPFSPartitions: isAPFSPartition)
@@ -238,32 +268,32 @@ class DiskUtility: NSObject, NSFilePresenter {
         }
 
         TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["unmount", validPath], printStandardOutput: true, returnEscaping: { (taskOutput) in
-            if let diskUtilOutput = taskOutput {
-                if diskUtilOutput.contains("Unmount successful for") {
-                    self.mountedShares.removeAll { $0 == share }
-                    DDLogInfo("Unmounted share: \(validPath)")
-                    didComplete(true)
-                    return
-                } else {
-                    DDLogError("Unable to unmount share \(validPath): \(diskUtilOutput)")
-                    DDLogError(diskUtilOutput)
-                    didComplete(false)
-                    return
+                if let diskUtilOutput = taskOutput {
+                    if diskUtilOutput.contains("Unmount successful for") {
+                        self.mountedShares.removeAll { $0 == share }
+                        DDLogInfo("Unmounted share: \(validPath)")
+                        didComplete(true)
+                        return
+                    } else {
+                        DDLogError("Unable to unmount share \(validPath): \(diskUtilOutput)")
+                        DDLogError(diskUtilOutput)
+                        didComplete(false)
+                        return
+                    }
                 }
-            }
-        })
+            })
     }
 
     private func removeMountPoint(_ path: String, didComplete: @escaping (Bool) -> ()) {
         TaskHandler.createTask(command: "/bin/rm", arguments: ["-rf", path], printStandardOutput: true, returnEscaping: { (taskOutput) in
-            if let rmOutput = taskOutput {
-                DDLogError("Error removing \(path): \(rmOutput)")
-                didComplete(false)
-            } else {
-                DDLogInfo("Successfully removed \(path)")
-                didComplete(true)
-            }
-        })
+                if let rmOutput = taskOutput {
+                    DDLogError("Error removing \(path): \(rmOutput)")
+                    didComplete(false)
+                } else {
+                    DDLogInfo("Successfully removed \(path)")
+                    didComplete(true)
+                }
+            })
     }
 
     public func erase(_ partition: Partition, newName: String? = nil, forInstaller: Installer? = nil, returnCompletion: @escaping (Bool, String?) -> ()) {
@@ -401,16 +431,16 @@ class DiskUtility: NSObject, NSFilePresenter {
             let currentDisk = $0
             if let deviceIdentifier = currentDisk.devEntry {
                 TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["eject", deviceIdentifier], returnEscaping: { (taskOutput) in
-                    if let diskUtilOutput = taskOutput {
-                        if diskUtilOutput.contains("ejected") {
-                            self.diskModificationQueue.sync {
-                                self.diskImage.removeAll { $0 == currentDisk }
+                        if let diskUtilOutput = taskOutput {
+                            if diskUtilOutput.contains("ejected") {
+                                self.diskModificationQueue.sync {
+                                    self.diskImage.removeAll { $0 == currentDisk }
+                                }
+                            } else {
+                                DDLogError("Unable to eject disk image: \(deviceIdentifier) \(diskUtilOutput)")
                             }
-                        } else {
-                            DDLogError("Unable to eject disk image: \(deviceIdentifier) \(diskUtilOutput)")
                         }
-                    }
-                })
+                    })
             }
         }
     }
@@ -424,16 +454,16 @@ class DiskUtility: NSObject, NSFilePresenter {
             let currentShare = $0
             if let mountPoint = currentShare.mountPoint {
                 TaskHandler.createTask(command: "/sbin/umount", arguments: [mountPoint], returnEscaping: { (taskOutput) in
-                    self.diskModificationQueue.sync {
-                        self.mountedShares.removeAll { $0 == currentShare }
-                    }
-                    didComplete(true)
-                })
+                        self.diskModificationQueue.sync {
+                            self.mountedShares.removeAll { $0 == currentShare }
+                        }
+                        didComplete(true)
+                    })
             }
         }
     }
 
-    public func diskIsAPFS( _ disk: Disk, completion: @escaping (NSDictionary?) -> ()) {
+    public func diskIsAPFS(_ disk: Disk, completion: @escaping (NSDictionary?) -> ()) {
         TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["apfs", "list", "-plist", disk.deviceIdentifier], hideTaskFailed: true) { (output) in
             if let apfsOutput = output {
                 if !apfsOutput.contains("is not an APFS Container") {

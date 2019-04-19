@@ -12,7 +12,7 @@ import CocoaLumberjack
 import CommonCrypto
 
 let taskQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.background)
-let prohibatoryIcon = NSImage(named: "stop")
+let prohibatoryIcon = NSImage(named: "NSHaltIcon")
 
 func findIconFor(applicationPath: String) -> NSImage {
     let path = applicationPath + "/Contents/Info.plist"

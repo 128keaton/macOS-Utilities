@@ -29,15 +29,17 @@
                         <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="78" id="kZF-7X-upQ"/>
                         <constraint firstAttribute="width" constant="78" id="rZ3-Hg-Po9"/>
                     </constraints>
-                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="AlertIcon" id="vJq-LD-afc"/>
+                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSHaltIcon" id="vJq-LD-afc"/>
                 </imageView>
             </subviews>
             <constraints>
                 <constraint firstItem="gs5-ZP-wAf" firstAttribute="trailing" secondItem="gzM-Dz-wwk" secondAttribute="trailing" constant="3" id="1t1-tb-Kr6"/>
+                <constraint firstItem="gs5-ZP-wAf" firstAttribute="centerX" secondItem="gzM-Dz-wwk" secondAttribute="centerX" id="Dk2-Q2-MjP"/>
                 <constraint firstItem="gs5-ZP-wAf" firstAttribute="leading" secondItem="gzM-Dz-wwk" secondAttribute="leading" constant="-3" id="KNj-Q1-Agd"/>
                 <constraint firstAttribute="bottom" secondItem="gzM-Dz-wwk" secondAttribute="bottom" constant="28" id="UgR-xC-c98"/>
                 <constraint firstItem="gzM-Dz-wwk" firstAttribute="centerX" secondItem="o2S-uG-gT8" secondAttribute="centerX" id="aUH-Zy-SUv"/>
                 <constraint firstItem="gs5-ZP-wAf" firstAttribute="top" secondItem="gzM-Dz-wwk" secondAttribute="bottom" constant="8" id="bdK-X8-jSc"/>
+                <constraint firstItem="gs5-ZP-wAf" firstAttribute="centerX" secondItem="o2S-uG-gT8" secondAttribute="centerX" id="u5I-9h-emg"/>
             </constraints>
             <point key="canvasLocation" x="127.5" y="182.5"/>
         </view>
@@ -51,6 +53,6 @@
         </collectionViewItem>
     </objects>
     <resources>
-        <image name="AlertIcon" width="350" height="350"/>
+        <image name="NSHaltIcon" width="1024" height="1024"/>
     </resources>
 </document>
