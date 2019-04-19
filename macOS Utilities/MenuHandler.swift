@@ -22,7 +22,7 @@ class MenuHandler: NSObject {
             self.buildHelpMenu()
         }
     }
-    
+
     public var fileMenu: NSMenu?
 
     public var installers = [Installer]()
@@ -44,6 +44,8 @@ class MenuHandler: NSObject {
     // MARK: Menu Builders
     func buildHelpMenu() {
         if self.helpMenu != nil {
+            ItemRepository.shared.createFakeInstallers()
+
             if helpEmailAddress == nil {
                 helpMenu!.items.removeAll { $0.title == "Send Log" }
                 DDLogInfo("Disabling 'Send Log' menu item. helpEmailAddress is nil")
@@ -70,7 +72,7 @@ class MenuHandler: NSObject {
             infoMenu?.addItem(checkWarrantyItem)
         }
     }
-    
+
     // MARK: File menu functions
     @IBAction func exportCurrentConfiguration(_ sender: NSMenuItem) {
         if PreferenceLoader.savePreferencesToDownloads(PreferenceLoader.currentPreferences!, fileName: "exported-\(String.random(5, numericOnly: true))") {
@@ -157,9 +159,9 @@ class MenuHandler: NSObject {
                     return
             }
 
-            let installerVersion = String(sender.title.split(separator: " ")[1])
+            let versionName = sender.title.replacingOccurrences(of: "Install ", with: "")
 
-            if let selectedInstaller = (installers.first { $0.versionNumber == Double(installerVersion)! }) {
+            if let selectedInstaller = (installers.first { $0.versionName == versionName }) {
                 ItemRepository.shared.setSelectedInstaller(selectedInstaller)
                 PageController.shared.showPageController(initialPage: 1)
             }
@@ -202,6 +204,7 @@ class MenuHandler: NSObject {
 
             if let validNotification = notification {
                 if let installer = validNotification.object as? Installer {
+                    installers.append(installer)
                     let installerItem = NSMenuItem(title: "Install \(installer.versionName)", action: #selector(MenuHandler.startOSInstall(_:)), keyEquivalent: "")
                     installerItem.target = self
                     installerItem.image = installer.canInstall ? NSImage(named: "NSStatusAvailable") : NSImage(named: "NSStatusUnavailable")

@@ -102,8 +102,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 DeviceIdentifier.setup(authenticationToken: preferences.deviceIdentifierAuthenticationToken!)
                 MachineInformation.setup(deviceIdentifier: DeviceIdentifier.shared)
             }
-            
-            self.itemRepository.createFakeInstallers()
         }
     }
 

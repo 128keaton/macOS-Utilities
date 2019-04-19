@@ -161,13 +161,13 @@ class InstallerViewController: NSViewController {
 
     func removeTouchBarNextButton() {
         if let touchBar = self.touchBar {
-            touchBar.defaultItemIdentifiers = [.backPageController]
+            touchBar.defaultItemIdentifiers = [.closeCurrentWindow]
         }
     }
 
     func addTouchBarNextButton() {
         if let touchBar = self.touchBar {
-            touchBar.defaultItemIdentifiers = [.backPageController, .nextPageController]
+            touchBar.defaultItemIdentifiers = [.closeCurrentWindow, .nextPageController]
         }
     }
 }
@@ -222,7 +222,7 @@ extension InstallerViewController: NSTouchBarDelegate {
     override func makeTouchBar() -> NSTouchBar? {
         let touchBar = NSTouchBar()
         touchBar.delegate = self
-        touchBar.defaultItemIdentifiers = [.backPageController]
+        touchBar.defaultItemIdentifiers = [.closeCurrentWindow]
 
         return touchBar
     }
@@ -230,9 +230,9 @@ extension InstallerViewController: NSTouchBarDelegate {
     func touchBar(_ touchBar: NSTouchBar, makeItemForIdentifier identifier: NSTouchBarItem.Identifier) -> NSTouchBarItem? {
         switch identifier {
 
-        case NSTouchBarItem.Identifier.backPageController:
+        case NSTouchBarItem.Identifier.closeCurrentWindow:
             let item = NSCustomTouchBarItem(identifier: identifier)
-            item.view = NSButton(image: NSImage(named: "NSTouchBarGoBackTemplate")!, target: self, action: #selector(cancelButtonClicked(_:)))
+            item.view = NSButton(image: NSImage(named: "NSStopProgressTemplate")!, target: self, action: #selector(cancelButtonClicked(_:)))
             return item
 
         case NSTouchBarItem.Identifier.nextPageController:

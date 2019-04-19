@@ -213,7 +213,7 @@ extension DeviceInformationViewController: NSTouchBarDelegate {
             
         case NSTouchBarItem.Identifier.closeCurrentWindow:
             let item = NSCustomTouchBarItem(identifier: identifier)
-            item.view = NSButton(image: NSImage(named: "NSTouchBarGoBackTemplate")!, target: self, action: #selector(closeWindow))
+            item.view = NSButton(image: NSImage(named: "NSStopProgressTemplate")!, target: self, action: #selector(closeWindow))
             return item
             
         default: return nil

@@ -18,6 +18,7 @@ class DiskSelectionViewController: NSViewController {
     @IBOutlet weak var backButton: NSButton!
 
     private let diskUtility = DiskUtility.shared
+    private var defaultItemIdentifiers: [NSTouchBarItem.Identifier] = [.backPageController]
 
     private var selectedInstaller: Installer? = nil
     private var allDiskAndPartitions = [Any]() {
@@ -31,6 +32,9 @@ class DiskSelectionViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        self.diskProgressIndicator?.stopSpinning()
+
         updateBackButton()
         getSelectedInstaller()
         getDisks()
@@ -104,7 +108,7 @@ class DiskSelectionViewController: NSViewController {
 
     func removeTouchBarNextButton() {
         if let touchBar = self.touchBar {
-            touchBar.defaultItemIdentifiers = [.backPageController]
+            touchBar.defaultItemIdentifiers = self.defaultItemIdentifiers
         }
     }
 
@@ -262,19 +266,29 @@ extension DiskSelectionViewController: NSTableViewDataSource {
     }
 }
 
-
 @available(OSX 10.12.1, *)
 extension DiskSelectionViewController: NSTouchBarDelegate {
     override func makeTouchBar() -> NSTouchBar? {
         let touchBar = NSTouchBar()
         touchBar.delegate = self
-        touchBar.defaultItemIdentifiers = [.backPageController]
-        
+
+        if PageController.shared.isInitialPage(self) {
+            self.defaultItemIdentifiers = [.closeCurrentWindow]
+        } else {
+            self.defaultItemIdentifiers = [.backPageController]
+        }
+
+        touchBar.defaultItemIdentifiers = self.defaultItemIdentifiers
         return touchBar
     }
 
     func touchBar(_ touchBar: NSTouchBar, makeItemForIdentifier identifier: NSTouchBarItem.Identifier) -> NSTouchBarItem? {
         switch identifier {
+
+        case NSTouchBarItem.Identifier.closeCurrentWindow:
+            let item = NSCustomTouchBarItem(identifier: identifier)
+            item.view = NSButton(image: NSImage(named: "NSStopProgressTemplate")!, target: self, action: #selector(backButtonClicked(_:)))
+            return item
 
         case NSTouchBarItem.Identifier.backPageController:
             let item = NSCustomTouchBarItem(identifier: identifier)
