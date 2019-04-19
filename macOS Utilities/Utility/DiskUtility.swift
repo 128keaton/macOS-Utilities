@@ -241,13 +241,16 @@ class DiskUtility: NSObject, NSFilePresenter {
             } else {
                 if let plistOutput = taskOutput,
                     let plistData = plistOutput.data(using: .utf8) {
+                    var hdiUtilOutput: HDIUtilOutput? = nil
                     do {
-                        let hdiUtilOutput = try PropertyListDecoder().decode(HDIUtilOutput.self, from: plistData)
-                        self.diskImage = hdiUtilOutput.systemEntities.filter { $0.potentiallyMountable == true }
-                        self.mountedInstallers = self.diskImage.filter { $0.containsInstaller == true }.map { Installer(diskImage: $0) }
-                        print(self.diskImage)
+                        hdiUtilOutput = try PropertyListDecoder().decode(HDIUtilOutput.self, from: plistData)
                     } catch {
                         DDLogError("Could not mount disk image at :\(at)")
+                    }
+                    
+                    if let validOutput = hdiUtilOutput{
+                        self.diskImage = validOutput.systemEntities.filter { $0.potentiallyMountable == true }
+                        self.mountedInstallers = self.diskImage.filter { $0.containsInstaller == true }.map { Installer(diskImage: $0) }
                     }
                 }
             }

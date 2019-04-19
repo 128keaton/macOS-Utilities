@@ -44,7 +44,9 @@ class MenuHandler: NSObject {
     // MARK: Menu Builders
     func buildHelpMenu() {
         if self.helpMenu != nil {
-            ItemRepository.shared.createFakeInstallers()
+            #if DEBUG
+                ItemRepository.shared.createFakeInstallers()
+            #endif
 
             if helpEmailAddress == nil {
                 helpMenu!.items.removeAll { $0.title == "Send Log" }

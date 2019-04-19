@@ -21,6 +21,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private let itemRepository = ItemRepository.shared
 
     private var installers = [Installer]()
+    private var preferencesSemaphore: DispatchSemaphore? = nil
     private var helpEmailAddress: String? = nil
 
     public let modelYearDetermination = ModelYearDetermination()
@@ -69,20 +70,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func readPreferences(_ aNotification: Notification? = nil) {
-        var semaphore: DispatchSemaphore? = nil
         PreferenceLoader.loaded = true
+
+        if let validSemaphore = preferencesSemaphore {
+            validSemaphore.wait()
+        }
+
+        preferencesSemaphore = DispatchSemaphore(value: 2)
 
         if let notification = aNotification {
             if notification.object != nil {
-                semaphore = DispatchSemaphore(value: 1)
-                DiskUtility.shared.ejectAll() { (didComplete) in
-                    semaphore?.signal()
-                }
+                DDLogVerbose("Will be used in the future :P")
             }
-        }
-
-        if let validSemaphore = semaphore {
-            validSemaphore.wait()
         }
 
         if let preferences = PreferenceLoader.currentPreferences {
@@ -97,9 +96,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             if let helpEmailAddress = preferences.helpEmailAddress {
                 self.helpEmailAddress = helpEmailAddress
             }
-            
-            if preferences.useDeviceIdentifierAPI{
-                 DeviceIdentifier.setup(authenticationToken: preferences.deviceIdentifierAuthenticationToken!)
+
+            if preferences.useDeviceIdentifierAPI {
+                DeviceIdentifier.setup(authenticationToken: preferences.deviceIdentifierAuthenticationToken!)
+            }
+            if let validSemaphore = preferencesSemaphore {
+                validSemaphore.signal()
+            }
+        } else {
+            if let validSemaphore = preferencesSemaphore {
+                validSemaphore.signal()
             }
         }
     }
@@ -110,14 +116,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    @objc func setupMachineInformation(){
-        if let currentPreferences = PreferenceLoader.currentPreferences{
+    @objc func setupMachineInformation() {
+        if let currentPreferences = PreferenceLoader.currentPreferences {
             if currentPreferences.useDeviceIdentifierAPI == true && DeviceIdentifier.isConfigured == true {
                 MachineInformation.setup(deviceIdentifier: DeviceIdentifier.shared)
             }
         }
     }
-    
+
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         if(DiskUtility.shared.allSharesAndInstallersUnmounted == false) {
             DDLogInfo("Terminating application..waiting for disks to eject")

@@ -50,13 +50,13 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     }
 
     @objc private func checkForInstallers() {
-        if itemRepository.getInstallers().count > 0{
+        if itemRepository.getInstallers().count > 0 {
             NSAnimationContext.runAnimationGroup { (context) in
                 context.duration = 0.5
                 self.installMacOSButton?.animator().alphaValue = 1.0
             }
             self.addTouchBarInstallButton()
-        }else{
+        } else {
             NSAnimationContext.runAnimationGroup { (context) in
                 context.duration = 0.5
                 self.installMacOSButton?.animator().alphaValue = 0.0
@@ -121,16 +121,16 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
 
     private func reloadApplications(withNewApplications newApplications: [Application]? = nil) {
         if newApplications == nil {
-            applications = ItemRepository.shared.getApplications()
+            applications = ItemRepository.shared.getApplications().filter { $0.showInApplicationsWindow == true }
         } else if let newApplications = newApplications {
             if(newApplications.count > applications.count) {
-                applications.append(contentsOf: newApplications.filter { applications.contains($0) == false })
+                applications.append(contentsOf: newApplications.filter { applications.contains($0) == false && $0.showInApplicationsWindow == true })
             } else if (newApplications.count < applications.count) {
                 applications.removeAll { !newApplications.contains($0) }
             } else if newApplications.count == 0 {
                 applications.removeAll()
             } else {
-                applications = newApplications
+                applications = newApplications.filter { $0.showInApplicationsWindow == true }
             }
         }
         reloadCollectionView()

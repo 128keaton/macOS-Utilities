@@ -116,11 +116,11 @@ class PreferenceLoader {
                 }
 
                 if notify {
-                    PreferenceLoader.currentPreferences = preferences
                     NotificationCenter.default.post(name: PreferenceLoader.preferencesLoaded, object: true)
                 } else {
                     NotificationCenter.default.post(name: PreferenceLoader.preferencesUpdated, object: preferences)
                 }
+                PreferenceLoader.currentPreferences = preferences
             } catch {
                 DDLogError("Could not save preferences: \(error)")
             }
@@ -255,12 +255,22 @@ class PreferenceLoader {
         do {
             let _data = try Data(contentsOf: at)
             let _preferences = try PropertyListDecoder().decode(Preferences.self, from: _data)
+            
+            if var applications = _preferences.mappedApplications{
+                applications.removeAll { $0.path == "" || !$0.path.contains(".app") }
+                _preferences.mappedApplications = applications
+            }
+            
             return _preferences
         } catch let error {
             let loadLegacyStatus = parseLegacyPreferences(atPath: nil, atURL: at)
             if loadLegacyStatus.0 == true {
                 if let convertedPreferences = loadLegacyStatus.1,
                     forceSave == true {
+                    if var applications = convertedPreferences.mappedApplications{
+                        applications.removeAll { $0.path == "" || !$0.path.contains(".app") }
+                        convertedPreferences.mappedApplications = applications
+                    }
                     save(convertedPreferences)
                 }
                 return loadLegacyStatus.1

@@ -95,6 +95,7 @@ extension PreferencesApplicationsViewController: NSTableViewDataSource, NSTableV
         applications.sort(sortDescriptors: tableView.sortDescriptors)
 
         if applications != oldApplications {
+            applications = applications.filter { $0.path != "" }
             updateApplications()
             tableView.reloadData()
         }
