@@ -16,6 +16,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var fileMenu: NSMenu?
     @IBOutlet weak var pageController: NSPageController!
     @IBOutlet weak var helpMenu: NSMenu?
+    @IBOutlet weak var preferencesMenuItem: NSMenuItem?
     @IBOutlet weak var menuHandler: MenuHandler?
 
     private let itemRepository = ItemRepository.shared
@@ -42,6 +43,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         pageControllerDelegate.setPageController(pageController: self.pageController)
+        self.preferencesMenuItem?.isEnabled = false
 
         readPreferences()
         setupMenuHandler()
@@ -51,6 +53,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         menuHandler?.infoMenu = self.infoMenu
         menuHandler?.helpMenu = self.helpMenu
         menuHandler?.fileMenu = self.fileMenu
+        menuHandler?.preferencesMenuItem = self.preferencesMenuItem
         menuHandler?.utilitiesMenu = self.utilitiesMenu
     }
 
@@ -71,12 +74,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func readPreferences(_ aNotification: Notification? = nil) {
         PreferenceLoader.loaded = true
+        self.preferencesMenuItem?.isEnabled = false
 
         if let validSemaphore = preferencesSemaphore {
             validSemaphore.wait()
+        } else {
+            preferencesSemaphore = DispatchSemaphore(value: 2)
         }
-
-        preferencesSemaphore = DispatchSemaphore(value: 2)
 
         if let notification = aNotification {
             if notification.object != nil {
@@ -100,12 +104,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             if preferences.useDeviceIdentifierAPI {
                 DeviceIdentifier.setup(authenticationToken: preferences.deviceIdentifierAuthenticationToken!)
             }
+
             if let validSemaphore = preferencesSemaphore {
                 validSemaphore.signal()
-            }
-        } else {
-            if let validSemaphore = preferencesSemaphore {
-                validSemaphore.signal()
+                self.preferencesMenuItem?.isEnabled = true
             }
         }
     }
@@ -125,13 +127,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
-        if(DiskUtility.shared.allSharesAndInstallersUnmounted == false) {
-            DDLogInfo("Terminating application..waiting for disks to eject")
-            DiskUtility.shared.ejectAll() { (didComplete) in
-                DDLogInfo("Finished ejecting? \(didComplete)")
-                self.checkIfReadyToTerminate()
+        if let validPreferences = PreferenceLoader.currentPreferences,
+            let ejectDrivesOnQuit = validPreferences.ejectDrivesOnQuit,
+            ejectDrivesOnQuit == true {
+            if(DiskUtility.shared.allSharesAndInstallersUnmounted == false) {
+                DDLogInfo("Terminating application..waiting for disks to eject")
+                DiskUtility.shared.ejectAll() { (didComplete) in
+                    DDLogInfo("Finished ejecting? \(didComplete)")
+                    self.checkIfReadyToTerminate()
+                }
+                return .terminateLater
             }
-            return .terminateLater
         }
         return .terminateNow
     }

@@ -19,6 +19,7 @@ class Preferences: Codable, NSCopying, CustomStringConvertible, Equatable {
     var installerServerPreferences: InstallerServerPreferences?
     var mappedApplications: [Application]?
     var isRemoteConfiguration: Bool? = false
+    var ejectDrivesOnQuit: Bool? = true
     var configurationVersion: String
 
     var useDeviceIdentifierAPI: Bool {
@@ -54,37 +55,42 @@ class Preferences: Codable, NSCopying, CustomStringConvertible, Equatable {
         self.installerServerPreferences = nil
         self.mappedApplications = nil
     }
-    
-    init(configurationVersion: String){
+
+    init(configurationVersion: String) {
         self.configurationVersion = configurationVersion
     }
-    
+
     static func == (lhs: Preferences, rhs: Preferences) -> Bool {
         if(lhs.installerServerPreferences != rhs.installerServerPreferences) {
             return true
         }
-        
+
         if(lhs.loggingPreferences == rhs.loggingPreferences) {
             return true
         }
-        
+
         if(lhs.useDeviceIdentifierAPI == rhs.useDeviceIdentifierAPI) {
             return true
         }
-        
+
         if(lhs.helpEmailAddress == rhs.helpEmailAddress) {
             return true
         }
-        
-        if(lhs.mappedApplications == rhs.mappedApplications){
+
+        if(lhs.mappedApplications == rhs.mappedApplications) {
             return true
         }
-       
+
+        if(lhs.ejectDrivesOnQuit == rhs.ejectDrivesOnQuit) {
+            return true
+        }
+
+
         if let mappedApplicationsA = lhs.mappedApplications,
-            let mappedApplicationsB = rhs.mappedApplications{
+            let mappedApplicationsB = rhs.mappedApplications {
             return mappedApplicationsA.map { $0.showInApplicationsWindow } == mappedApplicationsB.map { $0.showInApplicationsWindow }
         }
-        
+
         return false
     }
 }

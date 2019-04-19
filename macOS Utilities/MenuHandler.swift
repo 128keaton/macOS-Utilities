@@ -24,7 +24,8 @@ class MenuHandler: NSObject {
     }
 
     public var fileMenu: NSMenu?
-
+    public var preferencesMenuItem: NSMenuItem?
+    
     public var installers = [Installer]()
     public var helpEmailAddress: String? = nil
     public var pageControllerDelegate: NSPageController? = nil
@@ -110,8 +111,7 @@ class MenuHandler: NSObject {
             }
         }
     }
-
-
+    
     // MARK: Debug menu functions
     @IBAction func reloadPreferences(_ sender: NSMenuItem) {
         ItemRepository.shared.reloadAllItems()

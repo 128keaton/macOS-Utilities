@@ -100,7 +100,14 @@ class PreferenceLoader {
             do {
                 let data = try encoder.encode(preferences)
                 if writeToBundle {
-                    try data.write(to: URL(fileURLWithPath: bundlePropertyListPath))
+                    let bundlePreferences = (preferences.copy() as! Preferences)
+                    if let applications = bundlePreferences.mappedApplications{
+                        applications.forEach { $0.isInvalid = false }
+                        bundlePreferences.mappedApplications = applications
+                    }
+                    
+                    let bundleData = try encoder.encode(bundlePreferences)
+                    try bundleData.write(to: URL(fileURLWithPath: bundlePropertyListPath))
                     DDLogVerbose("Saved preferences to propertly list at path: \(bundlePropertyListPath)")
                 }
 
@@ -191,7 +198,14 @@ class PreferenceLoader {
             do {
                 let data = try encoder.encode(preferences)
                 if writeToBundle {
-                    try data.write(to: URL(fileURLWithPath: bundlePropertyListPath))
+                    let bundlePreferences = (preferences.copy() as! Preferences)
+                    if let applications = bundlePreferences.mappedApplications{
+                        applications.forEach { $0.isInvalid = false }
+                        bundlePreferences.mappedApplications = applications
+                    }
+                    
+                    let bundleData = try encoder.encode(bundlePreferences)
+                    try bundleData.write(to: URL(fileURLWithPath: bundlePropertyListPath))
                     DDLogVerbose("Saved preferences to propertly list at path: \(bundlePropertyListPath)")
                 }
 

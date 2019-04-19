@@ -34,8 +34,7 @@ class PreferencesViewController: NSViewController {
     @IBOutlet weak var savePathLabel: NSTextField!
     @IBOutlet weak var applicationsCountLabel: NSTextField!
 
-    @IBOutlet weak var remoteConfigurationPreferencesPopup: NSPopUpButton!
-    @IBOutlet weak var remoteConfigurationAmountLabel: NSTextField!
+    @IBOutlet weak var ejectDrivesOnQuitButton: NSButton!
 
     public var preferenceLoader: PreferenceLoader? = nil
     private var preferences: Preferences? = nil {
@@ -125,6 +124,12 @@ class PreferencesViewController: NSViewController {
                 applicationsCountLabel.stringValue = "\(retreivedApplications.count) application(s)"
                 return
             }
+
+            if let ejectDrivesOnQuit = validPreferences.ejectDrivesOnQuit {
+                ejectDrivesOnQuitButton.state = ejectDrivesOnQuit ? .on : .off
+            } else {
+                ejectDrivesOnQuitButton.state = .off
+            }
         }
         applicationsCountLabel.stringValue = "No applications configured"
     }
@@ -200,11 +205,11 @@ class PreferencesViewController: NSViewController {
         installerMountPathField.stringValue = installerServerPreferences.mountPath
 
         serverTypes.forEach { installerServerTypePopup.addItem(withTitle: $0) }
-        
+
         if let serverType = serverTypes.firstIndex(of: installerServerPreferences.serverType) {
             installerServerTypePopup.selectItem(at: serverType)
         }
-        
+
         installerServerTypePopup.isEnabled = (serverTypes.count > 1)
     }
 
@@ -255,7 +260,8 @@ class PreferencesViewController: NSViewController {
 
             preferences.helpEmailAddress = sendLogAddressField.stringValue
             preferences.deviceIdentifierAuthenticationToken = deviceIdentifierAPITokenField.stringValue
-
+            preferences.ejectDrivesOnQuit = (ejectDrivesOnQuitButton.state == .on)
+            
             if let serverType = installerServerTypePopup.selectedItem?.title {
                 installerServerPreferences.serverType = serverType
             }
@@ -263,7 +269,7 @@ class PreferencesViewController: NSViewController {
             validPreferenceLoader.save(preferences)
         }
     }
-    
+
     @IBAction func closePreferences(_ sender: NSButton) {
         savePreferences()
         self.view.window?.windowController?.close()
