@@ -30,7 +30,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         registerForNotifications()
-        MachineInformation.setup()
 
         if let preferenceLoader = PreferenceLoader.sharedInstance {
             self.preferenceLoader = preferenceLoader
@@ -59,6 +58,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func registerForNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.setupMachineInformation), name: DeviceIdentifier.didSetupNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.showErrorAlert(notification:)), name: ErrorAlertLogger.showErrorAlert, object: nil)
     }
 
@@ -97,10 +97,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             if let helpEmailAddress = preferences.helpEmailAddress {
                 self.helpEmailAddress = helpEmailAddress
             }
-
-            if preferences.useDeviceIdentifierAPI == true {
-                DeviceIdentifier.setup(authenticationToken: preferences.deviceIdentifierAuthenticationToken!)
-                MachineInformation.setup(deviceIdentifier: DeviceIdentifier.shared)
+            
+            if preferences.useDeviceIdentifierAPI{
+                 DeviceIdentifier.setup(authenticationToken: preferences.deviceIdentifierAuthenticationToken!)
             }
         }
     }
@@ -111,6 +110,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+    @objc func setupMachineInformation(){
+        if let currentPreferences = PreferenceLoader.currentPreferences{
+            if currentPreferences.useDeviceIdentifierAPI == true && DeviceIdentifier.isConfigured == true {
+                MachineInformation.setup(deviceIdentifier: DeviceIdentifier.shared)
+            }
+        }
+    }
+    
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         if(DiskUtility.shared.allSharesAndInstallersUnmounted == false) {
             DDLogInfo("Terminating application..waiting for disks to eject")

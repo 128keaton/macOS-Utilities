@@ -29,7 +29,7 @@ class MachineInformation {
 
     private (set) public var metalGPUs: [String] = []
     private (set) public var nonMetalGPUs: [String] = []
-    private (set) public var CPU: String = String()
+    private var cachedCPU: String = String()
 
     static let shared = MachineInformation()
     private static let config = Config()
@@ -41,7 +41,7 @@ class MachineInformation {
         }
 
         if let CPU = MachineInformation.config.CPU {
-            self.CPU = CPU
+            self.cachedCPU = CPU
         }
 
         NotificationCenter.default.addObserver(self, selector: #selector(bootDiskAvailable(_:)), name: DiskUtility.bootDiskAvailable, object: nil)
@@ -49,6 +49,20 @@ class MachineInformation {
     }
 
     // MARK: Functions
+
+    public func getCPU(_ returnHandler: @escaping (String) -> ()) {
+        if self.cachedCPU != "" {
+            returnHandler(cachedCPU)
+        } else {
+            TaskHandler.createTask(command: "/usr/sbin/sysctl", arguments: ["-n", "machdep.cpu.brand_string"]) { (sysctlOutput) in
+                if let CPUInfo = sysctlOutput {
+                    self.cachedCPU = CPUInfo
+                    returnHandler(CPUInfo)
+                }
+            }
+        }
+    }
+
     @objc private func bootDiskAvailable(_ aNotification: Notification? = nil) {
         if let notification = aNotification,
             let bootDisk = notification.object as? Disk {

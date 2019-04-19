@@ -111,8 +111,13 @@ class DeviceInformationViewController: NSViewController {
             }
 
             skuHintLabel?.stringValue = machineInformation.displayName
-            otherSpecsLabel?.stringValue = "\(machineInformation.RAM) GB of RAM - \(machineInformation.CPU)"
             serialNumberLabel?.stringValue = "Serial Number: \(machineInformation.anonymisedSerialNumber)"
+
+            machineInformation.getCPU { (CPU) in
+                DispatchQueue.main.async {
+                    self.otherSpecsLabel?.stringValue = "\(machineInformation.RAM) GB of RAM - \(CPU)"
+                }
+            }
 
             allGraphicsCards = machineInformation.allGraphicsCards
             allDiskAndPartitions = machineInformation.allDisksAndPartitions
@@ -150,7 +155,9 @@ class DeviceInformationViewController: NSViewController {
             self.machineInformation = MachineInformation.shared
         } else {
             MachineInformation.setup()
-            self.machineInformation = MachineInformation.shared
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                self.machineInformation = MachineInformation.shared
+            }
         }
 
         let serialClickHandler = NSClickGestureRecognizer(target: self, action: #selector(toggleFullSerial))
@@ -158,7 +165,7 @@ class DeviceInformationViewController: NSViewController {
 
         self.graphicsCardTableView?.sizeToFit()
         self.disksAndPartitionsTableView?.sizeToFit()
-        
+
         NotificationCenter.default.addObserver(self, selector: #selector(updateView), name: ItemRepository.newPartition, object: nil)
     }
 
@@ -225,7 +232,7 @@ extension DeviceInformationViewController: NSTableViewDelegate, NSTableViewDeleg
 
         if let cell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: cellIdentifier), owner: nil) as? NSTableCellView {
             cell.textField?.stringValue = text
-            if let cellImage = image{
+            if let cellImage = image {
                 cell.imageView?.image = cellImage
             }
             return cell
