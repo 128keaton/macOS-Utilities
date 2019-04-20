@@ -289,7 +289,6 @@ class DiskUtility: NSObject, NSFilePresenter {
         } else if partition.containsInstaller == false {
             TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["eraseVolume", format, partitionName, partition.volumeName]) { (taskOutput) in
                 if let eraseOutput = taskOutput {
-                    DDLogInfo(eraseOutput)
                     returnCompletion(eraseOutput.contains("Finished erase"), partitionName)
                 } else {
                     returnCompletion(false, nil)
@@ -328,7 +327,6 @@ class DiskUtility: NSObject, NSFilePresenter {
         } else {
             TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["eraseDisk", format, diskName, disk.deviceIdentifier]) { (taskOutput) in
                 if let eraseOutput = taskOutput {
-                    DDLogInfo(eraseOutput)
                     // MARK: beta..might break
                     // TODO: fix issues that arise with this..since I'm S M R T smart
                     if let updatedDisk = self.addPartitionToDisk(disk, mountPoint: "/Volumes/\(diskName)", volumeName: diskName) {

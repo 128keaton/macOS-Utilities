@@ -29,6 +29,9 @@ class MachineInformation {
 
     private (set) public var metalGPUs: [String] = []
     private (set) public var nonMetalGPUs: [String] = []
+    
+    // Put GPUs here..mine is funky
+    private (set) public var metalGPUsOverrides = ["AMD Radeon HD 7xxx"]
     private var cachedCPU: String = String()
 
     static let shared = MachineInformation()
@@ -84,7 +87,14 @@ class MachineInformation {
         }
 
         let allGPUs = uniq(source: self.allGraphicsCards)
-
+    
+        
+        let existingOverrides = metalGPUs.filter { metalGPUsOverrides.contains($0) }
+        if existingOverrides.count > 1 {
+            DDLogInfo("\(existingOverrides.joined(separator: ", ")) are already flagged as Metal GPUs, you can remove them from the overrides")
+        }
+        
+        metalGPUs.append(contentsOf: self.metalGPUsOverrides)
         metalGPUs = uniq(source: metalGPUs)
         nonMetalGPUs = allGPUs.filter { !metalGPUs.contains($0) }
 
@@ -243,7 +253,7 @@ class MachineInformation {
         }
 
         if self.metalGPUs.count > 0 {
-            return "This machine has a Metal compatible graphics card installed: \n \(self.metalGPUs.joined(separator: "\n"))"
+            return "This machine has a Metal compatible graphics card installed: \n \(self.metalGPUs.first!)"
         }
 
         return "Could not determine what graphics cards are installed"
