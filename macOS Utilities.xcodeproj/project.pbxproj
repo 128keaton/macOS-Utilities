@@ -22,6 +22,7 @@
 		8A584773226AB351008E9DE8 /* KBTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A584772226AB351008E9DE8 /* KBTableView.swift */; };
 		8A584776226ABDA5008E9DE8 /* CocoaLumberjack-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A584775226ABDA5008E9DE8 /* CocoaLumberjack-Extensions.swift */; };
 		8A584778226AC446008E9DE8 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A584777226AC446008E9DE8 /* Utility.swift */; };
+		8A584780226AD8E7008E9DE8 /* macOS_UtilitiesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A58477F226AD8E7008E9DE8 /* macOS_UtilitiesTests.swift */; };
 		8A662216226AA42B0072B3A4 /* AppKit-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A662215226AA42B0072B3A4 /* AppKit-Extensions.swift */; };
 		8A6C6459225D324900CD6DCF /* PageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C6458225D324900CD6DCF /* PageController.swift */; };
 		8A6C645C225D4E9900CD6DCF /* InstallerCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C645B225D4E9900CD6DCF /* InstallerCellView.swift */; };
@@ -69,6 +70,16 @@
 		8AFCCD8822654E4B0026CFE6 /* DiskUtilityOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AFCCD8722654E4B0026CFE6 /* DiskUtilityOutput.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		8A584782226AD8E7008E9DE8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8ACB65C921063E6F004B9C5A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8ACB65D021063E6F004B9C5A;
+			remoteInfo = "macOS Utilities";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		8A0138D0221749BD00C77DA0 /* VersionNumbers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionNumbers.swift; sourceTree = "<group>"; };
 		8A0138D52217624700C77DA0 /* InfoPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoPopoverViewController.swift; sourceTree = "<group>"; };
@@ -86,6 +97,9 @@
 		8A584772226AB351008E9DE8 /* KBTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KBTableView.swift; sourceTree = "<group>"; };
 		8A584775226ABDA5008E9DE8 /* CocoaLumberjack-Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CocoaLumberjack-Extensions.swift"; sourceTree = "<group>"; };
 		8A584777226AC446008E9DE8 /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
+		8A58477D226AD8E7008E9DE8 /* macOS UtilitiesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "macOS UtilitiesTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8A58477F226AD8E7008E9DE8 /* macOS_UtilitiesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = macOS_UtilitiesTests.swift; sourceTree = "<group>"; };
+		8A584781226AD8E7008E9DE8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8A662215226AA42B0072B3A4 /* AppKit-Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppKit-Extensions.swift"; sourceTree = "<group>"; };
 		8A6C6452225BADC900CD6DCF /* macOS-Utilities-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "macOS-Utilities-Bridging-Header.h"; sourceTree = "<group>"; };
 		8A6C6458225D324900CD6DCF /* PageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PageController.swift; path = "macOS Utilities/View Controllers/PageController.swift"; sourceTree = "<group>"; };
@@ -140,6 +154,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		8A58477A226AD8E7008E9DE8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8ACB65CE21063E6F004B9C5A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -286,6 +307,15 @@
 			path = KBJunk;
 			sourceTree = "<group>";
 		};
+		8A58477E226AD8E7008E9DE8 /* macOS UtilitiesTests */ = {
+			isa = PBXGroup;
+			children = (
+				8A58477F226AD8E7008E9DE8 /* macOS_UtilitiesTests.swift */,
+				8A584781226AD8E7008E9DE8 /* Info.plist */,
+			);
+			path = "macOS UtilitiesTests";
+			sourceTree = "<group>";
+		};
 		8A662214226AA4190072B3A4 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -427,6 +457,7 @@
 			isa = PBXGroup;
 			children = (
 				8ACB65D321063E6F004B9C5A /* macOS Utilities */,
+				8A58477E226AD8E7008E9DE8 /* macOS UtilitiesTests */,
 				8ACB65D221063E6F004B9C5A /* Products */,
 				6779170F6C88D1AB54209B25 /* Pods */,
 				1FAA8275C03D6F1149C6C2C2 /* Frameworks */,
@@ -437,6 +468,7 @@
 			isa = PBXGroup;
 			children = (
 				8ACB65D121063E6F004B9C5A /* macOS Utilities.app */,
+				8A58477D226AD8E7008E9DE8 /* macOS UtilitiesTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -460,6 +492,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		8A58477C226AD8E7008E9DE8 /* macOS UtilitiesTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8A584784226AD8E7008E9DE8 /* Build configuration list for PBXNativeTarget "macOS UtilitiesTests" */;
+			buildPhases = (
+				8A584779226AD8E7008E9DE8 /* Sources */,
+				8A58477A226AD8E7008E9DE8 /* Frameworks */,
+				8A58477B226AD8E7008E9DE8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8A584783226AD8E7008E9DE8 /* PBXTargetDependency */,
+			);
+			name = "macOS UtilitiesTests";
+			productName = "macOS UtilitiesTests";
+			productReference = 8A58477D226AD8E7008E9DE8 /* macOS UtilitiesTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		8ACB65D021063E6F004B9C5A /* macOS Utilities */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8ACB65E121063E6F004B9C5A /* Build configuration list for PBXNativeTarget "macOS Utilities" */;
@@ -485,10 +535,15 @@
 		8ACB65C921063E6F004B9C5A /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0920;
+				LastSwiftUpdateCheck = 1020;
 				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = "Keaton Burleson";
 				TargetAttributes = {
+					8A58477C226AD8E7008E9DE8 = {
+						CreatedOnToolsVersion = 10.2.1;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 8ACB65D021063E6F004B9C5A;
+					};
 					8ACB65D021063E6F004B9C5A = {
 						CreatedOnToolsVersion = 9.2;
 						LastSwiftMigration = 1020;
@@ -515,11 +570,19 @@
 			projectRoot = "";
 			targets = (
 				8ACB65D021063E6F004B9C5A /* macOS Utilities */,
+				8A58477C226AD8E7008E9DE8 /* macOS UtilitiesTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		8A58477B226AD8E7008E9DE8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8ACB65CF21063E6F004B9C5A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -593,6 +656,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		8A584779226AD8E7008E9DE8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8A584780226AD8E7008E9DE8 /* macOS_UtilitiesTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8ACB65CD21063E6F004B9C5A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -653,6 +724,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		8A584783226AD8E7008E9DE8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8ACB65D021063E6F004B9C5A /* macOS Utilities */;
+			targetProxy = 8A584782226AD8E7008E9DE8 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		8ACB65DA21063E6F004B9C5A /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
@@ -665,6 +744,45 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		8A584785226AD8E7008E9DE8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = JMQ9Y3A8K6;
+				INFOPLIST_FILE = "macOS UtilitiesTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.128keaton.macOS-UtilitiesTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/macOS Utilities.app/Contents/MacOS/macOS Utilities";
+			};
+			name = Debug;
+		};
+		8A584786226AD8E7008E9DE8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = JMQ9Y3A8K6;
+				INFOPLIST_FILE = "macOS UtilitiesTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.128keaton.macOS-UtilitiesTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/macOS Utilities.app/Contents/MacOS/macOS Utilities";
+			};
+			name = Release;
+		};
 		8ACB65DF21063E6F004B9C5A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -820,6 +938,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		8A584784226AD8E7008E9DE8 /* Build configuration list for PBXNativeTarget "macOS UtilitiesTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8A584785226AD8E7008E9DE8 /* Debug */,
+				8A584786226AD8E7008E9DE8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		8ACB65CC21063E6F004B9C5A /* Build configuration list for PBXProject "macOS Utilities" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
