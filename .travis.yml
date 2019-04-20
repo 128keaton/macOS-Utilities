@@ -1,16 +1,5 @@
 language: swift
 osx_image: xcode10.2
-
-
-env:
-  - LC_CTYPE=en_US.UTF-8 LANG=en_US.UTF-8
-before_install:
-  - rvm install ruby-2.4.0
-  - gem install cocoapods
-  - gem install xcpretty -N
-  - brew update
-  - brew install swiftlint || true
-script:
-  - set -o pipefail
-  - xcodebuild -workspace macOS Utilities.xcworkspace -scheme macOS Utilities -sdk osx ONLY_ACTIVE_ARCH=NO | xcpretty -c
-  - swiftlint
+xcode_project: macOS\ Utilities.xcworkspace # path to your xcodeproj folder
+xcode_scheme: Tests
+xcode_destination: platform=macOS
