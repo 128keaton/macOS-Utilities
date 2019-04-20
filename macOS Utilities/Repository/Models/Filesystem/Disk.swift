@@ -9,13 +9,14 @@
 import Foundation
 import CocoaLumberjack
 
-struct Disk: Item, DiskOrPartition, Codable {
+struct Disk: FileSystemItem, Codable {
     var rawContent: String? = nil
     var deviceIdentifier: String
     var regularPartitions: [Partition]?
     var apfsPartitions: [Partition]?
     var rawSize: Int64
     var isFake: Bool = false
+    
     var size: Units {
         return Units(bytes: self.rawSize)
     }
@@ -23,7 +24,7 @@ struct Disk: Item, DiskOrPartition, Codable {
         return self.rawContent ?? "None"
     }
 
-    var dataType: DataType{
+    var itemType: FileSystemItemType{
         return .disk
     }
     
@@ -76,10 +77,6 @@ struct Disk: Item, DiskOrPartition, Codable {
         case regularPartitions = "Partitions"
         case apfsPartitions = "APFSVolumes"
         case rawSize = "Size"
-    }
-
-    func addToRepo() {
-        ItemRepository.shared.addToRepository(newDisk: self)
     }
 
     static func copy(_ aDisk: Disk) throws -> Disk {

@@ -49,7 +49,7 @@ class PreferencesApplicationsViewController: NSViewController {
         tableView.tableColumns[3].sortDescriptorPrototype = sortShow
 
         if let currentPreferences = self.preferences,
-            let applications = currentPreferences.getApplications(){
+            let applications = currentPreferences.getApplications() {
             self.applications = applications
         }
     }
@@ -62,7 +62,8 @@ class PreferencesApplicationsViewController: NSViewController {
             if let preferencesViewController = self.preferencesViewController {
                 preferencesViewController.applicationsCountLabel.stringValue = "\(self.applications.count) application(s)"
             }
-            NotificationCenter.default.post(name: ItemRepository.updatingApplications, object: self.applications)
+
+            ItemRepository.shared.addToRepository(newApplications: self.applications, merge: false)
         }
     }
 
@@ -102,18 +103,18 @@ extension PreferencesApplicationsViewController: NSTableViewDataSource, NSTableV
     }
 
     func tableView(_ tableView: NSTableView, acceptDrop info: NSDraggingInfo, row: Int, dropOperation: NSTableView.DropOperation) -> Bool {
-        if let board = info.draggingPasteboard.propertyList(forType: fileNameType) as? NSArray {
-            print(board)
-            if let path = board[0] as? String {
+        if let filePaths = info.draggingPasteboard.propertyList(forType: fileNameType) as? [String] {
+            for path in filePaths {
                 let suffix = URL(fileURLWithPath: path).pathExtension
                 if fileTypes.contains(suffix.lowercased()) {
                     if suffix.lowercased() == "app" {
-                        return addAppAt(path)
+                        let _ = addAppAt(path)
                     } else if suffix.lowercased() == "plist" {
-                        return updateFromLegacyPlist(path)
+                        let _ = updateFromLegacyPlist(path)
                     }
                 }
             }
+            return true
         } else {
             var oldIndexes = [Int]()
             info.enumerateDraggingItems(options: [], for: tableView, classes: [NSPasteboardItem.self], searchOptions: [:]) { dragItem, _, _ in
@@ -143,10 +144,8 @@ extension PreferencesApplicationsViewController: NSTableViewDataSource, NSTableV
 
             tableView.endUpdates()
             updateApplications()
-
             return true
         }
-        return false
     }
 
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {

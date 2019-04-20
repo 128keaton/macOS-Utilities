@@ -13,93 +13,68 @@ import CocoaLumberjack
 @objcMembers class Application: NSObject, Item, Codable {
     static let prohibatoryIcon = NSImage(named: "NSHaltIcon")
     var name: String
-    var isUtility: Bool = false
     var path: String
     var isInvalid = false
+    var showInApplicationsWindow = true
+
     var id: String {
         get {
             return self.name.md5Value
         }
     }
 
-    var showInApplicationsWindow = true
-
     override var description: String {
-        return "Application: \n\t Name: \(self.name) \n\t Utility: \(self.isUtility) \n\t Invalid: \(self.isInvalid) \n\t \n\t Path: \(self.path)"
+        return "\(self.name): \(self.path)"
     }
 
-    func addToRepo() {
-        ItemRepository.shared.addToRepository(newApplication: self)
-    }
 
-    init(name: String, isUtility: Bool = false) {
-        self.name = name.replacingOccurrences(of: ".app", with: "")
-
-        self.isUtility = isUtility
-        if(self.isUtility) {
-            self.showInApplicationsWindow = false
-            self.path = "/Applications/Utilities/\(self.name).app"
-        } else {
-            self.path = "/Applications/\(self.name).app"
-        }
-
-        super.init()
-        self.addToRepo()
-    }
-
-    convenience init(name: String, path: String, showInApplicationsWindow: Bool = false) {
-
-        self.init(name: name)
+    init(name: String, path: String, showInApplicationsWindow: Bool = false) {
         self.path = path
+        self.name = name
 
         if path == "" {
             self.isInvalid = true
         }
 
-        self.determineUtilityFromPath()
         self.showInApplicationsWindow = showInApplicationsWindow
-    }
-
-    private func determineUtilityFromPath() {
-        if self.path.contains("/Applications/Utilities") {
-            self.isUtility = true
-            self.showInApplicationsWindow = false
-        } else {
-            self.isUtility = false
-        }
     }
 
     public func open() {
         NSWorkspace.shared.open(URL(fileURLWithPath: self.path))
     }
 
+    func addToRepo() {
+        ItemRepository.shared.addToRepository(newApplication: self)
+    }
+
     public func getCollectionViewItem(item: NSCollectionViewItem) -> NSCollectionViewItem {
-        let icon = self.findIcon()
+        if let newItem = item as? NSCollectionAppCell {
+            let icon = self.findIcon()
+            newItem.icon?.image = icon
+            newItem.regularImage = icon
+            newItem.application = self
 
-        guard let collectionViewItem = item as? NSCollectionAppCell else { return item }
-
-        collectionViewItem.icon?.image = icon
-        collectionViewItem.regularImage = icon
-
-        DispatchQueue.main.async {
-            collectionViewItem.icon!.lockFocus()
-            collectionViewItem.darkenedImage = icon.darkened()
-            collectionViewItem.icon!.unlockFocus()
-        }
-
-        if(self.isInvalid) {
-            collectionViewItem.titleLabel?.textColor = NSColor.gray
-            collectionViewItem.titleLabel?.stringValue = "\(self.name)*"
-        } else {
-            if(NSApplication.shared.isDarkMode(view: collectionViewItem.view)) {
-                collectionViewItem.titleLabel?.textColor = NSColor.white
-            } else {
-                collectionViewItem.titleLabel?.textColor = NSColor.black
+            DispatchQueue.main.async {
+                newItem.icon!.lockFocus()
+                newItem.darkenedImage = icon.darkened
+                newItem.icon!.unlockFocus()
             }
-            collectionViewItem.titleLabel?.stringValue = self.name
+
+            if(self.isInvalid) {
+                newItem.titleLabel?.textColor = NSColor.gray
+                newItem.titleLabel?.stringValue = "\(self.name)*"
+            } else {
+                if(NSApplication.shared.isDarkMode(view: newItem.view)) {
+                    newItem.titleLabel?.textColor = NSColor.white
+                } else {
+                    newItem.titleLabel?.textColor = NSColor.black
+                }
+                newItem.titleLabel?.stringValue = self.name
+            }
+            return newItem
         }
 
-        return collectionViewItem
+        return item
     }
 
     private func findIcon() -> NSImage {
@@ -127,8 +102,7 @@ import CocoaLumberjack
     }
 
     static func == (lhs: Application, rhs: Application) -> Bool {
-        return lhs.path == rhs.path &&
-            lhs.name == rhs.name
+        return lhs.id == rhs.id
     }
 }
 

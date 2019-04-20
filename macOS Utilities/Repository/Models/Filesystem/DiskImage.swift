@@ -8,42 +8,45 @@
 
 import Foundation
 
-struct DiskImage: Item, Codable{
+struct DiskImage: FileSystemItem, Codable, Equatable {
     var contentHint: String?
     var devEntry: String?
     var potentiallyMountable: Bool? = false
     var unmappedContentHint: String?
     var mountPoint: String?
-    var id: String{
+
+    var id: String {
         return unmappedContentHint ?? String.random(12).md5Value
     }
-    var volumeName: String{
-       return self.mountPoint == nil ? "Not mounted" : String(self.mountPoint!.split(separator: "/").last!)
+
+    var itemType: FileSystemItemType {
+        return .diskImage
     }
-    
+
+    var volumeName: String {
+        return self.mountPoint == nil ? "Not mounted" : String(self.mountPoint!.split(separator: "/").last!)
+    }
+
     var isMounted: Bool {
         return self.mountPoint != nil
     }
-    
+
     var containsInstaller: Bool {
-        if let mountPoint = self.mountPoint{
+        if let mountPoint = self.mountPoint {
             return mountPoint.contains("Install macOS") || mountPoint.contains("Install OS X")
         }
         return false
     }
-    
-    func addToRepo() {
-        ItemRepository.shared.addToRepository(newDiskImage: self)
-    }
-    
-    func getMountPoint() -> String{
+
+
+    func getMountPoint() -> String {
         return self.mountPoint ?? "Not mounted"
     }
-    
+
     var description: String {
-        return "Disk Image: \n\t Device Identifier: \(self.devEntry ?? "BAD DMG") \n\t Mount Point: \(self.mountPoint ?? "Not mounted") \n\t ID: \(self.id)\n"
+        return "Disk Image: \(self.mountPoint ?? "Not mounted")"
     }
-    
+
     private enum CodingKeys: String, CodingKey {
         case contentHint = "content-hint"
         case devEntry = "dev-entry"
@@ -51,5 +54,4 @@ struct DiskImage: Item, Codable{
         case unmappedContentHint = "unmapped-content-hint"
         case mountPoint = "mount-point"
     }
-    
 }

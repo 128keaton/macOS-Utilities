@@ -1,5 +1,5 @@
 //
-//  LoggerSetup.swift
+//  LoggerManager.swift
 //  macOS Utilities
 //
 //  Created by Keaton Burleson on 4/13/19.
@@ -10,7 +10,7 @@ import Foundation
 import CocoaLumberjack
 import PaperTrailLumberjack
 
-class LoggerSetup {
+class LoggerManager {
     private static var loggerInitialized = false
 
     public static func constructLogger() {
@@ -37,12 +37,13 @@ class LoggerSetup {
     public static func constructRemoteLogger(loggingPreferences: LoggingPreferences, debugMode: Bool = false) {
         if(PreferenceLoader.currentPreferences != nil && PreferenceLoader.currentPreferences?.loggingPreferences?.loggingEnabled == true) {
             let logger = RMPaperTrailLogger.sharedInstance()!
+            let systemUUID = NSApplication.shared.systemUUID ?? ""
 
             logger.debug = debugMode
             logger.host = loggingPreferences.loggingURL
             logger.port = loggingPreferences.loggingPort
 
-            logger.machineName = Host.current().localizedName != nil ? String("\(Host.current().localizedName!)__(\(Sysctl.model)__\(getSystemUUID() ?? ""))") : String("\(Sysctl.model)__(\(getSystemUUID() ?? ""))")
+            logger.machineName = Host.current().localizedName != nil ? String("\(Host.current().localizedName!)__(\(Sysctl.model)__\(systemUUID))") : String("\(Sysctl.model)__(\(systemUUID))")
 
             #if DEBUG
                 logger.machineName = logger.machineName! + "__DEBUG__"

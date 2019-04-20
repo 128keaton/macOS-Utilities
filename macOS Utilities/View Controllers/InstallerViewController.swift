@@ -138,7 +138,7 @@ class InstallerViewController: NSViewController {
     }
 
     @objc func openDiskUtility() {
-        ApplicationUtility.shared.open("Disk Utility")
+      //  ApplicationUtility.shared.open("Disk Utility")
     }
 
     @IBAction @objc func cancelButtonClicked(_ sender: Any?) {

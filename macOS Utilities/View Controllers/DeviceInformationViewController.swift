@@ -17,17 +17,12 @@ class DeviceInformationViewController: NSViewController {
     @IBOutlet weak var otherSpecsLabel: NSTextField?
     @IBOutlet weak var serialNumberLabel: NSTextField?
 
+    private var objectsToModify = [Optional<NSControl>]()
     private var isShowingFullSerial = false
 
     private var machineInformation: MachineInformation? = nil {
         didSet {
             self.updateView()
-        }
-    }
-
-    private var allDiskAndPartitions = [DiskOrPartition]() {
-        didSet {
-            self.reloadTableView(self.disksAndPartitionsTableView)
         }
     }
 
@@ -37,91 +32,56 @@ class DeviceInformationViewController: NSViewController {
         }
     }
 
-    private func reloadTableView(_ tableView: NSTableView?) {
-        if tableView == self.disksAndPartitionsTableView,
-            let _tableView = self.disksAndPartitionsTableView {
+    @objc private func reloadTableView(_ tableView: NSTableView?) {
+        if let aTableView = tableView {
+            if aTableView == self.disksAndPartitionsTableView,
+                let _tableView = self.disksAndPartitionsTableView {
+                DispatchQueue.main.async {
+                    _tableView.reloadData()
+                }
+            }
+
+            if aTableView == self.graphicsCardTableView,
+                let _tableView = self.graphicsCardTableView {
+                DispatchQueue.main.async {
+                    _tableView.reloadData()
+                }
+            }
+        } else if let disksAndPartitionsTableView = self.disksAndPartitionsTableView {
             DispatchQueue.main.async {
-                _tableView.reloadData()
-            }
-        }
-
-        if tableView == self.graphicsCardTableView,
-            let _tableView = self.graphicsCardTableView {
-            DispatchQueue.main.async {
-                _tableView.reloadData()
-            }
-        }
-    }
-
-    private func hideLabels() {
-        DispatchQueue.main.async {
-            NSAnimationContext.runAnimationGroup { (context) in
-                context.duration = 0.5
-                self.configurationImage?.animator().alphaValue = 0.0
-            }
-
-            NSAnimationContext.runAnimationGroup { (context) in
-                context.duration = 0.5
-                self.skuHintLabel?.animator().alphaValue = 0.0
-            }
-
-            NSAnimationContext.runAnimationGroup { (context) in
-                context.duration = 0.5
-                self.otherSpecsLabel?.animator().alphaValue = 0.0
-            }
-
-            NSAnimationContext.runAnimationGroup { (context) in
-                context.duration = 0.5
-                self.serialNumberLabel?.animator().alphaValue = 0.0
+                disksAndPartitionsTableView.reloadData()
             }
         }
     }
 
     private func showLabels() {
-        DispatchQueue.main.async {
-            NSAnimationContext.runAnimationGroup { (context) in
-                context.duration = 0.5
-                self.configurationImage?.animator().alphaValue = 1.0
-            }
-
-            NSAnimationContext.runAnimationGroup { (context) in
-                context.duration = 0.5
-                self.skuHintLabel?.animator().alphaValue = 1.0
-            }
-
-            NSAnimationContext.runAnimationGroup { (context) in
-                context.duration = 0.5
-                self.otherSpecsLabel?.animator().alphaValue = 1.0
-            }
-
-            NSAnimationContext.runAnimationGroup { (context) in
-                context.duration = 0.5
-                self.serialNumberLabel?.animator().alphaValue = 1.0
-            }
+        for object in objectsToModify {
+            object?.show()
         }
     }
 
     @objc private func updateView() {
         if let machineInformation = self.machineInformation {
-            self.hideLabels()
-            if let productImage = machineInformation.productImage {
-                configurationImage?.image = productImage
-            } else {
-                print("No product image")
-            }
-
+            configurationImage?.image = machineInformation.productImage
             skuHintLabel?.stringValue = machineInformation.displayName
             serialNumberLabel?.stringValue = "Serial Number: \(machineInformation.anonymisedSerialNumber)"
 
+            
+            if configurationImage?.image == NSImage(named: "NSAppleIcon"){
+                if #available(OSX 10.14, *) {
+                    configurationImage?.contentTintColor = .gray
+                } else {
+                   configurationImage?.image = NSImage(named: "NSAppleIcon")!.tint(color: .gray)
+                }
+            }
+            
             machineInformation.getCPU { (CPU) in
                 DispatchQueue.main.async {
-                    self.otherSpecsLabel?.stringValue = "\(machineInformation.RAM) GB of RAM - \(CPU)"
+                    self.otherSpecsLabel?.stringValue = "\(machineInformation.RAM) of RAM - \(CPU.condensed)"
                 }
             }
 
             allGraphicsCards = machineInformation.allGraphicsCards
-            allDiskAndPartitions = machineInformation.allDisksAndPartitions
-
             self.showLabels()
         }
     }
@@ -151,6 +111,8 @@ class DeviceInformationViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        objectsToModify = [configurationImage, skuHintLabel, otherSpecsLabel, serialNumberLabel]
+        
         if MachineInformation.isConfigured {
             self.machineInformation = MachineInformation.shared
         } else {
@@ -166,9 +128,10 @@ class DeviceInformationViewController: NSViewController {
         self.graphicsCardTableView?.sizeToFit()
         self.disksAndPartitionsTableView?.sizeToFit()
 
-        NotificationCenter.default.addObserver(self, selector: #selector(updateView), name: ItemRepository.newPartition, object: nil)
+        self.reloadTableView(disksAndPartitionsTableView)
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadTableView(_:)), name: DiskUtility.newDisks, object: nil)
     }
-
+    
     @IBAction func openSerialLink(_ sender: NSButton) {
         if let machineInformation = self.machineInformation {
             machineInformation.openWarrantyLink()
@@ -191,9 +154,9 @@ extension DeviceInformationViewController: NSTableViewDelegate, NSTableViewDeleg
         var image: NSImage? = nil
 
         if tableView == self.disksAndPartitionsTableView {
-            let item = allDiskAndPartitions[row]
-            if item.dataType == .disk {
-                let disk = item as! Disk
+            let fileSystemItem = DiskUtility.shared.allDisksWithPartitions[row]
+            if fileSystemItem.itemType == .disk {
+                let disk = fileSystemItem as! Disk
 
                 if tableColumn == tableView.tableColumns[0] {
                     text = disk.deviceIdentifier
@@ -203,8 +166,8 @@ extension DeviceInformationViewController: NSTableViewDelegate, NSTableViewDeleg
                     cellIdentifier = CellIdentifiers.DiskSizeCell
                 }
 
-            } else if item.dataType == .partition{
-                let partition = item as! Partition
+            } else if fileSystemItem.itemType == .partition {
+                let partition = fileSystemItem as! Partition
 
                 if tableColumn == tableView.tableColumns[0] {
                     text = partition.volumeName
@@ -254,7 +217,7 @@ extension DeviceInformationViewController: NSTableViewDelegate, NSTableViewDeleg
 extension DeviceInformationViewController: NSTableViewDataSource {
     func numberOfRows(in tableView: NSTableView) -> Int {
         if tableView == self.disksAndPartitionsTableView {
-            return allDiskAndPartitions.count
+            return DiskUtility.shared.allDisksWithPartitions.count
         }
         return allGraphicsCards.count
     }

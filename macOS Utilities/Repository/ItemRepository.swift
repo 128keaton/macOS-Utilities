@@ -17,16 +17,11 @@ class ItemRepository {
 
     static let newApplication = Notification.Name("NSNewApplication")
     static let newApplications = Notification.Name("NSNewApplications")
-    static let newDisk = Notification.Name("NSNewDisk")
     static let newInstaller = Notification.Name("NSNewInstaller")
-    static let newPartition = Notification.Name("NSNewPartition")
-    static let newDiskImage = Notification.Name("NSNewDiskImage")
-    static let newShare = Notification.Name("NSNewShare")
-    static let refreshRepository = Notification.Name("NSRefreshRepository")
-    static let updatingApplications = Notification.Name("NSUpdatingApplications")
-    static let hideApplications = Notification.Name("NSHideApplications")
-    static let showApplications = Notification.Name("NSShowApplications")
     static let newUtility = Notification.Name("NSNewUtility")
+
+    static let refreshRepository = Notification.Name("NSRefreshRepository")
+    static let reloadApplications = Notification.Name("NSReloadApplications")
 
     private init() {
         DDLogInfo("ItemRepository initialized")
@@ -34,11 +29,11 @@ class ItemRepository {
         DispatchQueue.main.async {
             self.reloadAllItems()
         }
-        
+
         NotificationCenter.default.addObserver(self, selector: #selector(ItemRepository.reloadAllItems), name: ItemRepository.refreshRepository, object: nil)
     }
-    
-    public func createFakeInstallers(){
+
+    public func createFakeInstallers() {
         #if DEBUG
             addFakeInstaller()
             addFakeInstaller(canInstallOnMachine: true)
@@ -49,15 +44,50 @@ class ItemRepository {
 
     @objc public func reloadAllItems() {
         DiskUtility.shared.getAllDisks()
-        ApplicationUtility.shared.getApplications()
-        ApplicationUtility.shared.getUtilities()
+        self.getUtilities()
+    }
+
+    private func reloadApplications() {
+        if let preferences = PreferenceLoader.currentPreferences,
+            let applications = preferences.mappedApplications {
+            self.addToRepository(newApplications: applications)
+        }
+    }
+
+    private func getUtilities() {
+        do {
+            try FileManager.default.contentsOfDirectory(atPath: "/Applications/Utilities").forEach {
+                let utilityPath = $0
+                let utilityName = utilityPath.split(separator: "/").last!.replacingOccurrences(of: ".app", with: "")
+                if utilityName.first! != "." {
+                    let newUtility = Utility(name: utilityName, path: utilityPath)
+                    KBLogDebug("Adding utility '\(utilityName)' to repo.")
+                    NotificationCenter.default.post(name: ItemRepository.newUtility, object: newUtility)
+                    self.items.append(newUtility)
+                }
+            }
+        } catch {
+            DDLogError("Could not get utilities")
+        }
+    }
+
+    public var applications: [Application] {
+        return (items.filter { type(of: $0) == Application.self } as! [Application])
+    }
+
+    public var allowedApplications: [Application] {
+        return (items.filter { type(of: $0) == Application.self } as! [Application]).filter { $0.showInApplicationsWindow == true }
+    }
+
+
+    public var utilities: [Utility] {
+        return (items.filter { type(of: $0) == Utility.self } as! [Utility])
     }
 
     public func getSelectedInstaller() -> Installer? {
         if let installer = (self.getInstallers().first { $0.isSelected == true }) {
             return installer
         }
-
         return nil
     }
 
@@ -75,63 +105,11 @@ class ItemRepository {
         fakeItems.append(fakeInstaller)
     }
 
-    public func updateDisk(_ disk: Disk) {
-        self.items.removeAll { ($0 as? Disk) == disk }
-        self.addToRepository(newDisk: disk)
-    }
-
-    public func getDisks() -> [Disk] {
-        return (items.filter { type(of: $0) == Disk.self } as! [Disk]).sorted { $0.deviceIdentifier < $1.deviceIdentifier }
-    }
-
-    public func getDiskImages() -> [DiskImage] {
-        return (items.filter { type(of: $0) == DiskImage.self } as! [DiskImage])
-    }
-
-    public func getPartitions() -> [Partition] {
-        return (items.filter { type(of: $0) == Partition.self } as! [Partition]).sorted { $0.volumeName < $1.volumeName }
-    }
-
     public func getInstallers() -> [Installer] {
         print(items.filter { type(of: $0) == Installer.self })
         return (items.filter { type(of: $0) == Installer.self } as! [Installer]).sorted { $0.comparibleVersionNumber < $1.comparibleVersionNumber }
     }
 
-    public func getApplications() -> [Application] {
-        return (items.filter { type(of: $0) == Application.self } as! [Application])
-    }
-
-    public func addToRepository(newDisk: Disk) {
-        if(self.items.contains { ($0 as? Disk) != nil && ($0 as! Disk).id == newDisk.id } == false) {
-            DDLogInfo("Adding disk '\(newDisk.deviceIdentifier)' to repo")
-            self.items.append(newDisk)
-            NotificationCenter.default.post(name: ItemRepository.newDisk, object: nil)
-        }
-    }
-
-    public func addToRepository(newDiskImage: DiskImage) {
-        if(self.items.contains { ($0 as? DiskImage) != nil && ($0 as! DiskImage).id == newDiskImage.id } == false) {
-            DDLogInfo("Adding volume '\(newDiskImage.volumeName)' to repo")
-            self.items.append(newDiskImage)
-            NotificationCenter.default.post(name: ItemRepository.newDiskImage, object: nil)
-        }
-    }
-
-    public func addToRepository(newPartition: Partition) {
-        if(self.items.contains { ($0 as? Partition) != nil && ($0 as! Partition).id == newPartition.id } == false) {
-            DDLogInfo("Adding volume '\(newPartition.volumeName)' to repo")
-            self.items.append(newPartition)
-            NotificationCenter.default.post(name: ItemRepository.newPartition, object: nil)
-        }
-    }
-
-    public func addToRepository(newShare: Share) {
-        if(self.items.contains { ($0 as? Share) != nil && ($0 as! Share).id == newShare.id } == false) {
-            DDLogInfo("Adding volume '\(newShare.mountPoint ?? "No point point")' to repo")
-            self.items.append(newShare)
-            NotificationCenter.default.post(name: ItemRepository.newShare, object: nil)
-        }
-    }
 
     public func addToRepository(newInstaller: Installer) {
         if (self.items.contains { ($0 as? Installer) != nil && ($0 as! Installer).id == newInstaller.id } == false) {
@@ -146,13 +124,8 @@ class ItemRepository {
         if (self.items.contains { ($0 as? Application) != nil && ($0 as! Application).id == newApplication.id } == false) {
             self.items.append(newApplication)
 
-            if(newApplication.isUtility == false) {
-                DDLogInfo("Adding application '\(newApplication.name)' to repo")
-                NotificationCenter.default.post(name: ItemRepository.newApplication, object: newApplication)
-            } else {
-                DDLogInfo("Adding utility \(newApplication.name) to repo")
-                NotificationCenter.default.post(name: ItemRepository.newUtility, object: newApplication)
-            }
+            DDLogInfo("Adding application '\(newApplication.name)' to repo")
+            NotificationCenter.default.post(name: ItemRepository.newApplication, object: newApplication)
         }
     }
 
@@ -161,7 +134,11 @@ class ItemRepository {
             self.items.removeAll { type(of: $0) == Application.self }
         }
 
+        newApplications.forEach {
+            DDLogInfo("Adding application '\($0.name)' to repo.")
+        }
+
         self.items.append(contentsOf: newApplications)
-        NotificationCenter.default.post(name: ItemRepository.newApplications, object: nil)
+        NotificationCenter.default.post(name: ItemRepository.newApplications, object: newApplications)
     }
 }

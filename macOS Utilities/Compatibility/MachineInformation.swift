@@ -173,14 +173,14 @@ class MachineInformation {
         if self.deviceIdentifier == nil && DeviceIdentifier.isConfigured {
             self.deviceIdentifier = DeviceIdentifier.shared
         } else {
-            DDLogInfo("No device identifier set")
+            DDLogVerbose("DeviceIdentifier API not in use")
         }
 
         if self.deviceInfo == nil,
             let deviceIdentifier = self.deviceIdentifier {
             self.deviceInfo = deviceIdentifier.getCachedDeviceFor(serialNumber: self.serialNumber)
         } else if self.deviceIdentifier == nil {
-            DDLogInfo("No device identifier set")
+            DDLogVerbose("DeviceIdentifier API not in use")
         }
     }
 
@@ -291,15 +291,7 @@ class MachineInformation {
         return self.RAM.gigabytes >= 8.0 ? NSImage(named: "NSStatusAvailable")! : NSImage(named: "NSStatusUnavailable")!
     }
 
-    public var allDisksAndPartitions: [DiskOrPartition] {
-        if let diskUtility = self.diskUtility {
-            return diskUtility.getAllDisksAndPartitions()
-        }
-
-        return DiskUtility.shared.getAllDisksAndPartitions()
-    }
-
-    public var productImage: NSImage? {
+    public var productImage: NSImage {
         self.initializeDeviceInfo()
         if let deviceInfo = self.deviceInfo {
             if let productImage = deviceInfo.configurationCode.image {
@@ -312,7 +304,7 @@ class MachineInformation {
             }
         }
 
-        return nil
+        return NSImage(named: "NSAppleIcon")!
     }
 
     public var hasEnoughRAMForInstall: Bool {

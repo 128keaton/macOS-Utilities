@@ -21,44 +21,32 @@ class DiskSelectionViewController: NSViewController {
     private var defaultItemIdentifiers: [NSTouchBarItem.Identifier] = [.backPageController]
 
     private var selectedInstaller: Installer? = nil
-
-    private var allDisksAndPartitions = [DiskOrPartition]() {
-        didSet {
-            self.reloadTableView()
-        }
-    }
-
     private var selectedPartition: Partition? = nil
     private var selectedDisk: Disk? = nil
 
+    // MARK: Superclass overrides
     override func viewDidLoad() {
         super.viewDidLoad()
-
         self.diskProgressIndicator?.stopSpinning()
-
         updateBackButton()
         getSelectedInstaller()
-        getDisks()
     }
 
-
-    private func getSelectedInstaller() {
-        if let selectedInstaller = ItemRepository.shared.getSelectedInstaller() {
-            installingVersionLabel?.stringValue = "Installing \(selectedInstaller.versionName)"
-            installingVersionLabel?.isHidden = false
-            self.selectedInstaller = selectedInstaller
-        } else {
-            installingVersionLabel?.isHidden = true
-        }
+    override func viewDidAppear() {
+        super.viewDidAppear()
+        updateBackButton()
+        getSelectedInstaller()
     }
 
-    private func getDisks() {
-        diskProgressIndicator?.startSpinning()
-        allDisksAndPartitions = DiskUtility.shared.getAllDisksAndPartitions(true)
+    override func viewWillAppear() {
+        super.viewWillAppear()
+        self.reloadTableView()
+        updateBackButton()
     }
 
+    // MARK: Button actions
     @IBAction @objc func openDiskUtility(_ sender: NSButton) {
-        ApplicationUtility.shared.open("Disk Utility")
+      //  ApplicationUtility.shared.open("Disk Utility")
     }
 
     @IBAction @objc func backButtonClicked(_ sender: NSButton) {
@@ -69,6 +57,7 @@ class DiskSelectionViewController: NSViewController {
         }
     }
 
+    // MARK: Functions
     private func reloadTableView() {
         if let _tableView = self.tableView {
             DispatchQueue.main.async {
@@ -82,12 +71,6 @@ class DiskSelectionViewController: NSViewController {
         }
     }
 
-    override func viewWillAppear() {
-        super.viewWillAppear()
-
-        updateBackButton()
-    }
-
     private func updateBackButton() {
         if PageController.shared.isInitialPage(self) {
             backButton.title = "Cancel"
@@ -96,24 +79,23 @@ class DiskSelectionViewController: NSViewController {
         }
     }
 
-    override func viewDidAppear() {
-        super.viewDidAppear()
-        updateBackButton()
-        getSelectedInstaller()
-        getDisks()
+    private func getSelectedInstaller() {
+        if let selectedInstaller = ItemRepository.shared.getSelectedInstaller() {
+            installingVersionLabel?.stringValue = "To install \(selectedInstaller.versionName)"
+            installingVersionLabel?.isHidden = false
+            self.selectedInstaller = selectedInstaller
+        } else {
+            installingVersionLabel?.isHidden = true
+        }
     }
 
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-
-    func removeTouchBarNextButton() {
+    private func removeTouchBarNextButton() {
         if let touchBar = self.touchBar {
             touchBar.defaultItemIdentifiers = self.defaultItemIdentifiers
         }
     }
 
-    func addTouchBarNextButton() {
+    private func addTouchBarNextButton() {
         if let touchBar = self.touchBar {
             touchBar.defaultItemIdentifiers = [.backPageController, .nextPageController]
         }
@@ -121,7 +103,6 @@ class DiskSelectionViewController: NSViewController {
 }
 
 extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateDeselectListener {
-
     fileprivate enum CellIdentifiers {
         static let DiskNameCell = "DiskNameID"
         static let DiskSizeCell = "DiskSizeID"
@@ -133,10 +114,10 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
         var text: String = ""
         var cellIdentifier: String = ""
 
-        let diskOrPartition = allDisksAndPartitions[row]
+        let fileSystemItem = diskUtility.installableDisksWithPartitions[row]
 
-        if diskOrPartition.dataType == .disk {
-            let disk = diskOrPartition as! Disk
+        if fileSystemItem.itemType == .disk {
+            let disk = fileSystemItem as! Disk
             if tableColumn == tableView.tableColumns[0] {
                 text = disk.deviceIdentifier
                 cellIdentifier = CellIdentifiers.DiskNameCell
@@ -144,8 +125,8 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
                 text = disk.size.getReadableUnit()
                 cellIdentifier = CellIdentifiers.DiskSizeCell
             }
-        } else if diskOrPartition.dataType == .partition {
-            let partition = diskOrPartition as! Partition
+        } else if fileSystemItem.itemType == .partition {
+            let partition = fileSystemItem as! Partition
             if tableColumn == tableView.tableColumns[0] {
                 text = partition.volumeName
                 cellIdentifier = CellIdentifiers.PartitionNameCell
@@ -164,16 +145,17 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
 
     func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
         self.tableView?.deselectAll(self)
-        DDLogInfo("Disk/Partition Selected: \(self.allDisksAndPartitions[row])")
 
-        let diskOrPartition = allDisksAndPartitions[row]
+        let fileSystemItem = diskUtility.installableDisksWithPartitions[row]
 
-        if diskOrPartition.dataType == .disk {
+        DDLogVerbose("Disk/Partition Selected: \(fileSystemItem)")
+
+        if fileSystemItem.itemType == .disk {
             self.selectedPartition = nil
-            self.selectedDisk = (diskOrPartition as! Disk)
-        } else if diskOrPartition.dataType == .partition {
+            self.selectedDisk = (fileSystemItem as! Disk)
+        } else if fileSystemItem.itemType == .partition {
             self.selectedDisk = nil
-            self.selectedPartition = (diskOrPartition as! Partition)
+            self.selectedPartition = (fileSystemItem as! Partition)
         }
 
         if let selectedInstaller = self.selectedInstaller {
@@ -209,7 +191,6 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
         if(didDeselectAllRows) {
             nextButton?.isEnabled = false
             nextButton?.title = "Next"
-            DDLogInfo("Deselecting all disks/rows in \(self)")
             selectedPartition = nil
             self.removeTouchBarNextButton()
         }
@@ -261,7 +242,7 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
 
 extension DiskSelectionViewController: NSTableViewDataSource {
     func numberOfRows(in tableView: NSTableView) -> Int {
-        return allDisksAndPartitions.count
+        return diskUtility.installableDisksWithPartitions.count
     }
 }
 

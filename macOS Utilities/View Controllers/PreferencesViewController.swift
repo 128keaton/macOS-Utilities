@@ -282,7 +282,7 @@ class PreferencesViewController: NSViewController {
 
                 PreferenceLoader.save(preferences)
 
-                NotificationCenter.default.post(name: ItemRepository.updatingApplications, object: [])
+                NotificationCenter.default.post(name: ItemRepository.reloadApplications, object: [])
                 configureView()
             }
         }

@@ -16,6 +16,7 @@ class NSCollectionAppCell: NSCollectionViewItem {
     public var regularImage: NSImage? = nil
     public var darkenedImage: NSImage? = nil
     public var isDisabled: Bool = false
+    public var application: Application? = nil
 
     override var isSelected: Bool {
         didSet {
@@ -23,9 +24,6 @@ class NSCollectionAppCell: NSCollectionViewItem {
         }
     }
     override func viewDidLoad() {
-        NotificationCenter.default.addObserver(self, selector: #selector(self.hide), name: ItemRepository.hideApplications, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.show), name: ItemRepository.showApplications, object: nil)
-
         if let titleLabel = self.titleLabel {
 
             self.icon?.alphaValue = 0.0
@@ -41,7 +39,7 @@ class NSCollectionAppCell: NSCollectionViewItem {
         }
     }
 
-    @objc private func show() {
+    public func show() {
         NSAnimationContext.runAnimationGroup { (context) in
             context.duration = 0.5
             self.icon?.animator().alphaValue = 1.0
@@ -49,7 +47,7 @@ class NSCollectionAppCell: NSCollectionViewItem {
         }
     }
 
-    @objc private func hide() {
+    public func hide() {
         NSAnimationContext.runAnimationGroup { (context) in
             context.duration = 0.5
             self.icon?.animator().alphaValue = 0.0

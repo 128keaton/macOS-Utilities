@@ -18,23 +18,32 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     private let itemRepository = ItemRepository.shared
 
     private var disabledPaths: [IndexPath] = []
-    private var applications: [Application] = []
-    private var applicationsInSections = [[Application]]()
+    private let reloadQueue = DispatchQueue(label: "thread-safe-obj", attributes: .concurrent)
 
-    private var dispatchQueue: DispatchQueue?
-    private var dispatchWorkItem: DispatchWorkItem?
+    private var applicationsInSections: [[Application]] {
+        return itemRepository.allowedApplications.count > 4 ? itemRepository.allowedApplications.chunked(into: 4) : [itemRepository.allowedApplications]
+    }
+
+    private var allItems: [NSCollectionAppCell] {
+        var items: [NSCollectionAppCell] = []
+        self.applicationsInSections.enumerated().forEach {
+            let section = $0.offset
+            $0.element.enumerated().forEach {
+                let index = $0.offset
+                if let item = self.collectionView.item(at: IndexPath(item: index, section: section)) as? NSCollectionAppCell {
+                    items.append(item)
+                }
+            }
+        }
+        return items
+    }
 
     static let reloadApplications = Notification.Name("ReloadApplications")
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        installMacOSButton?.alphaValue = 0.0
-
-        if let preferenceLoader = PreferenceLoader.sharedInstance {
-            self.preferenceLoader = preferenceLoader
-            self.registerForNotifications()
-        }
+        self.registerForNotifications()
 
         if let collectionViewNib = NSNib(nibNamed: "NSCollectionAppCell", bundle: nil) {
             collectionView.register(collectionViewNib, forItemWithIdentifier: NSUserInterfaceItemIdentifier(rawValue: "NSCollectionAppCell"))
@@ -44,19 +53,15 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     }
 
     private func registerForNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.readPreferences), name: PreferenceLoader.preferencesLoaded, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.bulkUpdateApplications(_:)), name: ItemRepository.updatingApplications, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.addApplication(_:)), name: ItemRepository.newApplication, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.forceReloadApplications), name: ItemRepository.newApplications, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.forceReloadApplications), name: ApplicationViewController.reloadApplications, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.reloadAllApplications), name: ItemRepository.newApplications, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.reloadAllApplications), name: ItemRepository.reloadApplications, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.addInstaller(_:)), name: ItemRepository.newInstaller, object: nil)
     }
 
     @objc private func addInstaller(_ aNotification: Notification? = nil) {
         guard let notification = aNotification else { return }
-        if (notification.object as? Installer) != nil{
-            DDLogVerbose("New Installer added: \(notification.object!)")
-            
+        if (notification.object as? Installer) != nil {
             NSAnimationContext.runAnimationGroup { (context) in
                 context.duration = 0.5
                 self.installMacOSButton?.animator().alphaValue = 1.0
@@ -65,133 +70,78 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         }
     }
 
-    @objc private func readPreferences() {
-        if let preferences = PreferenceLoader.currentPreferences {
-            if preferences.useDeviceIdentifierAPI {
-                DeviceIdentifier.setup(authenticationToken: preferences.deviceIdentifierAuthenticationToken!)
-            }
+    @objc private func addApplication(_ aNotification: Notification? = nil) {
+        guard let notification = aNotification else { return }
+        if (notification.object as? Application) != nil {
+            self.hideAllApplications()
+            self.collectionView.reloadData()
+            self.configureCollectionView()
+            self.showAllApplications()
         }
     }
 
-    @objc public func bulkUpdateApplications(_ notification: Notification?) {
-        if !Thread.isMainThread {
-            DispatchQueue.main.async {
-                self.bulkUpdateApplications(notification)
-            }
-            return
-        }
-
-        if let validNotification = notification {
-            guard var newApplications = (validNotification.object as? [Application]) else { return }
-
-            newApplications = newApplications.filter { $0.showInApplicationsWindow == true }
-
-            NotificationCenter.default.post(name: ItemRepository.hideApplications, object: nil)
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                self.reloadApplications(withNewApplications: newApplications)
-            }
-        }
-    }
-
-    @objc public func addApplication(_ notification: Notification? = nil) {
-        if !Thread.isMainThread && notification != nil {
-            DispatchQueue.main.async {
-                self.addApplication(notification)
-            }
-            return
-        }
-
-        if let validNotification = notification,
-            let newApplication = validNotification.object as? Application,
-            newApplication.showInApplicationsWindow == true {
-            self.applications.append(newApplication)
-        }
-    }
-
-    @objc func forceReloadApplications() {
-        if !Thread.isMainThread {
-            DispatchQueue.main.async {
-                self.reloadApplications(withNewApplications: nil)
-            }
-            return
-        }
-        reloadApplications(withNewApplications: nil)
-    }
-
-    private func reloadApplications(withNewApplications newApplications: [Application]? = nil) {
-        if newApplications == nil {
-            applications = ItemRepository.shared.getApplications().filter { $0.showInApplicationsWindow == true }
-        } else if let newApplications = newApplications {
-            if(newApplications.count > applications.count) {
-                applications.append(contentsOf: newApplications.filter { applications.contains($0) == false && $0.showInApplicationsWindow == true })
-            } else if (newApplications.count < applications.count) {
-                applications.removeAll { !newApplications.contains($0) }
-            } else if newApplications.count == 0 {
-                applications.removeAll()
-            } else {
-                applications = newApplications.filter { $0.showInApplicationsWindow == true }
-            }
-        }
-        reloadCollectionView()
-    }
-
-    @objc public func reloadCollectionView() {
-        applicationsInSections = applications.count > 4 ? applications.chunked(into: 4) : [applications]
+    @objc private func reloadAllApplications() {
+        self.hideAllApplications()
 
         DispatchQueue.main.async {
-            if(self.applications.count > 0 && self.applicationsInSections.count > 0 && self.applicationsInSections.first!.count > 0) {
+            KBLogDebug("Reloading all applications")
+
+
+            DispatchQueue.main.async {
                 self.configureCollectionView()
             }
-        }
 
-        self.collectionView?.reloadData()
+            self.collectionView.reloadData()
+
+            DispatchQueue.main.async {
+                self.showAllApplications()
+            }
+        }
     }
 
-    private func addEasterEgg() {
-        let quintClickGesture = NSClickGestureRecognizer(target: self, action: #selector(startEasterEgg))
-        quintClickGesture.numberOfClicksRequired = 5
-        collectionView.addGestureRecognizer(quintClickGesture)
+    private func hideAllApplications() {
+        allItems.forEach { $0.hide() }
+    }
+
+    private func showAllApplications() {
+        allItems.forEach { $0.show() }
     }
 
     private func configureCollectionView() {
-        // collectionView width is 660
-        // inner available width is 640 (insets are 10.0 left/right)
+        if itemRepository.allowedApplications.count > 0 {
+            let flowLayout = NSCollectionViewFlowLayout()
 
-        let flowLayout = NSCollectionViewFlowLayout()
+            let collectionViewWidth = 640
+            let collectionViewHeight = 291.0
 
-        let collectionViewWidth = 640
-        let collectionViewHeight = 291.0
+            let itemWidth = 100
+            let itemHeight = 120
 
-        let itemWidth = 100
-        let itemHeight = 120
+            let totalNumberOfItems = itemRepository.allowedApplications.count
+            let numberOfItemsInSections = self.applicationsInSections.map { $0.count }
 
-        let totalNumberOfItems = Double(self.applications.count)
-        let numberOfItemsInSections = self.applicationsInSections.map { $0.count }
+            let itemSpacing = (collectionViewWidth - (numberOfItemsInSections.first! * itemWidth)) / numberOfItemsInSections.first!
 
-        let itemSpacing = (collectionViewWidth - (numberOfItemsInSections.first! * itemWidth)) / numberOfItemsInSections.first!
-
-        flowLayout.itemSize = NSSize(width: itemWidth, height: itemHeight)
+            flowLayout.itemSize = NSSize(width: itemWidth, height: itemHeight)
 
 
-        if totalNumberOfItems < 3.0 {
-            flowLayout.minimumLineSpacing = 3.0
-            flowLayout.sectionInset = NSEdgeInsets(top: CGFloat(collectionViewHeight / 4.0), left: CGFloat(collectionViewWidth / 8), bottom: 10.0, right: CGFloat(collectionViewWidth / 8))
-        } else if totalNumberOfItems < 4.0 {
-            flowLayout.minimumLineSpacing = 3.0
-            flowLayout.sectionInset = NSEdgeInsets(top: CGFloat(collectionViewHeight / 4.0), left: CGFloat(collectionViewWidth / 12), bottom: 10.0, right: CGFloat(collectionViewWidth / 12))
-        } else if totalNumberOfItems == 4.0 {
-            flowLayout.minimumLineSpacing = 0.0
-            flowLayout.sectionInset = NSEdgeInsets(top: CGFloat(collectionViewHeight / 4.0), left: 10.0, bottom: 10.0, right: 10.0)
-        } else if totalNumberOfItems > 4.0 {
-            flowLayout.minimumLineSpacing = 0.0
-            flowLayout.sectionInset = NSEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0)
+            if totalNumberOfItems < 3 {
+                flowLayout.minimumLineSpacing = 3.0
+                flowLayout.sectionInset = NSEdgeInsets(top: CGFloat(collectionViewHeight / 4.0), left: CGFloat(collectionViewWidth / 8), bottom: 10.0, right: CGFloat(collectionViewWidth / 8))
+            } else if totalNumberOfItems < 4 {
+                flowLayout.minimumLineSpacing = 3.0
+                flowLayout.sectionInset = NSEdgeInsets(top: CGFloat(collectionViewHeight / 4.0), left: CGFloat(collectionViewWidth / 12), bottom: 10.0, right: CGFloat(collectionViewWidth / 12))
+            } else if totalNumberOfItems == 4 {
+                flowLayout.minimumLineSpacing = 0.0
+                flowLayout.sectionInset = NSEdgeInsets(top: CGFloat(collectionViewHeight / 4.0), left: 10.0, bottom: 10.0, right: 10.0)
+            } else if totalNumberOfItems > 4 {
+                flowLayout.minimumLineSpacing = 0.0
+                flowLayout.sectionInset = NSEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0)
+            }
+
+            flowLayout.minimumInteritemSpacing = CGFloat(itemSpacing)
+            collectionView.collectionViewLayout = flowLayout
         }
-
-        flowLayout.minimumInteritemSpacing = CGFloat(itemSpacing)
-        self.collectionView.collectionViewLayout = flowLayout
-        NotificationCenter.default.post(name: ItemRepository.showApplications, object: nil)
-        updateScrollViewContentSize()
     }
 
     private func updateScrollViewContentSize() {
@@ -281,11 +231,10 @@ extension ApplicationViewController: NSCollectionViewDataSource {
         if applicationsInSections.indices.contains(section) {
             return applicationsInSections[section].count
         }
-        return applications.count
+        return itemRepository.allowedApplications.count
     }
 
-    func collectionView(_ collectionView: NSCollectionView, itemForRepresentedObjectAt
-        indexPath: IndexPath) -> NSCollectionViewItem {
+    func collectionView(_ collectionView: NSCollectionView, itemForRepresentedObjectAt indexPath: IndexPath) -> NSCollectionViewItem {
         let item = collectionView.makeItem(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "NSCollectionAppCell"), for: indexPath)
         var applicationsInSection = [Application]()
 
@@ -303,42 +252,6 @@ extension ApplicationViewController: NSCollectionViewDataSource {
             return applicationFromSection.getCollectionViewItem(item: item)
         }
         return item
-    }
-
-    @objc func startEasterEgg() {
-        for cell in self.collectionView.visibleItems() as! [NSCollectionAppCell] {
-            buildAnimation(view: (cell.icon)!)
-        }
-    }
-
-    func buildAnimation(view: NSView) {
-        let basicAnimation = CABasicAnimation(keyPath: "transform.rotation")
-        basicAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.linear)
-        basicAnimation.fromValue = (0 * (Double.pi / 180))
-        basicAnimation.toValue = (360 * (Double.pi / 180))
-        basicAnimation.duration = 1.0
-        basicAnimation.repeatCount = .infinity
-
-        setAnchorPoint(anchorPoint: CGPoint(x: 0.5, y: 0.5), forView: view)
-        view.layer?.add(basicAnimation, forKey: "transform")
-    }
-
-    func setAnchorPoint(anchorPoint: CGPoint, forView view: NSView) {
-        let newPoint = NSPoint(x: view.bounds.size.width * anchorPoint.x, y: view.bounds.size.height * anchorPoint.y)
-        let oldPoint = NSPoint(x: view.bounds.size.width * (view.layer?.anchorPoint.x)!, y: view.bounds.size.height * (view.layer?.anchorPoint.y)!)
-
-        newPoint.applying((view.layer?.affineTransform())!)
-        oldPoint.applying((view.layer?.affineTransform())!)
-
-        var position = view.layer?.position
-        position?.x -= oldPoint.x
-        position?.x += newPoint.x
-
-        position?.y -= oldPoint.y
-        position?.y += newPoint.y
-
-        view.layer?.position = position!
-        view.layer?.anchorPoint = anchorPoint
     }
 }
 

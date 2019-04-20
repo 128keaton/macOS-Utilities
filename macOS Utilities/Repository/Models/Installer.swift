@@ -15,6 +15,7 @@ class Installer: NSObject, Item, NSFilePresenter {
     public var isFakeInstaller = false
     private var fakeInstallerCanInstall = false
 
+    private let prohibatoryIcon = NSImage(named: "NSHaltIcon")
     private let installableVersions = ModelYearDetermination().determineInstallableVersions()
 
     var presentedItemURL: URL?
@@ -48,7 +49,7 @@ class Installer: NSObject, Item, NSFilePresenter {
     }
 
     override var description: String {
-        return isFakeInstaller ? "FakeInstaller - Can Install: \(self.canInstall) - Icon: \(icon == prohibatoryIcon ? "no" : "yes") - ID: \(self.id)" : "Installer - \(versionNumber) - \(versionName) - Icon: \(icon == prohibatoryIcon ? "no" : "yes") - Valid: \(isValid) - Can Install: \(self.canInstall) - ID: \(self.id)"
+        return isFakeInstaller ? "FakeInstaller: \(self.versionName) (\(self.versionNumber))" : "Installer: \(self.versionName) (\(self.versionNumber))"
     }
 
 
@@ -80,7 +81,7 @@ class Installer: NSObject, Item, NSFilePresenter {
             if(!canInstall) {
                 DispatchQueue.main.async {
                     self.icon.lockFocus()
-                    self.icon = self.icon.darkened()!
+                    self.icon = self.icon.darkened!
                     self.icon.unlockFocus()
                 }
             }
@@ -96,18 +97,9 @@ class Installer: NSObject, Item, NSFilePresenter {
         ItemRepository.shared.addToRepository(newInstaller: self)
     }
 
-    func presentedSubitemDidChange(at url: URL) {
-        let pathExtension = url.pathExtension
-
-        if pathExtension == "app" {
-            DDLogInfo("installer updated? \(self.description)")
-        } else {
-            DDLogInfo("maybe not installer updated? \(self.description)")
-        }
-    }
-
     private func determineVersion() {
-        let parsedName = self.appLabel.replacingOccurrences(of: ".[0-9].*", with: "", options: .regularExpression).replacingOccurrences(of: ".app", with: "")
+        // HATE ME ALL YOU WANT
+        let parsedName = self.appLabel.replacingOccurrences(of: ".[0-9].*", with: "", options: .regularExpression).replacingOccurrences(of: ".app", with: "").replacingOccurrences(of: "Install ", with: "")
         self.versionNumber = Double(VersionNumbers.getVersionForName(parsedName))!
         self.versionName = parsedName
     }

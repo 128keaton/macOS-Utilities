@@ -9,19 +9,20 @@
 import Foundation
 import CocoaLumberjack
 
-struct Share: Item {
+struct Share: FileSystemItem {
     var type: String?
     var mountPoint: String?
+    
     var id: String {
         return String("\(mountPoint)-\(type ?? "None")").md5Value
     }
     
-    func addToRepo() {
-        ItemRepository.shared.addToRepository(newShare: self)
+    var itemType: FileSystemItemType {
+        return .remoteShare
     }
     
     var description: String {
-        return "Share: \n\t Content: \(self.type ?? "None")\n\t Mount Point: \(self.mountPoint ?? "not mounted") \n\t"
+        return "Share: Mount Point: \(self.mountPoint ?? "not mounted")"
     }
     
     static func == (lhs: Share, rhs: Share) -> Bool {

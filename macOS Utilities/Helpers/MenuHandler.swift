@@ -183,7 +183,7 @@ class MenuHandler: NSObject {
         let htmlContent = "<h2>Please type your issue here:</h2><br><p>Replace Me</p>".data(using: .utf8)
 
         var items: [Any] = [NSAttributedString(html: htmlContent!, options: [:], documentAttributes: nil)!]
-        let emailSubject = Host.current().localizedName != nil ? String("\(Host.current().localizedName!)__(\(Sysctl.model)__\(getSystemUUID() ?? ""))") : String("\(Sysctl.model)__(\(getSystemUUID() ?? ""))")
+        let emailSubject = Host.current().localizedName != nil ? String("\(Host.current().localizedName!)__(\(Sysctl.model)__)") : String("\(Sysctl.model)")
 
         logFilePaths.forEach { items.append($0) }
 
@@ -201,13 +201,14 @@ class MenuHandler: NSObject {
     // MARK: Data Functions
     @objc private func addUtilityToMenu(_ notification: Notification? = nil) {
         if let validNotification = notification {
-            if let utility = validNotification.object as? Application {
+            if let utility = validNotification.object as? Utility {
                 let newItem = NSMenuItem(title: utility.name, action: #selector(MenuHandler.openApp(_:)), keyEquivalent: "")
                 newItem.target = self
                 utilitiesMenu?.addItem(newItem)
             }
         }
     }
+    
 
     @objc private func addInstallerToMenu(_ notification: Notification? = nil) {
         if let infoMenu = self.infoMenu {
@@ -228,7 +229,7 @@ class MenuHandler: NSObject {
     }
 
     @objc func openApp(_ sender: NSMenuItem) {
-        ApplicationUtility.shared.open(sender.title)
+     //   ApplicationUtility.shared.open(sender.title)
     }
 }
 

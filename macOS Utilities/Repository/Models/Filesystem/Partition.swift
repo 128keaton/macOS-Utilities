@@ -9,13 +9,7 @@
 import Foundation
 import AppKit
 
-struct Partition: Item, DiskOrPartition, Codable {
-    var dataType: DataType {
-        return .partition
-    }
-    private var nonInstallableDriveNames: [String] {
-        return ["System Reserved", "EFI", "Recovery", "VM", "Preboot", "Time Machine"]
-    }
+struct Partition: FileSystemItem, Codable {
     var content: String?
     var deviceIdentifier: String
     var diskUUID: String?
@@ -24,6 +18,7 @@ struct Partition: Item, DiskOrPartition, Codable {
     var volumeUUID: String?
     var mountPoint: String?
     var isFake: Bool = false
+    
     var id: String {
         return volumeUUID ?? diskUUID ?? String.random(12)
     }
@@ -31,6 +26,14 @@ struct Partition: Item, DiskOrPartition, Codable {
         return Units(bytes: self.rawSize)
     }
 
+    var itemType: FileSystemItemType {
+        return .partition
+    }
+    
+    private var nonInstallableDriveNames: [String] {
+        return ["System Reserved", "EFI", "Recovery", "VM", "Preboot", "Time Machine"]
+    }
+    
     var volumeName: String {
         if let absoluteVolumeName = self.rawVolumeName {
             return absoluteVolumeName
@@ -83,10 +86,6 @@ struct Partition: Item, DiskOrPartition, Codable {
         return self.mountPoint != nil
     }
 
-    func addToRepo() {
-        ItemRepository.shared.addToRepository(newPartition: self)
-    }
-
     func getMountPoint() -> String {
         return self.mountPoint ?? "Not mounted"
     }
@@ -97,12 +96,11 @@ struct Partition: Item, DiskOrPartition, Codable {
         }
     }
     
-    public func getInstaller() -> Installer?{
+    public func scanForInstaller(){
         if self.volumeName.contains("Install macOS") || self.volumeName.contains("Install OS X"){
             let volumePath = "/Volumes/\(self.volumeName)"
-            return Installer(volumePath: volumePath, mountPoint: volumePath.fileURL, appName: self.volumeName)
+            let _ = Installer(volumePath: volumePath, mountPoint: volumePath.fileURL, appName: self.volumeName)
         }
-        return nil
     }
     
     static func == (lhs: Partition, rhs: Partition) -> Bool {

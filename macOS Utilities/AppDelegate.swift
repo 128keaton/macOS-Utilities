@@ -28,11 +28,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     public let modelYearDetermination = ModelYearDetermination()
     public let pageControllerDelegate: PageController = PageController.shared
 
-    public var preferenceLoader: PreferenceLoader? = PreferenceLoader()
+    public var preferenceLoader: PreferenceLoader? = nil
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         registerForNotifications()
 
+        PreferenceLoader.setup()
+        
         if let preferenceLoader = PreferenceLoader.sharedInstance {
             self.preferenceLoader = preferenceLoader
             NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.readPreferences(_:)), name: PreferenceLoader.preferencesLoaded, object: nil)
@@ -73,7 +75,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func readPreferences(_ aNotification: Notification? = nil) {
-        PreferenceLoader.loaded = true
         self.preferencesMenuItem?.isEnabled = false
 
         if let validSemaphore = preferencesSemaphore {
