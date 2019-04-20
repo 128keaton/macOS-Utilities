@@ -1,7 +1,9 @@
 # macOS-Utilities
 A custom macOS Utilities app.
 
-![](https://github.com/128keaton/macOS-Utilities/blob/disk-manager/Screenshots/screenshot9.png?raw=true)
+
+![](https://github.com/128keaton/macOS-Utilities/blob/disk-manager/Screenshots/macOSUtillities-10.png?raw=true)
+
 
 ## Usage
 Bundle this with your NBI. Use something like [outset](https://github.com/chilcote/outset) to run it on launch.
