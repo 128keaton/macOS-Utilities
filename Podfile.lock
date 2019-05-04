@@ -62,7 +62,7 @@ SPEC CHECKSUMS:
   CAAnimationBlocks: 1aaca5fb6447a95d83b20cc786992956ef46e4ee
   CocoaAsyncSocket: eafaa68a7e0ec99ead0a7b35015e0bf25d2c8987
   CocoaLumberjack: 118bf4a820efc641f79fa487b75ed928dccfae23
-  PaperTrailLumberjack: cb5a8bc63de97df262c2d60e0f39b2ff0bc2646f
+  PaperTrailLumberjack: b7d2eb078841c5121240e25fa09bf82251d39765
   SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
 
 PODFILE CHECKSUM: 5a7ade46c2410ae4b4ae32fe73e616a91129e30b
