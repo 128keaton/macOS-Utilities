@@ -12,13 +12,13 @@ import CocoaLumberjack
 class ModelYearDetermination {
     let modelIdentifier = Sysctl.model
 
-    private (set) public var installableVersions = ["10.11", "10.13"]
+    private (set) public var installableVersions: [Version] = [Version.elCapitan, Version.highSierra]
 
     func canInstallMojave() {
-        installableVersions.append("10.14")
+        installableVersions.append(Version.mojave)
     }
 
-    func determineInstallableVersions() -> [String] {
+    func determineInstallableVersions() -> [Version] {
         if modelIdentifier.contains("MacBookPro") {
             // MacBook Pro
             let identifierDigits = getIdentifierDigitsFor("MacBookPro")
@@ -46,7 +46,7 @@ class ModelYearDetermination {
         } else if modelIdentifier.contains("MacPro") {
             // Mac Pro
             let identifierDigits = getIdentifierDigitsFor("MacPro")
-            installableVersions.append("10.9")
+            installableVersions.append(Version.mavericks)
             if(identifierDigits > 41) {
                 canInstallMojave()
             }
@@ -62,15 +62,6 @@ class ModelYearDetermination {
 
     func getIdentifierDigitsFor(_ modelName: String) -> Int {
         return Int(modelIdentifier.replacingOccurrences(of: modelName, with: "").replacingOccurrences(of: ",", with: ""))!
-    }
-
-    public func getInstallableVersions() -> [String] {
-        var installableVersionsAndNames = [String]()
-        for version in installableVersions {
-            installableVersionsAndNames.append("\(VersionNumbers.getNameForVersion(version)) (\(version))")
-        }
-
-        return installableVersionsAndNames
     }
 }
 

@@ -80,8 +80,8 @@ class DiskSelectionViewController: NSViewController {
     }
 
     private func getSelectedInstaller() {
-        if let selectedInstaller = ItemRepository.shared.getSelectedInstaller() {
-            installingVersionLabel?.stringValue = "To install \(selectedInstaller.versionName)"
+        if let selectedInstaller = ItemRepository.shared.selectedInstaller {
+            installingVersionLabel?.stringValue = "To install \(selectedInstaller.version.name)"
             installingVersionLabel?.isHidden = false
             self.selectedInstaller = selectedInstaller
         } else {
@@ -199,12 +199,13 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
     @objc public func openInstaller() {
         PageController.shared.dismissPageController()
 
-        if let selectedInstaller = self.selectedInstaller {
-            selectedInstaller.launch()
-        } else if let selectedInstaller = ItemRepository.shared.getSelectedInstaller() {
-            selectedInstaller.launch()
+        if let selectedInstaller = ItemRepository.shared.selectedInstaller,
+            selectedInstaller.open() {
+            DDLogVerbose("Opened installer \(selectedInstaller)")
+        } else if ItemRepository.shared.selectedInstaller == nil {
+            DDLogError("No installer was selected")
         } else {
-            DDLogError("Unable to launch installer: no installer selected")
+            DDLogError("Could not open installer \(String(describing: ItemRepository.shared.selectedInstaller))")
         }
     }
 

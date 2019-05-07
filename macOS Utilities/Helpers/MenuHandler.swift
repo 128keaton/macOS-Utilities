@@ -159,14 +159,14 @@ class MenuHandler: NSObject {
     }
 
     @objc func startOSInstall(_ sender: NSMenuItem) {
-        installers = ItemRepository.shared.getInstallers()
+        installers = ItemRepository.shared.installers
         let versionName = sender.title.replacingOccurrences(of: "Install ", with: "")
 
         DDLogVerbose("Attempting macOS Install: \(versionName)")
 
         if let indexOfSender = infoMenu?.items.firstIndex(of: sender),
             installers.indices.contains(indexOfSender) == true,
-            let selectedInstaller = (installers.first { $0.versionName == versionName }) {
+            let selectedInstaller = (installers.first { $0.version == Version(versionName: versionName) }) {
             
             ItemRepository.shared.setSelectedInstaller(selectedInstaller)
             PageController.shared.showPageController(initialPage: 1)
@@ -219,7 +219,7 @@ class MenuHandler: NSObject {
             if let validNotification = notification {
                 if let installer = validNotification.object as? Installer {
                     installers.append(installer)
-                    let installerItem = NSMenuItem(title: "Install \(installer.versionName)", action: #selector(MenuHandler.startOSInstall(_:)), keyEquivalent: "")
+                    let installerItem = NSMenuItem(title: "Install \(installer.version.name)", action: #selector(MenuHandler.startOSInstall(_:)), keyEquivalent: "")
                     installerItem.target = self
                     installerItem.image = installer.canInstall ? NSImage(named: "NSStatusAvailable") : NSImage(named: "NSStatusUnavailable")
                     infoMenu.insertItem(installerItem, at: 0)
@@ -229,7 +229,7 @@ class MenuHandler: NSObject {
     }
 
     @objc func openApp(_ sender: NSMenuItem) {
-     //   ApplicationUtility.shared.open(sender.title)
+        NotificationCenter.default.post(name: ItemRepository.openApplication, object: sender.title)
     }
 }
 

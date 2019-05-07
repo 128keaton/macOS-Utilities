@@ -11,7 +11,7 @@ import CocoaLumberjack
 
 class ItemRepository {
     public static let shared = ItemRepository()
-    private (set) public var items: [Any] = []
+    private (set) public var items: [RepositoryItem] = []
 
     private var fakeItems: [Any] = []
 
@@ -22,7 +22,31 @@ class ItemRepository {
 
     static let refreshRepository = Notification.Name("NSRefreshRepository")
     static let reloadApplications = Notification.Name("NSReloadApplications")
+    static let openApplication = Notification.Name("NSOpenApplicationFromRepository")
 
+    public var applications: [Application] {
+        return (items.filter { type(of: $0) == Application.self } as! [Application])
+    }
+    
+    public var allowedApplications: [Application] {
+        return (items.filter { type(of: $0) == Application.self } as! [Application]).filter { $0.showInApplicationsWindow == true }
+    }
+    
+    public var utilities: [Utility] {
+        return (items.filter { type(of: $0) == Utility.self } as! [Utility])
+    }
+    
+    public var installers: [Installer] {
+         return (items.filter { type(of: $0) == Installer.self } as! [Installer]).sorted { $0.sortNumber!.compare($1.sortNumber!) == .orderedAscending && $0.isFakeInstaller == false }
+    }
+    
+    public var selectedInstaller: Installer? {
+        if let installer = (self.installers.first { $0.isSelected == true }) {
+            return installer
+        }
+        return nil
+    }
+    
     private init() {
         DDLogInfo("ItemRepository initialized")
 
@@ -31,6 +55,7 @@ class ItemRepository {
         }
 
         NotificationCenter.default.addObserver(self, selector: #selector(ItemRepository.reloadAllItems), name: ItemRepository.refreshRepository, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ItemRepository.openApplication(notification:)), name: ItemRepository.openApplication, object: nil)
     }
 
     public func createFakeInstallers() {
@@ -44,53 +69,45 @@ class ItemRepository {
 
     @objc public func reloadAllItems() {
         DiskUtility.shared.getAllDisks()
-        self.getUtilities()
+        Utility.getFromUtilitiesFolder()
+    }
+
+    public func openApplication(appName: String) {
+        if let foundItem = (self.items.first { $0.searchableEntityName == appName }) {
+            if let foundUtility = foundItem as? Utility,
+                foundUtility.open() {
+                DDLogVerbose("Launched utility \(foundUtility)")
+            } else if let foundApplication = foundItem as? Application,
+                foundApplication.open() {
+                DDLogVerbose("Launched application \(foundApplication)")
+            } else {
+                DDLogError("Could not launch application \(foundItem)")
+            }
+        } else {
+            DDLogError("Could not launch application \(appName). Application was not found in ItemRepository.")
+        }
+    }
+
+    @objc public func openApplication(notification: Notification? = nil) {
+        if let openNotification = notification,
+            let notificationOpenName = openNotification.object as? String {
+            openApplication(appName: notificationOpenName)
+        } else {
+            DDLogError("Could launch application. No name was specified")
+        }
+    }
+
+    public func openApplication(_ application: Application) {
+        openApplication(appName: application.name)
     }
 
     private func reloadApplications() {
         if let preferences = PreferenceLoader.currentPreferences,
             let applications = preferences.mappedApplications {
-            self.addToRepository(newApplications: applications)
+            self.addToRepository(newItems: applications)
         }
     }
-
-    private func getUtilities() {
-        do {
-            try FileManager.default.contentsOfDirectory(atPath: "/Applications/Utilities").forEach {
-                let utilityPath = $0
-                let utilityName = utilityPath.split(separator: "/").last!.replacingOccurrences(of: ".app", with: "")
-                if utilityName.first! != "." {
-                    let newUtility = Utility(name: utilityName, path: utilityPath)
-                    KBLogDebug("Adding utility '\(utilityName)' to repo.")
-                    NotificationCenter.default.post(name: ItemRepository.newUtility, object: newUtility)
-                    self.items.append(newUtility)
-                }
-            }
-        } catch {
-            DDLogError("Could not get utilities")
-        }
-    }
-
-    public var applications: [Application] {
-        return (items.filter { type(of: $0) == Application.self } as! [Application])
-    }
-
-    public var allowedApplications: [Application] {
-        return (items.filter { type(of: $0) == Application.self } as! [Application]).filter { $0.showInApplicationsWindow == true }
-    }
-
-
-    public var utilities: [Utility] {
-        return (items.filter { type(of: $0) == Utility.self } as! [Utility])
-    }
-
-    public func getSelectedInstaller() -> Installer? {
-        if let installer = (self.getInstallers().first { $0.isSelected == true }) {
-            return installer
-        }
-        return nil
-    }
-
+    
     public func setSelectedInstaller(_ installer: Installer) {
         unsetAllSelectedInstallers()
         (items.first(where: { ($0 as? Installer) == installer }) as? Installer)?.isSelected = true
@@ -105,40 +122,40 @@ class ItemRepository {
         fakeItems.append(fakeInstaller)
     }
 
-    public func getInstallers() -> [Installer] {
-        print(items.filter { type(of: $0) == Installer.self })
-        return (items.filter { type(of: $0) == Installer.self } as! [Installer]).sorted { $0.comparibleVersionNumber < $1.comparibleVersionNumber }
-    }
+    public func addToRepository<T>(newItems: [T], merge: Bool = false) {
+        if var newItemsOfType = newItems as? [RepositoryItem] {
+            if merge {
+                newItemsOfType.removeAll { self.items.contains($0) }
+            }
 
+            newItemsOfType.forEach {
+                addToRepository(newItem: $0)
+            }
 
-    public func addToRepository(newInstaller: Installer) {
-        if (self.items.contains { ($0 as? Installer) != nil && ($0 as! Installer).id == newInstaller.id } == false) {
-            DDLogInfo("Adding installer '\(newInstaller.versionName)' to repo")
-            self.items.append(newInstaller)
-
-            NotificationCenter.default.post(name: ItemRepository.newInstaller, object: newInstaller)
+            if let anItem = newItemsOfType.first {
+                if type(of: anItem) == Application.self {
+                    NotificationCenter.default.post(name: ItemRepository.newApplications, object: newItemsOfType as! [Application])
+                }
+            }
         }
     }
 
-    public func addToRepository(newApplication: Application) {
-        if (self.items.contains { ($0 as? Application) != nil && ($0 as! Application).id == newApplication.id } == false) {
-            self.items.append(newApplication)
+    public func addToRepository<T>(newItem: T) {
+        if let newItemOfType = newItem as? RepositoryItem,
+            (self.items.contains { $0.id == newItemOfType.id } == false) {
 
-            DDLogInfo("Adding application '\(newApplication.name)' to repo")
-            NotificationCenter.default.post(name: ItemRepository.newApplication, object: newApplication)
+            DDLogInfo("Adding \(NSStringFromClass(type(of: newItemOfType))) '\(newItemOfType.searchableEntityName)' to repo")
+
+            if type(of: newItemOfType) == Application.self {
+                self.items.append(newItemOfType as! Application)
+                NotificationCenter.default.post(name: ItemRepository.newApplication, object: newItemOfType as! Application)
+            } else if type(of: newItemOfType) == Utility.self {
+                self.items.append(newItemOfType as! Utility)
+                NotificationCenter.default.post(name: ItemRepository.newUtility, object: newItemOfType as! Utility)
+            } else if type(of: newItemOfType) == Installer.self {
+                self.items.append(newItemOfType as! Installer)
+                NotificationCenter.default.post(name: ItemRepository.newInstaller, object: newItemOfType as! Installer)
+            }
         }
-    }
-
-    public func addToRepository(newApplications: [Application], merge: Bool = false) {
-        if !merge {
-            self.items.removeAll { type(of: $0) == Application.self }
-        }
-
-        newApplications.forEach {
-            DDLogInfo("Adding application '\($0.name)' to repo.")
-        }
-
-        self.items.append(contentsOf: newApplications)
-        NotificationCenter.default.post(name: ItemRepository.newApplications, object: newApplications)
     }
 }

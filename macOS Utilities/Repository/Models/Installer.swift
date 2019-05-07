@@ -10,81 +10,90 @@ import Foundation
 import AppKit
 import CocoaLumberjack
 
-class Installer: NSObject, Item, NSFilePresenter {
-    // MARK: FakeInstaller
+class Installer: Application {
     public var isFakeInstaller = false
     private var fakeInstallerCanInstall = false
+    private var alreadyDeterminedCanInstall: Bool? = nil
 
-    private let prohibatoryIcon = NSImage(named: "NSHaltIcon")
     private let installableVersions = ModelYearDetermination().determineInstallableVersions()
 
-    var presentedItemURL: URL?
-    var presentedItemOperationQueue: OperationQueue = OperationQueue.main
-    var appLabel: String = "Not Available"
-    var versionNumber: Double = 0.0
-    var icon: NSImage = NSImage(named: "NSHaltIcon")!
-    var versionName: String = ""
-    var volumePath: String
-    var isSelected = false
-
-    var isValid: Bool {
-        return appLabel != "Not Available" && versionNumber != 0.0
+    var version: Version {
+        var versionName = self.name.replacingOccurrences(of: ".app", with: "").replacingOccurrences(of: "Install ", with: "")
+        if !isFakeInstaller {
+            versionName = versionName.replacingOccurrences(of: ".[0-9].*", with: "", options: .regularExpression)
+        }
+        
+        return Version(versionName: versionName)
     }
 
-    var id: String {
+    var volumePath: String
+    var installerPath: String
+
+    var isSelected = false
+
+    override var defaultIcon: NSImage {
+        return NSImage(named: "NSDefaultInstallerIcon")!
+    }
+
+    override var sortNumber: NSNumber? {
+        return self.version.sortNumber
+    }
+
+    override var id: String {
         get {
-            return versionName.md5Value
+            return self.version.name.md5Value
         }
     }
 
     var canInstall: Bool {
-        if(installableVersions.contains(String(self.versionNumber))) {
-            DDLogInfo("\(Sysctl.model) can install \(self.versionNumber)")
+        if let alreadyDeterminedCanInstall = self.alreadyDeterminedCanInstall {
+            return alreadyDeterminedCanInstall
         }
-        return installableVersions.contains(String(self.versionNumber)) || fakeInstallerCanInstall
-    }
 
-    var comparibleVersionNumber: Int {
-        return Int(String(self.versionNumber).replacingOccurrences(of: ".", with: ""))!
+        let installerCanInstall = fakeInstallerCanInstall == true || installableVersions.contains(self.version)
+
+        if(installerCanInstall) {
+            DDLogInfo("\(Sysctl.model) can install \(self.version)")
+        }
+
+        self.alreadyDeterminedCanInstall = installerCanInstall
+
+        return installerCanInstall
     }
 
     override var description: String {
-        return isFakeInstaller ? "FakeInstaller: \(self.versionName) (\(self.versionNumber))" : "Installer: \(self.versionName) (\(self.versionNumber))"
+        return isFakeInstaller ? "FakeInstaller: \(self.version)" : "Installer: \(self.version)"
     }
 
+    override func open() -> Bool {
+        if canInstall && !isFakeInstaller {
+            return super.open()
+        } else if isFakeInstaller {
+            return true
+        }
+
+        DDLogError("\(Sysctl.model) cannot install \(self.version)")
+        return false
+    }
 
     init(volumePath: String, mountPoint: URL, appName: String) {
         self.volumePath = volumePath
-        self.presentedItemURL = mountPoint
-        self.appLabel = "\(appName).app"
-        
-        super.init()
+        self.installerPath = "\(volumePath)/\(appName).app"
 
-        self.determineVersion()
-        self.findAppIcon()
+        super.init(name: appName, path: self.installerPath)
 
         self.addToRepo()
     }
 
     init(isFakeInstaller: Bool = true, canInstallOnMachine: Bool) {
         if(isFakeInstaller) {
-            self.volumePath = ""
-            super.init()
-            self.isFakeInstaller = isFakeInstaller
-            let fakeVersionString = String.random(4, numericOnly: true)
-            self.versionName = "Fake-Installer-\(fakeVersionString)"
-            self.appLabel = "Fake-Installer-\(fakeVersionString).app"
-            self.versionNumber = Double(fakeVersionString)!
-            self.fakeInstallerCanInstall = canInstallOnMachine
-            self.icon = NSImage(named: "NSDefaultInstallerIcon")!
+            self.volumePath = String.random(12)
+            self.installerPath = String.random(12)
 
-            if(!canInstall) {
-                DispatchQueue.main.async {
-                    self.icon.lockFocus()
-                    self.icon = self.icon.darkened!
-                    self.icon.unlockFocus()
-                }
-            }
+            super.init(name: "Fake Installer \(String.random(4, numericOnly: true))", path: String.random(4))
+
+            self.isFakeInstaller = true
+            self.fakeInstallerCanInstall = canInstallOnMachine
 
             self.addToRepo()
         } else {
@@ -93,62 +102,15 @@ class Installer: NSObject, Item, NSFilePresenter {
         }
     }
 
-    func addToRepo() {
-        ItemRepository.shared.addToRepository(newInstaller: self)
+    required init(from decoder: Decoder) throws {
+        fatalError("init(from:) has not been implemented")
     }
 
-    private func determineVersion() {
-        // HATE ME ALL YOU WANT
-        let parsedName = self.appLabel.replacingOccurrences(of: ".[0-9].*", with: "", options: .regularExpression).replacingOccurrences(of: ".app", with: "").replacingOccurrences(of: "Install ", with: "")
-        self.versionNumber = Double(VersionNumbers.getVersionForName(parsedName))!
-        self.versionName = parsedName
+    override func addToRepo() {
+        ItemRepository.shared.addToRepository(newItem: self)
     }
-
-    public func launch() {
-        DDLogInfo("Launching installer \(self) at path \(self.presentedItemURL?.absoluteString ?? "Invalid path")")
-        DispatchQueue.main.async {
-            NSWorkspace.shared.open(self.presentedItemURL!.appendingPathComponent(self.appLabel))
-        }
-    }
-
-    public func refresh() {
-        DispatchQueue.main.sync {
-            self.findAppIcon()
-        }
-    }
-
-    private func findAppIcon() {
-        var path = "\(volumePath)/\(self.appLabel)/Contents/Info.plist"
-        var infoDictionary = NSDictionary()
-
-        if let potentialInfoDictionary = NSDictionary(contentsOfFile: path) {
-            infoDictionary = potentialInfoDictionary
-        } else if let potentialInfoDictionary = NSDictionary(contentsOfFile: "/Volumes/\(self.versionName)\(path)") {
-            infoDictionary = potentialInfoDictionary
-            path = "/Volumes/\(self.versionName)\(path)"
-        } else {
-            self.icon = prohibatoryIcon!
-            return
-        }
-
-        guard let imageName = (infoDictionary["CFBundleIconFile"] as? String)
-            else {
-                self.icon = prohibatoryIcon!
-                return
-        }
-
-        var imagePath = "\(volumePath)/\(self.appLabel)/Contents/Resources/\(imageName)"
-
-        if !imageName.contains(".icns") {
-            imagePath = imagePath + ".icns"
-        }
-
-        self.icon = NSImage(contentsOfFile: imagePath)!
-    }
-
 
     static func == (lhs: Installer, rhs: Installer) -> Bool {
-        return lhs.versionNumber == rhs.versionNumber &&
-            lhs.versionName == rhs.versionName
+        return lhs.version == rhs.version
     }
 }

@@ -275,7 +275,7 @@ class DiskUtility: NSObject, NSFilePresenter {
         }
 
         if let installer = forInstaller {
-            if installer.versionNumber <= 10.13 {
+            if installer.version.number <= 10.13 {
                 format = "JHFS+"
             }
         }
@@ -309,7 +309,7 @@ class DiskUtility: NSObject, NSFilePresenter {
         }
 
         if let installer = forInstaller {
-            if installer.versionNumber <= 10.13 {
+            if !installer.version.needsAPFS {
                 format = "JHFS+"
             }
         }
@@ -340,7 +340,7 @@ class DiskUtility: NSObject, NSFilePresenter {
     }
 
     public static func diskIsFormattedFor(_ disk: Disk, installer: Installer) -> Bool {
-        if installer.versionNumber >= 10.13 {
+        if installer.version.needsAPFS {
             if disk.apfsPartitions != nil {
                 return true
             }
@@ -351,7 +351,7 @@ class DiskUtility: NSObject, NSFilePresenter {
     }
 
     public static func partitionIsFormattedFor(_ partition: Partition, installer: Installer) -> Bool {
-        if installer.versionNumber >= 10.13 {
+        if installer.version.needsAPFS {
             return partition.isAPFS
         } else if let content = partition.content {
             return content == "Apple_HFS"

@@ -10,7 +10,7 @@ import Foundation
 import AppKit
 import CocoaLumberjack
 
-class PreferencesApplicationsViewController: NSViewController {
+class PreferencesApplicationsViewController: NSViewController, NSMenuItemValidation {
     @IBOutlet weak var tableView: NSTableView!
 
     public var preferencesViewController: PreferencesViewController? = nil
@@ -39,7 +39,12 @@ class PreferencesApplicationsViewController: NSViewController {
         tableView.allowsMultipleSelection = true
         tableView.registerForDraggedTypes([dragDropType])
 
-        let sortValid = NSSortDescriptor(key: "isInvalid", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
+        addSortDescriptors()
+        addContextMenu()
+    }
+
+    func addSortDescriptors() {
+        let sortValid = NSSortDescriptor(key: "isValid", ascending: false, selector: #selector(NSNumber.compare(_:)))
         tableView.tableColumns[0].sortDescriptorPrototype = sortValid
 
         let sortName = NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
@@ -54,6 +59,40 @@ class PreferencesApplicationsViewController: NSViewController {
         }
     }
 
+    func addContextMenu() {
+        let contextMenu = NSMenu()
+
+        let openInFinderItem = NSMenuItem(title: "Open in Finder..", action: #selector(PreferencesApplicationsViewController.tableViewShowItemInFinderClicked(_:)), keyEquivalent: "")
+        openInFinderItem.target = self
+
+        let deleteItem = NSMenuItem(title: "Delete", action: #selector(PreferencesApplicationsViewController.tableViewDeleteItemClicked(_:)), keyEquivalent: "")
+        deleteItem.target = self
+
+
+        contextMenu.addItem(openInFinderItem)
+        contextMenu.addItem(NSMenuItem.separator())
+        contextMenu.addItem(deleteItem)
+
+        tableView.menu = contextMenu
+    }
+
+    func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+        guard tableView.clickedRow >= 0 else { return false }
+
+        if menuItem.title == "Delete" {
+            return true
+        } else {
+            if applications.indices.contains(tableView.clickedRow) {
+                return applications[tableView.clickedRow].isValid
+            }
+        }
+        return false
+    }
+
+    @objc func sortByValid(_ a: AnyObject) {
+        print(a)
+    }
+
     private func updateApplications() {
         if let currentPreferences = PreferenceLoader.currentPreferences {
             currentPreferences.setApplications(self.applications)
@@ -63,7 +102,7 @@ class PreferencesApplicationsViewController: NSViewController {
                 preferencesViewController.applicationsCountLabel.stringValue = "\(self.applications.count) application(s)"
             }
 
-            ItemRepository.shared.addToRepository(newApplications: self.applications, merge: false)
+            ItemRepository.shared.addToRepository(newItems: self.applications, merge: true)
         }
     }
 
@@ -96,10 +135,26 @@ extension PreferencesApplicationsViewController: NSTableViewDataSource, NSTableV
         applications.sort(sortDescriptors: tableView.sortDescriptors)
 
         if applications != oldApplications {
-            applications = applications.filter { $0.path != "" }
+            applications = applications.filter { $0.applicationPath != "" }
             updateApplications()
             tableView.reloadData()
         }
+    }
+
+    @objc private func tableViewShowItemInFinderClicked(_ sender: NSMenuItem) {
+        guard tableView.clickedRow >= 0 else { return }
+        if applications.indices.contains(tableView.clickedRow) {
+            let application = applications[tableView.clickedRow]
+            if application.isValid {
+                NSWorkspace.shared.activateFileViewerSelecting([application.applicationPath.fileURL])
+            }
+        }
+    }
+
+    @objc private func tableViewDeleteItemClicked(_ sender: NSMenuItem) {
+        guard tableView.clickedRow >= 0 else { return }
+        applications.remove(at: tableView.clickedRow)
+        updateApplications()
     }
 
     func tableView(_ tableView: NSTableView, acceptDrop info: NSDraggingInfo, row: Int, dropOperation: NSTableView.DropOperation) -> Bool {
@@ -156,13 +211,13 @@ extension PreferencesApplicationsViewController: NSTableViewDataSource, NSTableV
         let application = applications[row]
 
         if tableColumn == tableView.tableColumns[0] {
-            image = !application.isInvalid ? NSImage(named: "NSStatusAvailable") : NSImage(named: "NSStatusUnavailable")
+            image = application.isValid ? NSImage(named: "NSStatusAvailable") : NSImage(named: "NSStatusUnavailable")
             cellIdentifier = CellIdentifiers.ApplicationStatusCell
         } else if tableColumn == tableView.tableColumns[1] {
             text = application.name
             cellIdentifier = CellIdentifiers.ApplicationNameCell
         } else if tableColumn == tableView.tableColumns[2] {
-            text = application.path
+            text = application.applicationPath
             cellIdentifier = CellIdentifiers.ApplicationPathCell
         } else if tableColumn == tableView.tableColumns[3] {
             cellIdentifier = CellIdentifiers.ApplicationEnableCell
@@ -199,8 +254,7 @@ extension PreferencesApplicationsViewController: NSTableViewDataSource, NSTableV
 
         if applications.indices.contains(row) {
             if sender.stringValue != "" || applications[row].name != "" {
-                applications[row].path = sender.stringValue
-                applications[row].isInvalid = !appIsValidAt(applications[row].path)
+                applications[row].updatePath(sender.stringValue)
             } else {
                 applications.remove(at: row)
             }
@@ -214,9 +268,8 @@ extension PreferencesApplicationsViewController: NSTableViewDataSource, NSTableV
         let row = tableView.row(for: sender)
 
         if applications.indices.contains(row) {
-            if sender.stringValue != "" || applications[row].path != "" {
-                applications[row].name = sender.stringValue
-                applications[row].isInvalid = !appIsValidAt(applications[row].path)
+            if sender.stringValue != "" || applications[row].applicationPath != "" {
+                applications[row].updateName(sender.stringValue)
             } else {
                 applications.remove(at: row)
             }
@@ -229,7 +282,7 @@ extension PreferencesApplicationsViewController: NSTableViewDataSource, NSTableV
     @IBAction func openContainingFolderButtonClicked(_ sender: NSButton) {
         let foldersToOpen = tableView.selectedRowIndexes.map { index -> Application? in
             if applications.indices.contains(index) { return applications[index] } else { return nil }
-        }.filter { $0 != nil }.map { URL(fileURLWithPath: $0!.path) }
+        }.filter { $0 != nil }.map { URL(fileURLWithPath: $0!.applicationPath) }
 
         NSWorkspace.shared.activateFileViewerSelecting(foldersToOpen)
     }
@@ -294,26 +347,10 @@ extension PreferencesApplicationsViewController: NSTableViewDataSource, NSTableV
         return false
     }
 
-    private func appIsValidAt(_ appPath: String?) -> Bool {
-        if let validPath = appPath {
-            let fileManager = FileManager.default
-            var isDir: ObjCBool = false
-            if fileManager.fileExists(atPath: validPath, isDirectory: &isDir) {
-                if isDir.boolValue {
-                    return true
-                }
-            }
-        }
-        return false
-    }
-
     private func addAppAt(_ appPath: String) -> Bool {
         let appName = String(appPath.split(separator: "/").last!).replacingOccurrences(of: ".app", with: "")
         if (!applications.contains { $0.name == appName }) {
             let newApplication = Application(name: appName, path: appPath)
-
-            newApplication.showInApplicationsWindow = appIsValidAt(appPath)
-            newApplication.isInvalid = !appIsValidAt(appPath)
 
             applications.append(newApplication)
             tableView.reloadData()
@@ -341,4 +378,5 @@ extension PreferencesApplicationsViewController: NSTableViewDataSource, NSTableV
     func numberOfRows(in tableView: NSTableView) -> Int {
         return applications.count
     }
+
 }

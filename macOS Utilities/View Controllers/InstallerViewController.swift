@@ -17,7 +17,6 @@ class InstallerViewController: NSViewController {
     @IBOutlet weak var tableView: NSTableView!
     @IBOutlet weak var installButton: NSButton!
 
-    private var versionNumbers: VersionNumbers = VersionNumbers()
     private var installers = [Installer]()
     private var cachedPopover: NSPopover? = nil
 
@@ -50,9 +49,9 @@ class InstallerViewController: NSViewController {
     }
 
     @objc func getInstallableVersions() {
-        let returnedInstallers = ItemRepository.shared.getInstallers()
+        let returnedInstallers = ItemRepository.shared.installers
         if(returnedInstallers != installers) {
-            installers = returnedInstallers.sorted(by: { $0.comparibleVersionNumber > $1.comparibleVersionNumber && $0.isFakeInstaller == false })
+            installers = returnedInstallers
             if(Thread.isMainThread == true) {
                 self.tableView.reloadData()
             } else {
@@ -138,7 +137,7 @@ class InstallerViewController: NSViewController {
     }
 
     @objc func openDiskUtility() {
-      //  ApplicationUtility.shared.open("Disk Utility")
+        NotificationCenter.default.post(name: ItemRepository.openApplication, object: "Disk Utility")
     }
 
     @IBAction @objc func cancelButtonClicked(_ sender: Any?) {
