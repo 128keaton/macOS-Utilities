@@ -39,6 +39,7 @@ class Utility: Application  {
     }
     
     static func getFromUtilitiesFolder() {
+        DDLogVerbose("Attempting to load utilities from '/Applications/Utilities'..")
         do {
             try FileManager.default.contentsOfDirectory(atPath: "/Applications/Utilities").forEach {
                 let utilityPath = $0

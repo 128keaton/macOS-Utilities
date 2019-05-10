@@ -30,6 +30,8 @@ class DiskSelectionViewController: NSViewController {
         self.diskProgressIndicator?.stopSpinning()
         updateBackButton()
         getSelectedInstaller()
+
+        NotificationCenter.default.addObserver(self, selector: #selector(handleCancelButtonFromLoadingPage(_:)), name: WizardViewController.cancelButtonNotification, object: nil)
     }
 
     override func viewDidAppear() {
@@ -46,7 +48,7 @@ class DiskSelectionViewController: NSViewController {
 
     // MARK: Button actions
     @IBAction @objc func openDiskUtility(_ sender: NSButton) {
-      //  ApplicationUtility.shared.open("Disk Utility")
+        NotificationCenter.default.post(name: ItemRepository.openApplication, object: "Disk Utility")
     }
 
     @IBAction @objc func backButtonClicked(_ sender: NSButton) {
@@ -54,6 +56,31 @@ class DiskSelectionViewController: NSViewController {
             PageController.shared.dismissPageController()
         } else {
             PageController.shared.goToPreviousPage()
+        }
+    }
+
+    @objc func handleCancelButtonFromLoadingPage(_ notification: Notification) {
+        if let cancelID = notification.object as? String,
+            cancelID == "cancelErase" {
+
+            var itemName = ""
+
+            if let validPartition = self.selectedPartition {
+                itemName = "partition \(validPartition.volumeName)"
+            } else if let validDisk = self.selectedDisk {
+                itemName = "disk \(validDisk.deviceIdentifier)"
+            }
+
+            if let currentTask = TaskHandler.lastTask,
+                currentTask.isRunning {
+                currentTask.terminate()
+            }
+
+            if showConfirmationAlert(question: "Do you want to continue?", text: "You have cancelled the erase on \"\(itemName)\". Do you want to continue with install?") {
+                self.showFinishPage(volumeName: itemName, preformatted: true)
+            } else {
+                PageController.shared.dismissPageController()
+            }
         }
     }
 
@@ -209,6 +236,10 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
         }
     }
 
+    private func showFinishPage(volumeName: String, preformatted: Bool = false) {
+        PageController.shared.goToFinishPage(finishedText: "Erase Completed", descriptionText: "Please use the \(preformatted ? volumeName : "disk \"\(volumeName)\"") when installing macOS.", otherButtonTitle: "Open Installer", otherButtonSelector: #selector(DiskSelectionViewController.openInstaller), otherButtonSelectorTarget: self)
+    }
+
     @IBAction func nextButtonClicked(_ sender: NSButton) {
         if let selectedInstaller = self.selectedInstaller {
             if let partition = self.selectedPartition {
@@ -216,24 +247,24 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
                 let userConfirmedErase = self.showConfirmationAlert(question: "Confirm Disk Destruction", text: "Are you sure you want to erase disk \(volumeName)? This will make all the data on \(volumeName) unrecoverable.")
 
                 if(userConfirmedErase) {
-                    PageController.shared.goToLoadingPage(loadingText: "Erasing Disk \"\(volumeName)\"")
+                    PageController.shared.goToLoadingPage(loadingText: "Erasing Disk \"\(volumeName)\"", cancelButtonIdentifier: "cancelErase")
                     sender.isEnabled = false
 
                     partition.erase(newName: nil, forInstaller: selectedInstaller) { (didFinish, newVolumeName) in
                         if(didFinish), let volumeName = newVolumeName {
-                            PageController.shared.goToFinishPage(finishedText: "Erase Completed", descriptionText: "Please use the disk \"\(volumeName)\" when installing macOS.", otherButtonTitle: "Open Installer", otherButtonSelector: #selector(DiskSelectionViewController.openInstaller), otherButtonSelectorTarget: self)
+                            self.showFinishPage(volumeName: volumeName)
                         }
                     }
 
                 }
             } else if let disk = self.selectedDisk, disk.canErase {
                 let deviceIdentifier = disk.deviceIdentifier
-                PageController.shared.goToLoadingPage(loadingText: "Erasing Disk \"\(deviceIdentifier)\"")
+                PageController.shared.goToLoadingPage(loadingText: "Erasing Disk \"\(deviceIdentifier)\"", cancelButtonIdentifier: "cancelErase")
                 sender.isEnabled = false
 
                 disk.erase(newName: nil, forInstaller: selectedInstaller) { (didFinish, newDiskName) in
                     if(didFinish), let diskName = newDiskName {
-                        PageController.shared.goToFinishPage(finishedText: "Erase Completed", descriptionText: "Please use the disk \"\(diskName)\" when installing macOS.", otherButtonTitle: "Open Installer", otherButtonSelector: #selector(DiskSelectionViewController.openInstaller), otherButtonSelectorTarget: self)
+                        self.showFinishPage(volumeName: diskName)
                     }
                 }
             }

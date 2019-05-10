@@ -207,6 +207,7 @@ class MenuHandler: NSObject {
     @objc private func addUtilityToMenu(_ notification: Notification? = nil) {
         if let validNotification = notification {
             if let utility = validNotification.object as? Utility {
+                removeUtilityPlaceholder()
                 let newItem = NSMenuItem(title: utility.name, action: #selector(MenuHandler.openApp(_:)), keyEquivalent: "")
                 newItem.target = self
                 utilitiesMenu?.addItem(newItem)
@@ -214,6 +215,11 @@ class MenuHandler: NSObject {
         }
     }
 
+    private func removeUtilityPlaceholder() {
+        if (utilitiesMenu?.items.first { $0.isEnabled == false }) != nil {
+            utilitiesMenu?.items.removeAll { $0.isEnabled == false }
+        }
+    }
 
     @objc private func addInstallerToMenu(_ notification: Notification? = nil) {
         if let infoMenu = self.infoMenu {

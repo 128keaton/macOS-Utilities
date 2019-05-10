@@ -366,7 +366,7 @@ class DiskUtility: NSObject, NSFilePresenter {
             containsInstaller == false {
             if isFake {
                 DDLogInfo("Starting demo erase on fake \(fileSystemItem)")
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
                     DDLogInfo("Finished demo erase on fake \(fileSystemItem)")
                     if itemType == .disk {
                         let itemDisk = (fileSystemItem as! Disk)

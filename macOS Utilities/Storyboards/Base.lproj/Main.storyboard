@@ -2097,16 +2097,33 @@ Gw
                             <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="UxP-mo-msP">
                                 <rect key="frame" x="334" y="209" width="32" height="32"/>
                             </progressIndicator>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="BgA-eO-KGF">
+                                <rect key="frame" x="308" y="13" width="84" height="32"/>
+                                <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="qRW-Dv-GXa">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="cancelButtonAction:" target="0F7-2a-s30" id="p6e-3O-HLf"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="BgA-eO-KGF" secondAttribute="trailing" constant="314" id="AO0-Vt-GKm"/>
                             <constraint firstItem="1gy-6B-3dN" firstAttribute="centerX" secondItem="UxP-mo-msP" secondAttribute="centerX" id="DSA-Te-QgF"/>
                             <constraint firstItem="UxP-mo-msP" firstAttribute="centerX" secondItem="8Kh-SZ-uy3" secondAttribute="centerX" id="SWt-yx-Cvj"/>
                             <constraint firstItem="1gy-6B-3dN" firstAttribute="leading" secondItem="8Kh-SZ-uy3" secondAttribute="leading" constant="20" symbolic="YES" id="hEf-Cm-qz2"/>
                             <constraint firstItem="UxP-mo-msP" firstAttribute="top" secondItem="1gy-6B-3dN" secondAttribute="bottom" constant="117" id="hQH-wS-1Bu"/>
                             <constraint firstItem="UxP-mo-msP" firstAttribute="centerY" secondItem="8Kh-SZ-uy3" secondAttribute="centerY" id="iJJ-sH-6Bt"/>
+                            <constraint firstAttribute="bottom" secondItem="BgA-eO-KGF" secondAttribute="bottom" constant="20" symbolic="YES" id="o3f-t6-3ab"/>
+                            <constraint firstItem="BgA-eO-KGF" firstAttribute="centerX" secondItem="8Kh-SZ-uy3" secondAttribute="centerX" id="tcm-1a-vtw"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="cancelButton" destination="BgA-eO-KGF" id="dk5-Rf-gi5"/>
                         <outlet property="loadingSpinner" destination="UxP-mo-msP" id="abM-kP-YCX"/>
                         <outlet property="titleTextField" destination="1gy-6B-3dN" id="s4E-5t-6fp"/>
                     </connections>
