@@ -24,6 +24,8 @@ class DiskSelectionViewController: NSViewController {
     private var selectedPartition: Partition? = nil
     private var selectedDisk: Disk? = nil
 
+    private var alreadyAppeared = false
+
     // MARK: Superclass overrides
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,12 +34,21 @@ class DiskSelectionViewController: NSViewController {
         getSelectedInstaller()
 
         NotificationCenter.default.addObserver(self, selector: #selector(handleCancelButtonFromLoadingPage(_:)), name: WizardViewController.cancelButtonNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(newDisksHandler), name: DiskUtility.newDisks, object: nil)
     }
 
     override func viewDidAppear() {
         super.viewDidAppear()
         updateBackButton()
         getSelectedInstaller()
+
+        if !alreadyAppeared {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.checkAndAskAboutFusionDrive()
+            }
+        }
+
+        alreadyAppeared = true
     }
 
     override func viewWillAppear() {
@@ -57,6 +68,15 @@ class DiskSelectionViewController: NSViewController {
         } else {
             PageController.shared.goToPreviousPage()
         }
+    }
+
+    @IBAction func refreshButtonClicked(_ sender: NSButton) {
+        diskUtility.getAllDisks()
+        self.checkAndAskAboutFusionDrive()
+    }
+
+    @objc func newDisksHandler() {
+        reloadTableView()
     }
 
     @objc func handleCancelButtonFromLoadingPage(_ notification: Notification) {
@@ -85,6 +105,43 @@ class DiskSelectionViewController: NSViewController {
     }
 
     // MARK: Functions
+    private func checkAndAskAboutFusionDrive() {
+        let disks = diskUtility.allDisksWithPartitions.filter { $0.itemType == .disk } as! [Disk]
+        let disksWithInfo = disks.filter { $0.info != nil }
+        let disksPotentiallyFusionParts = disksWithInfo.filter { $0.info!.potentialFusionDriveHalve }
+
+        if disksPotentiallyFusionParts.count <= 1 {
+            DDLogVerbose("The reported number of internal drives (\(disksPotentiallyFusionParts.count)) was less than two, therefore no Fusion Drive.")
+            //             return
+        }
+
+        if (disksWithInfo.filter { $0.info!.isSolidState == true }).count == 0 {
+            DDLogVerbose("There weren't any non-hard disk drives, therefore no Fusion Drive.")
+            //               return
+        }
+
+        // Check for an HDD
+        if (disksWithInfo.filter { $0.info!.isSolidState == false }).count == 0 {
+            DDLogVerbose("There weren't any non-solid state drives, therefore no Fusion Drive.")
+            //        return
+        }
+
+        self.showConfirmationAlert(question: "Repair Fusion Drive?", text: "A potential Fusion Drive has been detected, do you want to try and repair it?", window: self.view.window!) { (modalResponse) in
+            if modalResponse == .alertFirstButtonReturn {
+                PageController.shared.goToLoadingPage(loadingText: "Repairing..", cancelButtonIdentifier: "repairFusionDrive")
+                self.diskUtility.createFusionDrive { (message, didCreate) in
+                    if didCreate {
+                        DDLogVerbose(message)
+                        self.showFinishPage(volumeName: "Macintosh HD")
+                    } else {
+                        PageController.shared.goToPreviousPage()
+                        DDLogError(message)
+                    }
+                }
+            }
+        }
+    }
+
     private func reloadTableView() {
         if let _tableView = self.tableView {
             DispatchQueue.main.async {
@@ -180,6 +237,14 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
         if fileSystemItem.itemType == .disk {
             self.selectedPartition = nil
             self.selectedDisk = (fileSystemItem as! Disk)
+
+            if diskUtility.installableDisksWithPartitions.indices.contains(row + 1),
+                let nextItem = diskUtility.installableDisksWithPartitions[row + 1] as? Partition,
+                let selectedDiskPartition = self.selectedDisk?.installablePartition,
+                selectedDiskPartition == nextItem {
+                self.tableView(tableView, selectNextRow: row)
+                return false
+            }
         } else if fileSystemItem.itemType == .partition {
             self.selectedDisk = nil
             self.selectedPartition = (fileSystemItem as! Partition)

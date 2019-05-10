@@ -2035,6 +2035,16 @@ Gw
                                     <action selector="backButtonClicked:" target="LfO-6t-AFg" id="0To-Y7-Vmk"/>
                                 </connections>
                             </button>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="c1E-En-Ssu">
+                                <rect key="frame" x="414" y="10" width="87" height="32"/>
+                                <buttonCell key="cell" type="push" title="Refresh" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="NIe-He-cCp">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="refreshButtonClicked:" target="LfO-6t-AFg" id="PLc-St-6Ar"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="7Pu-fZ-f1v" firstAttribute="centerY" secondItem="ldr-Dg-UbB" secondAttribute="centerY" id="4e8-de-EZX"/>
@@ -2042,6 +2052,7 @@ Gw
                             <constraint firstItem="vCG-cE-ag0" firstAttribute="top" secondItem="XSQ-Qv-tY3" secondAttribute="bottom" constant="17" id="Bln-ne-a3L"/>
                             <constraint firstItem="vCG-cE-ag0" firstAttribute="leading" secondItem="7Pu-fZ-f1v" secondAttribute="leading" id="Bml-D0-z29"/>
                             <constraint firstItem="TfC-9t-RbZ" firstAttribute="top" secondItem="Hch-di-h4h" secondAttribute="top" id="P3r-Se-gJX"/>
+                            <constraint firstItem="c1E-En-Ssu" firstAttribute="baseline" secondItem="ldr-Dg-UbB" secondAttribute="baseline" id="PxD-m8-zSm"/>
                             <constraint firstItem="vCG-cE-ag0" firstAttribute="top" secondItem="u5Z-hR-kfr" secondAttribute="bottom" constant="24" id="Qjv-Gn-GsS"/>
                             <constraint firstItem="XSQ-Qv-tY3" firstAttribute="leading" secondItem="Hch-di-h4h" secondAttribute="trailing" constant="20" id="RhY-pQ-WZm"/>
                             <constraint firstItem="2LR-R3-eAq" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ldr-Dg-UbB" secondAttribute="trailing" constant="12" symbolic="YES" id="SgQ-Ns-ZWe"/>
@@ -2050,6 +2061,7 @@ Gw
                             <constraint firstItem="Hch-di-h4h" firstAttribute="leading" secondItem="TfC-9t-RbZ" secondAttribute="trailing" constant="8" symbolic="YES" id="a2H-Sp-zTD"/>
                             <constraint firstAttribute="trailing" secondItem="XSQ-Qv-tY3" secondAttribute="trailing" constant="20" symbolic="YES" id="ciD-Nt-yZ0"/>
                             <constraint firstItem="XSQ-Qv-tY3" firstAttribute="top" secondItem="aS1-QT-y2p" secondAttribute="top" constant="12" id="d2c-ub-0kP"/>
+                            <constraint firstItem="c1E-En-Ssu" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="7Pu-fZ-f1v" secondAttribute="trailing" constant="8" symbolic="YES" id="ewD-td-FEj"/>
                             <constraint firstItem="ldr-Dg-UbB" firstAttribute="baseline" secondItem="2LR-R3-eAq" secondAttribute="baseline" id="kwF-9w-pKj"/>
                             <constraint firstItem="TfC-9t-RbZ" firstAttribute="centerY" secondItem="Hch-di-h4h" secondAttribute="centerY" id="nCk-k8-Rzr"/>
                             <constraint firstAttribute="bottom" secondItem="ldr-Dg-UbB" secondAttribute="bottom" constant="17" id="oy8-94-Vhm"/>
@@ -2057,6 +2069,7 @@ Gw
                             <constraint firstItem="TfC-9t-RbZ" firstAttribute="leading" secondItem="u5Z-hR-kfr" secondAttribute="trailing" constant="10" id="p9O-sj-Bw0"/>
                             <constraint firstItem="ldr-Dg-UbB" firstAttribute="leading" secondItem="7Pu-fZ-f1v" secondAttribute="trailing" constant="196" id="pWQ-jG-J0C"/>
                             <constraint firstItem="u5Z-hR-kfr" firstAttribute="leading" secondItem="aS1-QT-y2p" secondAttribute="leading" constant="20" symbolic="YES" id="rvb-bx-yEh"/>
+                            <constraint firstItem="ldr-Dg-UbB" firstAttribute="leading" secondItem="c1E-En-Ssu" secondAttribute="trailing" constant="35" id="uKs-D5-qOw"/>
                             <constraint firstItem="vCG-cE-ag0" firstAttribute="trailing" secondItem="2LR-R3-eAq" secondAttribute="trailing" id="um8-cH-Uud"/>
                             <constraint firstItem="ldr-Dg-UbB" firstAttribute="top" secondItem="vCG-cE-ag0" secondAttribute="bottom" constant="20" symbolic="YES" id="upu-D2-bE4"/>
                             <constraint firstItem="u5Z-hR-kfr" firstAttribute="centerY" secondItem="TfC-9t-RbZ" secondAttribute="centerY" id="yxW-1G-E6i"/>

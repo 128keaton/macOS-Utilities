@@ -68,6 +68,8 @@
 		8ACB65DC21063E6F004B9C5A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8ACB65DA21063E6F004B9C5A /* Main.storyboard */; };
 		8AED6288393102F645E0F76B /* (null) in Frameworks */ = {isa = PBXBuildFile; };
 		8AFCCD8822654E4B0026CFE6 /* DiskUtilityOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AFCCD8722654E4B0026CFE6 /* DiskUtilityOutput.swift */; };
+		8AFE1B772285F8BC0084D92E /* DiskInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AFE1B762285F8BC0084D92E /* DiskInfo.swift */; };
+		8AFE1B792286079C0084D92E /* CoreStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AFE1B782286079C0084D92E /* CoreStorage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -142,6 +144,8 @@
 		8ACB65DE21063E6F004B9C5A /* macOS_Utilities.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macOS_Utilities.entitlements; sourceTree = "<group>"; };
 		8ADFB00E226A76D900B637E5 /* FileSystemItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSystemItem.swift; sourceTree = "<group>"; };
 		8AFCCD8722654E4B0026CFE6 /* DiskUtilityOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskUtilityOutput.swift; sourceTree = "<group>"; };
+		8AFE1B762285F8BC0084D92E /* DiskInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskInfo.swift; sourceTree = "<group>"; };
+		8AFE1B782286079C0084D92E /* CoreStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreStorage.swift; sourceTree = "<group>"; };
 		D04B207FCA2163F7FF4B0B6B /* Pods-macOS Utilities.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-macOS Utilities.debug.xcconfig"; path = "Pods/Target Support Files/Pods-macOS Utilities/Pods-macOS Utilities.debug.xcconfig"; sourceTree = "<group>"; };
 		D8A022574234BFBF730A7F5C /* Pods-macOS Utilities.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-macOS Utilities.release.xcconfig"; path = "Pods/Target Support Files/Pods-macOS Utilities/Pods-macOS Utilities.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -261,6 +265,8 @@
 			children = (
 				8AFCCD8722654E4B0026CFE6 /* DiskUtilityOutput.swift */,
 				8AA841CD226593A1009C5948 /* HDIUtilOutput.swift */,
+				8AFE1B762285F8BC0084D92E /* DiskInfo.swift */,
+				8AFE1B782286079C0084D92E /* CoreStorage.swift */,
 			);
 			path = "Output Parsers";
 			sourceTree = "<group>";
@@ -633,6 +639,7 @@
 				8A9D9A9C2263084600E4D36F /* KBTextFieldDialog.swift in Sources */,
 				8A584771226AAF67008E9DE8 /* Foundation-Extensions.swift in Sources */,
 				8A87B8B521A47D8C004496AA /* ModelYearDetermination.swift in Sources */,
+				8AFE1B792286079C0084D92E /* CoreStorage.swift in Sources */,
 				8A6C6479225EA1EA00CD6DCF /* PreferenceLoader.swift in Sources */,
 				8A6C6469225DB48200CD6DCF /* DeviceConfigurationCode.swift in Sources */,
 				8A6C6467225DB47200CD6DCF /* DeviceInfo.swift in Sources */,
@@ -645,6 +652,7 @@
 				8A6C6477225EA19200CD6DCF /* InstallerServerPreferences.swift in Sources */,
 				8A6C6459225D324900CD6DCF /* PageController.swift in Sources */,
 				8A6C6475225EA0CE00CD6DCF /* LoggingPreferences.swift in Sources */,
+				8AFE1B772285F8BC0084D92E /* DiskInfo.swift in Sources */,
 				8A6C6470225E9FA100CD6DCF /* PreferencesViewController.swift in Sources */,
 				8A6F28F0221B9F5C00FF9DB3 /* InstallerViewController.swift in Sources */,
 				8ABAE31D2252DA5800E537D3 /* Installer.swift in Sources */,

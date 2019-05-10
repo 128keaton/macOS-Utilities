@@ -24,6 +24,8 @@ class DeviceInformationViewController: NSViewController {
         didSet {
             if self.machineInformation != nil && MachineInformation.isConfigured {
                 self.updateView()
+            } else if !MachineInformation.isConfigured{
+                self.machineInformation = nil
             }
         }
     }
@@ -119,9 +121,10 @@ class DeviceInformationViewController: NSViewController {
         
         if MachineInformation.isConfigured {
             self.machineInformation = MachineInformation.shared
-        } else {
+        } else if let currentPreferences = PreferenceLoader.currentPreferences,
+            currentPreferences.useDeviceIdentifierAPI {
             MachineInformation.setup()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 self.machineInformation = MachineInformation.shared
             }
         }

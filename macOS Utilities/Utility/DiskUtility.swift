@@ -70,26 +70,25 @@ class DiskUtility: NSObject, NSFilePresenter {
                 do {
                     let diskUtilityOutput = try PropertyListDecoder().decode(DiskUtilOutput.self, from: plistData)
                     if let allDisks = diskUtilityOutput.allDisksAndPartitions {
-                        self.cachedDisks = allDisks
-                        self.cachedDisks.forEach {
-                            $0.partitions.forEach {
-                                $0.scanForInstaller()
-                            }
-                        }
-
-                        #if DEBUG
-                            self.addDisk(self.generateFakeDisk(withPartition: true))
-                            self.addDisk(self.generateFakeDisk(withPartition: false))
-                        #endif
-
-                        if let bootDisk = self.bootDisk {
-                            NotificationCenter.default.post(name: DiskUtility.bootDiskAvailable, object: bootDisk)
-                        }
+                        self.processDisks(allDisks)
                     }
                 } catch {
                     DDLogError("Error parsing diskutil output: \(error.localizedDescription)")
                 }
             }
+        }
+    }
+
+    private func processDisks(_ disks: [Disk]) {
+        self.cachedDisks = disks
+
+        #if DEBUG
+            self.addDisk(self.generateFakeDisk(withPartition: true))
+            self.addDisk(self.generateFakeDisk(withPartition: false))
+        #endif
+
+        if let bootDisk = self.bootDisk {
+            NotificationCenter.default.post(name: DiskUtility.bootDiskAvailable, object: bootDisk)
         }
     }
 
@@ -126,7 +125,7 @@ class DiskUtility: NSObject, NSFilePresenter {
 
         let fakeDiskIdent = "FakeDisk-\(String.random(5, numericOnly: true))"
         let fakeDiskSize = Units(gigabytes: 500).bytes
-        return Disk(rawContent: fakeDiskIdent, deviceIdentifier: fakeDiskIdent, regularPartitions: fakeDiskPartitions, apfsPartitions: nil, rawSize: fakeDiskSize, isFake: true)
+        return Disk(rawContent: fakeDiskIdent, deviceIdentifier: fakeDiskIdent, regularPartitions: fakeDiskPartitions, apfsPartitions: nil, rawSize: fakeDiskSize, isFake: true, info: nil)
     }
 
     public func updateDiskPartitions(_ disk: Disk, newPartitions: [Partition], isAPFSPartitions: Bool = false) -> Disk? {
@@ -248,13 +247,53 @@ class DiskUtility: NSObject, NSFilePresenter {
                     if let validOutput = hdiUtilOutput,
                         let mountableDiskImage = (validOutput.systemEntities.first { $0.isMountable }) {
 
-
-
                         self.diskModificationQueue.sync {
                             self.cachedDiskImages.append(mountableDiskImage)
                         }
                     }
                 }
+            }
+        }
+    }
+
+    public func createCoreStorageVolume(volumeUUID: String, completion: @escaping (String, Bool) -> ()) {
+        TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["cs", "createVolume", volumeUUID, "jhfs+", "Macintosh HD"]) { (output) in
+            if let csCreateVolumeOutput = output,
+                !csCreateVolumeOutput.contains("Error") {
+                completion(csCreateVolumeOutput, true)
+            } else if let csCreateVolumeErrorOutput = output {
+                completion("Could not create Core Storage Volume: \(csCreateVolumeErrorOutput)", false)
+            } else {
+                completion("Could not create Core Storage vOlume. No output from 'cs createVolume' command", false)
+            }
+        }
+
+    }
+
+    public func createFusionDrive(completion: @escaping (String, Bool) -> ()) {
+        guard let firstSSD = (self.cachedDisks.first { $0.info != nil && $0.info!.isSolidState && $0.info!.potentialFusionDriveHalve }) else { return completion("Could not find Solid State Drive", false) }
+        guard let firstHDD = (self.cachedDisks.first { $0.info != nil && !$0.info!.isSolidState && $0.info!.potentialFusionDriveHalve }) else { return completion("Could not find Hard Disk Drive", false) }
+
+        TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["cs", "create", "FusionDrive", firstSSD.deviceIdentifier, firstHDD.deviceIdentifier]) { (output) in
+            if let csCreateOutput = output,
+                csCreateOutput.contains("Discovered new Logical Volume Group") {
+                TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["cs", "list", "-plist"], returnEscaping: { (output) in
+                        if let csListOutput = output,
+                            let csListOutputRaw = csListOutput.data(using: .utf8) {
+                            do {
+                                self.createCoreStorageVolume(volumeUUID: try PropertyListDecoder().decode(CoreStorage.self, from: csListOutputRaw).volumeUUID, completion: { (message, didCreate) in
+                                        completion(message, didCreate)
+                                    })
+                            } catch {
+                                completion("Could not list Core Storage Volumes: \(error)", false)
+                            }
+                        }
+                    })
+
+            } else if let csCreateErrorOutput = output {
+                completion("Could not create Fusion Drive: \(csCreateErrorOutput)", false)
+            } else {
+                completion("Could not create Fusion Drive. No output from 'cs create' command", false)
             }
         }
     }
@@ -518,7 +557,23 @@ class DiskUtility: NSObject, NSFilePresenter {
         }
     }
 
-// Returns an NSDictionary with the contents of the system-entities
+    public func getDiskInfo(_ disk: Disk, completion: @escaping (DiskInfo?) -> ()) {
+        TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["info", "-plist", "/dev/\(disk.deviceIdentifier)"], timeout: 2.0) { (output) in
+            if let infoOutput = output,
+                let rawDiskInfo = infoOutput.data(using: .utf8) {
+                do {
+                    completion(try PropertyListDecoder().decode(DiskInfo.self, from: rawDiskInfo))
+                } catch {
+                    DDLogError("Could not get disk information for disk \(disk.deviceIdentifier): \(error)")
+                    completion(nil)
+                }
+            } else {
+                completion(nil)
+            }
+        }
+    }
+
+    // Returns an NSDictionary with the contents of the system-entities
     private func parseDiskUtilList(_ diskUtilOutput: String) -> NSDictionary {
         var errorDescription: String? = nil
         var validDictionary = NSDictionary()
@@ -604,6 +659,8 @@ class DiskUtility: NSObject, NSFilePresenter {
             if (volumePath.contains("Install macOS") || volumePath.contains("Install OS X")) {
                 let newInstaller = Installer(volumePath: volumePath, mountPoint: volumePath.fileURL, appName: installAppName)
                 self.cachedInstallers.append(newInstaller)
+            } else if !(self.cachedDisks.contains { $0.installablePartition?.volumeName == volumePath }) {
+                self.getAllDisks()
             }
         }
         print(notification.userInfo!)
@@ -621,6 +678,8 @@ class DiskUtility: NSObject, NSFilePresenter {
                 } else {
                     DDLogVerbose("Could not find installer to remove from name: \(installerName)")
                 }
+            } else if !(self.cachedDisks.contains { $0.installablePartition?.volumeName == volumePath }) {
+                self.getAllDisks()
             }
         }
         print(notification.userInfo!)
