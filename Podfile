@@ -9,4 +9,5 @@ target 'macOS Utilities' do
  pod 'CocoaAsyncSocket'
  pod "PaperTrailLumberjack/Swift", :git => "https://github.com/128keaton/PaperTrailLumberjack"
  pod 'BMExtendablePageController', :git => "https://github.com/Foboz/BMExtPageController"
+ pod "STPrivilegedTask"
 end
