@@ -317,9 +317,6 @@ class DiskUtility: NSObject, NSFilePresenter {
         var itemType: FileSystemItemType = .disk
         var itemIdentifier: String? = nil
 
-        // only needed on Sierra
-        var createAPFSContainer = false
-
         if type(of: fileSystemItem) == Partition.self {
             let itemPartition = (fileSystemItem as! Partition)
 
@@ -352,10 +349,7 @@ class DiskUtility: NSObject, NSFilePresenter {
         if let validInstaller = installer,
             validInstaller.version.needsAPFS {
             DDLogVerbose("Installing High Sierra or greater, must use APFS.")
-            if (ProcessInfo().operatingSystemVersion.minorVersion <= 12) {
-                DDLogVerbose("Host is using version \(ProcessInfo().operatingSystemVersionString) (Sierra or older). APFS container must be created")
-                createAPFSContainer = true
-            } else {
+            if (ProcessInfo().operatingSystemVersion.minorVersion > 12) {
                 format = "APFS"
             }
         }
@@ -384,38 +378,11 @@ class DiskUtility: NSObject, NSFilePresenter {
                         eraseOutput.contains("Finished erase") {
                         if itemType == .disk {
                             let itemDisk = (fileSystemItem as! Disk)
-
-                            if createAPFSContainer {
-                                self.convertDeviceToAPFS(item: itemDisk, completion: { (didCompleteSuccessfully, message) in
-                                    if didCompleteSuccessfully {
-                                        DDLogVerbose("Disk was converted to APFS!! GOOD!")
-                                        if let updatedDisk = self.addPartitionToDisk(itemDisk, mountPoint: "/Volumes/\(validItemName)", volumeName: validItemName) {
-                                            returnCompletion(eraseOutput.contains("Finished erase"), updatedDisk.installablePartition?.volumeName)
-                                        }
-                                    } else {
-                                        DDLogError(message)
-                                    }
-                                })
-                            } else {
-                                if let updatedDisk = self.addPartitionToDisk(itemDisk, mountPoint: "/Volumes/\(validItemName)", volumeName: validItemName) {
-                                    returnCompletion(eraseOutput.contains("Finished erase"), updatedDisk.installablePartition?.volumeName)
-                                }
+                            if let updatedDisk = self.addPartitionToDisk(itemDisk, mountPoint: "/Volumes/\(validItemName)", volumeName: validItemName) {
+                                returnCompletion(eraseOutput.contains("Finished erase"), updatedDisk.installablePartition?.volumeName)
                             }
                         } else if itemType == .partition {
-                            let itemPartition = (fileSystemItem as! Partition)
-
-                            if createAPFSContainer {
-                                self.convertDeviceToAPFS(item: itemPartition, completion: { (didCompleteSuccessfully, message) in
-                                    if didCompleteSuccessfully {
-                                        DDLogVerbose("Partition was converted to APFS!! GOOD!")
-                                        returnCompletion(eraseOutput.contains("Finished erase"), validItemName)
-                                    } else {
-                                        DDLogError(message)
-                                    }
-                                })
-                            } else {
-                                returnCompletion(eraseOutput.contains("Finished erase"), validItemName)
-                            }
+                            returnCompletion(eraseOutput.contains("Finished erase"), validItemName)
                         }
                     } else {
                         returnCompletion(false, nil)
