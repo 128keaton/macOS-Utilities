@@ -22,10 +22,8 @@ class DeviceInformationViewController: NSViewController {
 
     private var machineInformation: MachineInformation? = nil {
         didSet {
-            if self.machineInformation != nil && MachineInformation.isConfigured {
+            if self.machineInformation != nil {
                 self.updateView()
-            } else if !MachineInformation.isConfigured{
-                self.machineInformation = nil
             }
         }
     }
@@ -33,7 +31,7 @@ class DeviceInformationViewController: NSViewController {
     private var allGraphicsCards = [String]() {
         didSet {
             if self.allGraphicsCards.count > 0 {
-                  self.reloadTableView(self.graphicsCardTableView)
+                self.reloadTableView(self.graphicsCardTableView)
             }
         }
     }
@@ -72,15 +70,15 @@ class DeviceInformationViewController: NSViewController {
             skuHintLabel?.stringValue = machineInformation.displayName
             serialNumberLabel?.stringValue = "Serial Number: \(machineInformation.anonymisedSerialNumber)"
 
-            
-            if configurationImage?.image == NSImage(named: "NSAppleIcon"){
+
+            if configurationImage?.image == NSImage(named: "NSAppleIcon") {
                 if #available(OSX 10.14, *) {
                     configurationImage?.contentTintColor = .gray
                 } else {
-                   configurationImage?.image = NSImage(named: "NSAppleIcon")!.tint(color: .gray)
+                    configurationImage?.image = NSImage(named: "NSAppleIcon")!.tint(color: .gray)
                 }
             }
-            
+
             machineInformation.getCPU { (CPU) in
                 DispatchQueue.main.async {
                     self.otherSpecsLabel?.stringValue = "\(machineInformation.RAM) of RAM - \(CPU.condensed)"
@@ -118,7 +116,7 @@ class DeviceInformationViewController: NSViewController {
         super.viewDidLoad()
 
         objectsToModify = [configurationImage, skuHintLabel, otherSpecsLabel, serialNumberLabel]
-        
+
         if MachineInformation.isConfigured {
             self.machineInformation = MachineInformation.shared
         } else if let currentPreferences = PreferenceLoader.currentPreferences,
@@ -138,7 +136,7 @@ class DeviceInformationViewController: NSViewController {
         self.reloadTableView(disksAndPartitionsTableView)
         NotificationCenter.default.addObserver(self, selector: #selector(reloadTableView(_:)), name: DiskUtility.newDisks, object: nil)
     }
-    
+
     @IBAction func openSerialLink(_ sender: NSButton) {
         if let machineInformation = self.machineInformation {
             machineInformation.openWarrantyLink()

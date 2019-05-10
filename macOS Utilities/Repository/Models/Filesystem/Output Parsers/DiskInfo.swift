@@ -11,7 +11,7 @@ import Foundation
 struct DiskInfo: Codable, CustomStringConvertible {
     var isRemovable: Bool
     var isInternal: Bool
-    var registryEntryName: String
+    var virtualOrPhysical: String
 
     var solidState: Bool? = nil
 
@@ -20,11 +20,15 @@ struct DiskInfo: Codable, CustomStringConvertible {
     }
 
     var potentialFusionDriveHalve: Bool {
-        return !isRemovable && isInternal && !isContainer
+        return !isRemovable && isInternal && isPhysical
     }
 
-    var isContainer: Bool {
-        return registryEntryName != "AppleAPFSMedia"
+    var isPhysical: Bool {
+        return virtualOrPhysical == "Physical"
+    }
+    
+    var isVirtual: Bool {
+        return virtualOrPhysical == "Virtual"
     }
 
     var description: String {
@@ -35,7 +39,7 @@ struct DiskInfo: Codable, CustomStringConvertible {
         case isRemovable = "Removable"
         case isInternal = "Internal"
         case solidState = "SolidState"
-        case registryEntryName = "IORegistryEntryName"
+        case virtualOrPhysical = "VirtualOrPhysical"
     }
 }
 

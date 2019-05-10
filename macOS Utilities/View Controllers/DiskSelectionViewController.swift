@@ -111,6 +111,7 @@ class DiskSelectionViewController: NSViewController {
         let disksPotentiallyFusionParts = disksWithInfo.filter { $0.info!.potentialFusionDriveHalve }
 
         if disksPotentiallyFusionParts.count <= 1 {
+            DDLogVerbose("Internal Drives: \(disksPotentiallyFusionParts)")
             DDLogVerbose("The reported number of internal drives (\(disksPotentiallyFusionParts.count)) was less than two, therefore no Fusion Drive.")
             //             return
         }

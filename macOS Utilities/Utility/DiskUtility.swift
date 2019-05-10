@@ -285,7 +285,20 @@ class DiskUtility: NSObject, NSFilePresenter {
                                         completion(message, didCreate)
                                     })
                             } catch {
-                                completion("Could not list Core Storage Volumes: \(error)", false)
+                                DDLogVerbose("Parsing CoreStorage threw an error: \(error)")
+                                DDLogVerbose("Attempting to parse for an older version of macOS")
+                                do {
+                                    let coreStorageList = try PropertyListDecoder().decode(CoreStorageList.self, from: csListOutputRaw)
+                                    if let firstCoreStorageVolume = coreStorageList.volumes.first {
+                                        self.createCoreStorageVolume(volumeUUID: firstCoreStorageVolume.volumeUUID, completion: { (message, didCreate) in
+                                            completion(message, didCreate)
+                                        })
+                                    } else {
+                                        completion("Could not find Core Storage Volume in \(coreStorageList)", false)
+                                    }
+                                } catch {
+                                    completion("Could not list Core Storage Volumes: \(error)", false)
+                                }
                             }
                         }
                     })

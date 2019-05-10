@@ -70,6 +70,7 @@
 		8AFCCD8822654E4B0026CFE6 /* DiskUtilityOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AFCCD8722654E4B0026CFE6 /* DiskUtilityOutput.swift */; };
 		8AFE1B772285F8BC0084D92E /* DiskInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AFE1B762285F8BC0084D92E /* DiskInfo.swift */; };
 		8AFE1B792286079C0084D92E /* CoreStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AFE1B782286079C0084D92E /* CoreStorage.swift */; };
+		8AFE1B7B228620520084D92E /* CoreStorageListOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AFE1B7A228620520084D92E /* CoreStorageListOutput.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -146,6 +147,7 @@
 		8AFCCD8722654E4B0026CFE6 /* DiskUtilityOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskUtilityOutput.swift; sourceTree = "<group>"; };
 		8AFE1B762285F8BC0084D92E /* DiskInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskInfo.swift; sourceTree = "<group>"; };
 		8AFE1B782286079C0084D92E /* CoreStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreStorage.swift; sourceTree = "<group>"; };
+		8AFE1B7A228620520084D92E /* CoreStorageListOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreStorageListOutput.swift; sourceTree = "<group>"; };
 		D04B207FCA2163F7FF4B0B6B /* Pods-macOS Utilities.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-macOS Utilities.debug.xcconfig"; path = "Pods/Target Support Files/Pods-macOS Utilities/Pods-macOS Utilities.debug.xcconfig"; sourceTree = "<group>"; };
 		D8A022574234BFBF730A7F5C /* Pods-macOS Utilities.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-macOS Utilities.release.xcconfig"; path = "Pods/Target Support Files/Pods-macOS Utilities/Pods-macOS Utilities.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -267,6 +269,7 @@
 				8AA841CD226593A1009C5948 /* HDIUtilOutput.swift */,
 				8AFE1B762285F8BC0084D92E /* DiskInfo.swift */,
 				8AFE1B782286079C0084D92E /* CoreStorage.swift */,
+				8AFE1B7A228620520084D92E /* CoreStorageListOutput.swift */,
 			);
 			path = "Output Parsers";
 			sourceTree = "<group>";
@@ -630,6 +633,7 @@
 				8A6F8D8A2263D35B00077172 /* Partition.swift in Sources */,
 				8A9D9A962262F24A00E4D36F /* IPAddressChooserDialog.swift in Sources */,
 				8A6C6463225DB40A00CD6DCF /* DeviceIdentifier.swift in Sources */,
+				8AFE1B7B228620520084D92E /* CoreStorageListOutput.swift in Sources */,
 				8A9370CF2256B7F4002B3838 /* Disk.swift in Sources */,
 				8A6C646B225DB49000CD6DCF /* DeviceUniqueID.swift in Sources */,
 				8AA841D02265A509009C5948 /* Units.swift in Sources */,

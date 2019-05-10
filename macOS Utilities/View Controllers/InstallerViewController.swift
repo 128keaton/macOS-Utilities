@@ -143,7 +143,7 @@ class InstallerViewController: NSViewController {
         if let notification = notification,
             let installer = notification.object as? Installer,
             let userInfo = notification.userInfo as? [String: String] {
-            
+
             if userInfo["type"] == "remove" {
                 installers.removeAll { $0 == installer }
             } else if !installers.contains(installer) {
@@ -152,7 +152,7 @@ class InstallerViewController: NSViewController {
         } else {
             installers = ItemRepository.shared.installers
         }
-        
+
         installers.sort(by: { $0.version.sortNumber.doubleValue > $1.version.sortNumber.doubleValue && $0.isFakeInstaller == false })
         reloadInstallersTableView()
     }
