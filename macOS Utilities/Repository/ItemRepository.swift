@@ -17,7 +17,10 @@ class ItemRepository {
 
     static let newApplication = Notification.Name("NSNewApplication")
     static let newApplications = Notification.Name("NSNewApplications")
+
     static let newInstaller = Notification.Name("NSNewInstaller")
+    static let removeInstaller = Notification.Name("NSRemoveInstaller")
+
     static let newUtility = Notification.Name("NSNewUtility")
 
     static let refreshRepository = Notification.Name("NSRefreshRepository")
@@ -71,6 +74,10 @@ class ItemRepository {
         }
     }
 
+    public func has<T>(_ itemType: T.Type) -> Bool {
+        return (items.filter { type(of: $0) == itemType }).count > 0
+    }
+
     public var applications: [Application] {
         return (items.filter { type(of: $0) == Application.self } as! [Application])
     }
@@ -102,21 +109,32 @@ class ItemRepository {
 
     public func addFakeInstaller(canInstallOnMachine: Bool = false) {
         let fakeInstaller = Installer(isFakeInstaller: true, canInstallOnMachine: canInstallOnMachine)
+        NotificationCenter.default.post(name: ItemRepository.newInstaller, object: fakeInstaller, userInfo: ["type": "add"])
         fakeItems.append(fakeInstaller)
     }
 
     public func getInstallers() -> [Installer] {
-        print(items.filter { type(of: $0) == Installer.self })
         return (items.filter { type(of: $0) == Installer.self } as! [Installer]).sorted { $0.comparibleVersionNumber < $1.comparibleVersionNumber }
     }
+    
+    public func removeInstaller(_ installerName: String) {
+        DDLogVerbose("Looking for installer \(installerName) to remove from repository")
 
+        if let foundInstaller = (items.first { type(of: $0) == Installer.self && ($0 as! Installer).versionName == installerName }) as? Installer {
+            NotificationCenter.default.post(name: ItemRepository.removeInstaller, object: foundInstaller, userInfo: ["type": "remove"])
+            items.removeAll { type(of: $0) == Installer.self && ($0 as! Installer) == foundInstaller }
+        } else {
+            DDLogVerbose("Could not find installer to remove from name: \(installerName)")
+            DDLogVerbose("Current installers: \(self.getInstallers())")
+        }
+    }
 
     public func addToRepository(newInstaller: Installer) {
         if (self.items.contains { ($0 as? Installer) != nil && ($0 as! Installer).id == newInstaller.id } == false) {
             DDLogInfo("Adding installer '\(newInstaller.versionName)' to repo")
             self.items.append(newInstaller)
 
-            NotificationCenter.default.post(name: ItemRepository.newInstaller, object: newInstaller)
+            NotificationCenter.default.post(name: ItemRepository.newInstaller, object: newInstaller, userInfo: ["type": "add"])
         }
     }
 

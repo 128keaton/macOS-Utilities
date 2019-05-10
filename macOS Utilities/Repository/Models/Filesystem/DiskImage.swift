@@ -7,8 +7,9 @@
 //
 
 import Foundation
+import CocoaLumberjack
 
-struct DiskImage: FileSystemItem, Codable, Equatable {
+class DiskImage: FileSystemItem, Codable, Equatable {
     var contentHint: String?
     var devEntry: String?
     var potentiallyMountable: Bool? = false
@@ -31,13 +32,35 @@ struct DiskImage: FileSystemItem, Codable, Equatable {
         return self.mountPoint != nil
     }
 
+    var isMountable: Bool {
+        if let mountable = self.potentiallyMountable {
+            return mountable && self.mountPoint != nil
+        }
+
+        return false
+    }
+
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.contentHint = try container.decodeIfPresent(String.self, forKey: .contentHint)
+        self.devEntry = try container.decodeIfPresent(String.self, forKey: .devEntry)
+        self.potentiallyMountable = try container.decodeIfPresent(Bool.self, forKey: .potentiallyMountable)
+        self.unmappedContentHint = try container.decodeIfPresent(String.self, forKey: .unmappedContentHint)
+        self.mountPoint = try container.decodeIfPresent(String.self, forKey: .mountPoint)
+
+        if isMountable,
+            let validMountPoint = self.mountPoint,
+            validMountPoint.fileURL.filestatus != .isNot {
+            DDLogVerbose("Mounted at: \(validMountPoint)")
+        }
+    }
+
     var containsInstaller: Bool {
         if let mountPoint = self.mountPoint {
             return mountPoint.contains("Install macOS") || mountPoint.contains("Install OS X")
         }
         return false
     }
-
 
     func getMountPoint() -> String {
         return self.mountPoint ?? "Not mounted"
@@ -53,5 +76,9 @@ struct DiskImage: FileSystemItem, Codable, Equatable {
         case potentiallyMountable = "potentially-mountable"
         case unmappedContentHint = "unmapped-content-hint"
         case mountPoint = "mount-point"
+    }
+
+    static func == (lhs: DiskImage, rhs: DiskImage) -> Bool {
+        return lhs.id == rhs.id
     }
 }

@@ -15,34 +15,36 @@ class DiskUtility: NSObject, NSFilePresenter {
 
     public static let shared = DiskUtility()
     public static let bootDiskAvailable = Notification.Name("NSBootDiskAvailable")
+    public static let diskImageMounted = Notification.Name("NSDiskImageMounted")
+    public static let diskImageUnmounted = Notification.Name("NSDiskImageUnmounted")
 
     // MARK: Cached properties
     private var cachedDisks = [Disk]() {
-        didSet{
+        didSet {
             NotificationCenter.default.post(name: DiskUtility.newDisks, object: nil)
         }
     }
-    
-    private var cachedShares = [Share](){
-        didSet{
+
+    private var cachedShares = [Share]() {
+        didSet {
             NotificationCenter.default.post(name: DiskUtility.newShares, object: nil)
         }
     }
-    
+
     private var cachedDiskImages = [DiskImage]() {
-        didSet{
+        didSet {
             NotificationCenter.default.post(name: DiskUtility.newShares, object: nil)
         }
     }
-    
+
     private var cachedFakeDisks = [Disk]() {
-        didSet{
+        didSet {
             NotificationCenter.default.post(name: DiskUtility.newDisks, object: nil)
         }
     }
-    
+
     private var cachedInstallers = [Installer]()
-    
+
     // MARK: Notifications
     static let newDisks = Notification.Name("NSNewDisks")
     static let newDiskImages = Notification.Name("NSNewDiskImage")
@@ -57,6 +59,7 @@ class DiskUtility: NSObject, NSFilePresenter {
     private override init() {
         super.init()
         NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(didMount(_:)), name: NSWorkspace.didMountNotification, object: nil)
+        NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(didUnmount(_:)), name: NSWorkspace.didUnmountNotification, object: nil)
         DDLogInfo("Disk Utility Instance Created")
     }
 
@@ -239,12 +242,14 @@ class DiskUtility: NSObject, NSFilePresenter {
                     do {
                         hdiUtilOutput = try PropertyListDecoder().decode(HDIUtilOutput.self, from: plistData)
                     } catch {
-                        DDLogError("Could not mount disk image at :\(at)")
+                        DDLogError("Could not mount disk image at: \(at)")
                     }
 
                     if let validOutput = hdiUtilOutput,
-                        let mountableDiskImage = (validOutput.systemEntities.first { $0.potentiallyMountable == true }) {
-                        DDLogVerbose("New Disk Image: \(mountableDiskImage)")
+                        let mountableDiskImage = (validOutput.systemEntities.first { $0.isMountable }) {
+
+
+
                         self.diskModificationQueue.sync {
                             self.cachedDiskImages.append(mountableDiskImage)
                         }
@@ -256,84 +261,113 @@ class DiskUtility: NSObject, NSFilePresenter {
 
     private func removeMountPoint(_ path: String, didComplete: @escaping (Bool) -> ()) {
         TaskHandler.createTask(command: "/bin/rm", arguments: ["-rf", path], printStandardOutput: true, returnEscaping: { (taskOutput) in
-            if let rmOutput = taskOutput {
-                DDLogError("Error removing \(path): \(rmOutput)")
-                didComplete(false)
+                if let rmOutput = taskOutput {
+                    DDLogError("Error removing \(path): \(rmOutput)")
+                    didComplete(false)
+                } else {
+                    DDLogInfo("Successfully removed \(path)")
+                    didComplete(true)
+                }
+            })
+    }
+
+    public func erase(_ fileSystemItem: FileSystemItem, newName: String? = nil, forInstaller installer: Installer? = nil, returnCompletion: @escaping (Bool, String?) -> ()) {
+        var diskUtilCommand: String? = nil
+        var format = "JHFS+"
+        var isFake = false
+        var containsInstaller = false
+        var name: String? = nil
+        var itemType: FileSystemItemType = .disk
+        var itemIdentifier: String? = nil
+
+        // only needed on Sierra
+        var createAPFSContainer = false
+
+        if type(of: fileSystemItem) == Partition.self {
+            let itemPartition = (fileSystemItem as! Partition)
+
+            diskUtilCommand = "eraseVolume"
+            itemType = itemPartition.itemType
+            containsInstaller = itemPartition.containsInstaller
+            name = itemPartition.volumeName
+            itemIdentifier = itemPartition.volumeName
+
+            if itemPartition.isFake {
+                isFake = true
+            }
+        } else if type(of: fileSystemItem) == Disk.self {
+            let itemDisk = (fileSystemItem as! Disk)
+
+            diskUtilCommand = "eraseDisk"
+            itemType = itemDisk.itemType
+            name = itemDisk.volumeName
+            itemIdentifier = itemDisk.deviceIdentifier
+
+            if itemDisk.isFake {
+                isFake = true
+            }
+        }
+
+        if let validName = newName {
+            name = validName
+        }
+
+        if let validInstaller = installer,
+            validInstaller.versionNumber >= 10.13 {
+            DDLogVerbose("Installing High Sierra or greater, must use APFS.")
+            if (ProcessInfo().operatingSystemVersion.minorVersion <= 12) {
+                DDLogVerbose("Host is using version \(ProcessInfo().operatingSystemVersionString) (Sierra or older). APFS container must be created")
+                createAPFSContainer = true
             } else {
-                DDLogInfo("Successfully removed \(path)")
-                didComplete(true)
-            }
-        })
-    }
-
-    public func erase(_ partition: Partition, newName: String? = nil, forInstaller: Installer? = nil, returnCompletion: @escaping (Bool, String?) -> ()) {
-        var format = "APFS"
-        var partitionName = "Macintosh HD"
-
-        if let newPartitionName = newName {
-            partitionName = newPartitionName
-        }
-
-        if let installer = forInstaller {
-            if installer.versionNumber <= 10.13 {
-                format = "JHFS+"
+                format = "APFS"
             }
         }
 
-        if partition.isFake {
-            DDLogInfo("Starting demo erase on fake partition: \(partition)")
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                DDLogInfo("Finished demo erase on fake partition: \(partition)")
-                returnCompletion(true, partition.volumeName)
-            }
-        } else if partition.containsInstaller == false {
-            TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["eraseVolume", format, partitionName, partition.volumeName]) { (taskOutput) in
-                if let eraseOutput = taskOutput {
-                    returnCompletion(eraseOutput.contains("Finished erase"), partitionName)
-                } else {
-                    returnCompletion(false, nil)
-                }
-            }
-        } else {
-            DDLogError("Cannot erase a partition containing an installer")
-            returnCompletion(false, nil)
-        }
-    }
-
-    public func erase(_ disk: Disk, newName: String? = nil, forInstaller: Installer? = nil, returnCompletion: @escaping (Bool, String?) -> ()) {
-        var format = "APFS"
-        var diskName = "Macintosh HD"
-
-        if let newDiskName = newName {
-            diskName = newDiskName
-        }
-
-        if let installer = forInstaller {
-            if installer.versionNumber <= 10.13 {
-                format = "JHFS+"
-            }
-        }
-
-        if disk.isFake {
-            DDLogInfo("Starting demo erase on fake disk: \(disk)")
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                DDLogInfo("Finished demo erase on fake disk: \(disk)")
-                var fakeDiskPartitions = [Partition]()
-                fakeDiskPartitions.append(Partition(content: "FakePartition-\(String.random(5, numericOnly: true))", deviceIdentifier: "FakePartition-\(String.random(5, numericOnly: true))", diskUUID: String.random(12), rawSize: Units(gigabytes: 500).bytes, rawVolumeName: "FakePartition-\(String.random(5, numericOnly: true))", volumeUUID: String.random(12), mountPoint: "/Volumes/FakePartition-\(String.random(5, numericOnly: true))", isFake: true))
-                if let updatedDisk = self.updateDiskPartitions(disk, newPartitions: fakeDiskPartitions) {
-                    returnCompletion(true, updatedDisk.volumeName)
-                }
-            }
-        } else {
-            TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["eraseDisk", format, diskName, disk.deviceIdentifier]) { (taskOutput) in
-                if let eraseOutput = taskOutput {
-                    // MARK: beta..might break
-                    // TODO: fix issues that arise with this..since I'm S M R T smart
-                    if let updatedDisk = self.addPartitionToDisk(disk, mountPoint: "/Volumes/\(diskName)", volumeName: diskName) {
-                        returnCompletion(eraseOutput.contains("Finished erase"), updatedDisk.installablePartition?.volumeName)
+        if let validDiskUtilCommand = diskUtilCommand,
+            let validItemName = name,
+            let validItemIdentifier = itemIdentifier,
+            containsInstaller == false {
+            if isFake {
+                DDLogInfo("Starting demo erase on fake \(fileSystemItem)")
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    DDLogInfo("Finished demo erase on fake \(fileSystemItem)")
+                    if itemType == .disk {
+                        let itemDisk = (fileSystemItem as! Disk)
+                        var fakeDiskPartitions = [Partition]()
+                        fakeDiskPartitions.append(Partition(content: "FakePartition-\(String.random(5, numericOnly: true))", deviceIdentifier: "FakePartition-\(String.random(5, numericOnly: true))", diskUUID: String.random(12), rawSize: Units(gigabytes: 500).bytes, rawVolumeName: "FakePartition-\(String.random(5, numericOnly: true))", volumeUUID: String.random(12), mountPoint: "/Volumes/FakePartition-\(String.random(5, numericOnly: true))", isFake: true))
+                        if let updatedDisk = self.updateDiskPartitions(itemDisk, newPartitions: fakeDiskPartitions) {
+                            returnCompletion(true, updatedDisk.volumeName)
+                        }
                     }
-                } else {
-                    returnCompletion(false, nil)
+                    returnCompletion(true, validItemName)
+                }
+            } else {
+                TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: [validDiskUtilCommand, format, validItemName, validItemIdentifier]) { (taskOutput) in
+                    if let eraseOutput = taskOutput,
+                        eraseOutput.contains("Finished erase") {
+                        if itemType == .disk {
+                            if createAPFSContainer {
+                                TaskHandler.createTask(command: "/sbin/apfs_hfs_convert", arguments: ["-x", "-g", "--efi", "/usr/standalone/i386/apfs.efi", validItemIdentifier], returnEscaping: { (convertTaskOutput) in
+                                        if let convertOutput = convertTaskOutput {
+                                            DDLogVerbose("Conversion to APFS finished. \(convertOutput)")
+                                            if convertOutput.contains("Conversion failed!") || convertOutput.contains("Cannot open device") {
+                                                returnCompletion(false, "Could not convert \(validItemIdentifier) to apfs: \(convertOutput)")
+                                            }
+                                        } else {
+                                            returnCompletion(false, "Could not convert \(validItemIdentifier) to apfs! Command returned no output")
+                                        } })
+                            }
+                            
+                            let itemDisk = (fileSystemItem as! Disk)
+                            if let updatedDisk = self.addPartitionToDisk(itemDisk, mountPoint: "/Volumes/\(validItemName)", volumeName: validItemName) {
+                                returnCompletion(eraseOutput.contains("Finished erase"), updatedDisk.installablePartition?.volumeName)
+                            }
+                        } else {
+                            returnCompletion(eraseOutput.contains("Finished erase"), validItemName)
+                        }
+                    } else {
+                        returnCompletion(false, nil)
+                    }
                 }
             }
         }
@@ -405,28 +439,29 @@ class DiskUtility: NSObject, NSFilePresenter {
         if(allSharesAndInstallersUnmounted) {
             didComplete(true)
         }
-        
+
         DDLogVerbose("Ejecting disk images: \(self.cachedDiskImages)")
         self.cachedDiskImages.forEach {
             let currentDisk = $0
             DDLogVerbose("Ejecting disk image: \(currentDisk)")
             if let deviceIdentifier = currentDisk.devEntry {
                 TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["eject", deviceIdentifier], returnEscaping: { (taskOutput) in
-                    if let diskUtilOutput = taskOutput {
-                        if diskUtilOutput.contains("ejected") {
-                            self.diskModificationQueue.sync {
-                                DDLogVerbose("Ejected disk image: \(currentDisk)")
-                                self.cachedDiskImages.removeAll { $0 == currentDisk }
-                                self.cachedDiskImages.removeAll { $0.isMounted == false }
-                                if self.cachedDiskImages.count == 0 {
-                                    didComplete(true)
+                        if let diskUtilOutput = taskOutput {
+                            if diskUtilOutput.contains("ejected") {
+                                self.diskModificationQueue.sync {
+                                    DDLogVerbose("Ejected disk image: \(currentDisk)")
+
+                                    self.cachedDiskImages.removeAll { $0 == currentDisk }
+                                    self.cachedDiskImages.removeAll { $0.isMounted == false }
+                                    if self.cachedDiskImages.count == 0 {
+                                        didComplete(true)
+                                    }
                                 }
+                            } else {
+                                DDLogError("Unable to eject disk image: \(deviceIdentifier) \(diskUtilOutput)")
                             }
-                        } else {
-                            DDLogError("Unable to eject disk image: \(deviceIdentifier) \(diskUtilOutput)")
                         }
-                    }
-                })
+                    })
             }
         }
         if self.cachedDiskImages.count == 0 {
@@ -443,13 +478,13 @@ class DiskUtility: NSObject, NSFilePresenter {
             let currentShare = $0
             if let mountPoint = currentShare.mountPoint {
                 TaskHandler.createTask(command: "/sbin/umount", arguments: [mountPoint], returnEscaping: { (taskOutput) in
-                    self.diskModificationQueue.sync {
-                        self.cachedShares.removeAll { $0 == currentShare }
-                        if self.cachedShares.count == 0 {
-                            didComplete(true)
+                        self.diskModificationQueue.sync {
+                            self.cachedShares.removeAll { $0 == currentShare }
+                            if self.cachedShares.count == 0 {
+                                didComplete(true)
+                            }
                         }
-                    }
-                })
+                    })
             }
         }
     }
@@ -552,5 +587,16 @@ class DiskUtility: NSObject, NSFilePresenter {
                 self.cachedInstallers.append(newInstaller)
             }
         }
+        print(notification.userInfo!)
+    }
+
+    @objc func didUnmount(_ notification: NSNotification) {
+        if let volumePath = notification.userInfo!["NSDevicePath"] as? String,
+            let installAppName = notification.userInfo!["NSWorkspaceVolumeLocalizedNameKey"] as? String {
+            if (volumePath.contains("Install macOS") || volumePath.contains("Install OS X")) {
+                ItemRepository.shared.removeInstaller(installAppName.replacingOccurrences(of: "Install ", with: ""))
+            }
+        }
+        print(notification.userInfo!)
     }
 }
