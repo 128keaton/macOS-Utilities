@@ -257,9 +257,10 @@ class DiskUtility: NSObject, NSFilePresenter {
     }
 
     public func createCoreStorageVolume(volumeUUID: String, completion: @escaping (String, Bool) -> ()) {
-        TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["cs", "createVolume", volumeUUID, "jhfs+", "Macintosh HD"]) { (output) in
+        TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["cs", "createVolume", volumeUUID, "jhfs+", "Macintosh HD", "100%"]) { (output) in
             if let csCreateVolumeOutput = output,
-                !csCreateVolumeOutput.contains("Error") {
+                !csCreateVolumeOutput.contains("Error"),
+                csCreateVolumeOutput.contains("Finished CoreStorage operation"){
                 completion(csCreateVolumeOutput, true)
             } else if let csCreateVolumeErrorOutput = output {
                 completion("Could not create Core Storage Volume: \(csCreateVolumeErrorOutput)", false)
@@ -270,39 +271,64 @@ class DiskUtility: NSObject, NSFilePresenter {
 
     }
 
+    public func listCoreStorageContainers(completion: @escaping ([CoreStorage]?) -> ()){
+        TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["cs", "list", "-plist"], returnEscaping: { (output) in
+            if let csListOutput = output,
+                let csListOutputRaw = csListOutput.data(using: .utf8) {
+                do {
+                    completion([try PropertyListDecoder().decode(CoreStorage.self, from: csListOutputRaw)])
+                } catch {
+                    DDLogVerbose("Parsing CoreStorage threw an error: \(error)")
+                    DDLogVerbose("Attempting to parse for an older version of macOS")
+                    do {
+                        let coreStorageList = try PropertyListDecoder().decode(CoreStorageList.self, from: csListOutputRaw)
+                        completion(coreStorageList.volumes)
+                    } catch {
+                        DDLogError("Could not list Core Storage Volumes: \(error)")
+                    }
+                }
+            }
+        })
+    }
+    
     public func createFusionDrive(completion: @escaping (String, Bool) -> ()) {
         guard let firstSSD = (self.cachedDisks.first { $0.info != nil && $0.info!.isSolidState && $0.info!.potentialFusionDriveHalve }) else { return completion("Could not find Solid State Drive", false) }
         guard let firstHDD = (self.cachedDisks.first { $0.info != nil && !$0.info!.isSolidState && $0.info!.potentialFusionDriveHalve }) else { return completion("Could not find Hard Disk Drive", false) }
 
+        var waitToDeleteSemaphore: DispatchSemaphore? = nil
+        
+        listCoreStorageContainers(completion: { (potentialCoreStorageContainers) in
+            if let coreStorageVolumes = potentialCoreStorageContainers {
+                waitToDeleteSemaphore = DispatchSemaphore(value: 1)
+                coreStorageVolumes.forEach {
+                    TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["cs", "delete", $0.containerUUID]) { (output) in
+                        DDLogVerbose("Deleted container \(output ?? "")")
+                    }
+                }
+                waitToDeleteSemaphore?.signal()
+            }
+        })
+        
+        if let semaphore = waitToDeleteSemaphore{
+            semaphore.wait()
+        }
+        
         TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["cs", "create", "FusionDrive", firstSSD.deviceIdentifier, firstHDD.deviceIdentifier]) { (output) in
             if let csCreateOutput = output,
                 csCreateOutput.contains("Discovered new Logical Volume Group") {
-                TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["cs", "list", "-plist"], returnEscaping: { (output) in
-                        if let csListOutput = output,
-                            let csListOutputRaw = csListOutput.data(using: .utf8) {
-                            do {
-                                self.createCoreStorageVolume(volumeUUID: try PropertyListDecoder().decode(CoreStorage.self, from: csListOutputRaw).volumeUUID, completion: { (message, didCreate) in
-                                        completion(message, didCreate)
-                                    })
-                            } catch {
-                                DDLogVerbose("Parsing CoreStorage threw an error: \(error)")
-                                DDLogVerbose("Attempting to parse for an older version of macOS")
-                                do {
-                                    let coreStorageList = try PropertyListDecoder().decode(CoreStorageList.self, from: csListOutputRaw)
-                                    if let firstCoreStorageVolume = coreStorageList.volumes.first {
-                                        self.createCoreStorageVolume(volumeUUID: firstCoreStorageVolume.volumeUUID, completion: { (message, didCreate) in
-                                            completion(message, didCreate)
-                                        })
-                                    } else {
-                                        completion("Could not find Core Storage Volume in \(coreStorageList)", false)
-                                    }
-                                } catch {
-                                    completion("Could not list Core Storage Volumes: \(error)", false)
-                                }
-                            }
+                self.listCoreStorageContainers(completion: { (potentialCoreStorageContainers) in
+                    if let coreStorageContainers = potentialCoreStorageContainers{
+                        if let coreStorageContainer = coreStorageContainers.first {
+                            self.createCoreStorageVolume(volumeUUID: coreStorageContainer.containerUUID, completion: { (message, didCreate) in
+                                completion(message, didCreate)
+                            })
+                        } else {
+                            completion("Could not find Core Storage Container in \(coreStorageContainers)", false)
                         }
-                    })
-
+                    }else{
+                        completion("No Core Storage Volumes were returned", false)
+                    }
+                })
             } else if let csCreateErrorOutput = output {
                 completion("Could not create Fusion Drive: \(csCreateErrorOutput)", false)
             } else {

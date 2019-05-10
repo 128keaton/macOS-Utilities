@@ -27,9 +27,7 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                                 <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="fadeInOutOnNewData" value="NO"/>
                                     <userDefinedRuntimeAttribute type="boolean" keyPath="shouldHideWhenRunning" value="YES"/>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="autoFade" value="NO"/>
                                 </userDefinedRuntimeAttributes>
                             </textField>
                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="cH7-hL-2R4" customClass="NSHidingImageView" customModule="macOS_Utilities" customModuleProvider="target">
@@ -313,9 +311,7 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                                 <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="fadeInOutOnNewData" value="NO"/>
                                     <userDefinedRuntimeAttribute type="boolean" keyPath="shouldHideWhenRunning" value="YES"/>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="autoFade" value="NO"/>
                                 </userDefinedRuntimeAttributes>
                             </textField>
                             <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="ijm-BA-dB8">
@@ -330,8 +326,6 @@
                                 </textFieldCell>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="boolean" keyPath="shouldHideWhenRunning" value="YES"/>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="fadeInOutOnNewData" value="NO"/>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="autoFade" value="NO"/>
                                 </userDefinedRuntimeAttributes>
                             </textField>
                             <button verticalHuggingPriority="750" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="JD7-CJ-Erg">

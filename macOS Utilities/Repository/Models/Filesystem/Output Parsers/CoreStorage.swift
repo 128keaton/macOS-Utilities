@@ -10,13 +10,13 @@ import Foundation
 
 class CoreStorage: Codable, CustomStringConvertible{
     var role: String
-    var volumeUUID: String
+    var containerUUID: String
     var description: String {
-        return "CoreStorage: \(role) - \(volumeUUID)"
+        return "CoreStorage: \(role) - \(containerUUID)"
     }
     
     private enum CodingKeys: String, CodingKey {
         case role = "CoreStorageRole"
-        case volumeUUID = "CoreStorageUUID"
+        case containerUUID = "CoreStorageUUID"
     }
 }
