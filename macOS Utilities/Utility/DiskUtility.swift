@@ -271,6 +271,43 @@ class DiskUtility: NSObject, NSFilePresenter {
             })
     }
 
+    private func convertDeviceToAPFS(item: FileSystemItem, completion: @escaping (Bool, String) -> ()) {
+        var deviceID: String? = nil
+
+        if item.itemType == .disk {
+            if let installablePartition = (item as! Disk).installablePartition {
+                deviceID = installablePartition.deviceIdentifier
+            } else {
+                completion(false, "Cannot perform on disk with no valid, installable partition")
+            }
+        } else if item.itemType == .partition {
+            deviceID = (item as! Partition).deviceIdentifier
+        }
+
+        guard let validDeviceID = deviceID else { return completion(false, "Could not get device ID") }
+
+        TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["umount", "force", validDeviceID], returnEscaping: { (unmountTaskOutput) in
+                if let unmountOutput = unmountTaskOutput,
+                    !unmountOutput.contains("failed") {
+                    TaskHandler.createPrivilegedTask(command: "/sbin/apfs_hfs_convert", arguments: ["-x", "-g", "--efi", "/usr/standalone/i386/apfs.efi", validDeviceID], returnEscaping: { (didComplete, convertTaskOutput) in
+                            if let convertOutput = convertTaskOutput,
+                                didComplete {
+                                DDLogVerbose("Conversion to APFS finished. \(convertOutput)")
+                                if convertOutput.contains("Conversion failed!") || convertOutput.contains("Cannot open device") {
+                                    completion(false, "Could not convert \(validDeviceID) to apfs: \(convertOutput)")
+                                } else {
+                                    completion(true, "Converted to APFS: \(convertOutput)")
+                                }
+                            } else {
+                                completion(didComplete, "Could not convert \(validDeviceID) to apfs! Command returned no output")
+                            }
+                        })
+                } else {
+                    completion(false, "Unmount disk returned no output")
+                }
+            })
+    }
+
     public func erase(_ fileSystemItem: FileSystemItem, newName: String? = nil, forInstaller installer: Installer? = nil, returnCompletion: @escaping (Bool, String?) -> ()) {
         var diskUtilCommand: String? = nil
         var format = "JHFS+"
@@ -346,24 +383,39 @@ class DiskUtility: NSObject, NSFilePresenter {
                     if let eraseOutput = taskOutput,
                         eraseOutput.contains("Finished erase") {
                         if itemType == .disk {
-                            if createAPFSContainer {
-                                TaskHandler.createTask(command: "/sbin/apfs_hfs_convert", arguments: ["-x", "-g", "--efi", "/usr/standalone/i386/apfs.efi", validItemIdentifier], returnEscaping: { (convertTaskOutput) in
-                                        if let convertOutput = convertTaskOutput {
-                                            DDLogVerbose("Conversion to APFS finished. \(convertOutput)")
-                                            if convertOutput.contains("Conversion failed!") || convertOutput.contains("Cannot open device") {
-                                                returnCompletion(false, "Could not convert \(validItemIdentifier) to apfs: \(convertOutput)")
-                                            }
-                                        } else {
-                                            returnCompletion(false, "Could not convert \(validItemIdentifier) to apfs! Command returned no output")
-                                        } })
-                            }
-
                             let itemDisk = (fileSystemItem as! Disk)
-                            if let updatedDisk = self.addPartitionToDisk(itemDisk, mountPoint: "/Volumes/\(validItemName)", volumeName: validItemName) {
-                                returnCompletion(eraseOutput.contains("Finished erase"), updatedDisk.installablePartition?.volumeName)
+
+                            if createAPFSContainer {
+                                self.convertDeviceToAPFS(item: itemDisk, completion: { (didCompleteSuccessfully, message) in
+                                    if didCompleteSuccessfully {
+                                        DDLogVerbose("Disk was converted to APFS!! GOOD!")
+                                        if let updatedDisk = self.addPartitionToDisk(itemDisk, mountPoint: "/Volumes/\(validItemName)", volumeName: validItemName) {
+                                            returnCompletion(eraseOutput.contains("Finished erase"), updatedDisk.installablePartition?.volumeName)
+                                        }
+                                    } else {
+                                        DDLogError(message)
+                                    }
+                                })
+                            } else {
+                                if let updatedDisk = self.addPartitionToDisk(itemDisk, mountPoint: "/Volumes/\(validItemName)", volumeName: validItemName) {
+                                    returnCompletion(eraseOutput.contains("Finished erase"), updatedDisk.installablePartition?.volumeName)
+                                }
                             }
-                        } else {
-                            returnCompletion(eraseOutput.contains("Finished erase"), validItemName)
+                        } else if itemType == .partition {
+                            let itemPartition = (fileSystemItem as! Partition)
+
+                            if createAPFSContainer {
+                                self.convertDeviceToAPFS(item: itemPartition, completion: { (didCompleteSuccessfully, message) in
+                                    if didCompleteSuccessfully {
+                                        DDLogVerbose("Partition was converted to APFS!! GOOD!")
+                                        returnCompletion(eraseOutput.contains("Finished erase"), validItemName)
+                                    } else {
+                                        DDLogError(message)
+                                    }
+                                })
+                            } else {
+                                returnCompletion(eraseOutput.contains("Finished erase"), validItemName)
+                            }
                         }
                     } else {
                         returnCompletion(false, nil)

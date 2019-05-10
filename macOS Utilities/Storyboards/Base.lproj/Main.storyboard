@@ -43,13 +43,13 @@
                                     <userDefinedRuntimeAttribute type="boolean" keyPath="shouldHideWhenRunning" value="YES"/>
                                 </userDefinedRuntimeAttributes>
                             </imageView>
-                            <scrollView autohidesScrollers="YES" horizontalLineScroll="24" horizontalPageScroll="10" verticalLineScroll="24" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7VL-X2-0fp">
+                            <scrollView autohidesScrollers="YES" horizontalLineScroll="26" horizontalPageScroll="10" verticalLineScroll="26" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7VL-X2-0fp">
                                 <rect key="frame" x="469" y="20" width="268" height="234"/>
                                 <clipView key="contentView" drawsBackground="NO" id="54S-iA-Rtk">
                                     <rect key="frame" x="1" y="0.0" width="266" height="233"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="22" rowSizeStyle="systemDefault" headerView="Bnv-WL-gyM" viewBased="YES" id="ga3-4z-OOe">
+                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="24" rowSizeStyle="systemDefault" headerView="Bnv-WL-gyM" viewBased="YES" id="ga3-4z-OOe">
                                             <rect key="frame" x="0.0" y="0.0" width="266" height="208"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
@@ -144,13 +144,13 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableHeaderView>
                             </scrollView>
-                            <scrollView autohidesScrollers="YES" horizontalLineScroll="24" horizontalPageScroll="10" verticalLineScroll="24" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="79m-2E-xZY">
+                            <scrollView autohidesScrollers="YES" horizontalLineScroll="26" horizontalPageScroll="10" verticalLineScroll="26" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="79m-2E-xZY">
                                 <rect key="frame" x="20" y="20" width="441" height="234"/>
                                 <clipView key="contentView" drawsBackground="NO" id="fXB-7j-9jt">
                                     <rect key="frame" x="1" y="0.0" width="439" height="233"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="22" rowSizeStyle="systemDefault" headerView="W4z-uH-ZYu" viewBased="YES" id="pIv-Wy-cvC" customClass="KBTableView" customModule="macOS_Utilities" customModuleProvider="target">
+                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="24" rowSizeStyle="systemDefault" headerView="W4z-uH-ZYu" viewBased="YES" id="pIv-Wy-cvC" customClass="KBTableView" customModule="macOS_Utilities" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="439" height="208"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
@@ -534,7 +534,13 @@
                             </menuItem>
                             <menuItem title="Utilities" id="u8z-V6-8gv">
                                 <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="Utilities" systemMenu="apple" id="lyY-dF-bR4"/>
+                                <menu key="submenu" title="Utilities" systemMenu="apple" id="lyY-dF-bR4">
+                                    <items>
+                                        <menuItem title="Loading Utilities.." enabled="NO" id="c9T-zE-BO6">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                    </items>
+                                </menu>
                             </menuItem>
                             <menuItem title="Info" id="Zq4-Ii-cHV">
                                 <modifierMask key="keyEquivalentModifierMask"/>
@@ -590,22 +596,17 @@
                                     </items>
                                 </menu>
                             </menuItem>
-                            <menuItem title="Help" id="57C-RM-Ohu">
+                            <menuItem title="Log" id="57C-RM-Ohu">
                                 <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="Help" systemMenu="help" id="5zT-1s-3Zp">
+                                <menu key="submenu" title="Log" systemMenu="help" id="5zT-1s-3Zp">
                                     <items>
-                                        <menuItem title="Application Help" keyEquivalent="?" id="vc3-6c-mEf">
-                                            <connections>
-                                                <action selector="showHelp:" target="Ady-hI-5gd" id="8aB-pt-4td"/>
-                                            </connections>
-                                        </menuItem>
                                         <menuItem title="Send Log" allowsKeyEquivalentWhenHidden="YES" id="aen-O5-oBn">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="sendLog:" target="FXb-Ej-UYn" id="8E1-yx-OJe"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Open Log in Console" allowsKeyEquivalentWhenHidden="YES" id="bQP-DA-bHS">
+                                        <menuItem title="View Log in Console" allowsKeyEquivalentWhenHidden="YES" id="bQP-DA-bHS">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="showLog:" target="FXb-Ej-UYn" id="7wg-vB-SKn"/>
@@ -1554,7 +1555,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="KdS-0p-ePz">
-                                <rect key="frame" x="260" y="395" width="180" height="35"/>
+                                <rect key="frame" x="263" y="395" width="175" height="35"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="35" id="hnY-Fx-B7F"/>
                                 </constraints>
@@ -1813,13 +1814,13 @@ Gw
                         <rect key="frame" x="0.0" y="0.0" width="700" height="450"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <scrollView autohidesScrollers="YES" horizontalLineScroll="24" horizontalPageScroll="10" verticalLineScroll="24" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vCG-cE-ag0">
+                            <scrollView autohidesScrollers="YES" horizontalLineScroll="26" horizontalPageScroll="10" verticalLineScroll="26" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vCG-cE-ag0">
                                 <rect key="frame" x="20" y="58" width="660" height="315"/>
                                 <clipView key="contentView" drawsBackground="NO" id="Ivg-1D-hjB">
                                     <rect key="frame" x="1" y="0.0" width="658" height="314"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="22" rowSizeStyle="systemDefault" headerView="e6H-Qs-xEe" viewBased="YES" id="QuU-vC-lkw" customClass="KBTableView" customModule="macOS_Utilities" customModuleProvider="target">
+                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="24" rowSizeStyle="systemDefault" headerView="e6H-Qs-xEe" viewBased="YES" id="QuU-vC-lkw" customClass="KBTableView" customModule="macOS_Utilities" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="658" height="289"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>

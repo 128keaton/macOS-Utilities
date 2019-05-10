@@ -22,13 +22,17 @@ class DeviceInformationViewController: NSViewController {
 
     private var machineInformation: MachineInformation? = nil {
         didSet {
-            self.updateView()
+            if self.machineInformation != nil && MachineInformation.isConfigured {
+                self.updateView()
+            }
         }
     }
 
     private var allGraphicsCards = [String]() {
         didSet {
-            self.reloadTableView(self.graphicsCardTableView)
+            if self.allGraphicsCards.count > 0 {
+                  self.reloadTableView(self.graphicsCardTableView)
+            }
         }
     }
 

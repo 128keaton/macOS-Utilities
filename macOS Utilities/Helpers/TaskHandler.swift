@@ -8,8 +8,46 @@
 
 import Foundation
 import CocoaLumberjack
+import STPrivilegedTask
 
 class TaskHandler {
+    public static func createPrivilegedTask(command: String, arguments: [String], printStandardOutput: Bool = false, hideTaskFailed: Bool = false, returnEscaping: @escaping (Bool, String?) -> ()) {
+        DispatchQueue.main.async {
+            let task = STPrivilegedTask()
+
+            task.setLaunchPath(command)
+            task.setArguments(arguments)
+
+            let taskError: OSStatus = task.launch()
+
+
+            if taskError != errAuthorizationSuccess {
+                returnEscaping(false, "Could not authorize task: \(taskError.description)")
+            } else {
+                DDLogInfo("Task \(task.launchPath() ?? "") \((task.arguments() as! [String]).joined(separator: " ")) was executed")
+            }
+
+            task.waitUntilExit()
+
+            if let outputData = task.outputFileHandle()?.readDataToEndOfFile(),
+                let outputString = String(data: outputData, encoding: .utf8) {
+                
+                if printStandardOutput {
+                    DDLogVerbose(outputString)
+                }
+                
+                returnEscaping(true, outputString)
+            }
+            
+            if !hideTaskFailed {
+                DDLogInfo("Task \(task.launchPath() ?? "") \((task.arguments() as! [String]).joined(separator: " ")) failed: no output data")
+            }
+            
+            returnEscaping(false, "No output data")
+        }
+    }
+
+
     public static func createTask(command: String, arguments: [String], printStandardOutput: Bool = false, hideTaskFailed: Bool = false, returnEscaping: @escaping (String?) -> ()) {
         let task = Process()
         let errorPipe = Pipe()

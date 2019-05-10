@@ -70,7 +70,7 @@ import CocoaLumberjack
 
         if let generatedPath = self.generatedPath {
             if self.path != nil {
-                DDLogVerbose("Path was set in preferences to \(self.path!), but an application was not found at this location. However, an application matching the name \(self.name) was found, so we're using the path to that application (\(generatedPath).")
+                DDLogVerbose("Path was set in preferences to \(self.path!), but an application was not found at this location. However, an application matching the name \(self.name) was found, so we're using the path to that application (\(generatedPath)).")
             }
             self.cachedPath = generatedPath
             return generatedPath
