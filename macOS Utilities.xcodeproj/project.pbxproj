@@ -89,6 +89,7 @@
 		8A9D9A9C2263084600E4D36F /* KBTextFieldDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9D9A9B2263084600E4D36F /* KBTextFieldDialog.swift */; };
 		8A9D9AAC22632B4700E4D36F /* config-file-icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 8A9D9AAB22632B4700E4D36F /* config-file-icon.icns */; };
 		8A9D9AAE2263370800E4D36F /* KBTextFieldDialog-large.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A9D9AAD2263370800E4D36F /* KBTextFieldDialog-large.xib */; };
+		8AA841CC22659260009C5948 /* DiskImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841CB22659260009C5948 /* DiskImage.swift */; };
 		8AA841CE226593A1009C5948 /* HDIUtilOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841CD226593A1009C5948 /* HDIUtilOutput.swift */; };
 		8AA841D02265A509009C5948 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841CF2265A509009C5948 /* Units.swift */; };
 		8AA841D322664276009C5948 /* PaddedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841D222664276009C5948 /* PaddedTextField.swift */; };
@@ -99,12 +100,7 @@
 		8ACB65D721063E6F004B9C5A /* ApplicationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ACB65D621063E6F004B9C5A /* ApplicationViewController.swift */; };
 		8ACB65D921063E6F004B9C5A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8ACB65D821063E6F004B9C5A /* Assets.xcassets */; };
 		8ACB65DC21063E6F004B9C5A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8ACB65DA21063E6F004B9C5A /* Main.storyboard */; };
-<<<<<<< HEAD
-		8AED6288393102F645E0F76B /* Pods_macOS_Utilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E87587563FA0C9207B973F8E /* Pods_macOS_Utilities.framework */; };
-		8AF21CCB2285BBF700D1A0A5 /* DiskImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF21CCA2285BBF700D1A0A5 /* DiskImage.swift */; };
-=======
-		8AED6288393102F645E0F76B /* (null) in Frameworks */ = {isa = PBXBuildFile; };
->>>>>>> disk-manager
+		8AED6288393102F645E0F76B /* BuildFile in Frameworks */ = {isa = PBXBuildFile; };
 		8AFCCD8822654E4B0026CFE6 /* DiskUtilityOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AFCCD8722654E4B0026CFE6 /* DiskUtilityOutput.swift */; };
 		D704DDA07CC244E30805C80B /* Pods_macOS_UtilitiesTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D34D0D826F1DE150B6BEB3E /* Pods_macOS_UtilitiesTests.framework */; };
 /* End PBXBuildFile section */
@@ -176,6 +172,7 @@
 		8A9D9A9B2263084600E4D36F /* KBTextFieldDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KBTextFieldDialog.swift; sourceTree = "<group>"; };
 		8A9D9AAB22632B4700E4D36F /* config-file-icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = "config-file-icon.icns"; sourceTree = "<group>"; };
 		8A9D9AAD2263370800E4D36F /* KBTextFieldDialog-large.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = "KBTextFieldDialog-large.xib"; sourceTree = "<group>"; };
+		8AA841CB22659260009C5948 /* DiskImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskImage.swift; sourceTree = "<group>"; };
 		8AA841CD226593A1009C5948 /* HDIUtilOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HDIUtilOutput.swift; sourceTree = "<group>"; };
 		8AA841CF2265A509009C5948 /* Units.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Units.swift; sourceTree = "<group>"; };
 		8AA841D222664276009C5948 /* PaddedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddedTextField.swift; sourceTree = "<group>"; };
@@ -190,7 +187,6 @@
 		8ACB65DD21063E6F004B9C5A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8ACB65DE21063E6F004B9C5A /* macOS_Utilities.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macOS_Utilities.entitlements; sourceTree = "<group>"; };
 		8ADFB00E226A76D900B637E5 /* FileSystemItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSystemItem.swift; sourceTree = "<group>"; };
-		8AF21CCA2285BBF700D1A0A5 /* DiskImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiskImage.swift; sourceTree = "<group>"; };
 		8AFCCD8722654E4B0026CFE6 /* DiskUtilityOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskUtilityOutput.swift; sourceTree = "<group>"; };
 		D04B207FCA2163F7FF4B0B6B /* Pods-macOS Utilities.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-macOS Utilities.debug.xcconfig"; path = "Pods/Target Support Files/Pods-macOS Utilities/Pods-macOS Utilities.debug.xcconfig"; sourceTree = "<group>"; };
 		D8A022574234BFBF730A7F5C /* Pods-macOS Utilities.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-macOS Utilities.release.xcconfig"; path = "Pods/Target Support Files/Pods-macOS Utilities/Pods-macOS Utilities.release.xcconfig"; sourceTree = "<group>"; };
@@ -209,7 +205,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8AED6288393102F645E0F76B /* (null) in Frameworks */,
+				8AED6288393102F645E0F76B /* BuildFile in Frameworks */,
 				4B87EE4A123D4EE1F26E61A2 /* Pods_macOS_Utilities.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -331,7 +327,7 @@
 				8A9370CE2256B7F4002B3838 /* Disk.swift */,
 				8A9370D02256BB5A002B3838 /* Share.swift */,
 				8A6F8D892263D35B00077172 /* Partition.swift */,
-				8AF21CCA2285BBF700D1A0A5 /* DiskImage.swift */,
+				8AA841CB22659260009C5948 /* DiskImage.swift */,
 			);
 			path = Filesystem;
 			sourceTree = "<group>";
@@ -816,7 +812,6 @@
 				8A9370CF2256B7F4002B3838 /* Disk.swift in Sources */,
 				8A6C646B225DB49000CD6DCF /* DeviceUniqueID.swift in Sources */,
 				8AA841D02265A509009C5948 /* Units.swift in Sources */,
-				8AF21CCB2285BBF700D1A0A5 /* DiskImage.swift in Sources */,
 				8ABAE3132252C1D800E537D3 /* TaskHandler.swift in Sources */,
 				8A57BF432262A1AF00719E74 /* LoggerManager.swift in Sources */,
 				8A175AAC225EFEE50018C977 /* ErrorAlertLogger.swift in Sources */,
@@ -826,12 +821,8 @@
 				8A6C6479225EA1EA00CD6DCF /* PreferenceLoader.swift in Sources */,
 				8A6C6469225DB48200CD6DCF /* DeviceConfigurationCode.swift in Sources */,
 				8A6C6467225DB47200CD6DCF /* DeviceInfo.swift in Sources */,
-<<<<<<< HEAD
-				8A0138D1221749BD00C77DA0 /* VersionNumbers.swift in Sources */,
-=======
 				8AA841CC22659260009C5948 /* DiskImage.swift in Sources */,
 				8A0138D1221749BD00C77DA0 /* Version.swift in Sources */,
->>>>>>> disk-manager
 				8A6C6472225EA05300CD6DCF /* Preferences.swift in Sources */,
 				8A9370D62256D604002B3838 /* RepositoryItem.swift in Sources */,
 				8A9C0CCD226AA1580032FC20 /* FileSystemItem.swift in Sources */,

@@ -283,16 +283,8 @@ class DiskUtility: NSObject, NSFilePresenter {
         // only needed on Sierra
         var createAPFSContainer = false
 
-<<<<<<< HEAD
         if type(of: fileSystemItem) == Partition.self {
             let itemPartition = (fileSystemItem as! Partition)
-=======
-        if let installer = forInstaller {
-            if installer.version.number <= 10.13 {
-                format = "JHFS+"
-            }
-        }
->>>>>>> disk-manager
 
             diskUtilCommand = "eraseVolume"
             itemType = itemPartition.itemType
@@ -320,20 +312,14 @@ class DiskUtility: NSObject, NSFilePresenter {
             name = validName
         }
 
-<<<<<<< HEAD
         if let validInstaller = installer,
-            validInstaller.versionNumber >= 10.13 {
+            validInstaller.version.needsAPFS {
             DDLogVerbose("Installing High Sierra or greater, must use APFS.")
             if (ProcessInfo().operatingSystemVersion.minorVersion <= 12) {
                 DDLogVerbose("Host is using version \(ProcessInfo().operatingSystemVersionString) (Sierra or older). APFS container must be created")
                 createAPFSContainer = true
             } else {
                 format = "APFS"
-=======
-        if let installer = forInstaller {
-            if !installer.version.needsAPFS {
-                format = "JHFS+"
->>>>>>> disk-manager
             }
         }
 
@@ -371,7 +357,7 @@ class DiskUtility: NSObject, NSFilePresenter {
                                             returnCompletion(false, "Could not convert \(validItemIdentifier) to apfs! Command returned no output")
                                         } })
                             }
-                            
+
                             let itemDisk = (fileSystemItem as! Disk)
                             if let updatedDisk = self.addPartitionToDisk(itemDisk, mountPoint: "/Volumes/\(validItemName)", volumeName: validItemName) {
                                 returnCompletion(eraseOutput.contains("Finished erase"), updatedDisk.installablePartition?.volumeName)
@@ -608,7 +594,14 @@ class DiskUtility: NSObject, NSFilePresenter {
         if let volumePath = notification.userInfo!["NSDevicePath"] as? String,
             let installAppName = notification.userInfo!["NSWorkspaceVolumeLocalizedNameKey"] as? String {
             if (volumePath.contains("Install macOS") || volumePath.contains("Install OS X")) {
-                ItemRepository.shared.removeInstaller(installAppName.replacingOccurrences(of: "Install ", with: ""))
+                let installerName = installAppName.replacingOccurrences(of: "Install ", with: "")
+                DDLogVerbose("Looking for installer \(installerName) to remove from repository")
+
+                if let foundInstaller = (ItemRepository.shared.installers.first { $0.version.name == installerName }) {
+                    ItemRepository.shared.removeFromRepository(itemToRemove: foundInstaller)
+                } else {
+                    DDLogVerbose("Could not find installer to remove from name: \(installerName)")
+                }
             }
         }
         print(notification.userInfo!)

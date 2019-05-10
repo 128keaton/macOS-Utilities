@@ -25,18 +25,17 @@ class InstallerViewController: NSViewController {
     public var selectedVersion: Installer? = nil
 
     override func awakeFromNib() {
+        NotificationCenter.default.addObserver(self, selector: #selector(InstallerViewController.getInstallableVersions), name: ItemRepository.newInstaller, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateStatusImages(_:)), name: DiskUtility.bootDiskAvailable, object: nil)
+
         NotificationCenter.default.addObserver(self, selector: #selector(InstallerViewController.getInstallableVersions(notification:)), name: ItemRepository.newInstaller, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(InstallerViewController.getInstallableVersions(notification:)), name: ItemRepository.removeInstaller, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(updateStatusImages(_:)), name: DiskUtility.bootDiskAvailable, object: nil)
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         updateStatusImages()
-
-        if (ItemRepository.shared.has(Installer.self) && installers.count == 0) {
-            getInstallableVersions()
-        }
+        getInstallableVersions()
     }
 
     @objc func updateStatusImages(_ aNotification: Notification? = nil) {
@@ -52,34 +51,6 @@ class InstallerViewController: NSViewController {
         hddStatus.image = MachineInformation.shared.HDDStatus
     }
 
-<<<<<<< HEAD
-    @objc func getInstallableVersions(notification: Notification? = nil) {
-        if let notification = notification,
-            let installer = notification.object as? Installer,
-            let userInfo = notification.userInfo as? [String: String] {
-
-            if userInfo["type"] == "remove" {
-                installers.removeAll { $0 == installer }
-            } else if !installers.contains(installer) {
-                installers.append(installer)
-            }
-        } else {
-            installers = ItemRepository.shared.getInstallers()
-        }
-
-        installers.sort(by: { $0.comparibleVersionNumber > $1.comparibleVersionNumber && $0.isFakeInstaller == false })
-        reloadInstallersTableView()
-    }
-
-    private func reloadInstallersTableView() {
-        if(Thread.isMainThread == true) {
-            self.tableView.reloadData()
-        } else {
-            DispatchQueue.main.async {
-                if self.tableView != nil {
-                    self.tableView.reloadData()
-                    self.selectFirstInstallable()
-=======
     @objc func getInstallableVersions() {
         let returnedInstallers = ItemRepository.shared.installers
         if(returnedInstallers != installers) {
@@ -92,7 +63,6 @@ class InstallerViewController: NSViewController {
                         self.tableView.reloadData()
                         self.selectFirstInstallable()
                     }
->>>>>>> disk-manager
                 }
             }
         }
@@ -169,12 +139,39 @@ class InstallerViewController: NSViewController {
         }
     }
 
+    @objc func getInstallableVersions(notification: Notification? = nil) {
+        if let notification = notification,
+            let installer = notification.object as? Installer,
+            let userInfo = notification.userInfo as? [String: String] {
+            
+            if userInfo["type"] == "remove" {
+                installers.removeAll { $0 == installer }
+            } else if !installers.contains(installer) {
+                installers.append(installer)
+            }
+        } else {
+            installers = ItemRepository.shared.installers
+        }
+        
+        installers.sort(by: { $0.version.sortNumber.doubleValue > $1.version.sortNumber.doubleValue && $0.isFakeInstaller == false })
+        reloadInstallersTableView()
+    }
+
+    private func reloadInstallersTableView() {
+        if(Thread.isMainThread == true) {
+            self.tableView.reloadData()
+        } else {
+            DispatchQueue.main.async {
+                if self.tableView != nil {
+                    self.tableView.reloadData()
+                    self.selectFirstInstallable()
+                }
+            }
+        }
+    }
+
     @objc func openDiskUtility() {
-<<<<<<< HEAD
-        //  ApplicationUtility.shared.open("Disk Utility")
-=======
         NotificationCenter.default.post(name: ItemRepository.openApplication, object: "Disk Utility")
->>>>>>> disk-manager
     }
 
     @IBAction @objc func cancelButtonClicked(_ sender: Any?) {
