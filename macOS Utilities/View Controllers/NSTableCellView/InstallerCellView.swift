@@ -32,8 +32,8 @@ class InstallerCellView: NSTableCellView {
         }
 
         installerIconView?.image = installer.icon
-        installerNameLabel?.stringValue = installer.versionName
-        installerVersionLabel?.stringValue = installer.isFakeInstaller ? "Fake Installer" : "\(installer.versionNumber)"
+        installerNameLabel?.stringValue = installer.version.name
+        installerVersionLabel?.stringValue = installer.isFakeInstaller ? "Fake Installer" : "\(installer.version.number)"
         setTextColor(canInstall: installer.canInstall)
     }
 

@@ -10,57 +10,135 @@ import Foundation
 import AppKit
 import CocoaLumberjack
 
-@objcMembers class Application: NSObject, Item, Codable {
-    static let prohibatoryIcon = NSImage(named: "NSHaltIcon")
+@objcMembers class Application: RepositoryItem, Codable {
+    private var path: String?
+    private var cachedPath: String? = nil
+
     var name: String
-    var path: String
-    var isInvalid = false
+    var isUtility: Bool? = false
     var showInApplicationsWindow = true
 
-    var id: String {
-        get {
-            return self.name.md5Value
+    private (set) public var infoPath: String? = nil
+    private (set) public var iconURL: URL? = nil
+
+    var icon: NSImage {
+        return self.getApplicationIcon()
+    }
+
+    var defaultIcon: NSImage {
+        return NSImage(named: "NSHaltIcon")!
+    }
+
+    public var isValid: Bool {
+        let fileManager = FileManager.default
+        var isDir: ObjCBool = false
+        if fileManager.fileExists(atPath: self.applicationPath, isDirectory: &isDir) {
+            if isDir.boolValue {
+                return true
+            }
         }
+
+        return false
+    }
+
+    public var infoDictionary: NSDictionary? {
+        self.infoPath = "\(self.applicationPath)/Contents/Info.plist"
+        if let infoPath = self.infoPath,
+            let infoDictionary = NSDictionary(contentsOfFile: infoPath) {
+            return infoDictionary
+        }
+
+        return nil
+    }
+
+    private var generatedPath: String? {
+        return NSWorkspace.shared.fullPath(forApplication: self.name)
+    }
+
+    public var applicationPath: String {
+        if let cachedPath = self.cachedPath {
+            return cachedPath
+        }
+
+        if let settingsPath = self.path,
+            settingsPath != "",
+            settingsPath.fileURL.filestatus != .isNot {
+
+            self.cachedPath = settingsPath
+            return settingsPath
+        }
+
+        if let generatedPath = self.generatedPath {
+            if self.path != nil {
+                DDLogVerbose("Path was set in preferences to \(self.path!), but an application was not found at this location. However, an application matching the name \(self.name) was found, so we're using the path to that application (\(generatedPath).")
+            }
+            self.cachedPath = generatedPath
+            return generatedPath
+        }
+
+        self.cachedPath = ""
+        
+        DDLogVerbose("Could not find path for application \"\(self.name)\"")
+        return ""
+    }
+
+    override var id: String {
+        return self.name.md5Value
+    }
+
+    override var searchableEntityName: String {
+        return self.name
     }
 
     override var description: String {
-        return "\(self.name): \(self.path)"
+        return "\(self.name): \(self.applicationPath)"
     }
 
-
-    init(name: String, path: String, showInApplicationsWindow: Bool = false) {
+    init(name: String, path: String, showInApplicationsWindow: Bool = true) {
         self.path = path
         self.name = name
 
-        if path == "" {
-            self.isInvalid = true
-        }
+        super.init()
 
         self.showInApplicationsWindow = showInApplicationsWindow
     }
 
-    public func open() {
-        NSWorkspace.shared.open(URL(fileURLWithPath: self.path))
+    public func open() -> Bool {
+        return NSWorkspace.shared.open(applicationPath.fileURL)
     }
 
-    func addToRepo() {
-        ItemRepository.shared.addToRepository(newApplication: self)
+    override func addToRepo() {
+        ItemRepository.shared.addToRepository(newItem: self)
+    }
+
+    public func updatePath(_ newPath: String) {
+        self.path = newPath
+        DDLogVerbose("Application \(self.name)'s new path: \(newPath)")
+    }
+
+    public func updateName(_ newName: String) {
+        if self.name == "" {
+            DDLogVerbose("Application name updated: \(newName)")
+        } else {
+            DDLogVerbose("Application \(self.name)'s new name: \(newName)")
+        }
+
+        self.name = newName
+    }
+
+    public func reloadApplicationPath() {
+        self.cachedPath = nil
     }
 
     public func getCollectionViewItem(item: NSCollectionViewItem) -> NSCollectionViewItem {
         if let newItem = item as? NSCollectionAppCell {
-            let icon = self.findIcon()
-            newItem.icon?.image = icon
-            newItem.regularImage = icon
+            newItem.icon?.image = self.icon
+            newItem.regularImage = self.icon
+            newItem.darkenedImage = self.icon.darkened
+
             newItem.application = self
 
-            DispatchQueue.main.async {
-                newItem.icon!.lockFocus()
-                newItem.darkenedImage = icon.darkened
-                newItem.icon!.unlockFocus()
-            }
-
-            if(self.isInvalid) {
+            if !self.isValid {
                 newItem.titleLabel?.textColor = NSColor.gray
                 newItem.titleLabel?.stringValue = "\(self.name)*"
             } else {
@@ -77,29 +155,30 @@ import CocoaLumberjack
         return item
     }
 
-    private func findIcon() -> NSImage {
-        let infoPath = "\(self.path)/Contents/Info.plist"
-        guard let infoDictionary = NSDictionary(contentsOfFile: infoPath)
-            else {
-                isInvalid = true
-                return Application.prohibatoryIcon!
+    public func getApplicationIcon() -> NSImage {
+        guard let infoDictionary = self.infoDictionary else {
+            return self.defaultIcon
         }
 
-        guard let imageName = (infoDictionary["CFBundleIconFile"] as? String)
-            else {
-                isInvalid = true
-                return Application.prohibatoryIcon!
+        guard let imageName = (infoDictionary["CFBundleIconFile"] as? String) else {
+            return self.defaultIcon
         }
 
-        let imagePath = URL(fileURLWithPath: "\(self.path)/Contents/Resources/\(imageName)", isDirectory: false)
-        let imageUti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, imagePath.pathExtension as CFString, nil)
+        if iconURL == nil {
+            iconURL = URL(fileURLWithPath: "\(self.applicationPath)/Contents/Resources/\(imageName)", isDirectory: false)
+        }
 
-        if UTTypeConformsTo((imageUti?.takeRetainedValue())!, kUTTypeImage) {
-            return NSImage(contentsOf: imagePath)!
+        guard let validIconURL = iconURL else {
+            return self.defaultIcon
+        }
+
+        if UTTypeConformsTo((UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, validIconURL.pathExtension as CFString, nil)?.takeRetainedValue())!, kUTTypeImage) {
+            return NSImage(contentsOf: validIconURL)!
         } else {
-            return NSImage(contentsOf: imagePath.appendingPathExtension("icns"))!
+            return NSImage(contentsOf: validIconURL.appendingPathExtension("icns"))!
         }
     }
+
 
     static func == (lhs: Application, rhs: Application) -> Bool {
         return lhs.id == rhs.id

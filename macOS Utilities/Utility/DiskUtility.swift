@@ -283,8 +283,16 @@ class DiskUtility: NSObject, NSFilePresenter {
         // only needed on Sierra
         var createAPFSContainer = false
 
+<<<<<<< HEAD
         if type(of: fileSystemItem) == Partition.self {
             let itemPartition = (fileSystemItem as! Partition)
+=======
+        if let installer = forInstaller {
+            if installer.version.number <= 10.13 {
+                format = "JHFS+"
+            }
+        }
+>>>>>>> disk-manager
 
             diskUtilCommand = "eraseVolume"
             itemType = itemPartition.itemType
@@ -312,6 +320,7 @@ class DiskUtility: NSObject, NSFilePresenter {
             name = validName
         }
 
+<<<<<<< HEAD
         if let validInstaller = installer,
             validInstaller.versionNumber >= 10.13 {
             DDLogVerbose("Installing High Sierra or greater, must use APFS.")
@@ -320,6 +329,11 @@ class DiskUtility: NSObject, NSFilePresenter {
                 createAPFSContainer = true
             } else {
                 format = "APFS"
+=======
+        if let installer = forInstaller {
+            if !installer.version.needsAPFS {
+                format = "JHFS+"
+>>>>>>> disk-manager
             }
         }
 
@@ -374,7 +388,7 @@ class DiskUtility: NSObject, NSFilePresenter {
     }
 
     public static func diskIsFormattedFor(_ disk: Disk, installer: Installer) -> Bool {
-        if installer.versionNumber >= 10.13 {
+        if installer.version.needsAPFS {
             if disk.apfsPartitions != nil {
                 return true
             }
@@ -385,7 +399,7 @@ class DiskUtility: NSObject, NSFilePresenter {
     }
 
     public static func partitionIsFormattedFor(_ partition: Partition, installer: Installer) -> Bool {
-        if installer.versionNumber >= 10.13 {
+        if installer.version.needsAPFS {
             return partition.isAPFS
         } else if let content = partition.content {
             return content == "Apple_HFS"

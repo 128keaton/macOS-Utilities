@@ -17,7 +17,6 @@ class InstallerViewController: NSViewController {
     @IBOutlet weak var tableView: NSTableView!
     @IBOutlet weak var installButton: NSButton!
 
-    private var versionNumbers: VersionNumbers = VersionNumbers()
     private var installers = [Installer]()
     private var cachedPopover: NSPopover? = nil
 
@@ -53,6 +52,7 @@ class InstallerViewController: NSViewController {
         hddStatus.image = MachineInformation.shared.HDDStatus
     }
 
+<<<<<<< HEAD
     @objc func getInstallableVersions(notification: Notification? = nil) {
         if let notification = notification,
             let installer = notification.object as? Installer,
@@ -79,6 +79,20 @@ class InstallerViewController: NSViewController {
                 if self.tableView != nil {
                     self.tableView.reloadData()
                     self.selectFirstInstallable()
+=======
+    @objc func getInstallableVersions() {
+        let returnedInstallers = ItemRepository.shared.installers
+        if(returnedInstallers != installers) {
+            installers = returnedInstallers
+            if(Thread.isMainThread == true) {
+                self.tableView.reloadData()
+            } else {
+                DispatchQueue.main.async {
+                    if self.tableView != nil {
+                        self.tableView.reloadData()
+                        self.selectFirstInstallable()
+                    }
+>>>>>>> disk-manager
                 }
             }
         }
@@ -156,7 +170,11 @@ class InstallerViewController: NSViewController {
     }
 
     @objc func openDiskUtility() {
+<<<<<<< HEAD
         //  ApplicationUtility.shared.open("Disk Utility")
+=======
+        NotificationCenter.default.post(name: ItemRepository.openApplication, object: "Disk Utility")
+>>>>>>> disk-manager
     }
 
     @IBAction @objc func cancelButtonClicked(_ sender: Any?) {

@@ -7,45 +7,48 @@
 //
 
 import Foundation
+import AppKit
+import CocoaLumberjack
 
-class Utility: NSObject, Item, Codable  {
-    static let prohibatoryIcon = NSImage(named: "NSHaltIcon")
-    var name: String
-    var path: String
-    var isInvalid = false
-    var id: String {
-        get {
-            return self.name.md5Value
+class Utility: Application  {
+    override init(name: String, path: String, showInApplicationsWindow: Bool = false) {
+        var utilityPath = path
+        
+        if !utilityPath.contains("/Applications/Utilities/") {
+            utilityPath = "/Applications/Utilities/\(utilityPath)"
         }
+        
+        if !utilityPath.contains(".app") {
+            utilityPath = "\(utilityPath).app"
+        }
+        
+        super.init(name: name, path: utilityPath, showInApplicationsWindow: showInApplicationsWindow)
+        self.isUtility = true
     }
     
-    var showInApplicationsWindow = true
+    required init(from decoder: Decoder) throws {
+        try super.init(from: decoder)
+    }
     
     override var description: String {
-        return "\(self.name): \(self.path)"
+        return "Utility: \(super.description)"
     }
     
-    func addToRepo() {
-        // Not needed
+    override func addToRepo() {
+        ItemRepository.shared.addToRepository(newItem: self)
     }
     
-    init(name: String, path: String, showInApplicationsWindow: Bool = false) {
-        self.path = path
-        self.name = name
-        
-        if path == "" {
-            self.isInvalid = true
+    static func getFromUtilitiesFolder() {
+        do {
+            try FileManager.default.contentsOfDirectory(atPath: "/Applications/Utilities").forEach {
+                let utilityPath = $0
+                let utilityName = utilityPath.split(separator: "/").last!.replacingOccurrences(of: ".app", with: "")
+                if utilityName.first! != "." {
+                    Utility(name: utilityName, path: utilityPath).addToRepo()
+                }
+            }
+        } catch {
+            DDLogError("Could not get utilities from /Applications/Utilities")
         }
-        
-        self.showInApplicationsWindow = showInApplicationsWindow
-    }
-    
-    public func open() {
-        NSWorkspace.shared.open(URL(fileURLWithPath: self.path))
-    }
-    
-    static func == (lhs: Utility, rhs: Utility) -> Bool {
-        return lhs.path == rhs.path &&
-            lhs.name == rhs.name && lhs.id == rhs.id
     }
 }

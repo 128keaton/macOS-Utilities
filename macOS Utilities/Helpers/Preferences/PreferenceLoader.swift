@@ -62,7 +62,7 @@ class PreferenceLoader {
                 if writeToBundle {
                     let bundlePreferences = (preferences.copy() as! Preferences)
                     if let applications = bundlePreferences.mappedApplications {
-                        applications.forEach { $0.isInvalid = false; $0.showInApplicationsWindow = true }
+                        applications.forEach { $0.showInApplicationsWindow = true }
                         bundlePreferences.mappedApplications = applications
                     }
 
@@ -122,7 +122,7 @@ class PreferenceLoader {
             let _preferences = try PropertyListDecoder().decode(Preferences.self, from: _data)
 
             if var applications = _preferences.mappedApplications {
-                applications.removeAll { $0.path == "" || !$0.path.contains(".app") }
+                applications.removeAll { $0.applicationPath == "" || !$0.applicationPath.contains(".app") }
                 _preferences.mappedApplications = applications
             }
 
@@ -133,7 +133,7 @@ class PreferenceLoader {
                 if let convertedPreferences = loadLegacyStatus.1,
                     forceSave == true {
                     if var applications = convertedPreferences.mappedApplications {
-                        applications.removeAll { $0.path == "" || !$0.path.contains(".app") }
+                        applications.removeAll { $0.applicationPath == "" || !$0.applicationPath.contains(".app") }
                         convertedPreferences.mappedApplications = applications
                     }
                     save(convertedPreferences)
@@ -207,7 +207,7 @@ class PreferenceLoader {
             }
             
             if let applications = preferences.mappedApplications{
-                ItemRepository.shared.addToRepository(newApplications: applications)
+                ItemRepository.shared.addToRepository(newItems: applications)
             }
         }
     }

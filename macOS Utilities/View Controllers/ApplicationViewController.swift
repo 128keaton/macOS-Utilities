@@ -208,12 +208,11 @@ extension ApplicationViewController: NSCollectionViewDataSource {
         let applicationsInSection = applicationsInSections[indexPath.section]
         let applicationFromSection = applicationsInSection[indexPath.item]
 
-        if(applicationFromSection.isInvalid) {
+        if !applicationFromSection.isValid {
             disabledPaths.append(indexPath)
-            return deselectAllItems(indexPaths)
         }
 
-        applicationFromSection.open()
+        itemRepository.openApplication(applicationFromSection)
         deselectAllItems(indexPaths)
     }
 
@@ -245,7 +244,7 @@ extension ApplicationViewController: NSCollectionViewDataSource {
         if applicationsInSection.indices.contains(indexPath.item) {
             let applicationFromSection = applicationsInSection[indexPath.item]
 
-            if(applicationFromSection.isInvalid) {
+            if !applicationFromSection.isValid {
                 disabledPaths.append(indexPath)
             }
 

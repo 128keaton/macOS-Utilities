@@ -16,9 +16,11 @@ class PageController: NSObject {
     private var pageController: NSPageController? = nil
     private var currentPageIndex = 0
     private var initialPageIndex = 0
+    private var viewControllersAndIdentifiers = [String: NSViewController]()
+
+    private (set) public var isActive: Bool = false
     private (set) public var loadingViewController: WizardViewController? = nil
     private (set) public var finishViewController: WizardViewController? = nil
-    private var viewControllersAndIdentifiers = [String: NSViewController]()
 
     private override init() {
         super.init()
@@ -77,7 +79,8 @@ class PageController: NSObject {
         }
 
         if let mainWindow = NSApplication.shared.mainWindow {
-            if let mainViewController = mainWindow.contentViewController {
+            if let mainViewController = mainWindow.contentViewController, !self.isActive {
+                self.isActive = true
                 mainViewController.presentAsSheet(pageController)
             }
         }
@@ -156,7 +159,7 @@ class PageController: NSObject {
                 return
         }
 
-        DDLogInfo("Dismissing NSPageController: \(String(describing: pageController))")
+        self.isActive = false
         pageController.dismiss(self)
 
         if !savePosition {
