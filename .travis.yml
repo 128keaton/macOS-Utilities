@@ -1,6 +1,0 @@
-language: swift
-osx_image: xcode10.2
-xcode_workspace: macOS Utilities.xcworkspace # path to your xcodeproj folder
-xcode_scheme: Tests
-xcode_destination: platform=macOS
-podfile: Podfile
