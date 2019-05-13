@@ -19,6 +19,7 @@ PODS:
   - PaperTrailLumberjack/Swift (0.2.0):
     - CocoaLumberjack/Swift (~> 3.4)
     - PaperTrailLumberjack/Core
+  - STPrivilegedTask (1.0.1)
   - SwiftyJSON (4.0.0)
 
 DEPENDENCIES:
@@ -29,6 +30,7 @@ DEPENDENCIES:
   - CocoaAsyncSocket
   - CocoaLumberjack/Swift
   - PaperTrailLumberjack/Swift (from `https://github.com/128keaton/PaperTrailLumberjack`)
+  - STPrivilegedTask
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -38,6 +40,7 @@ SPEC REPOS:
     - CAAnimationBlocks
     - CocoaAsyncSocket
     - CocoaLumberjack
+    - STPrivilegedTask
     - SwiftyJSON
 
 EXTERNAL SOURCES:
@@ -51,7 +54,7 @@ CHECKOUT OPTIONS:
     :commit: c280f73244a92a451f3ea4bcd644180ea3609aab
     :git: https://github.com/Foboz/BMExtPageController
   PaperTrailLumberjack:
-    :commit: f8af31ca6a1de6b3edf84879620897f6fcb5a54f
+    :commit: d469aa89e0023dcacc549a605f58669053ac7d5a
     :git: https://github.com/128keaton/PaperTrailLumberjack
 
 SPEC CHECKSUMS:
@@ -63,8 +66,9 @@ SPEC CHECKSUMS:
   CocoaAsyncSocket: eafaa68a7e0ec99ead0a7b35015e0bf25d2c8987
   CocoaLumberjack: 118bf4a820efc641f79fa487b75ed928dccfae23
   PaperTrailLumberjack: cb5a8bc63de97df262c2d60e0f39b2ff0bc2646f
+  STPrivilegedTask: 103f97827454e786074640cf89d303be344498c7
   SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
 
-PODFILE CHECKSUM: 5a7ade46c2410ae4b4ae32fe73e616a91129e30b
+PODFILE CHECKSUM: 6e9fe80c59a692db270470438f04fd4d792a6eb7
 
 COCOAPODS: 1.7.0.beta.3

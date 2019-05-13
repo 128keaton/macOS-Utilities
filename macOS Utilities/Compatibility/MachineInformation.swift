@@ -29,7 +29,7 @@ class MachineInformation {
 
     private (set) public var metalGPUs: [String] = []
     private (set) public var nonMetalGPUs: [String] = []
-    
+
     // Put GPUs here..mine is funky
     private (set) public var metalGPUsOverrides = ["AMD Radeon HD 7xxx"]
     private var cachedCPU: String = String()
@@ -87,13 +87,13 @@ class MachineInformation {
         }
 
         let allGPUs = uniq(source: self.allGraphicsCards)
-    
-        
+
+
         let existingOverrides = metalGPUs.filter { metalGPUsOverrides.contains($0) }
         if existingOverrides.count > 1 {
             DDLogInfo("\(existingOverrides.joined(separator: ", ")) are already flagged as Metal GPUs, you can remove them from the overrides")
         }
-        
+
         metalGPUs.append(contentsOf: self.metalGPUsOverrides)
         metalGPUs = uniq(source: metalGPUs)
         nonMetalGPUs = allGPUs.filter { !metalGPUs.contains($0) }
@@ -108,7 +108,11 @@ class MachineInformation {
     }
 
     static func setup(deviceIdentifier: DeviceIdentifier) {
-        MachineInformation.config.deviceIdentifier = deviceIdentifier
+        if DeviceIdentifier.isConfigured {
+            MachineInformation.config.deviceIdentifier = DeviceIdentifier.shared
+            getDeviceInfo()
+        }
+
         MachineInformation.config.diskUtility = DiskUtility.shared
         MachineInformation.config.isConfigured = true
 
@@ -119,22 +123,25 @@ class MachineInformation {
     static func setup(diskUtility: DiskUtility) {
         if DeviceIdentifier.isConfigured {
             MachineInformation.config.deviceIdentifier = DeviceIdentifier.shared
+            getDeviceInfo()
         }
 
         MachineInformation.config.diskUtility = diskUtility
         MachineInformation.config.isConfigured = true
 
         getCPUInfo()
-        getDeviceInfo()
     }
 
     static func setup(deviceIdentifier: DeviceIdentifier, diskUtility: DiskUtility) {
-        MachineInformation.config.deviceIdentifier = deviceIdentifier
+        if DeviceIdentifier.isConfigured {
+            MachineInformation.config.deviceIdentifier = DeviceIdentifier.shared
+            getDeviceInfo()
+        }
+
         MachineInformation.config.diskUtility = diskUtility
         MachineInformation.config.isConfigured = true
 
         getCPUInfo()
-        getDeviceInfo()
     }
 
     static func setup(apiKey: String) {

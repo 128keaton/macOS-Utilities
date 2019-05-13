@@ -17,7 +17,10 @@ class ItemRepository {
 
     static let newApplication = Notification.Name("NSNewApplication")
     static let newApplications = Notification.Name("NSNewApplications")
+
     static let newInstaller = Notification.Name("NSNewInstaller")
+    static let removeInstaller = Notification.Name("NSRemoveInstaller")
+
     static let newUtility = Notification.Name("NSNewUtility")
 
     static let refreshRepository = Notification.Name("NSRefreshRepository")
@@ -27,26 +30,26 @@ class ItemRepository {
     public var applications: [Application] {
         return (items.filter { type(of: $0) == Application.self } as! [Application])
     }
-    
+
     public var allowedApplications: [Application] {
         return (items.filter { type(of: $0) == Application.self } as! [Application]).filter { $0.showInApplicationsWindow == true }
     }
-    
+
     public var utilities: [Utility] {
         return (items.filter { type(of: $0) == Utility.self } as! [Utility])
     }
-    
+
     public var installers: [Installer] {
-         return (items.filter { type(of: $0) == Installer.self } as! [Installer]).sorted { $0.sortNumber!.compare($1.sortNumber!) == .orderedAscending && $0.isFakeInstaller == false }
+        return (items.filter { type(of: $0) == Installer.self } as! [Installer]).sorted { $0.sortNumber!.compare($1.sortNumber!) == .orderedAscending && $0.isFakeInstaller == false }
     }
-    
+
     public var selectedInstaller: Installer? {
         if let installer = (self.installers.first { $0.isSelected == true }) {
             return installer
         }
         return nil
     }
-    
+
     private init() {
         DDLogInfo("ItemRepository initialized")
 
@@ -107,7 +110,7 @@ class ItemRepository {
             self.addToRepository(newItems: applications)
         }
     }
-    
+
     public func setSelectedInstaller(_ installer: Installer) {
         unsetAllSelectedInstallers()
         (items.first(where: { ($0 as? Installer) == installer }) as? Installer)?.isSelected = true
@@ -119,6 +122,7 @@ class ItemRepository {
 
     public func addFakeInstaller(canInstallOnMachine: Bool = false) {
         let fakeInstaller = Installer(isFakeInstaller: true, canInstallOnMachine: canInstallOnMachine)
+        NotificationCenter.default.post(name: ItemRepository.newInstaller, object: fakeInstaller, userInfo: ["type": "add"])
         fakeItems.append(fakeInstaller)
     }
 
@@ -140,6 +144,10 @@ class ItemRepository {
         }
     }
 
+    public func has<T>(_ itemType: T.Type) -> Bool {
+        return (items.filter { type(of: $0) == itemType }).count > 0
+    }
+
     public func addToRepository<T>(newItem: T) {
         if let newItemOfType = newItem as? RepositoryItem,
             (self.items.contains { $0.id == newItemOfType.id } == false) {
@@ -154,7 +162,26 @@ class ItemRepository {
                 NotificationCenter.default.post(name: ItemRepository.newUtility, object: newItemOfType as! Utility)
             } else if type(of: newItemOfType) == Installer.self {
                 self.items.append(newItemOfType as! Installer)
-                NotificationCenter.default.post(name: ItemRepository.newInstaller, object: newItemOfType as! Installer)
+                NotificationCenter.default.post(name: ItemRepository.newInstaller, object: (newItemOfType as! Installer), userInfo: ["type": "add"])
+            }
+        }
+    }
+
+    public func removeFromRepository<T>(itemToRemove: T) {
+        if let itemToRemoveOfType = itemToRemove as? RepositoryItem,
+            (self.items.contains { $0.id == itemToRemoveOfType.id } == true) {
+
+            DDLogInfo("Removing \(NSStringFromClass(type(of: itemToRemoveOfType))) '\(itemToRemoveOfType.searchableEntityName)' from repo")
+
+            if type(of: itemToRemoveOfType) == Application.self {
+                self.items.removeAll { $0 == (itemToRemoveOfType as! Application) }
+                NotificationCenter.default.post(name: ItemRepository.reloadApplications, object: nil)
+            } else if type(of: itemToRemoveOfType) == Utility.self {
+                self.items.removeAll { $0 == (itemToRemoveOfType as! Utility) }
+                NotificationCenter.default.post(name: ItemRepository.reloadApplications, object: nil)
+            } else if type(of: itemToRemoveOfType) == Installer.self {
+                self.items.removeAll { $0 == (itemToRemoveOfType as! Installer) }
+                NotificationCenter.default.post(name: ItemRepository.removeInstaller, object: (itemToRemoveOfType as! Installer), userInfo: ["type": "remove"])
             }
         }
     }

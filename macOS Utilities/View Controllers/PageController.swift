@@ -175,7 +175,7 @@ class PageController: NSObject {
         initialPageIndex = 0
     }
 
-    public func goToLoadingPage(loadingText: String = "Loading") {
+    public func goToLoadingPage(loadingText: String = "Loading", cancelButtonIdentifier: String? = nil) {
         guard let pageController = self.pageController
             else {
                 return
@@ -186,10 +186,12 @@ class PageController: NSObject {
         if let loadingPageIndex = objectIdentifiers.firstIndex(of: "loadingViewController") {
             if let _loadingViewController = loadingViewController {
                 _loadingViewController.titleText = loadingText
+                _loadingViewController.cancelButtonIdentifier = cancelButtonIdentifier
             } else {
                 let _loadingViewController = NSStoryboard(name: "Main", bundle: nil).instantiateController(withIdentifier: "loadingViewController") as? WizardViewController
                 _loadingViewController?.viewMode = .loading
                 _loadingViewController?.titleText = loadingText
+                _loadingViewController?.cancelButtonIdentifier = cancelButtonIdentifier
                 self.loadingViewController = _loadingViewController
             }
 

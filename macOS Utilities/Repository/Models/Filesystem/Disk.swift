@@ -9,14 +9,15 @@
 import Foundation
 import CocoaLumberjack
 
-struct Disk: FileSystemItem, Codable {
+class Disk: FileSystemItem, Codable {
     var rawContent: String? = nil
     var deviceIdentifier: String
     var regularPartitions: [Partition]?
     var apfsPartitions: [Partition]?
     var rawSize: Int64
     var isFake: Bool = false
-    
+    var info: DiskInfo? = nil
+
     var size: Units {
         return Units(bytes: self.rawSize)
     }
@@ -24,10 +25,10 @@ struct Disk: FileSystemItem, Codable {
         return self.rawContent ?? "None"
     }
 
-    var itemType: FileSystemItemType{
+    var itemType: FileSystemItemType {
         return .disk
     }
-    
+
     var id: String {
         return String("\(deviceIdentifier)-\(size)-\(content)").md5Value
     }
@@ -85,13 +86,63 @@ struct Disk: FileSystemItem, Codable {
         return copy
     }
 
-    static func copy(_ aDisk: Disk, regularPartitions partitions: [Partition]) throws -> Disk {
-        let copy = Disk(rawContent: aDisk.rawContent, deviceIdentifier: aDisk.deviceIdentifier, regularPartitions: partitions, apfsPartitions: nil, rawSize: aDisk.rawSize, isFake: aDisk.isFake)
-        return copy
+    required init(from decoder: Decoder) throws{
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        self.rawContent = try container.decodeIfPresent(String.self, forKey: .rawContent)
+        self.deviceIdentifier = try container.decode(String.self, forKey: .deviceIdentifier)
+        self.regularPartitions = try container.decodeIfPresent([Partition].self, forKey: .regularPartitions)
+        self.apfsPartitions = try container.decodeIfPresent([Partition].self, forKey: .apfsPartitions)
+        self.rawSize = try container.decode(Int64.self, forKey: .rawSize)
+        
+        DiskUtility.shared.getDiskInfo(self) { (diskInfo) in
+            if diskInfo != nil {
+                self.info = diskInfo
+            }
+        }
+        
+        self.partitions.forEach {
+            $0.scanForInstaller()
+        }
     }
     
+    init(rawContent: String? = nil, deviceIdentifier: String, regularPartitions: [Partition]?, apfsPartitions: [Partition]?, rawSize: Int64, isFake: Bool = false, info: DiskInfo? = nil){
+        self.rawContent = rawContent
+        self.deviceIdentifier = deviceIdentifier
+        self.regularPartitions = regularPartitions
+        self.apfsPartitions = apfsPartitions
+        self.rawSize = rawSize
+        self.isFake = isFake
+        self.info = info
+    }
+    
+    init(existingDisk: Disk, regularPartitions passedPartitions: [Partition]) {
+        self.rawContent = existingDisk.rawContent
+        self.deviceIdentifier = existingDisk.deviceIdentifier
+        self.regularPartitions = passedPartitions
+        self.apfsPartitions = nil
+        self.rawSize = existingDisk.rawSize
+        self.isFake = existingDisk.isFake
+        self.info = existingDisk.info
+    }
+    
+    init(existingDisk: Disk, apfsPartitions passedPartitions: [Partition]) {
+        self.rawContent = existingDisk.rawContent
+        self.deviceIdentifier = existingDisk.deviceIdentifier
+        self.apfsPartitions = passedPartitions
+        self.regularPartitions = nil
+        self.rawSize = existingDisk.rawSize
+        self.isFake = existingDisk.isFake
+        self.info = existingDisk.info
+    }
+    
+    static func copy(_ aDisk: Disk, regularPartitions partitions: [Partition]) throws -> Disk {
+        let copy = Disk(existingDisk: aDisk, regularPartitions: partitions)
+        return copy
+    }
+
     static func copy(_ aDisk: Disk, apfsPartitions partitions: [Partition]) throws -> Disk {
-        let copy = Disk(rawContent: aDisk.rawContent, deviceIdentifier: aDisk.deviceIdentifier, regularPartitions: nil, apfsPartitions: partitions, rawSize: aDisk.rawSize, isFake: aDisk.isFake)
+        let copy = Disk(existingDisk: aDisk, apfsPartitions: partitions)
         return copy
     }
 
@@ -102,7 +153,7 @@ struct Disk: FileSystemItem, Codable {
     }
 
     var description: String {
-        return "Disk: \n\t Size: \(self.size)\n\t Content: \(self.content)\n\t Device Identifier: \(self.deviceIdentifier) \n\t Partitions: \(self.partitions) \n\t Installable Partition: \(String(describing: self.installablePartition))\n"
+        return "Disk: \n\t Size: \(self.size)\n\t Content: \(self.content)\n\t Device Identifier: \(self.deviceIdentifier) \n\t Partitions: \(self.partitions) \n\t Has Info: \(self.info == nil ? "no" : "yes") \n\t Installable Partition: \(String(describing: self.installablePartition))\n"
     }
 
     static func == (lhs: Disk, rhs: Disk) -> Bool {

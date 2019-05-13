@@ -22,13 +22,17 @@ class DeviceInformationViewController: NSViewController {
 
     private var machineInformation: MachineInformation? = nil {
         didSet {
-            self.updateView()
+            if self.machineInformation != nil {
+                self.updateView()
+            }
         }
     }
 
     private var allGraphicsCards = [String]() {
         didSet {
-            self.reloadTableView(self.graphicsCardTableView)
+            if self.allGraphicsCards.count > 0 {
+                self.reloadTableView(self.graphicsCardTableView)
+            }
         }
     }
 
@@ -115,9 +119,10 @@ class DeviceInformationViewController: NSViewController {
 
         if MachineInformation.isConfigured {
             self.machineInformation = MachineInformation.shared
-        } else {
+        } else if let currentPreferences = PreferenceLoader.currentPreferences,
+            currentPreferences.useDeviceIdentifierAPI {
             MachineInformation.setup()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 self.machineInformation = MachineInformation.shared
             }
         }

@@ -27,6 +27,9 @@ class InstallerViewController: NSViewController {
     override func awakeFromNib() {
         NotificationCenter.default.addObserver(self, selector: #selector(InstallerViewController.getInstallableVersions), name: ItemRepository.newInstaller, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(updateStatusImages(_:)), name: DiskUtility.bootDiskAvailable, object: nil)
+
+        NotificationCenter.default.addObserver(self, selector: #selector(InstallerViewController.getInstallableVersions(notification:)), name: ItemRepository.newInstaller, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(InstallerViewController.getInstallableVersions(notification:)), name: ItemRepository.removeInstaller, object: nil)
     }
 
     override func viewDidLoad() {
@@ -38,11 +41,11 @@ class InstallerViewController: NSViewController {
     @objc func updateStatusImages(_ aNotification: Notification? = nil) {
         if !Thread.isMainThread {
             DispatchQueue.main.async {
-               self.updateStatusImages()
+                self.updateStatusImages()
             }
             return
         }
-        
+
         metalStatus.image = MachineInformation.shared.GPUStatus
         memoryStatus.image = MachineInformation.shared.RAMStatus
         hddStatus.image = MachineInformation.shared.HDDStatus
@@ -132,6 +135,37 @@ class InstallerViewController: NSViewController {
 
                 let entryRect = sender.convert(sender.bounds, to: NSApp.keyWindow?.contentView)
                 popover.show(relativeTo: entryRect, of: (NSApp.keyWindow?.contentView)!, preferredEdge: .minY)
+            }
+        }
+    }
+
+    @objc func getInstallableVersions(notification: Notification? = nil) {
+        if let notification = notification,
+            let installer = notification.object as? Installer,
+            let userInfo = notification.userInfo as? [String: String] {
+
+            if userInfo["type"] == "remove" {
+                installers.removeAll { $0 == installer }
+            } else if !installers.contains(installer) {
+                installers.append(installer)
+            }
+        } else {
+            installers = ItemRepository.shared.installers
+        }
+
+        installers.sort(by: { $0.version.sortNumber.doubleValue > $1.version.sortNumber.doubleValue && $0.isFakeInstaller == false })
+        reloadInstallersTableView()
+    }
+
+    private func reloadInstallersTableView() {
+        if(Thread.isMainThread == true) {
+            self.tableView.reloadData()
+        } else {
+            DispatchQueue.main.async {
+                if self.tableView != nil {
+                    self.tableView.reloadData()
+                    self.selectFirstInstallable()
+                }
             }
         }
     }

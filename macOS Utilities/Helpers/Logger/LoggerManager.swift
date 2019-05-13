@@ -37,13 +37,13 @@ class LoggerManager {
     public static func constructRemoteLogger(loggingPreferences: LoggingPreferences, debugMode: Bool = false) {
         if(PreferenceLoader.currentPreferences != nil && PreferenceLoader.currentPreferences?.loggingPreferences?.loggingEnabled == true) {
             let logger = RMPaperTrailLogger.sharedInstance()!
-            let systemUUID = NSApplication.shared.systemUUID ?? ""
+            let systemUUID = NSApplication.shared.getSerialNumber() ?? NSApplication.shared.systemUUID ?? ""
 
             logger.debug = debugMode
             logger.host = loggingPreferences.loggingURL
             logger.port = loggingPreferences.loggingPort
 
-            logger.machineName = Host.current().localizedName != nil ? String("\(Host.current().localizedName!)__(\(Sysctl.model)__\(systemUUID))") : String("\(Sysctl.model)__(\(systemUUID))")
+            logger.machineName = Host.current().localizedName != nil && !(Host.current().localizedName?.contains("NetBoot"))! ? String("\(Host.current().localizedName!)__(\(Sysctl.model)__\(systemUUID))") : String("\(Sysctl.model)__(\(systemUUID))")
 
             #if DEBUG
                 logger.machineName = logger.machineName! + "__DEBUG__"

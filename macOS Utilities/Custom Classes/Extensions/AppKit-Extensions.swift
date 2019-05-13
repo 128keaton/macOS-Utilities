@@ -263,6 +263,18 @@ extension NSViewController {
         alert.alertStyle = .warning
         alert.addButton(withTitle: "Yes")
         alert.addButton(withTitle: "No")
+        
         return alert.runModal() == .alertFirstButtonReturn
+    }
+    
+    func showConfirmationAlert(question: String, text: String, window: NSWindow, completionHandler: @escaping (NSApplication.ModalResponse) -> ()) {
+        let alert = NSAlert()
+        alert.messageText = question
+        alert.informativeText = text
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "Yes")
+        alert.addButton(withTitle: "No")
+        
+        alert.beginSheetModal(for: window, completionHandler: completionHandler)
     }
 }

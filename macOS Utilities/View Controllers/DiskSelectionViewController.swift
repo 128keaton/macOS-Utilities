@@ -24,18 +24,31 @@ class DiskSelectionViewController: NSViewController {
     private var selectedPartition: Partition? = nil
     private var selectedDisk: Disk? = nil
 
+    private var alreadyAppeared = false
+
     // MARK: Superclass overrides
     override func viewDidLoad() {
         super.viewDidLoad()
         self.diskProgressIndicator?.stopSpinning()
         updateBackButton()
         getSelectedInstaller()
+
+        NotificationCenter.default.addObserver(self, selector: #selector(handleCancelButtonFromLoadingPage(_:)), name: WizardViewController.cancelButtonNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(newDisksHandler), name: DiskUtility.newDisks, object: nil)
     }
 
     override func viewDidAppear() {
         super.viewDidAppear()
         updateBackButton()
         getSelectedInstaller()
+
+        if !alreadyAppeared {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.checkAndAskAboutFusionDrive()
+            }
+        }
+
+        alreadyAppeared = true
     }
 
     override func viewWillAppear() {
@@ -46,7 +59,7 @@ class DiskSelectionViewController: NSViewController {
 
     // MARK: Button actions
     @IBAction @objc func openDiskUtility(_ sender: NSButton) {
-      //  ApplicationUtility.shared.open("Disk Utility")
+        NotificationCenter.default.post(name: ItemRepository.openApplication, object: "Disk Utility")
     }
 
     @IBAction @objc func backButtonClicked(_ sender: NSButton) {
@@ -57,7 +70,79 @@ class DiskSelectionViewController: NSViewController {
         }
     }
 
+    @IBAction func refreshButtonClicked(_ sender: NSButton) {
+        diskUtility.getAllDisks()
+        self.checkAndAskAboutFusionDrive()
+    }
+
+    @objc func newDisksHandler() {
+        reloadTableView()
+    }
+
+    @objc func handleCancelButtonFromLoadingPage(_ notification: Notification) {
+        if let cancelID = notification.object as? String,
+            cancelID == "cancelErase" {
+
+            var itemName = ""
+
+            if let validPartition = self.selectedPartition {
+                itemName = "partition \(validPartition.volumeName)"
+            } else if let validDisk = self.selectedDisk {
+                itemName = "disk \(validDisk.deviceIdentifier)"
+            }
+
+            if let currentTask = TaskHandler.lastTask,
+                currentTask.isRunning {
+                currentTask.terminate()
+            }
+
+            if showConfirmationAlert(question: "Do you want to continue?", text: "You have cancelled the erase on \"\(itemName)\". Do you want to continue with install?") {
+                self.showFinishPage(volumeName: itemName, preformatted: true)
+            } else {
+                PageController.shared.dismissPageController()
+            }
+        }
+    }
+
     // MARK: Functions
+    private func checkAndAskAboutFusionDrive() {
+        let disks = diskUtility.allDisksWithPartitions.filter { $0.itemType == .disk } as! [Disk]
+        let disksWithInfo = disks.filter { $0.info != nil }
+        let disksPotentiallyFusionParts = disksWithInfo.filter { $0.info!.potentialFusionDriveHalve }
+
+        if disksPotentiallyFusionParts.count <= 1 {
+            DDLogVerbose("Internal Drives: \(disksPotentiallyFusionParts)")
+            DDLogVerbose("The reported number of internal drives (\(disksPotentiallyFusionParts.count)) was less than two, therefore no Fusion Drive.")
+            //             return
+        }
+
+        if (disksWithInfo.filter { $0.info!.isSolidState == true }).count == 0 {
+            DDLogVerbose("There weren't any non-hard disk drives, therefore no Fusion Drive.")
+            //               return
+        }
+
+        // Check for an HDD
+        if (disksWithInfo.filter { $0.info!.isSolidState == false }).count == 0 {
+            DDLogVerbose("There weren't any non-solid state drives, therefore no Fusion Drive.")
+            //        return
+        }
+
+        self.showConfirmationAlert(question: "Repair Fusion Drive?", text: "A potential Fusion Drive has been detected, do you want to try and repair it?", window: self.view.window!) { (modalResponse) in
+            if modalResponse == .alertFirstButtonReturn {
+                PageController.shared.goToLoadingPage(loadingText: "Repairing..", cancelButtonIdentifier: "repairFusionDrive")
+                self.diskUtility.createFusionDrive { (message, didCreate) in
+                    if didCreate {
+                        DDLogVerbose(message)
+                        self.showFinishPage(volumeName: "Macintosh HD")
+                    } else {
+                        PageController.shared.goToPreviousPage()
+                        DDLogError(message)
+                    }
+                }
+            }
+        }
+    }
+
     private func reloadTableView() {
         if let _tableView = self.tableView {
             DispatchQueue.main.async {
@@ -153,6 +238,14 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
         if fileSystemItem.itemType == .disk {
             self.selectedPartition = nil
             self.selectedDisk = (fileSystemItem as! Disk)
+
+            if diskUtility.installableDisksWithPartitions.indices.contains(row + 1),
+                let nextItem = diskUtility.installableDisksWithPartitions[row + 1] as? Partition,
+                let selectedDiskPartition = self.selectedDisk?.installablePartition,
+                selectedDiskPartition == nextItem {
+                self.tableView(tableView, selectNextRow: row)
+                return false
+            }
         } else if fileSystemItem.itemType == .partition {
             self.selectedDisk = nil
             self.selectedPartition = (fileSystemItem as! Partition)
@@ -209,6 +302,10 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
         }
     }
 
+    private func showFinishPage(volumeName: String, preformatted: Bool = false) {
+        PageController.shared.goToFinishPage(finishedText: "Erase Completed", descriptionText: "Please use the \(preformatted ? volumeName : "disk \"\(volumeName)\"") when installing macOS.", otherButtonTitle: "Open Installer", otherButtonSelector: #selector(DiskSelectionViewController.openInstaller), otherButtonSelectorTarget: self)
+    }
+
     @IBAction func nextButtonClicked(_ sender: NSButton) {
         if let selectedInstaller = self.selectedInstaller {
             if let partition = self.selectedPartition {
@@ -216,24 +313,24 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
                 let userConfirmedErase = self.showConfirmationAlert(question: "Confirm Disk Destruction", text: "Are you sure you want to erase disk \(volumeName)? This will make all the data on \(volumeName) unrecoverable.")
 
                 if(userConfirmedErase) {
-                    PageController.shared.goToLoadingPage(loadingText: "Erasing Disk \"\(volumeName)\"")
+                    PageController.shared.goToLoadingPage(loadingText: "Erasing Disk \"\(volumeName)\"", cancelButtonIdentifier: "cancelErase")
                     sender.isEnabled = false
 
                     partition.erase(newName: nil, forInstaller: selectedInstaller) { (didFinish, newVolumeName) in
                         if(didFinish), let volumeName = newVolumeName {
-                            PageController.shared.goToFinishPage(finishedText: "Erase Completed", descriptionText: "Please use the disk \"\(volumeName)\" when installing macOS.", otherButtonTitle: "Open Installer", otherButtonSelector: #selector(DiskSelectionViewController.openInstaller), otherButtonSelectorTarget: self)
+                            self.showFinishPage(volumeName: volumeName)
                         }
                     }
 
                 }
             } else if let disk = self.selectedDisk, disk.canErase {
                 let deviceIdentifier = disk.deviceIdentifier
-                PageController.shared.goToLoadingPage(loadingText: "Erasing Disk \"\(deviceIdentifier)\"")
+                PageController.shared.goToLoadingPage(loadingText: "Erasing Disk \"\(deviceIdentifier)\"", cancelButtonIdentifier: "cancelErase")
                 sender.isEnabled = false
 
                 disk.erase(newName: nil, forInstaller: selectedInstaller) { (didFinish, newDiskName) in
                     if(didFinish), let diskName = newDiskName {
-                        PageController.shared.goToFinishPage(finishedText: "Erase Completed", descriptionText: "Please use the disk \"\(diskName)\" when installing macOS.", otherButtonTitle: "Open Installer", otherButtonSelector: #selector(DiskSelectionViewController.openInstaller), otherButtonSelectorTarget: self)
+                        self.showFinishPage(volumeName: diskName)
                     }
                 }
             }

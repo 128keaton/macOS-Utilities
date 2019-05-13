@@ -167,7 +167,7 @@ class MenuHandler: NSObject {
         if let indexOfSender = infoMenu?.items.firstIndex(of: sender),
             installers.indices.contains(indexOfSender) == true,
             let selectedInstaller = (installers.first { $0.version == Version(versionName: versionName) }) {
-            
+
             ItemRepository.shared.setSelectedInstaller(selectedInstaller)
             PageController.shared.showPageController(initialPage: 1)
         } else {
@@ -178,37 +178,48 @@ class MenuHandler: NSObject {
 
     // MARK: Help menu functions
     @objc @IBAction func sendLog(_ sender: NSMenuItem) {
-        let emailService = NSSharingService(named: .composeEmail)
         let logFilePaths = (DDLog.allLoggers.first { $0 is DDFileLogger } as! DDFileLogger).logFileManager.sortedLogFilePaths.map { URL(fileURLWithPath: $0) }
-        let htmlContent = "<h2>Please type your issue here:</h2><br><p>Replace Me</p>".data(using: .utf8)
+        if NSWorkspace.shared.absolutePathForApplication(withBundleIdentifier: "com.apple.mail") != nil {
+            let emailService = NSSharingService(named: .composeEmail)
+            let htmlContent = "<h2>Please type your issue here:</h2><br><p>Replace Me</p>".data(using: .utf8)
 
-        var items: [Any] = [NSAttributedString(html: htmlContent!, options: [:], documentAttributes: nil)!]
-        let emailSubject = Host.current().localizedName != nil ? String("\(Host.current().localizedName!)__(\(Sysctl.model)__)") : String("\(Sysctl.model)")
+            var items: [Any] = [NSAttributedString(html: htmlContent!, options: [:], documentAttributes: nil)!]
+            let emailSubject = Host.current().localizedName != nil ? String("\(Host.current().localizedName!)__(\(Sysctl.model)__)") : String("\(Sysctl.model)")
 
-        logFilePaths.forEach { items.append($0) }
+            logFilePaths.forEach { items.append($0) }
 
-        emailService?.subject = emailSubject
-        emailService?.recipients = [helpEmailAddress!]
-        emailService?.perform(withItems: items)
+            emailService?.subject = emailSubject
+            emailService?.recipients = [helpEmailAddress!]
+            emailService?.perform(withItems: items)
+        } else if logFilePaths.count > 0 {
+            DDLogVerbose("No Mail application, lets go to the folder then.")
+            NSWorkspace.shared.activateFileViewerSelecting(logFilePaths)
+        }
     }
 
-    @IBAction func showLog(_ sender: NSMenuItem){
-        if let logFilePath = (DDLog.allLoggers.first { $0 is DDFileLogger } as! DDFileLogger).logFileManager.sortedLogFilePaths.first{
+    @IBAction func showLog(_ sender: NSMenuItem) {
+        if let logFilePath = (DDLog.allLoggers.first { $0 is DDFileLogger } as! DDFileLogger).logFileManager.sortedLogFilePaths.first {
             NSWorkspace.shared.open(logFilePath.fileURL)
         }
     }
-    
+
     // MARK: Data Functions
     @objc private func addUtilityToMenu(_ notification: Notification? = nil) {
         if let validNotification = notification {
             if let utility = validNotification.object as? Utility {
+                removeUtilityPlaceholder()
                 let newItem = NSMenuItem(title: utility.name, action: #selector(MenuHandler.openApp(_:)), keyEquivalent: "")
                 newItem.target = self
                 utilitiesMenu?.addItem(newItem)
             }
         }
     }
-    
+
+    private func removeUtilityPlaceholder() {
+        if (utilitiesMenu?.items.first { $0.isEnabled == false }) != nil {
+            utilitiesMenu?.items.removeAll { $0.isEnabled == false }
+        }
+    }
 
     @objc private func addInstallerToMenu(_ notification: Notification? = nil) {
         if let infoMenu = self.infoMenu {

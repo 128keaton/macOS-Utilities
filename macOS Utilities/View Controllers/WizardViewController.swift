@@ -11,12 +11,15 @@ import AppKit
 import CocoaLumberjack
 
 class WizardViewController: NSViewController {
+    static let cancelButtonNotification = Notification.Name(rawValue: "NSPageCancelButtonClicked")
+
     @IBOutlet weak var loadingSpinner: NSProgressIndicator?
     @IBOutlet weak var titleTextField: NSTextField?
     @IBOutlet weak var finishedImageView: NSImageView?
     @IBOutlet weak var descriptionLabel: NSTextField?
     @IBOutlet weak var dismissButton: NSButton?
     @IBOutlet weak var otherButton: NSButton?
+    @IBOutlet weak var cancelButton: NSButton?
 
     public var titleText: String = "Loading" {
         didSet {
@@ -54,6 +57,14 @@ class WizardViewController: NSViewController {
         }
     }
 
+    public var cancelButtonIdentifier: String? = nil {
+        didSet {
+            if let validCancelButton = self.cancelButton {
+                validCancelButton.isHidden = false
+            }
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         updateView()
@@ -65,6 +76,11 @@ class WizardViewController: NSViewController {
         updateDescriptionLabel()
         updateOtherButtonSelector()
         updateOtherButtonTitle()
+
+        if cancelButtonIdentifier == nil,
+            let validCancelButton = self.cancelButton {
+            validCancelButton.isHidden = true
+        }
     }
 
     public func updateViewMode() {
@@ -167,6 +183,10 @@ class WizardViewController: NSViewController {
 
         DDLogInfo("Performing action: \(otherButtonSelector) on target \(otherButtonSelectorTarget)")
         let _ = otherButtonSelectorTarget.perform(otherButtonSelector)
+    }
+
+    @IBAction func cancelButtonAction(_ sender: NSButton) {
+        NotificationCenter.default.post(name: WizardViewController.cancelButtonNotification, object: cancelButtonIdentifier)
     }
 
     private func updateOtherButtonTitle() {

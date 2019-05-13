@@ -23,40 +23,6 @@
 		8A584773226AB351008E9DE8 /* KBTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A584772226AB351008E9DE8 /* KBTableView.swift */; };
 		8A584776226ABDA5008E9DE8 /* CocoaLumberjack-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A584775226ABDA5008E9DE8 /* CocoaLumberjack-Extensions.swift */; };
 		8A584778226AC446008E9DE8 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A584777226AC446008E9DE8 /* Utility.swift */; };
-		8A584780226AD8E7008E9DE8 /* macOS_UtilitiesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A58477F226AD8E7008E9DE8 /* macOS_UtilitiesTests.swift */; };
-		8A584788226ADD9A008E9DE8 /* TestPreferenceLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A584787226ADD9A008E9DE8 /* TestPreferenceLoader.swift */; };
-		8A584789226ADDC5008E9DE8 /* PreferenceLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C6478225EA1EA00CD6DCF /* PreferenceLoader.swift */; };
-		8A58478B226ADEAF008E9DE8 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C6471225EA05300CD6DCF /* Preferences.swift */; };
-		8A58478C226ADEAF008E9DE8 /* LoggingPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C6474225EA0CE00CD6DCF /* LoggingPreferences.swift */; };
-		8A58478D226ADEAF008E9DE8 /* InstallerServerPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C6476225EA19200CD6DCF /* InstallerServerPreferences.swift */; };
-		8A58478E226ADEAF008E9DE8 /* LegacyPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A57BF3F2262A0C200719E74 /* LegacyPreferences.swift */; };
-		8A58478F226ADECF008E9DE8 /* RepositoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9370D52256D604002B3838 /* RepositoryItem.swift */; };
-		8A584790226ADECF008E9DE8 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A8B59A4224E9FD100CD4094 /* Application.swift */; };
-		8A584791226ADECF008E9DE8 /* Installer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE31C2252DA5800E537D3 /* Installer.swift */; };
-		8A584792226ADECF008E9DE8 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A584777226AC446008E9DE8 /* Utility.swift */; };
-		8A584793226ADECF008E9DE8 /* FileSystemItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ADFB00E226A76D900B637E5 /* FileSystemItem.swift */; };
-		8A584794226ADECF008E9DE8 /* DiskUtilityOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AFCCD8722654E4B0026CFE6 /* DiskUtilityOutput.swift */; };
-		8A584795226ADECF008E9DE8 /* HDIUtilOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841CD226593A1009C5948 /* HDIUtilOutput.swift */; };
-		8A584796226ADECF008E9DE8 /* Disk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9370CE2256B7F4002B3838 /* Disk.swift */; };
-		8A584797226ADECF008E9DE8 /* Share.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9370D02256BB5A002B3838 /* Share.swift */; };
-		8A584798226ADECF008E9DE8 /* Partition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6F8D892263D35B00077172 /* Partition.swift */; };
-		8A584799226ADECF008E9DE8 /* DiskImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841CB22659260009C5948 /* DiskImage.swift */; };
-		8A58479A226ADECF008E9DE8 /* ItemRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9370D32256D5F6002B3838 /* ItemRepository.swift */; };
-		8A58479B226ADED7008E9DE8 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841CF2265A509009C5948 /* Units.swift */; };
-		8A58479C226ADEE0008E9DE8 /* AppKit-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A662215226AA42B0072B3A4 /* AppKit-Extensions.swift */; };
-		8A58479D226ADEE0008E9DE8 /* Foundation-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A584770226AAF67008E9DE8 /* Foundation-Extensions.swift */; };
-		8A58479E226ADEE0008E9DE8 /* CocoaLumberjack-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A584775226ABDA5008E9DE8 /* CocoaLumberjack-Extensions.swift */; };
-		8A58479F226ADEF4008E9DE8 /* PaddedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841D222664276009C5948 /* PaddedTextField.swift */; };
-		8A5847A0226ADEF4008E9DE8 /* KBTextFieldDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9D9A9B2263084600E4D36F /* KBTextFieldDialog.swift */; };
-		8A5847A1226ADEF4008E9DE8 /* KBTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A584772226AB351008E9DE8 /* KBTableView.swift */; };
-		8A5847A2226ADF01008E9DE8 /* InstallerCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C645B225D4E9900CD6DCF /* InstallerCellView.swift */; };
-		8A5847A3226ADF01008E9DE8 /* NSCollectionAppCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */; };
-		8A5847A4226ADF13008E9DE8 /* CwlSysctl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87B8B621A47DD8004496AA /* CwlSysctl.swift */; };
-		8A5847A5226ADF13008E9DE8 /* TaskHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE3122252C1D800E537D3 /* TaskHandler.swift */; };
-		8A5847A6226ADF1F008E9DE8 /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0138D0221749BD00C77DA0 /* Version.swift */; };
-		8A5847A7226ADF1F008E9DE8 /* ModelYearDetermination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87B8B421A47D8C004496AA /* ModelYearDetermination.swift */; };
-		8A5847A8226ADF1F008E9DE8 /* MachineInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A093180226A056B00C742EB /* MachineInformation.swift */; };
-		8A5847A9226ADF41008E9DE8 /* DiskUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9370CC2256B53C002B3838 /* DiskUtility.swift */; };
 		8A662216226AA42B0072B3A4 /* AppKit-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A662215226AA42B0072B3A4 /* AppKit-Extensions.swift */; };
 		8A6C6459225D324900CD6DCF /* PageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C6458225D324900CD6DCF /* PageController.swift */; };
 		8A6C645C225D4E9900CD6DCF /* InstallerCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C645B225D4E9900CD6DCF /* InstallerCellView.swift */; };
@@ -102,18 +68,10 @@
 		8ACB65DC21063E6F004B9C5A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8ACB65DA21063E6F004B9C5A /* Main.storyboard */; };
 		8AED6288393102F645E0F76B /* (null) in Frameworks */ = {isa = PBXBuildFile; };
 		8AFCCD8822654E4B0026CFE6 /* DiskUtilityOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AFCCD8722654E4B0026CFE6 /* DiskUtilityOutput.swift */; };
-		D704DDA07CC244E30805C80B /* Pods_macOS_UtilitiesTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D34D0D826F1DE150B6BEB3E /* Pods_macOS_UtilitiesTests.framework */; };
+		8AFE1B772285F8BC0084D92E /* DiskInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AFE1B762285F8BC0084D92E /* DiskInfo.swift */; };
+		8AFE1B792286079C0084D92E /* CoreStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AFE1B782286079C0084D92E /* CoreStorage.swift */; };
+		8AFE1B7B228620520084D92E /* CoreStorageListOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AFE1B7A228620520084D92E /* CoreStorageListOutput.swift */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		8A584782226AD8E7008E9DE8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8ACB65C921063E6F004B9C5A /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 8ACB65D021063E6F004B9C5A;
-			remoteInfo = "macOS Utilities";
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		02F50B1561E3062ADD7CE4B7 /* Pods_macOS_Utilities.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_macOS_Utilities.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -136,7 +94,6 @@
 		8A584772226AB351008E9DE8 /* KBTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KBTableView.swift; sourceTree = "<group>"; };
 		8A584775226ABDA5008E9DE8 /* CocoaLumberjack-Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CocoaLumberjack-Extensions.swift"; sourceTree = "<group>"; };
 		8A584777226AC446008E9DE8 /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
-		8A58477D226AD8E7008E9DE8 /* macOS UtilitiesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "macOS UtilitiesTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A58477F226AD8E7008E9DE8 /* macOS_UtilitiesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = macOS_UtilitiesTests.swift; sourceTree = "<group>"; };
 		8A584781226AD8E7008E9DE8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8A584787226ADD9A008E9DE8 /* TestPreferenceLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestPreferenceLoader.swift; sourceTree = "<group>"; };
@@ -188,19 +145,14 @@
 		8ACB65DE21063E6F004B9C5A /* macOS_Utilities.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macOS_Utilities.entitlements; sourceTree = "<group>"; };
 		8ADFB00E226A76D900B637E5 /* FileSystemItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSystemItem.swift; sourceTree = "<group>"; };
 		8AFCCD8722654E4B0026CFE6 /* DiskUtilityOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskUtilityOutput.swift; sourceTree = "<group>"; };
+		8AFE1B762285F8BC0084D92E /* DiskInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskInfo.swift; sourceTree = "<group>"; };
+		8AFE1B782286079C0084D92E /* CoreStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreStorage.swift; sourceTree = "<group>"; };
+		8AFE1B7A228620520084D92E /* CoreStorageListOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreStorageListOutput.swift; sourceTree = "<group>"; };
 		D04B207FCA2163F7FF4B0B6B /* Pods-macOS Utilities.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-macOS Utilities.debug.xcconfig"; path = "Pods/Target Support Files/Pods-macOS Utilities/Pods-macOS Utilities.debug.xcconfig"; sourceTree = "<group>"; };
 		D8A022574234BFBF730A7F5C /* Pods-macOS Utilities.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-macOS Utilities.release.xcconfig"; path = "Pods/Target Support Files/Pods-macOS Utilities/Pods-macOS Utilities.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		8A58477A226AD8E7008E9DE8 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				D704DDA07CC244E30805C80B /* Pods_macOS_UtilitiesTests.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		8ACB65CE21063E6F004B9C5A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -315,6 +267,9 @@
 			children = (
 				8AFCCD8722654E4B0026CFE6 /* DiskUtilityOutput.swift */,
 				8AA841CD226593A1009C5948 /* HDIUtilOutput.swift */,
+				8AFE1B762285F8BC0084D92E /* DiskInfo.swift */,
+				8AFE1B782286079C0084D92E /* CoreStorage.swift */,
+				8AFE1B7A228620520084D92E /* CoreStorageListOutput.swift */,
 			);
 			path = "Output Parsers";
 			sourceTree = "<group>";
@@ -513,7 +468,6 @@
 			isa = PBXGroup;
 			children = (
 				8ACB65D121063E6F004B9C5A /* macOS Utilities.app */,
-				8A58477D226AD8E7008E9DE8 /* macOS UtilitiesTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -537,26 +491,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8A58477C226AD8E7008E9DE8 /* macOS UtilitiesTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 8A584784226AD8E7008E9DE8 /* Build configuration list for PBXNativeTarget "macOS UtilitiesTests" */;
-			buildPhases = (
-				6E9788A29D8ADA0D1E7F5651 /* [CP] Check Pods Manifest.lock */,
-				8A584779226AD8E7008E9DE8 /* Sources */,
-				8A58477A226AD8E7008E9DE8 /* Frameworks */,
-				8A58477B226AD8E7008E9DE8 /* Resources */,
-				DA0D83019391950B78DC1848 /* [CP] Embed Pods Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				8A584783226AD8E7008E9DE8 /* PBXTargetDependency */,
-			);
-			name = "macOS UtilitiesTests";
-			productName = "macOS UtilitiesTests";
-			productReference = 8A58477D226AD8E7008E9DE8 /* macOS UtilitiesTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		8ACB65D021063E6F004B9C5A /* macOS Utilities */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8ACB65E121063E6F004B9C5A /* Build configuration list for PBXNativeTarget "macOS Utilities" */;
@@ -586,11 +520,6 @@
 				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = "Keaton Burleson";
 				TargetAttributes = {
-					8A58477C226AD8E7008E9DE8 = {
-						CreatedOnToolsVersion = 10.2.1;
-						ProvisioningStyle = Automatic;
-						TestTargetID = 8ACB65D021063E6F004B9C5A;
-					};
 					8ACB65D021063E6F004B9C5A = {
 						CreatedOnToolsVersion = 9.2;
 						LastSwiftMigration = 1020;
@@ -617,19 +546,11 @@
 			projectRoot = "";
 			targets = (
 				8ACB65D021063E6F004B9C5A /* macOS Utilities */,
-				8A58477C226AD8E7008E9DE8 /* macOS UtilitiesTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		8A58477B226AD8E7008E9DE8 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		8ACB65CF21063E6F004B9C5A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -663,6 +584,7 @@
 				"${BUILT_PRODUCTS_DIR}/CocoaAsyncSocket/CocoaAsyncSocket.framework",
 				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack/CocoaLumberjack.framework",
 				"${BUILT_PRODUCTS_DIR}/PaperTrailLumberjack/PaperTrailLumberjack.framework",
+				"${BUILT_PRODUCTS_DIR}/STPrivilegedTask/STPrivilegedTask.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -675,33 +597,12 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaAsyncSocket.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaLumberjack.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PaperTrailLumberjack.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/STPrivilegedTask.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-macOS Utilities/Pods-macOS Utilities-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		6E9788A29D8ADA0D1E7F5651 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-macOS UtilitiesTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		D6B004D59B8D6F5F589502D9 /* [CP] Check Pods Manifest.lock */ = {
@@ -722,84 +623,9 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		DA0D83019391950B78DC1848 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-macOS UtilitiesTests/Pods-macOS UtilitiesTests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
-				"${BUILT_PRODUCTS_DIR}/Alamofire-SwiftyJSON/Alamofire_SwiftyJSON.framework",
-				"${BUILT_PRODUCTS_DIR}/AppFolder/AppFolder.framework",
-				"${BUILT_PRODUCTS_DIR}/BMExtendablePageController/BMExtendablePageController.framework",
-				"${BUILT_PRODUCTS_DIR}/CAAnimationBlocks/CAAnimationBlocks.framework",
-				"${BUILT_PRODUCTS_DIR}/CocoaAsyncSocket/CocoaAsyncSocket.framework",
-				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack/CocoaLumberjack.framework",
-				"${BUILT_PRODUCTS_DIR}/PaperTrailLumberjack/PaperTrailLumberjack.framework",
-				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire_SwiftyJSON.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AppFolder.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BMExtendablePageController.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CAAnimationBlocks.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaAsyncSocket.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaLumberjack.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PaperTrailLumberjack.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-macOS UtilitiesTests/Pods-macOS UtilitiesTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		8A584779226AD8E7008E9DE8 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				8A5847A0226ADEF4008E9DE8 /* KBTextFieldDialog.swift in Sources */,
-				8A5847A5226ADF13008E9DE8 /* TaskHandler.swift in Sources */,
-				8A584795226ADECF008E9DE8 /* HDIUtilOutput.swift in Sources */,
-				8A5847A1226ADEF4008E9DE8 /* KBTableView.swift in Sources */,
-				8A5847A6226ADF1F008E9DE8 /* Version.swift in Sources */,
-				8A584790226ADECF008E9DE8 /* Application.swift in Sources */,
-				8A584780226AD8E7008E9DE8 /* macOS_UtilitiesTests.swift in Sources */,
-				8A5847A2226ADF01008E9DE8 /* InstallerCellView.swift in Sources */,
-				8A584788226ADD9A008E9DE8 /* TestPreferenceLoader.swift in Sources */,
-				8A584792226ADECF008E9DE8 /* Utility.swift in Sources */,
-				8A58478D226ADEAF008E9DE8 /* InstallerServerPreferences.swift in Sources */,
-				8A584799226ADECF008E9DE8 /* DiskImage.swift in Sources */,
-				8A5847A7226ADF1F008E9DE8 /* ModelYearDetermination.swift in Sources */,
-				8A584796226ADECF008E9DE8 /* Disk.swift in Sources */,
-				8A58479D226ADEE0008E9DE8 /* Foundation-Extensions.swift in Sources */,
-				8A58478B226ADEAF008E9DE8 /* Preferences.swift in Sources */,
-				8A584794226ADECF008E9DE8 /* DiskUtilityOutput.swift in Sources */,
-				8A58479A226ADECF008E9DE8 /* ItemRepository.swift in Sources */,
-				8A584797226ADECF008E9DE8 /* Share.swift in Sources */,
-				8A584798226ADECF008E9DE8 /* Partition.swift in Sources */,
-				8A5847A8226ADF1F008E9DE8 /* MachineInformation.swift in Sources */,
-				8A58479B226ADED7008E9DE8 /* Units.swift in Sources */,
-				8A58479E226ADEE0008E9DE8 /* CocoaLumberjack-Extensions.swift in Sources */,
-				8A5847A9226ADF41008E9DE8 /* DiskUtility.swift in Sources */,
-				8A58478F226ADECF008E9DE8 /* RepositoryItem.swift in Sources */,
-				8A584793226ADECF008E9DE8 /* FileSystemItem.swift in Sources */,
-				8A584791226ADECF008E9DE8 /* Installer.swift in Sources */,
-				8A58479F226ADEF4008E9DE8 /* PaddedTextField.swift in Sources */,
-				8A5847A4226ADF13008E9DE8 /* CwlSysctl.swift in Sources */,
-				8A58478C226ADEAF008E9DE8 /* LoggingPreferences.swift in Sources */,
-				8A58478E226ADEAF008E9DE8 /* LegacyPreferences.swift in Sources */,
-				8A584789226ADDC5008E9DE8 /* PreferenceLoader.swift in Sources */,
-				8A5847A3226ADF01008E9DE8 /* NSCollectionAppCell.swift in Sources */,
-				8A58479C226ADEE0008E9DE8 /* AppKit-Extensions.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		8ACB65CD21063E6F004B9C5A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -807,6 +633,7 @@
 				8A6F8D8A2263D35B00077172 /* Partition.swift in Sources */,
 				8A9D9A962262F24A00E4D36F /* IPAddressChooserDialog.swift in Sources */,
 				8A6C6463225DB40A00CD6DCF /* DeviceIdentifier.swift in Sources */,
+				8AFE1B7B228620520084D92E /* CoreStorageListOutput.swift in Sources */,
 				8A9370CF2256B7F4002B3838 /* Disk.swift in Sources */,
 				8A6C646B225DB49000CD6DCF /* DeviceUniqueID.swift in Sources */,
 				8AA841D02265A509009C5948 /* Units.swift in Sources */,
@@ -816,6 +643,7 @@
 				8A9D9A9C2263084600E4D36F /* KBTextFieldDialog.swift in Sources */,
 				8A584771226AAF67008E9DE8 /* Foundation-Extensions.swift in Sources */,
 				8A87B8B521A47D8C004496AA /* ModelYearDetermination.swift in Sources */,
+				8AFE1B792286079C0084D92E /* CoreStorage.swift in Sources */,
 				8A6C6479225EA1EA00CD6DCF /* PreferenceLoader.swift in Sources */,
 				8A6C6469225DB48200CD6DCF /* DeviceConfigurationCode.swift in Sources */,
 				8A6C6467225DB47200CD6DCF /* DeviceInfo.swift in Sources */,
@@ -828,6 +656,7 @@
 				8A6C6477225EA19200CD6DCF /* InstallerServerPreferences.swift in Sources */,
 				8A6C6459225D324900CD6DCF /* PageController.swift in Sources */,
 				8A6C6475225EA0CE00CD6DCF /* LoggingPreferences.swift in Sources */,
+				8AFE1B772285F8BC0084D92E /* DiskInfo.swift in Sources */,
 				8A6C6470225E9FA100CD6DCF /* PreferencesViewController.swift in Sources */,
 				8A6F28F0221B9F5C00FF9DB3 /* InstallerViewController.swift in Sources */,
 				8ABAE31D2252DA5800E537D3 /* Installer.swift in Sources */,
@@ -860,14 +689,6 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXTargetDependency section */
-		8A584783226AD8E7008E9DE8 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 8ACB65D021063E6F004B9C5A /* macOS Utilities */;
-			targetProxy = 8A584782226AD8E7008E9DE8 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
 /* Begin PBXVariantGroup section */
 		8ACB65DA21063E6F004B9C5A /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
@@ -880,47 +701,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		8A584785226AD8E7008E9DE8 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7869FA87384CE89FE146572E /* Pods-macOS UtilitiesTests.debug.xcconfig */;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = JMQ9Y3A8K6;
-				INFOPLIST_FILE = "macOS UtilitiesTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.128keaton.macOS-UtilitiesTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/macOS Utilities.app/Contents/MacOS/macOS Utilities";
-			};
-			name = Debug;
-		};
-		8A584786226AD8E7008E9DE8 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6860ADA373D41D17F16C8D3A /* Pods-macOS UtilitiesTests.release.xcconfig */;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = JMQ9Y3A8K6;
-				INFOPLIST_FILE = "macOS UtilitiesTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.128keaton.macOS-UtilitiesTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/macOS Utilities.app/Contents/MacOS/macOS Utilities";
-			};
-			name = Release;
-		};
 		8ACB65DF21063E6F004B9C5A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1076,15 +856,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		8A584784226AD8E7008E9DE8 /* Build configuration list for PBXNativeTarget "macOS UtilitiesTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				8A584785226AD8E7008E9DE8 /* Debug */,
-				8A584786226AD8E7008E9DE8 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		8ACB65CC21063E6F004B9C5A /* Build configuration list for PBXProject "macOS Utilities" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
