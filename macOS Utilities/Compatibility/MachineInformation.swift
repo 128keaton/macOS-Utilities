@@ -228,7 +228,6 @@ class MachineInformation {
     }
 
     public var anonymisedSerialNumber: String {
-        self.initializeDeviceInfo()
         if let deviceInfo = self.deviceInfo {
             return deviceInfo.anonymised
         }
@@ -302,7 +301,6 @@ class MachineInformation {
     }
 
     public var productImage: NSImage {
-        self.initializeDeviceInfo()
         if let deviceInfo = self.deviceInfo {
             if let productImage = deviceInfo.configurationCode.image {
                 return productImage

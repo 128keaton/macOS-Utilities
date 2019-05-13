@@ -66,15 +66,15 @@ class DeviceInformationViewController: NSViewController {
             skuHintLabel?.stringValue = machineInformation.displayName
             serialNumberLabel?.stringValue = "Serial Number: \(machineInformation.anonymisedSerialNumber)"
 
-            
-            if configurationImage?.image == NSImage(named: "NSAppleIcon"){
+
+            if configurationImage?.image == NSImage(named: "NSAppleIcon") {
                 if #available(OSX 10.14, *) {
                     configurationImage?.contentTintColor = .gray
                 } else {
-                   configurationImage?.image = NSImage(named: "NSAppleIcon")!.tint(color: .gray)
+                    configurationImage?.image = NSImage(named: "NSAppleIcon")!.tint(color: .gray)
                 }
             }
-            
+
             machineInformation.getCPU { (CPU) in
                 DispatchQueue.main.async {
                     self.otherSpecsLabel?.stringValue = "\(machineInformation.RAM) of RAM - \(CPU.condensed)"
@@ -112,7 +112,7 @@ class DeviceInformationViewController: NSViewController {
         super.viewDidLoad()
 
         objectsToModify = [configurationImage, skuHintLabel, otherSpecsLabel, serialNumberLabel]
-        
+
         if MachineInformation.isConfigured {
             self.machineInformation = MachineInformation.shared
         } else {
@@ -131,7 +131,7 @@ class DeviceInformationViewController: NSViewController {
         self.reloadTableView(disksAndPartitionsTableView)
         NotificationCenter.default.addObserver(self, selector: #selector(reloadTableView(_:)), name: DiskUtility.newDisks, object: nil)
     }
-    
+
     @IBAction func openSerialLink(_ sender: NSButton) {
         if let machineInformation = self.machineInformation {
             machineInformation.openWarrantyLink()
@@ -151,6 +151,7 @@ extension DeviceInformationViewController: NSTableViewDelegate, NSTableViewDeleg
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         var text: String = ""
         var cellIdentifier: String = ""
+        var textFieldColor: NSColor? = nil
         var image: NSImage? = nil
 
         if tableView == self.disksAndPartitionsTableView {
@@ -159,7 +160,9 @@ extension DeviceInformationViewController: NSTableViewDelegate, NSTableViewDeleg
                 let disk = fileSystemItem as! Disk
 
                 if tableColumn == tableView.tableColumns[0] {
-                    text = disk.deviceIdentifier
+                    text = disk.partitions.count == 0 ? "\(disk.deviceIdentifier) - (no partitions)" : disk.deviceIdentifier
+                    textFieldColor = disk.partitions.count == 0 ? NSColor.tertiaryLabelColor : nil
+
                     cellIdentifier = CellIdentifiers.DiskNameCell
                 } else if tableColumn == tableView.tableColumns[1] {
                     text = disk.size.getReadableUnit()
@@ -170,15 +173,12 @@ extension DeviceInformationViewController: NSTableViewDelegate, NSTableViewDeleg
                 let partition = fileSystemItem as! Partition
 
                 if tableColumn == tableView.tableColumns[0] {
-                    text = partition.volumeName
+                    text = partition.volumeName != "Not mounted" ? partition.volumeName : partition.deviceIdentifier
+                    textFieldColor = partition.rawVolumeName == nil ? NSColor.tertiaryLabelColor : nil
                     cellIdentifier = CellIdentifiers.PartitionNameCell
                 } else if tableColumn == tableView.tableColumns[1] {
                     text = partition.size.getReadableUnit()
                     cellIdentifier = CellIdentifiers.PartitionSizeCell
-                }
-                if let cell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: cellIdentifier), owner: nil) as? NSTableCellView {
-                    cell.textField?.stringValue = text
-                    return cell
                 }
             }
         } else if tableView == graphicsCardTableView {
@@ -198,6 +198,11 @@ extension DeviceInformationViewController: NSTableViewDelegate, NSTableViewDeleg
             if let cellImage = image {
                 cell.imageView?.image = cellImage
             }
+
+            if let textColor = textFieldColor {
+                cell.textField?.textColor = textColor
+            }
+
             return cell
         }
         return nil
