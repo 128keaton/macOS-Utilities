@@ -51,6 +51,7 @@ class DiskImage: FileSystemItem, Codable, Equatable {
         if isMountable,
             let validMountPoint = self.mountPoint,
             validMountPoint.fileURL.filestatus != .isNot {
+            ItemRepository.shared.scanForMountedInstallers()
             DDLogVerbose("Mounted at: \(validMountPoint)")
         }
     }

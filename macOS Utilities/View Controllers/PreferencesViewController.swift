@@ -49,7 +49,7 @@ class PreferencesViewController: NSViewController {
         if let preferenceLoader = PreferenceLoader.sharedInstance {
             self.preferenceLoader = preferenceLoader
 
-            NotificationCenter.default.addObserver(self, selector: #selector(PreferencesViewController.readPreferences), name: PreferenceLoader.preferencesLoaded, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(PreferencesViewController.readPreferences), name: GlobalNotifications.preferencesLoaded, object: nil)
 
             if(preferences == nil) {
                 readPreferences()
@@ -282,7 +282,7 @@ class PreferencesViewController: NSViewController {
 
                 PreferenceLoader.save(preferences)
 
-                NotificationCenter.default.post(name: ItemRepository.reloadApplications, object: [])
+                NotificationCenter.default.post(name: GlobalNotifications.reloadApplications, object: [])
                 configureView()
             }
         }

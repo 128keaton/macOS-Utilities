@@ -24,6 +24,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var installers = [Installer]()
     private var preferencesSemaphore: DispatchSemaphore? = nil
     private var helpEmailAddress: String? = nil
+    private var waitingDialog: NSWindowController? = nil
 
     public let modelYearDetermination = ModelYearDetermination()
     public let pageControllerDelegate: PageController = PageController.shared
@@ -34,10 +35,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         registerForNotifications()
 
         PreferenceLoader.setup()
-        
+
         if let preferenceLoader = PreferenceLoader.sharedInstance {
             self.preferenceLoader = preferenceLoader
-            NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.readPreferences(_:)), name: PreferenceLoader.preferencesLoaded, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.readPreferences(_:)), name: GlobalNotifications.preferencesLoaded, object: nil)
         }
 
         if #available(OSX 10.12.2, *) {
@@ -66,12 +67,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private func registerForNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.setupMachineInformation), name: DeviceIdentifier.didSetupNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.showErrorAlert(notification:)), name: ErrorAlertLogger.showErrorAlert, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.quitNowHandler), name: GlobalNotifications.quitNow, object: nil)
     }
 
     @objc private func showErrorAlert(notification: Notification) {
         if let errorDescription = notification.object as? String {
             NSApplication.shared.showErrorAlertOnCurrentWindow(title: "Error", message: errorDescription)
         }
+    }
+
+    @objc private func quitNowHandler() {
+        NSApplication.shared.terminate(self)
     }
 
     @objc private func readPreferences(_ aNotification: Notification? = nil) {
@@ -91,9 +97,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         if let preferences = PreferenceLoader.currentPreferences {
             if let installerServer = preferences.installerServerPreferences {
-                DiskUtility.shared.mountNFSShare(shareURL: "\(installerServer.serverIP):\(installerServer.serverPath)", localPath: installerServer.mountPath) { (didSucceed) in
+                DiskUtility.mountNFSShare(shareURL: "\(installerServer.serverIP):\(installerServer.serverPath)", localPath: installerServer.mountPath) { (didSucceed) in
                     if(didSucceed) {
-                        DiskUtility.shared.mountDiskImagesAt(installerServer.mountPath)
+                        HardDriveImageUtility.mountDiskImagesAt(installerServer.mountPath)
                     }
                 }
             }
@@ -110,7 +116,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 validSemaphore.signal()
                 self.preferencesMenuItem?.isEnabled = true
             }
-            
+
             if preferences.mappedApplications != nil {
                 // BAD
                 // BAD BAD
@@ -128,6 +134,29 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+    private func showWaitingDialog() {
+        if !Thread.isMainThread || waitingDialog != nil {
+            return
+        }
+        
+        closeMainWindow()
+        waitingDialog = NSStoryboard(name: "Main", bundle: nil).instantiateController(withIdentifier: "waitingToQuitDialog") as? NSWindowController
+       
+        if let dialog = waitingDialog{
+            dialog.showWindow(self)
+        }
+    }
+
+    private func closeMainWindow() {
+        if let keyWindow = NSApplication.shared.keyWindow {
+            keyWindow.close()
+        }
+
+        if let mainWindow = NSApplication.shared.mainWindow {
+            mainWindow.close()
+        }
+    }
+
     @objc func setupMachineInformation() {
         if let currentPreferences = PreferenceLoader.currentPreferences {
             if currentPreferences.useDeviceIdentifierAPI == true && DeviceIdentifier.isConfigured == true {
@@ -140,13 +169,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if let validPreferences = PreferenceLoader.currentPreferences,
             let ejectDrivesOnQuit = validPreferences.ejectDrivesOnQuit,
             ejectDrivesOnQuit == true {
-            if(DiskUtility.shared.allSharesAndInstallersUnmounted == false) {
+
+            if(DiskUtility.allSharesAndInstallersUnmounted == false) {
+                showWaitingDialog()
                 DDLogInfo("Terminating application..waiting for disks to eject")
-                DiskUtility.shared.ejectAll() { (didComplete) in
-                    DDLogInfo("Finished ejecting? \(didComplete)")
+                DiskUtility.ejectAll() { (didComplete) in
                     self.checkIfReadyToTerminate()
                 }
-                return .terminateLater
+                return .terminateCancel
             }
         }
         return .terminateNow

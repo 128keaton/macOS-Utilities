@@ -18,7 +18,7 @@ struct Partition: FileSystemItem, Codable {
     var volumeUUID: String?
     var mountPoint: String?
     var isFake: Bool = false
-    
+
     var id: String {
         return volumeUUID ?? diskUUID ?? String.random(12)
     }
@@ -29,11 +29,11 @@ struct Partition: FileSystemItem, Codable {
     var itemType: FileSystemItemType {
         return .partition
     }
-    
+
     private var nonInstallableDriveNames: [String] {
         return ["System Reserved", "EFI", "Recovery", "VM", "Preboot", "Time Machine"]
     }
-    
+
     var volumeName: String {
         if let absoluteVolumeName = self.rawVolumeName {
             return absoluteVolumeName
@@ -56,7 +56,7 @@ struct Partition: FileSystemItem, Codable {
             let contentViewController = mainWindow.contentViewController {
             userConfirmedErase = contentViewController.showConfirmationAlert(question: "Confirm Disk Destruction", text: "Are you sure you want to erase disk \(self.volumeName)? This will make all the data on \(self.volumeName) unrecoverable.")
         }
-        
+
         return !self.containsInstaller && userConfirmedErase
     }
 
@@ -90,19 +90,19 @@ struct Partition: FileSystemItem, Codable {
         return self.mountPoint ?? "Not mounted"
     }
 
-    public func erase(newName: String? = nil, forInstaller: Installer? = nil, returnCompletion: @escaping (Bool, String?) -> ()){
-        DiskUtility.shared.erase(self, newName: newName, forInstaller: forInstaller) { (didComplete, newDiskName) in
+    public func erase(newName: String? = nil, forInstaller: Installer? = nil, returnCompletion: @escaping (Bool, String?) -> ()) {
+        DiskUtility.erase(self, newName: newName, forInstaller: forInstaller) { (didComplete, newDiskName) in
             returnCompletion(didComplete, newDiskName)
         }
     }
-    
-    public func scanForInstaller(){
-        if self.volumeName.contains("Install macOS") || self.volumeName.contains("Install OS X"){
-            let volumePath = "/Volumes/\(self.volumeName)"
-            let _ = Installer(volumePath: volumePath, mountPoint: volumePath.fileURL, appName: self.volumeName)
+
+    public func scanForInstaller() {
+        if self.volumeName.contains("Install macOS") || self.volumeName.contains("Install OS X") {
+            let newInstaller = Installer(volumePath: "/Volumes/\(self.volumeName)", appName: self.volumeName, addToRepo: false)
+            ItemRepository.shared.addToRepository(newItem: newInstaller)
         }
     }
-    
+
     static func == (lhs: Partition, rhs: Partition) -> Bool {
         return lhs.volumeUUID == rhs.volumeUUID && lhs.diskUUID == rhs.diskUUID
     }

@@ -47,7 +47,7 @@ class MachineInformation {
             self.cachedCPU = CPU
         }
 
-        NotificationCenter.default.addObserver(self, selector: #selector(bootDiskAvailable(_:)), name: DiskUtility.bootDiskAvailable, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(bootDiskAvailable(_:)), name: GlobalNotifications.bootDiskAvailable, object: nil)
         parseGPUInfo()
     }
 
@@ -70,7 +70,7 @@ class MachineInformation {
         if let notification = aNotification,
             let bootDisk = notification.object as? Disk {
             self.bootDisk = bootDisk
-        } else if let bootDisk = DiskUtility.shared.bootDisk {
+        } else if let bootDisk = DiskUtility.bootDisk {
             self.bootDisk = bootDisk
         }
     }

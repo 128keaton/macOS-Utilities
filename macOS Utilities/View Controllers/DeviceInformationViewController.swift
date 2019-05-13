@@ -134,7 +134,7 @@ class DeviceInformationViewController: NSViewController {
         self.disksAndPartitionsTableView?.sizeToFit()
 
         self.reloadTableView(disksAndPartitionsTableView)
-        NotificationCenter.default.addObserver(self, selector: #selector(reloadTableView(_:)), name: DiskUtility.newDisks, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadTableView(_:)), name: GlobalNotifications.newDisks, object: nil)
     }
 
     @IBAction func openSerialLink(_ sender: NSButton) {
@@ -160,7 +160,7 @@ extension DeviceInformationViewController: NSTableViewDelegate, NSTableViewDeleg
         var image: NSImage? = nil
 
         if tableView == self.disksAndPartitionsTableView {
-            let fileSystemItem = DiskUtility.shared.allDisksWithPartitions[row]
+            let fileSystemItem = DiskUtility.allDisksWithPartitions[row]
             if fileSystemItem.itemType == .disk {
                 let disk = fileSystemItem as! Disk
 
@@ -227,7 +227,7 @@ extension DeviceInformationViewController: NSTableViewDelegate, NSTableViewDeleg
 extension DeviceInformationViewController: NSTableViewDataSource {
     func numberOfRows(in tableView: NSTableView) -> Int {
         if tableView == self.disksAndPartitionsTableView {
-            return DiskUtility.shared.allDisksWithPartitions.count
+            return DiskUtility.allDisksWithPartitions.count
         }
         return allGraphicsCards.count
     }

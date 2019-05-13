@@ -11,9 +11,6 @@ import AppFolder
 import PaperTrailLumberjack
 
 class PreferenceLoader {
-    static let preferencesLoaded = NSNotification.Name(rawValue: "NSPreferencesLoaded")
-    static let preferencesUpdated = NSNotification.Name(rawValue: "NSPreferencesUpdated")
-
     public static let libraryFolder = "\(AppFolder.Library.Application_Support.url.path)/ER2/"
     public static let bundle = Bundle.main
     public static let propertyListName = "com.er2.applications"
@@ -38,7 +35,7 @@ class PreferenceLoader {
                 PreferenceLoader.currentPreferences = preferences
                 PreferenceLoader.previousPreferences = preferences.copy() as? Preferences
                 self.setupOtherServices()
-                NotificationCenter.default.post(name: PreferenceLoader.preferencesLoaded, object: nil)
+                NotificationCenter.default.post(name: GlobalNotifications.preferencesLoaded, object: nil)
             }
         }
     }
@@ -84,9 +81,9 @@ class PreferenceLoader {
 
                 if notify {
                     PreferenceLoader.currentPreferences = preferences
-                    NotificationCenter.default.post(name: PreferenceLoader.preferencesLoaded, object: true)
+                    NotificationCenter.default.post(name: GlobalNotifications.preferencesLoaded, object: true)
                 } else {
-                    NotificationCenter.default.post(name: PreferenceLoader.preferencesUpdated, object: preferences)
+                    NotificationCenter.default.post(name: GlobalNotifications.preferencesUpdated, object: preferences)
                 }
             } catch {
                 DDLogError("Could not save preferences: \(error)")

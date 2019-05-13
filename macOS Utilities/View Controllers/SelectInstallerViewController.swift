@@ -1,5 +1,5 @@
 //
-//  InstallViewController.swift
+//  SelectInstallerViewController.swift
 //  macOS Utilities
 //
 //  Created by Keaton Burleson on 2/18/19.
@@ -10,7 +10,7 @@ import Foundation
 import AppKit
 import CocoaLumberjack
 
-class InstallerViewController: NSViewController {
+class SelectInstallerViewController: NSViewController {
     @IBOutlet weak var metalStatus: NSButton!
     @IBOutlet weak var hddStatus: NSButton!
     @IBOutlet weak var memoryStatus: NSButton!
@@ -25,11 +25,11 @@ class InstallerViewController: NSViewController {
     public var selectedVersion: Installer? = nil
 
     override func awakeFromNib() {
-        NotificationCenter.default.addObserver(self, selector: #selector(InstallerViewController.getInstallableVersions), name: ItemRepository.newInstaller, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(updateStatusImages(_:)), name: DiskUtility.bootDiskAvailable, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SelectInstallerViewController.getInstallableVersions), name: GlobalNotifications.newInstaller, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateStatusImages(_:)), name: GlobalNotifications.bootDiskAvailable, object: nil)
 
-        NotificationCenter.default.addObserver(self, selector: #selector(InstallerViewController.getInstallableVersions(notification:)), name: ItemRepository.newInstaller, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(InstallerViewController.getInstallableVersions(notification:)), name: ItemRepository.removeInstaller, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SelectInstallerViewController.getInstallableVersions(notification:)), name: GlobalNotifications.newInstaller, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SelectInstallerViewController.getInstallableVersions(notification:)), name: GlobalNotifications.removeInstaller, object: nil)
     }
 
     override func viewDidLoad() {
@@ -52,7 +52,7 @@ class InstallerViewController: NSViewController {
     }
 
     @objc func getInstallableVersions() {
-        let returnedInstallers = ItemRepository.shared.installers
+        let returnedInstallers = ItemRepository.shared.installers.sorted { $0.version.sortNumber.intValue > $1.version.sortNumber.intValue && !$0.isFakeInstaller }
         if(returnedInstallers != installers) {
             installers = returnedInstallers
             if(Thread.isMainThread == true) {
@@ -171,7 +171,7 @@ class InstallerViewController: NSViewController {
     }
 
     @objc func openDiskUtility() {
-        NotificationCenter.default.post(name: ItemRepository.openApplication, object: "Disk Utility")
+        NotificationCenter.default.post(name: GlobalNotifications.openApplication, object: "Disk Utility")
     }
 
     @IBAction @objc func cancelButtonClicked(_ sender: Any?) {
@@ -195,13 +195,13 @@ class InstallerViewController: NSViewController {
     }
 }
 
-extension InstallerViewController: NSTableViewDataSource {
+extension SelectInstallerViewController: NSTableViewDataSource {
     func numberOfRows(in tableView: NSTableView) -> Int {
         return installers.count
     }
 }
 
-extension InstallerViewController: NSTableViewDelegate, NSTableViewDelegateDeselectListener {
+extension SelectInstallerViewController: NSTableViewDelegate, NSTableViewDelegateDeselectListener {
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         let installer = installers[row]
 
@@ -240,7 +240,7 @@ extension InstallerViewController: NSTableViewDelegate, NSTableViewDelegateDesel
 }
 
 @available(OSX 10.12.1, *)
-extension InstallerViewController: NSTouchBarDelegate {
+extension SelectInstallerViewController: NSTouchBarDelegate {
 
     override func makeTouchBar() -> NSTouchBar? {
         let touchBar = NSTouchBar()

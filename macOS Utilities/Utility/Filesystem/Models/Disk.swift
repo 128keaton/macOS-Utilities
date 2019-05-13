@@ -16,7 +16,7 @@ class Disk: FileSystemItem, Codable {
     var apfsPartitions: [Partition]?
     var rawSize: Int64
     var isFake: Bool = false
-    var info: DiskInfo? = nil
+    var info: DiskUtilityInfo? = nil
 
     var size: Units {
         return Units(bytes: self.rawSize)
@@ -94,19 +94,14 @@ class Disk: FileSystemItem, Codable {
         self.regularPartitions = try container.decodeIfPresent([Partition].self, forKey: .regularPartitions)
         self.apfsPartitions = try container.decodeIfPresent([Partition].self, forKey: .apfsPartitions)
         self.rawSize = try container.decode(Int64.self, forKey: .rawSize)
-        
-        DiskUtility.shared.getDiskInfo(self) { (diskInfo) in
-            if diskInfo != nil {
-                self.info = diskInfo
-            }
-        }
+        self.getInfo()
         
         self.partitions.forEach {
             $0.scanForInstaller()
         }
     }
     
-    init(rawContent: String? = nil, deviceIdentifier: String, regularPartitions: [Partition]?, apfsPartitions: [Partition]?, rawSize: Int64, isFake: Bool = false, info: DiskInfo? = nil){
+    init(rawContent: String? = nil, deviceIdentifier: String, regularPartitions: [Partition]?, apfsPartitions: [Partition]?, rawSize: Int64, isFake: Bool = false, info: DiskUtilityInfo? = nil){
         self.rawContent = rawContent
         self.deviceIdentifier = deviceIdentifier
         self.regularPartitions = regularPartitions
@@ -147,11 +142,17 @@ class Disk: FileSystemItem, Codable {
     }
 
     public func erase(newName: String? = nil, forInstaller: Installer? = nil, returnCompletion: @escaping (Bool, String?) -> ()) {
-        DiskUtility.shared.erase(self, newName: newName, forInstaller: forInstaller) { (didComplete, newDiskName) in
+        DiskUtility.erase(self, newName: newName, forInstaller: forInstaller) { (didComplete, newDiskName) in
             returnCompletion(didComplete, newDiskName)
         }
     }
-
+    
+    private func getInfo(){
+        DiskUtility.getDiskInfo(self, update: true) { (diskUtilityInfo) in
+            self.info = diskUtilityInfo
+        }
+    }
+    
     var description: String {
         return "Disk: \n\t Size: \(self.size)\n\t Content: \(self.content)\n\t Device Identifier: \(self.deviceIdentifier) \n\t Partitions: \(self.partitions) \n\t Has Info: \(self.info == nil ? "no" : "yes") \n\t Installable Partition: \(String(describing: self.installablePartition))\n"
     }

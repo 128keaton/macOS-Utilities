@@ -53,10 +53,10 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     }
 
     private func registerForNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.addApplication(_:)), name: ItemRepository.newApplication, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.reloadAllApplications), name: ItemRepository.newApplications, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.reloadAllApplications), name: ItemRepository.reloadApplications, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.addInstaller(_:)), name: ItemRepository.newInstaller, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.addApplication(_:)), name: GlobalNotifications.newApplication, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.reloadAllApplications), name: GlobalNotifications.newApplications, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.reloadAllApplications), name: GlobalNotifications.reloadApplications, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.addInstaller(_:)), name: GlobalNotifications.newInstaller, object: nil)
     }
 
     @objc private func addInstaller(_ aNotification: Notification? = nil) {

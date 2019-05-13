@@ -15,18 +15,6 @@ class ItemRepository {
 
     private var fakeItems: [Any] = []
 
-    static let newApplication = Notification.Name("NSNewApplication")
-    static let newApplications = Notification.Name("NSNewApplications")
-
-    static let newInstaller = Notification.Name("NSNewInstaller")
-    static let removeInstaller = Notification.Name("NSRemoveInstaller")
-
-    static let newUtility = Notification.Name("NSNewUtility")
-
-    static let refreshRepository = Notification.Name("NSRefreshRepository")
-    static let reloadApplications = Notification.Name("NSReloadApplications")
-    static let openApplication = Notification.Name("NSOpenApplicationFromRepository")
-
     public var applications: [Application] {
         return (items.filter { type(of: $0) == Application.self } as! [Application])
     }
@@ -57,8 +45,8 @@ class ItemRepository {
             self.reloadAllItems()
         }
 
-        NotificationCenter.default.addObserver(self, selector: #selector(ItemRepository.reloadAllItems), name: ItemRepository.refreshRepository, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ItemRepository.openApplication(notification:)), name: ItemRepository.openApplication, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ItemRepository.reloadAllItems), name: GlobalNotifications.refreshRepository, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ItemRepository.openApplication(notification:)), name: GlobalNotifications.openApplication, object: nil)
     }
 
     public func createFakeInstallers() {
@@ -71,7 +59,7 @@ class ItemRepository {
     }
 
     @objc public func reloadAllItems() {
-        DiskUtility.shared.getAllDisks()
+        DiskUtility.getAllDisks()
         Utility.getFromUtilitiesFolder()
     }
 
@@ -122,7 +110,7 @@ class ItemRepository {
 
     public func addFakeInstaller(canInstallOnMachine: Bool = false) {
         let fakeInstaller = Installer(isFakeInstaller: true, canInstallOnMachine: canInstallOnMachine)
-        NotificationCenter.default.post(name: ItemRepository.newInstaller, object: fakeInstaller, userInfo: ["type": "add"])
+        NotificationCenter.default.post(name: GlobalNotifications.newInstaller, object: fakeInstaller, userInfo: ["type": "add"])
         fakeItems.append(fakeInstaller)
     }
 
@@ -138,7 +126,7 @@ class ItemRepository {
 
             if let anItem = newItemsOfType.first {
                 if type(of: anItem) == Application.self {
-                    NotificationCenter.default.post(name: ItemRepository.newApplications, object: newItemsOfType as! [Application])
+                    NotificationCenter.default.post(name: GlobalNotifications.newApplications, object: newItemsOfType as! [Application])
                 }
             }
         }
@@ -146,6 +134,18 @@ class ItemRepository {
 
     public func has<T>(_ itemType: T.Type) -> Bool {
         return (items.filter { type(of: $0) == itemType }).count > 0
+    }
+
+    public func scanForMountedInstallers() {
+        do {
+            let mountedVolumes = try FileManager.default.contentsOfDirectory(atPath: "/Volumes")
+            mountedVolumes.filter { $0.contains("Install macOS") || $0.contains("Install Mac OS X") }.forEach {
+                let newInstaller = Installer(volumePath: "/Volumes/\($0)", appName: $0)
+                self.addToRepository(newItem: newInstaller)
+            }
+        } catch {
+            DDLogError("Could not scan for mounted installers: \(error)")
+        }
     }
 
     public func addToRepository<T>(newItem: T) {
@@ -156,13 +156,13 @@ class ItemRepository {
 
             if type(of: newItemOfType) == Application.self {
                 self.items.append(newItemOfType as! Application)
-                NotificationCenter.default.post(name: ItemRepository.newApplication, object: newItemOfType as! Application)
+                NotificationCenter.default.post(name: GlobalNotifications.newApplication, object: newItemOfType as! Application)
             } else if type(of: newItemOfType) == Utility.self {
                 self.items.append(newItemOfType as! Utility)
-                NotificationCenter.default.post(name: ItemRepository.newUtility, object: newItemOfType as! Utility)
+                NotificationCenter.default.post(name: GlobalNotifications.newUtility, object: newItemOfType as! Utility)
             } else if type(of: newItemOfType) == Installer.self {
                 self.items.append(newItemOfType as! Installer)
-                NotificationCenter.default.post(name: ItemRepository.newInstaller, object: (newItemOfType as! Installer), userInfo: ["type": "add"])
+                NotificationCenter.default.post(name: GlobalNotifications.newInstaller, object: (newItemOfType as! Installer), userInfo: ["type": "add"])
             }
         }
     }
@@ -175,13 +175,13 @@ class ItemRepository {
 
             if type(of: itemToRemoveOfType) == Application.self {
                 self.items.removeAll { $0 == (itemToRemoveOfType as! Application) }
-                NotificationCenter.default.post(name: ItemRepository.reloadApplications, object: nil)
+                NotificationCenter.default.post(name: GlobalNotifications.reloadApplications, object: nil)
             } else if type(of: itemToRemoveOfType) == Utility.self {
                 self.items.removeAll { $0 == (itemToRemoveOfType as! Utility) }
-                NotificationCenter.default.post(name: ItemRepository.reloadApplications, object: nil)
+                NotificationCenter.default.post(name: GlobalNotifications.reloadApplications, object: nil)
             } else if type(of: itemToRemoveOfType) == Installer.self {
                 self.items.removeAll { $0 == (itemToRemoveOfType as! Installer) }
-                NotificationCenter.default.post(name: ItemRepository.removeInstaller, object: (itemToRemoveOfType as! Installer), userInfo: ["type": "remove"])
+                NotificationCenter.default.post(name: GlobalNotifications.removeInstaller, object: (itemToRemoveOfType as! Installer), userInfo: ["type": "remove"])
             }
         }
     }
