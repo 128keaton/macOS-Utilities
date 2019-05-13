@@ -152,7 +152,7 @@ class ItemRepository {
         if let newItemOfType = newItem as? RepositoryItem,
             (self.items.contains { $0.id == newItemOfType.id } == false) {
 
-            DDLogInfo("Adding \(NSStringFromClass(type(of: newItemOfType))) '\(newItemOfType.searchableEntityName)' to repo")
+            DDLogInfo("Adding \(NSStringFromClass(type(of: newItemOfType)).replacingOccurrences(of: "macOS_Utilities.", with: "")) '\(newItemOfType.searchableEntityName)' to repo")
 
             if type(of: newItemOfType) == Application.self {
                 self.items.append(newItemOfType as! Application)

@@ -22,16 +22,12 @@ struct Share: FileSystemItem {
     }
     
     var description: String {
-        return "Share: Mount Point: \(self.mountPoint ?? "not mounted")"
+        return "Share: \n\t Mount Point: \(self.mountPoint ?? "not mounted")"
     }
     
     init(type: String?, mountPoint: String?){
         self.type = type
         self.mountPoint = mountPoint
-        
-        if let validMountPoint = self.mountPoint{
-            HardDriveImageUtility.mountDiskImagesAt(validMountPoint)
-        }
     }
     
     static func == (lhs: Share, rhs: Share) -> Bool {

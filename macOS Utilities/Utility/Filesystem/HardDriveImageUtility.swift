@@ -38,7 +38,7 @@ class HardDriveImageUtility {
 
     public static func ejectDiskImage(_ diskImage: DiskImage, completion: @escaping (Bool) -> ()) {
         DDLogVerbose("Ejecting disk image: \(diskImage)")
-        if let deviceIdentifier = diskImage.devEntry {
+        if let deviceIdentifier = diskImage.devEntry{
             TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["eject", deviceIdentifier], returnEscaping: { (taskOutput) in
                 if let diskUtilOutput = taskOutput {
                     if diskUtilOutput.contains("ejected") {
@@ -62,6 +62,10 @@ class HardDriveImageUtility {
         if(!at.contains(".dmg")) {
             DDLogError("Disk \(at) is not a disk image or is not mountable")
         }
+        
+        if (cachedDiskImages.filter { $0.itemPath == at }).count > 0{
+            return
+        }
 
         TaskHandler.createTask(command: "/usr/bin/hdiutil", arguments: ["mount", "-plist", "\(at)", "-noverify"], silent: true) { (taskOutput) in
             DDLogInfo("Mounting \(at)")
@@ -73,6 +77,7 @@ class HardDriveImageUtility {
                     do {
                         let mountOutput: hdiutilMount = try OutputParser().parseOutput(mountOutput, toolType: .hdiutil, outputType: .mount)
                         if let mountableDiskImage = mountOutput.mountableDiskImage {
+                            mountableDiskImage.itemPath = at
                             self.diskModificationQueue.sync {
                                 self.cachedDiskImages.append(mountableDiskImage)
                             }
@@ -93,8 +98,7 @@ class HardDriveImageUtility {
             for file in (fileURLs.filter { $0.pathExtension == "dmg" }) {
                 let fileName = file.lastPathComponent
                 if(fileName.contains(".dmg")) {
-                    let diskImagePath = "\(file.absolutePath)"
-                    self.mountDiskImage(diskImagePath)
+                    self.mountDiskImage(file.absolutePath)
                 } else {
                     DDLogError("\(fileName) is not a valid DMG")
                 }

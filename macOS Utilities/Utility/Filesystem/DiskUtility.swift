@@ -152,7 +152,7 @@ class DiskUtility: NSObject, NSFilePresenter {
             if (alreadyExisted == true && (contents.filter { $0.contains(".dmg") }).count > 0) {
                 // NFS mount already exists AND has our DMGs
                 let newShare = Share(type: "NFS", mountPoint: localPath)
-                DDLogVerbose("Adding existing share: \(newShare)")
+                DDLogVerbose("Adding existing share: \(newShare.mountPoint ?? "No mount point")")
                 self.cachedShares.append(newShare)
                 didSucceed(true)
                 return
@@ -467,7 +467,7 @@ class DiskUtility: NSObject, NSFilePresenter {
             completion(existingDiskInfo)
         }
 
-        TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["info", "-plist", "/dev/\(disk.deviceIdentifier)"], timeout: 2.0, silent: true) { (output) in
+        TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["info", "-plist", "/dev/\(disk.deviceIdentifier)"], silent: true) { (output) in
             if let infoOutput = output {
                 do {
                     completion(try OutputParser().parseOutput(infoOutput, toolType: .diskUtility, outputType: .info))

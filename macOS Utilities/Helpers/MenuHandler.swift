@@ -132,7 +132,7 @@ class MenuHandler: NSObject {
             DDLogInfo("Finished ejecting? \(didComplete)")
             if let preferences = PreferenceLoader.currentPreferences,
                 let installerServerPreferences = preferences.installerServerPreferences {
-                HardDriveImageUtility.mountDiskImagesAt(installerServerPreferences.mountPath)
+         //       HardDriveImageUtility.mountDiskImagesAt(installerServerPreferences.mountPath)
             }
         }
     }
