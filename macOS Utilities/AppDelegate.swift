@@ -34,6 +34,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         registerForNotifications()
 
         PreferenceLoader.setup()
+        SystemProfiler.getInfo()
         
         if let preferenceLoader = PreferenceLoader.sharedInstance {
             self.preferenceLoader = preferenceLoader
@@ -64,7 +65,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func registerForNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.setupMachineInformation), name: DeviceIdentifier.didSetupNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.showErrorAlert(notification:)), name: ErrorAlertLogger.showErrorAlert, object: nil)
     }
 
@@ -102,10 +102,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 self.helpEmailAddress = helpEmailAddress
             }
 
-            if preferences.useDeviceIdentifierAPI {
-                DeviceIdentifier.setup(authenticationToken: preferences.deviceIdentifierAuthenticationToken!)
-            }
-
             if let validSemaphore = preferencesSemaphore {
                 validSemaphore.signal()
                 self.preferencesMenuItem?.isEnabled = true
@@ -127,15 +123,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             NSApplication.shared.terminate(self)
         }
     }
-
-    @objc func setupMachineInformation() {
-        if let currentPreferences = PreferenceLoader.currentPreferences {
-            if currentPreferences.useDeviceIdentifierAPI == true && DeviceIdentifier.isConfigured == true {
-                MachineInformation.setup(deviceIdentifier: DeviceIdentifier.shared)
-            }
-        }
-    }
-
+    
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         if let validPreferences = PreferenceLoader.currentPreferences,
             let ejectDrivesOnQuit = validPreferences.ejectDrivesOnQuit,

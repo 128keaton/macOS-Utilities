@@ -11,6 +11,17 @@ import AppKit
 
 /// NSControl - adds hide/show with animations
 extension NSControl {
+    public func shake(duration durationOfShake: Double = 0.4, delay: Double = 0.1) {
+        let animation = CAKeyframeAnimation(keyPath: "transform.translation.x")
+        animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.linear)
+        animation.duration = durationOfShake
+        animation.values = [-20.0, 20.0, -20.0, 20.0, -10.0, 10.0, -5.0, 5.0, 0.0]
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            self.layer?.add(animation, forKey: "shake")
+        }
+    }
+
     public func hide(animated: Bool = true) {
         DispatchQueue.main.async {
             if animated {
@@ -263,10 +274,10 @@ extension NSViewController {
         alert.alertStyle = .warning
         alert.addButton(withTitle: "Yes")
         alert.addButton(withTitle: "No")
-        
+
         return alert.runModal() == .alertFirstButtonReturn
     }
-    
+
     func showConfirmationAlert(question: String, text: String, window: NSWindow, completionHandler: @escaping (NSApplication.ModalResponse) -> ()) {
         let alert = NSAlert()
         alert.messageText = question
@@ -274,7 +285,7 @@ extension NSViewController {
         alert.alertStyle = .warning
         alert.addButton(withTitle: "Yes")
         alert.addButton(withTitle: "No")
-        
+
         alert.beginSheetModal(for: window, completionHandler: completionHandler)
     }
 }

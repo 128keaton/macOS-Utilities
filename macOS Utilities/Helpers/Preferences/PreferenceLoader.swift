@@ -199,9 +199,6 @@ class PreferenceLoader {
 
     private func setupOtherServices() {
         if let preferences = PreferenceLoader.currentPreferences {
-            if preferences.useDeviceIdentifierAPI {
-                DeviceIdentifier.setup(authenticationToken: preferences.deviceIdentifierAuthenticationToken!)
-            }
             if let loggingPreferences = preferences.loggingPreferences {
                 LoggerManager.constructRemoteLogger(loggingPreferences: loggingPreferences)
             }

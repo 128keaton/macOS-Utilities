@@ -8,6 +8,66 @@
 
 import Foundation
 import CommonCrypto
+import WebKit
+
+class WKNoScrollWebView: WKWebView {
+    public var canScroll = false
+
+    open override func scrollWheel(with event: NSEvent) {
+        if !canScroll {
+            self.nextResponder?.scrollWheel(with: event)
+        } else {
+            super.scrollWheel(with: event)
+        }
+    }
+
+    public func hide(animated: Bool = true) {
+        if !animated {
+            self.alphaValue = 0.0
+            return
+        }
+
+        NSAnimationContext.runAnimationGroup { (context) in
+            context.duration = 0.5
+            self.animator().alphaValue = 0.0
+        }
+    }
+
+    public func show() {
+        NSAnimationContext.runAnimationGroup { (context) in
+            context.duration = 0.5
+            self.animator().alphaValue = 1.0
+        }
+    }
+
+    private func buildJavaScriptRemove(elementsToRemove elementIDs: [String]) -> String {
+        var javaScript = ""
+
+        for elementID in elementIDs {
+            javaScript = "\(javaScript) document.getElementById('\(elementID)').remove();"
+        }
+
+        return javaScript
+    }
+
+    public func removeWebViewElements(completion: @escaping () -> ()) {
+        let baseJavaScript = buildJavaScriptRemove(elementsToRemove: ["view-selector-6", "ac-globalnav", "ac-gn-placeholder", "wcTitleCheck", "wcTitleStatus", "local-header-wrapper", "dispute"])
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.evaluateJavaScript(baseJavaScript, completionHandler: { _, _ in
+                completion()
+            })
+        }
+    }
+
+    public func scrollToElementInWebView(elementID: String, offset: Int = 25, completion: @escaping () -> ()) {
+        let scrollJavaScript = "document.getElementById('\(elementID)').scrollIntoView(); window.scrollBy(0, \(offset))"
+        print(scrollJavaScript)
+        self.evaluateJavaScript(scrollJavaScript) { (_, _) in
+            completion()
+        }
+    }
+}
 
 extension String {
     var condensed: String {
@@ -68,7 +128,7 @@ extension String {
         do {
             let regex = try NSRegularExpression(pattern: regex)
             let results = regex.matches(in: self,
-                                        range: NSRange(self.startIndex..., in: self))
+                range: NSRange(self.startIndex..., in: self))
             return results.map {
                 String(self[Range($0.range, in: self)!]).replacingOccurrences(of: stripR.joined(separator: "|"), with: "", options: .regularExpression)
             }
@@ -119,14 +179,14 @@ extension URL {
                     // file exists and is a directory
                     filestatus = .isDir
                 }
-                    else {
-                        // file exists and is not a directory
-                        filestatus = .isFile
+                else {
+                    // file exists and is not a directory
+                    filestatus = .isFile
                 }
             }
-                else {
-                    // file does not exist
-                    filestatus = .isNot
+            else {
+                // file does not exist
+                filestatus = .isNot
             }
             return filestatus
         }
@@ -147,6 +207,33 @@ extension FileManager {
             return (false, error)
         }
         return (true, nil)
+    }
+
+    public func writeImageToTemporaryDirectory(image: NSImage, resourceName: String, fileExtension: String) -> URL?
+    {
+
+        // Get the file path in the bundle
+        let tempDirectoryURL = NSURL.fileURL(withPath: NSTemporaryDirectory(), isDirectory: true)
+
+        // Create a destination URL.
+        let targetURL = tempDirectoryURL.appendingPathComponent("\(resourceName).\(fileExtension)")
+
+        let properties = [NSBitmapImageRep.PropertyKey.compressionFactor: 1.0]
+        guard
+            let imageData = image.tiffRepresentation,
+            let imageRep = NSBitmapImageRep(data: imageData),
+            let fileData = imageRep.representation(using: .png, properties: properties) else {
+                return nil
+        }
+
+        do {
+            try fileData.write(to: targetURL)
+            return targetURL
+        } catch {
+            KBLogDebug("Could not write image: \(error)")
+        }
+        
+        return nil
     }
 }
 

@@ -27,7 +27,8 @@ class InstallerViewController: NSViewController {
     override func awakeFromNib() {
         NotificationCenter.default.addObserver(self, selector: #selector(InstallerViewController.getInstallableVersions), name: ItemRepository.newInstaller, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(updateStatusImages(_:)), name: DiskUtility.bootDiskAvailable, object: nil)
-
+        NotificationCenter.default.addObserver(self, selector: #selector(updateStatusImages(_:)), name: SystemProfiler.dataWasParsed, object: nil)
+        
         NotificationCenter.default.addObserver(self, selector: #selector(InstallerViewController.getInstallableVersions(notification:)), name: ItemRepository.newInstaller, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(InstallerViewController.getInstallableVersions(notification:)), name: ItemRepository.removeInstaller, object: nil)
     }
@@ -45,10 +46,10 @@ class InstallerViewController: NSViewController {
             }
             return
         }
-
-        metalStatus.image = MachineInformation.shared.GPUStatus
-        memoryStatus.image = MachineInformation.shared.RAMStatus
-        hddStatus.image = MachineInformation.shared.HDDStatus
+        
+        metalStatus.image = SystemProfiler.metalRequirementStatus
+        memoryStatus.image = SystemProfiler.memoryRequirementStatus
+        hddStatus.image = SystemProfiler.installableHardDiskRequirementStatus
     }
 
     @objc func getInstallableVersions() {
@@ -94,21 +95,21 @@ class InstallerViewController: NSViewController {
 
     @IBAction func showPopover(sender: NSButton) {
         if let popoverContentViewController = storyboard?.instantiateController(withIdentifier: "InfoPopoverViewController") as? InfoPopoverViewController {
-            var addDiskUtilityButton = (sender == hddStatus && !MachineInformation.shared.bootHDDIsValid)
+            var addDiskUtilityButton = (sender == hddStatus && !SystemProfiler.hasBootDisk)
             #if DEBUG
                 addDiskUtilityButton = (sender == hddStatus)
             #endif
 
             if(sender == memoryStatus) {
-                popoverContentViewController.message = MachineInformation.shared.RAMInformation
+                popoverContentViewController.message = SystemProfiler.memoryInformation
             }
 
             if(sender == metalStatus) {
-                popoverContentViewController.message = MachineInformation.shared.GPUInformation
+                popoverContentViewController.message = SystemProfiler.graphicsCardInformation
             }
 
             if(sender == hddStatus) {
-                popoverContentViewController.message = MachineInformation.shared.HDDInformation
+                popoverContentViewController.message = SystemProfiler.bootDiskInformation
             }
 
 
