@@ -25,7 +25,7 @@ class SelectInstallerViewController: NSViewController {
     public var selectedVersion: Installer? = nil
 
     override func awakeFromNib() {
-        NotificationCenter.default.addObserver(self, selector: #selector(InstallerViewController.getInstallableVersions), name: ItemRepository.newInstaller, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SelectInstallerViewController.getInstallableVersions), name: GlobalNotifications.newInstaller, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(updateStatusImages(_:)), name: SystemProfiler.dataWasParsed, object: nil)
 
         NotificationCenter.default.addObserver(self, selector: #selector(SelectInstallerViewController.getInstallableVersions), name: GlobalNotifications.newInstaller, object: nil)

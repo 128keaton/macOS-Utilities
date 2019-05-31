@@ -153,14 +153,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    @objc func setupMachineInformation() {
-        if let currentPreferences = PreferenceLoader.currentPreferences {
-            if currentPreferences.useDeviceIdentifierAPI == true && DeviceIdentifier.isConfigured == true {
-                MachineInformation.setup(deviceIdentifier: DeviceIdentifier.shared)
-            }
-        }
-    }
-
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         if let validPreferences = PreferenceLoader.currentPreferences,
             let ejectDrivesOnQuit = validPreferences.ejectDrivesOnQuit,

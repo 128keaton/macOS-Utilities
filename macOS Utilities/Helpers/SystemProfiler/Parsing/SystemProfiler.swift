@@ -242,7 +242,7 @@ class SystemProfiler {
     }
 
     public static var hasBootDisk: Bool {
-        if let bootDisk = DiskUtility.shared.bootDisk {
+        if let bootDisk = DiskUtility.bootDisk {
             return bootDisk.volumeName == "Macintosh HD" && bootDisk.size.gigabytes >= 110.0
         }
 
@@ -306,7 +306,7 @@ class SystemProfiler {
     }
 
     public static var bootDiskInformation: String {
-        if self.hasBootDisk, let bootDisk = DiskUtility.shared.bootDisk {
+        if self.hasBootDisk, let bootDisk = DiskUtility.bootDisk {
             return "\(bootDisk.volumeName) is available and has a size of \(bootDisk.size.getReadableUnit())"
         }
 
