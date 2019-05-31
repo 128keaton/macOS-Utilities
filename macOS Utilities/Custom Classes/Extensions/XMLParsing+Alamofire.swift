@@ -9,6 +9,7 @@
 import Foundation
 import XMLParsing
 import Alamofire
+import CocoaLumberjack
 
 extension XMLDecoder {
     public enum XMLError: Error {
@@ -17,12 +18,12 @@ extension XMLDecoder {
 
     func decodeResponse<T: Decodable>(from response: DataResponse<Data>) -> Result<T> {
         guard response.error == nil else {
-            print(response.error!)
+            DDLogError(response.error!)
             return .failure(response.error!)
         }
 
         guard let responseData = response.data else {
-            print("didn't get any data from API")
+            DDLogError("didn't get any data from API")
             return .failure(XMLError.parsing(reason: "Did not get data in response"))
         }
 
@@ -30,8 +31,7 @@ extension XMLDecoder {
             let item = try decode(T.self, from: responseData)
             return .success(item)
         } catch {
-            print("error trying to decode response")
-            print(error)
+            DDLogError(error)
             return .failure(error)
         }
     }

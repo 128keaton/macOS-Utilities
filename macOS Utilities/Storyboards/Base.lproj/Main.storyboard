@@ -18,10 +18,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gOe-aI-oqZ" customClass="NSHidingTextField" customModule="macOS_Utilities" customModuleProvider="target">
-                                <rect key="frame" x="183" y="414" width="170" height="51"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="51" id="1KZ-qb-IDM"/>
-                                </constraints>
+                                <rect key="frame" x="183" y="414" width="170" height="50"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Mac mini" id="11H-2W-Erm">
                                     <font key="font" metaFont="systemSemibold" size="41"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -329,9 +326,9 @@
                                 </userDefinedRuntimeAttributes>
                             </textField>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="yXu-gc-fjY" customClass="NSHidingButton" customModule="macOS_Utilities" customModuleProvider="target">
-                                <rect key="frame" x="31" y="346" width="146" height="118"/>
+                                <rect key="frame" x="31" y="346" width="126" height="118"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="146" id="IaJ-bo-D1l"/>
+                                    <constraint firstAttribute="width" constant="126" id="IaJ-bo-D1l"/>
                                 </constraints>
                                 <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="NSAppleIcon" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="WZM-Xo-YbB">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -347,12 +344,12 @@
                             <constraint firstItem="yXu-gc-fjY" firstAttribute="leading" secondItem="S5I-zG-xBK" secondAttribute="leading" constant="31" id="4Ml-Ql-53e"/>
                             <constraint firstItem="yXu-gc-fjY" firstAttribute="bottom" secondItem="azt-Lx-YH7" secondAttribute="bottom" id="5i4-Ns-4bV"/>
                             <constraint firstItem="7VL-X2-0fp" firstAttribute="trailing" secondItem="ijm-BA-dB8" secondAttribute="trailing" id="74Z-p4-aPZ"/>
-                            <constraint firstItem="azt-Lx-YH7" firstAttribute="leading" secondItem="yXu-gc-fjY" secondAttribute="trailing" constant="10" id="ABo-Ba-UbK"/>
+                            <constraint firstItem="azt-Lx-YH7" firstAttribute="leading" secondItem="yXu-gc-fjY" secondAttribute="trailing" constant="30" id="ABo-Ba-UbK"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="nXe-B2-egw" secondAttribute="trailing" constant="20" symbolic="YES" id="AIJ-4f-73Z"/>
                             <constraint firstItem="ijm-BA-dB8" firstAttribute="top" secondItem="JD7-CJ-Erg" secondAttribute="bottom" constant="20" symbolic="YES" id="BfN-9C-zFv"/>
                             <constraint firstItem="JD7-CJ-Erg" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="azt-Lx-YH7" secondAttribute="trailing" symbolic="YES" id="GN0-cI-n1y"/>
                             <constraint firstItem="gOe-aI-oqZ" firstAttribute="leading" secondItem="nXe-B2-egw" secondAttribute="leading" id="Pjr-nF-5Cz"/>
-                            <constraint firstItem="gOe-aI-oqZ" firstAttribute="leading" secondItem="yXu-gc-fjY" secondAttribute="trailing" constant="8" symbolic="YES" id="R4X-j1-6vm"/>
+                            <constraint firstItem="gOe-aI-oqZ" firstAttribute="leading" secondItem="yXu-gc-fjY" secondAttribute="trailing" constant="28" id="R4X-j1-6vm"/>
                             <constraint firstItem="yXu-gc-fjY" firstAttribute="top" secondItem="S5I-zG-xBK" secondAttribute="top" constant="33" id="RCu-jf-Kco"/>
                             <constraint firstItem="ijm-BA-dB8" firstAttribute="top" secondItem="S5I-zG-xBK" secondAttribute="top" constant="173" id="RSP-BQ-A9N"/>
                             <constraint firstItem="7VL-X2-0fp" firstAttribute="leading" secondItem="79m-2E-xZY" secondAttribute="trailing" constant="8" symbolic="YES" id="VuY-18-daJ"/>

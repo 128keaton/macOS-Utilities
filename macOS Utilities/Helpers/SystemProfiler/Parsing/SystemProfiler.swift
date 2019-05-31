@@ -103,7 +103,7 @@ class SystemProfiler {
             let userInfo = notification.userInfo as? [String: Any],
             let newData = userInfo[NSFileHandleNotificationDataItem] as? Data, newData.count > 0 {
 
-            print("Appending to propertyListData")
+            DDLogVerbose("Appending to propertyListData")
             self.propertyListData.append(newData)
 
             fileHandle.readInBackgroundAndNotify()
@@ -115,7 +115,7 @@ class SystemProfiler {
             let userInfo = notification.userInfo as? [String: Any],
             let newData = userInfo[NSFileHandleNotificationDataItem] as? Data, newData.count > 0 {
 
-            print("Appending to detailedCPUInfoData")
+            DDLogVerbose("Appending to detailedCPUInfoData")
             self.detailedCPUInfoData.append(newData)
 
             fileHandle.readInBackgroundAndNotify()
@@ -170,7 +170,7 @@ class SystemProfiler {
                 self.serialATAItems = anItem.getItems(SerialATAItem.self)
                 break
             case .invalid:
-                print("Invalid Item: \(anItem)")
+                DDLogVerbose("Invalid Item: \(anItem)")
                 break
             }
         }
@@ -209,7 +209,7 @@ class SystemProfiler {
             if let _delegate = self.delegate {
                 _delegate.dataParsedSuccessfully()
             } else {
-                print("Data parsed successfully")
+                DDLogVerbose("Data parsed successfully")
             }
 
         } catch {
@@ -217,7 +217,7 @@ class SystemProfiler {
             if let _delegate = self.delegate {
                 _delegate.handleError(error)
             } else {
-                print("Error parsing SystemProfilerData: \(error)")
+                DDLogError("Error parsing SystemProfilerData: \(error)")
             }
         }
     }

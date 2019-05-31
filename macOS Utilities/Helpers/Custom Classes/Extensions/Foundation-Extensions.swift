@@ -62,7 +62,6 @@ class WKNoScrollWebView: WKWebView {
 
     public func scrollToElementInWebView(elementID: String, offset: Int = 25, completion: @escaping () -> ()) {
         let scrollJavaScript = "document.getElementById('\(elementID)').scrollIntoView(); window.scrollBy(0, \(offset))"
-        print(scrollJavaScript)
         self.evaluateJavaScript(scrollJavaScript) { (_, _) in
             completion()
         }

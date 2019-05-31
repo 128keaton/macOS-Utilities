@@ -34,8 +34,6 @@ struct CondensedSystemProfilerData: Encodable {
     }
     
     init(from allData: [[ItemType]]) {
-        print(allData)
-        
         if let hardwareItems = allData.first(where: { $0.first != nil && $0.first!.dataType == .hardware }) as? [HardwareItem],
             let hardwareItem = hardwareItems.first {
             

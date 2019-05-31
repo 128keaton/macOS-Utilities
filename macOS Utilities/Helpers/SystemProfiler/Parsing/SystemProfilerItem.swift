@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CocoaLumberjack
 
 struct SystemProfilerItem: Decodable, CustomStringConvertible {
     var dataType: SPDataType
@@ -30,7 +31,7 @@ struct SystemProfilerItem: Decodable, CustomStringConvertible {
             do {
                 items = try decode(container) as? [Any]
             } catch {
-                print(error)
+                DDLogError(error.localizedDescription)
             }
         } else {
             items = nil
