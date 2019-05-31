@@ -29,6 +29,8 @@
 		8A3243CD22A1B7700042E6D9 /* KBBarcodePreviewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A3243CC22A1B7700042E6D9 /* KBBarcodePreviewItem.swift */; };
 		8A3243CE22A1B8190042E6D9 /* Disk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9370CE2256B7F4002B3838 /* Disk.swift */; };
 		8A3243CF22A1B85F0042E6D9 /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C646F225E9FA100CD6DCF /* PreferencesViewController.swift */; };
+		8A3243D122A1C8A80042E6D9 /* WKNoScrollWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A3243D022A1C8A80042E6D9 /* WKNoScrollWebView.swift */; };
+		8A3243D222A1CA2C0042E6D9 /* SelectInstallerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6F28EF221B9F5C00FF9DB3 /* SelectInstallerViewController.swift */; };
 		8A39D3602119E81B00437F4E /* com.er2.applications.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8A39D35F2119E81B00437F4E /* com.er2.applications.plist */; };
 		8A47DED9210A2D30003F5CC3 /* NSCollectionAppCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */; };
 		8A47DEDB210A3418003F5CC3 /* NSCollectionAppCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */; };
@@ -121,6 +123,7 @@
 		8A3243C822A1B75D0042E6D9 /* NSTextField+Autosizing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSTextField+Autosizing.swift"; path = "macOS Utilities/Custom Classes/Extensions/NSTextField+Autosizing.swift"; sourceTree = SOURCE_ROOT; };
 		8A3243C922A1B75D0042E6D9 /* XMLParsing+Alamofire.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "XMLParsing+Alamofire.swift"; path = "macOS Utilities/Custom Classes/Extensions/XMLParsing+Alamofire.swift"; sourceTree = SOURCE_ROOT; };
 		8A3243CC22A1B7700042E6D9 /* KBBarcodePreviewItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KBBarcodePreviewItem.swift; path = "macOS Utilities/Custom Classes/KBBarcodePreviewItem.swift"; sourceTree = SOURCE_ROOT; };
+		8A3243D022A1C8A80042E6D9 /* WKNoScrollWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKNoScrollWebView.swift; sourceTree = "<group>"; };
 		8A39D35F2119E81B00437F4E /* com.er2.applications.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = com.er2.applications.plist; sourceTree = "<group>"; };
 		8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSCollectionAppCell.swift; sourceTree = "<group>"; };
 		8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NSCollectionAppCell.xib; sourceTree = "<group>"; };
@@ -521,6 +524,7 @@
 				8A3243CC22A1B7700042E6D9 /* KBBarcodePreviewItem.swift */,
 				8A662214226AA4190072B3A4 /* Extensions */,
 				8A584774226AB461008E9DE8 /* KBJunk */,
+				8A3243D022A1C8A80042E6D9 /* WKNoScrollWebView.swift */,
 			);
 			path = "Custom Classes";
 			sourceTree = "<group>";
@@ -801,6 +805,7 @@
 				8A2DB9452289DF8800261B9E /* DiskUtilityInfo.swift in Sources */,
 				8AA841D02265A509009C5948 /* Units.swift in Sources */,
 				8ABAE3132252C1D800E537D3 /* TaskHandler.swift in Sources */,
+				8A3243D222A1CA2C0042E6D9 /* SelectInstallerViewController.swift in Sources */,
 				8A57BF432262A1AF00719E74 /* LoggerManager.swift in Sources */,
 				8A175AAC225EFEE50018C977 /* ErrorAlertLogger.swift in Sources */,
 				8A9D9A9C2263084600E4D36F /* KBTextFieldDialog.swift in Sources */,
@@ -820,6 +825,7 @@
 				8A9370D62256D604002B3838 /* RepositoryItem.swift in Sources */,
 				8A9C0CCD226AA1580032FC20 /* FileSystemItem.swift in Sources */,
 				8AD01F1522A16F5F00C722B6 /* DiscBurningItem.swift in Sources */,
+				8A3243D122A1C8A80042E6D9 /* WKNoScrollWebView.swift in Sources */,
 				8A3243CD22A1B7700042E6D9 /* KBBarcodePreviewItem.swift in Sources */,
 				8A662216226AA42B0072B3A4 /* AppKit-Extensions.swift in Sources */,
 				8A6C6477225EA19200CD6DCF /* InstallerServerPreferences.swift in Sources */,

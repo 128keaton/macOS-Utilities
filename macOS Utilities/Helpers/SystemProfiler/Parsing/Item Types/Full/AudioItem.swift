@@ -13,10 +13,10 @@ struct AudioItem: ItemType {
     var dataType: SPDataType = .audio
     
     var name: String
-    var manufacturer: String
+    var manufacturer: String?
     
     var description: String {
-        return "\(name): \(manufacturer)"
+        return "\(name): \(manufacturer ?? "No manufacturer")"
     }
     
     enum CodingKeys: String, CodingKey {

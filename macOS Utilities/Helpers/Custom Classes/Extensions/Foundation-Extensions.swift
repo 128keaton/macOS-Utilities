@@ -8,65 +8,6 @@
 
 import Foundation
 import CommonCrypto
-import WebKit
-
-class WKNoScrollWebView: WKWebView {
-    public var canScroll = false
-
-    open override func scrollWheel(with event: NSEvent) {
-        if !canScroll {
-            self.nextResponder?.scrollWheel(with: event)
-        } else {
-            super.scrollWheel(with: event)
-        }
-    }
-
-    public func hide(animated: Bool = true) {
-        if !animated {
-            self.alphaValue = 0.0
-            return
-        }
-
-        NSAnimationContext.runAnimationGroup { (context) in
-            context.duration = 0.5
-            self.animator().alphaValue = 0.0
-        }
-    }
-
-    public func show() {
-        NSAnimationContext.runAnimationGroup { (context) in
-            context.duration = 0.5
-            self.animator().alphaValue = 1.0
-        }
-    }
-
-    private func buildJavaScriptRemove(elementsToRemove elementIDs: [String]) -> String {
-        var javaScript = ""
-
-        for elementID in elementIDs {
-            javaScript = "\(javaScript) document.getElementById('\(elementID)').remove();"
-        }
-
-        return javaScript
-    }
-
-    public func removeWebViewElements(completion: @escaping () -> ()) {
-        let baseJavaScript = buildJavaScriptRemove(elementsToRemove: ["view-selector-6", "ac-globalnav", "ac-gn-placeholder", "wcTitleCheck", "wcTitleStatus", "local-header-wrapper", "dispute"])
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            self.evaluateJavaScript(baseJavaScript, completionHandler: { _, _ in
-                completion()
-            })
-        }
-    }
-
-    public func scrollToElementInWebView(elementID: String, offset: Int = 25, completion: @escaping () -> ()) {
-        let scrollJavaScript = "document.getElementById('\(elementID)').scrollIntoView(); window.scrollBy(0, \(offset))"
-        self.evaluateJavaScript(scrollJavaScript) { (_, _) in
-            completion()
-        }
-    }
-}
 
 extension String {
     var condensed: String {

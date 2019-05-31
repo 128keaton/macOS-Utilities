@@ -30,7 +30,6 @@ class PreferencesViewController: NSViewController {
     @IBOutlet weak var installerCheckBox: NSButton!
 
     @IBOutlet weak var sendLogAddressField: NSTextField!
-    @IBOutlet weak var deviceIdentifierAPITokenField: NSTextField!
     @IBOutlet weak var savePathLabel: NSTextField!
     @IBOutlet weak var applicationsCountLabel: NSTextField!
 
@@ -155,11 +154,6 @@ class PreferencesViewController: NSViewController {
                     self.sendLogAddressField.stringValue = ""
                 }
 
-                if let deviceIdentifierAPIToken = preferences.deviceIdentifierAuthenticationToken {
-                    self.deviceIdentifierAPITokenField.stringValue = deviceIdentifierAPIToken
-                } else {
-                    self.deviceIdentifierAPITokenField.stringValue = ""
-                }
 
                 self.updateOtherLabels()
             }
@@ -259,7 +253,6 @@ class PreferencesViewController: NSViewController {
             loggingPreferences.loggingPort = UInt(loggingPortField.stringValue) ?? 0
 
             preferences.helpEmailAddress = sendLogAddressField.stringValue
-            preferences.deviceIdentifierAuthenticationToken = deviceIdentifierAPITokenField.stringValue
             preferences.ejectDrivesOnQuit = (ejectDrivesOnQuitButton.state == .on)
             
             if let serverType = installerServerTypePopup.selectedItem?.title {

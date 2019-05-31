@@ -30,15 +30,28 @@ class SystemProfiler {
     private (set) public static var hasNonMetalGPU = false
 
     public static let dataWasParsed = Notification.Name("SystemProfilerDataParsed")
-    
+
     public static var hasMachineData: Bool {
         return self.hardwareItem != nil
+    }
+
+    public static func testGetInfo() {
+        let downloadsDirectory = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first!
+        let testPropertyList = downloadsDirectory.appendingPathComponent("TestParse.plist")
+        print(testPropertyList)
+
+        do {
+            let testData = try Data(contentsOf: testPropertyList)
+            self.parseInto(testData)
+        } catch {
+            print(error)
+        }
     }
 
     public static func getInfo(force: Bool = false) {
         if hasParsed && !force {
             NotificationCenter.default.post(name: dataWasParsed, object: nil)
-            
+
             if let _delegate = self.delegate {
                 _delegate.dataParsedSuccessfully()
             } else {
@@ -170,7 +183,7 @@ class SystemProfiler {
                 self.serialATAItems = anItem.getItems(SerialATAItem.self)
                 break
             case .invalid:
-                DDLogVerbose("Invalid Item: \(anItem)")
+                DDLogVerbose("An invalid item was attempted to match against: \(anItem)")
                 break
             }
         }
@@ -205,7 +218,7 @@ class SystemProfiler {
             }
 
             NotificationCenter.default.post(name: dataWasParsed, object: nil)
-            
+
             if let _delegate = self.delegate {
                 _delegate.dataParsedSuccessfully()
             } else {
@@ -337,7 +350,7 @@ class SystemProfiler {
         if let validBarcode = BarcodeGenerator.fromString(self.serialNumber) {
             return validBarcode
         }
-        
+
         return NSImage(named: "NSAppleIcon")!
     }
 }

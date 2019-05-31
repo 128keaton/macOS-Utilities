@@ -26,13 +26,11 @@ class SelectInstallerViewController: NSViewController {
 
     override func awakeFromNib() {
         NotificationCenter.default.addObserver(self, selector: #selector(SelectInstallerViewController.getInstallableVersions), name: GlobalNotifications.newInstaller, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(updateStatusImages(_:)), name: SystemProfiler.dataWasParsed, object: nil)
-
-        NotificationCenter.default.addObserver(self, selector: #selector(SelectInstallerViewController.getInstallableVersions), name: GlobalNotifications.newInstaller, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(updateStatusImages(_:)), name: GlobalNotifications.bootDiskAvailable, object: nil)
-
         NotificationCenter.default.addObserver(self, selector: #selector(SelectInstallerViewController.getInstallableVersions(notification:)), name: GlobalNotifications.newInstaller, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(SelectInstallerViewController.getInstallableVersions(notification:)), name: GlobalNotifications.removeInstaller, object: nil)
+
+        NotificationCenter.default.addObserver(self, selector: #selector(updateStatusImages(_:)), name: SystemProfiler.dataWasParsed, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateStatusImages(_:)), name: GlobalNotifications.bootDiskAvailable, object: nil)
     }
 
     override func viewDidLoad() {
@@ -48,7 +46,7 @@ class SelectInstallerViewController: NSViewController {
             }
             return
         }
-        
+
         metalStatus.image = SystemProfiler.metalRequirementStatus
         memoryStatus.image = SystemProfiler.memoryRequirementStatus
         hddStatus.image = SystemProfiler.installableHardDiskRequirementStatus

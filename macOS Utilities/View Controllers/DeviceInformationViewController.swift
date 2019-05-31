@@ -35,6 +35,10 @@ class DeviceInformationViewController: NSViewController {
     override func viewDidAppear() {
         super.viewDidAppear()
 
+        #if DEBUG
+            SystemProfiler.testGetInfo()
+        #endif
+        
         if SystemProfiler.hasMachineData && barcodeURL == nil {
             saveBarcode()
         }

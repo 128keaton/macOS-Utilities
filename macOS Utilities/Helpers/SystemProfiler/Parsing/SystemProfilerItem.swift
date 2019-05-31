@@ -30,6 +30,11 @@ struct SystemProfilerItem: Decodable, CustomStringConvertible {
         if let decode = SystemProfilerItem.decoders[dataType] {
             do {
                 items = try decode(container) as? [Any]
+            } catch let DecodingError.typeMismatch(type, context)  {
+                DDLogError("Type '\(type)' mismatch: \(context.debugDescription)")
+                DDLogVerbose("codingPath: \(context.codingPath)")
+            } catch let DecodingError.dataCorrupted(context) {
+                DDLogError("Data Corrupted: \(context.debugDescription)")
             } catch {
                 DDLogError(error.localizedDescription)
             }
@@ -47,7 +52,12 @@ struct SystemProfilerItem: Decodable, CustomStringConvertible {
             return nestedItem.items as! [A]
         }
 
-        return self.items as! [A]
+        if let validItems = self.items as? [A] {
+            return validItems
+        }
+        
+        DDLogVerbose("Items were nil for \(A.self)")
+        return [A]()
     }
 
     static func register<A: Decodable>(_ type: A.Type, for dataType: SPDataType) {

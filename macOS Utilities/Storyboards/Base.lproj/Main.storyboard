@@ -1621,10 +1621,10 @@
             </objects>
             <point key="canvasLocation" x="2314" y="-278"/>
         </scene>
-        <!--Chose Installer-->
+        <!--Choose an Installer-->
         <scene sceneID="zLL-0j-bSO">
             <objects>
-                <viewController title="Chose Installer" identifier="installSelectorController" storyboardIdentifier="installSelectorController" id="ZEK-Vh-qND" customClass="SelectInstallerViewController" customModule="macOS_Utilities" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Choose an Installer" identifier="installSelectorController" storyboardIdentifier="installSelectorController" id="ZEK-Vh-qND" customClass="SelectInstallerViewController" customModule="macOS_Utilities" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="t40-uf-Gem">
                         <rect key="frame" x="0.0" y="0.0" width="700" height="450"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -1719,8 +1719,8 @@
                                                 </tableColumn>
                                             </tableColumns>
                                             <connections>
-                                                <outlet property="dataSource" destination="ZEK-Vh-qND" id="NIr-yY-kwE"/>
-                                                <outlet property="delegate" destination="ZEK-Vh-qND" id="BYb-yh-4Y5"/>
+                                                <outlet property="dataSource" destination="ZEK-Vh-qND" id="2MN-fs-6Cu"/>
+                                                <outlet property="delegate" destination="ZEK-Vh-qND" id="8SO-6t-jjZ"/>
                                             </connections>
                                         </tableView>
                                     </subviews>
@@ -1870,11 +1870,11 @@ Gw
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="hddStatus" destination="Ym8-ef-CGI" id="1V9-Op-iHt"/>
-                        <outlet property="installButton" destination="Pia-LF-tGJ" id="gNc-Tv-ZwL"/>
+                        <outlet property="hddStatus" destination="Ym8-ef-CGI" id="xHx-NH-yop"/>
+                        <outlet property="installButton" destination="Pia-LF-tGJ" id="JUS-8m-noW"/>
                         <outlet property="memoryStatus" destination="Lmj-c6-U81" id="4bg-in-hxo"/>
-                        <outlet property="metalStatus" destination="2Z8-2X-Zdj" id="jrj-DY-cVZ"/>
-                        <outlet property="tableView" destination="tPV-pI-jig" id="Rqb-UO-YZI"/>
+                        <outlet property="metalStatus" destination="2Z8-2X-Zdj" id="kog-31-GGE"/>
+                        <outlet property="tableView" destination="tPV-pI-jig" id="p16-03-EtU"/>
                     </connections>
                 </viewController>
                 <customObject id="FRE-7m-u56" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
