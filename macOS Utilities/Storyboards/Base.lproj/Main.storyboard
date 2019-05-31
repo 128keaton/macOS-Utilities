@@ -17,6 +17,20 @@
                         <rect key="frame" x="0.0" y="0.0" width="757" height="497"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gOe-aI-oqZ" customClass="NSHidingTextField" customModule="macOS_Utilities" customModuleProvider="target">
+                                <rect key="frame" x="183" y="414" width="170" height="51"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="51" id="1KZ-qb-IDM"/>
+                                </constraints>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="Mac mini" id="11H-2W-Erm">
+                                    <font key="font" metaFont="systemSemibold" size="41"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="shouldHideWhenRunning" value="YES"/>
+                                </userDefinedRuntimeAttributes>
+                            </textField>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="26" horizontalPageScroll="10" verticalLineScroll="26" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7VL-X2-0fp">
                                 <rect key="frame" x="469" y="20" width="268" height="286"/>
                                 <clipView key="contentView" drawsBackground="NO" id="54S-iA-Rtk">
@@ -289,17 +303,6 @@
                                     <segue destination="6I3-IP-efE" kind="sheet" identifier="showCoverageViewController" id="16h-tz-scN"/>
                                 </connections>
                             </button>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gOe-aI-oqZ" customClass="NSHidingTextField" customModule="macOS_Utilities" customModuleProvider="target">
-                                <rect key="frame" x="183" y="414" width="170" height="50"/>
-                                <textFieldCell key="cell" lineBreakMode="clipping" title="Mac mini" id="11H-2W-Erm">
-                                    <font key="font" metaFont="systemSemibold" size="41"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="shouldHideWhenRunning" value="YES"/>
-                                </userDefinedRuntimeAttributes>
-                            </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="nXe-B2-egw" customClass="NSHidingTextField" customModule="macOS_Utilities" customModuleProvider="target">
                                 <rect key="frame" x="183" y="381" width="46" height="21"/>
                                 <constraints>
@@ -710,6 +713,78 @@
                 <customObject id="dAp-GP-NWJ" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-929" y="665"/>
+        </scene>
+        <!--Window Controller-->
+        <scene sceneID="sMJ-2H-acc">
+            <objects>
+                <windowController storyboardIdentifier="waitingToQuitDialog" id="Z4r-Kx-8uf" sceneMemberID="viewController">
+                    <window key="window" title="Waiting..." allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" tabbingIdentifier="waitingToQuitDialog" id="YYk-l4-5fj">
+                        <windowStyleMask key="styleMask" titled="YES" texturedBackground="YES" fullSizeContentView="YES"/>
+                        <rect key="contentRect" x="1098" y="725" width="320" height="150"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1577"/>
+                        <value key="minSize" type="size" width="320" height="150"/>
+                        <value key="maxSize" type="size" width="320" height="150"/>
+                        <connections>
+                            <outlet property="delegate" destination="Z4r-Kx-8uf" id="mEm-mE-EVc"/>
+                        </connections>
+                    </window>
+                    <connections>
+                        <segue destination="BAF-6t-rkA" kind="relationship" relationship="window.shadowedContentViewController" id="W5P-vg-zpo"/>
+                    </connections>
+                </windowController>
+                <customObject id="Zmi-aC-sXO" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3" y="1082"/>
+        </scene>
+        <!--Waiting for disks to eject..-->
+        <scene sceneID="y6N-mG-Mdm">
+            <objects>
+                <viewController title="Waiting for disks to eject.." id="BAF-6t-rkA" customClass="WaitingViewController" customModule="macOS_Utilities" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="SEW-We-Vsv">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="150"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="LXu-6a-sdZ">
+                                <rect key="frame" x="210" y="13" width="96" height="32"/>
+                                <buttonCell key="cell" type="push" title="Quit Now" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="qxw-6I-Eeh">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="quitNow:" target="BAF-6t-rkA" id="pdA-Yn-5f5"/>
+                                </connections>
+                            </button>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gdI-HD-H9n">
+                                <rect key="frame" x="18" y="87" width="284" height="17"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="Waiting for disks to eject.." id="NcL-nU-DEB">
+                                    <font key="font" usesAppearanceFont="YES"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <progressIndicator wantsLayer="YES" maxValue="100" indeterminate="YES" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="0rV-3n-VQx">
+                                <rect key="frame" x="20" y="60" width="280" height="20"/>
+                            </progressIndicator>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="0rV-3n-VQx" firstAttribute="top" secondItem="gdI-HD-H9n" secondAttribute="bottom" constant="8" symbolic="YES" id="0mq-IS-H0i"/>
+                            <constraint firstItem="gdI-HD-H9n" firstAttribute="top" secondItem="SEW-We-Vsv" secondAttribute="top" constant="46" id="27a-md-r6F"/>
+                            <constraint firstItem="gdI-HD-H9n" firstAttribute="trailing" secondItem="0rV-3n-VQx" secondAttribute="trailing" id="EJL-qr-DYr"/>
+                            <constraint firstItem="LXu-6a-sdZ" firstAttribute="top" secondItem="0rV-3n-VQx" secondAttribute="bottom" constant="20" symbolic="YES" id="EQT-QQ-bRQ"/>
+                            <constraint firstItem="gdI-HD-H9n" firstAttribute="leading" secondItem="0rV-3n-VQx" secondAttribute="leading" id="Evk-nm-LMf"/>
+                            <constraint firstAttribute="trailing" secondItem="gdI-HD-H9n" secondAttribute="trailing" constant="20" symbolic="YES" id="PyY-Ha-Owz"/>
+                            <constraint firstItem="LXu-6a-sdZ" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="SEW-We-Vsv" secondAttribute="leading" constant="20" symbolic="YES" id="V4P-XA-il2"/>
+                            <constraint firstItem="gdI-HD-H9n" firstAttribute="trailing" secondItem="LXu-6a-sdZ" secondAttribute="trailing" id="cEt-JA-19n"/>
+                            <constraint firstItem="gdI-HD-H9n" firstAttribute="leading" secondItem="SEW-We-Vsv" secondAttribute="leading" constant="20" symbolic="YES" id="iBE-ri-yvv"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="waitingProgressBar" destination="0rV-3n-VQx" id="ZdO-DN-c10"/>
+                    </connections>
+                </viewController>
+                <customObject id="FyO-0L-Y5t" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3" y="1382"/>
         </scene>
         <!--Applications-->
         <scene sceneID="6AV-Kd-Wxl">
@@ -1588,7 +1663,7 @@
         <!--Chose Installer-->
         <scene sceneID="zLL-0j-bSO">
             <objects>
-                <viewController title="Chose Installer" identifier="installSelectorController" storyboardIdentifier="installSelectorController" id="ZEK-Vh-qND" customClass="InstallerViewController" customModule="macOS_Utilities" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Chose Installer" identifier="installSelectorController" storyboardIdentifier="installSelectorController" id="ZEK-Vh-qND" customClass="SelectInstallerViewController" customModule="macOS_Utilities" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="t40-uf-Gem">
                         <rect key="frame" x="0.0" y="0.0" width="700" height="450"/>
                         <autoresizingMask key="autoresizingMask"/>

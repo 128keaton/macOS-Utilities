@@ -38,8 +38,8 @@ class MenuHandler: NSObject {
     }
 
     private func registerForNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(MenuHandler.addInstallerToMenu(_:)), name: ItemRepository.newInstaller, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(MenuHandler.addUtilityToMenu(_:)), name: ItemRepository.newUtility, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MenuHandler.addInstallerToMenu(_:)), name: GlobalNotifications.newInstaller, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MenuHandler.addUtilityToMenu(_:)), name: GlobalNotifications.newUtility, object: nil)
     }
 
     // MARK: Menu Builders
@@ -122,17 +122,17 @@ class MenuHandler: NSObject {
     }
 
     @IBAction func ejectAll(_ sender: NSMenuItem) {
-        DiskUtility.shared.ejectAll() { (didComplete) in
+        DiskUtility.ejectAll() { (didComplete) in
             DDLogInfo("Finished ejecting? \(didComplete)")
         }
     }
 
     @IBAction func forceReloadAllDisks(_ sender: NSMenuItem) {
-        DiskUtility.shared.ejectAll() { (didComplete) in
+        DiskUtility.ejectAll() { (didComplete) in
             DDLogInfo("Finished ejecting? \(didComplete)")
             if let preferences = PreferenceLoader.currentPreferences,
                 let installerServerPreferences = preferences.installerServerPreferences {
-                DiskUtility.shared.mountDiskImagesAt(installerServerPreferences.mountPath)
+         //       HardDriveImageUtility.mountDiskImagesAt(installerServerPreferences.mountPath)
             }
         }
     }
@@ -240,7 +240,7 @@ class MenuHandler: NSObject {
     }
 
     @objc func openApp(_ sender: NSMenuItem) {
-        NotificationCenter.default.post(name: ItemRepository.openApplication, object: sender.title)
+        NotificationCenter.default.post(name: GlobalNotifications.openApplication, object: sender.title)
     }
 }
 

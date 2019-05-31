@@ -17,7 +17,6 @@ class DiskSelectionViewController: NSViewController {
     @IBOutlet weak var installingVersionLabel: NSTextField?
     @IBOutlet weak var backButton: NSButton!
 
-    private let diskUtility = DiskUtility.shared
     private var defaultItemIdentifiers: [NSTouchBarItem.Identifier] = [.backPageController]
 
     private var selectedInstaller: Installer? = nil
@@ -34,7 +33,7 @@ class DiskSelectionViewController: NSViewController {
         getSelectedInstaller()
 
         NotificationCenter.default.addObserver(self, selector: #selector(handleCancelButtonFromLoadingPage(_:)), name: WizardViewController.cancelButtonNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(newDisksHandler), name: DiskUtility.newDisks, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(newDisksHandler), name: GlobalNotifications.newDisks, object: nil)
     }
 
     override func viewDidAppear() {
@@ -59,7 +58,7 @@ class DiskSelectionViewController: NSViewController {
 
     // MARK: Button actions
     @IBAction @objc func openDiskUtility(_ sender: NSButton) {
-        NotificationCenter.default.post(name: ItemRepository.openApplication, object: "Disk Utility")
+        NotificationCenter.default.post(name: GlobalNotifications.openApplication, object: "Disk Utility")
     }
 
     @IBAction @objc func backButtonClicked(_ sender: NSButton) {
@@ -71,7 +70,7 @@ class DiskSelectionViewController: NSViewController {
     }
 
     @IBAction func refreshButtonClicked(_ sender: NSButton) {
-        diskUtility.getAllDisks()
+        DiskUtility.getAllDisks()
         self.checkAndAskAboutFusionDrive()
     }
 
@@ -106,31 +105,14 @@ class DiskSelectionViewController: NSViewController {
 
     // MARK: Functions
     private func checkAndAskAboutFusionDrive() {
-        let disks = diskUtility.allDisksWithPartitions.filter { $0.itemType == .disk } as! [Disk]
-        let disksWithInfo = disks.filter { $0.info != nil }
-        let disksPotentiallyFusionParts = disksWithInfo.filter { $0.info!.potentialFusionDriveHalve }
-
-        if disksPotentiallyFusionParts.count <= 1 {
-            DDLogVerbose("Internal Drives: \(disksPotentiallyFusionParts)")
-            DDLogVerbose("The reported number of internal drives (\(disksPotentiallyFusionParts.count)) was less than two, therefore no Fusion Drive.")
-            //             return
-        }
-
-        if (disksWithInfo.filter { $0.info!.isSolidState == true }).count == 0 {
-            DDLogVerbose("There weren't any non-hard disk drives, therefore no Fusion Drive.")
-            //               return
-        }
-
-        // Check for an HDD
-        if (disksWithInfo.filter { $0.info!.isSolidState == false }).count == 0 {
-            DDLogVerbose("There weren't any non-solid state drives, therefore no Fusion Drive.")
-            //        return
+        if !DiskUtility.hasFusionDrive {
+            return
         }
 
         self.showConfirmationAlert(question: "Repair Fusion Drive?", text: "A potential Fusion Drive has been detected, do you want to try and repair it?", window: self.view.window!) { (modalResponse) in
             if modalResponse == .alertFirstButtonReturn {
                 PageController.shared.goToLoadingPage(loadingText: "Repairing..", cancelButtonIdentifier: "repairFusionDrive")
-                self.diskUtility.createFusionDrive { (message, didCreate) in
+                DiskUtility.createFusionDrive { (message, didCreate) in
                     if didCreate {
                         DDLogVerbose(message)
                         self.showFinishPage(volumeName: "Macintosh HD")
@@ -199,7 +181,7 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
         var text: String = ""
         var cellIdentifier: String = ""
 
-        let fileSystemItem = diskUtility.installableDisksWithPartitions[row]
+        let fileSystemItem = DiskUtility.installableDisksWithPartitions[row]
 
         if fileSystemItem.itemType == .disk {
             let disk = fileSystemItem as! Disk
@@ -231,7 +213,7 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
     func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
         self.tableView?.deselectAll(self)
 
-        let fileSystemItem = diskUtility.installableDisksWithPartitions[row]
+        let fileSystemItem = DiskUtility.installableDisksWithPartitions[row]
 
         DDLogVerbose("Disk/Partition Selected: \(fileSystemItem)")
 
@@ -239,8 +221,8 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
             self.selectedPartition = nil
             self.selectedDisk = (fileSystemItem as! Disk)
 
-            if diskUtility.installableDisksWithPartitions.indices.contains(row + 1),
-                let nextItem = diskUtility.installableDisksWithPartitions[row + 1] as? Partition,
+            if DiskUtility.installableDisksWithPartitions.indices.contains(row + 1),
+                let nextItem = DiskUtility.installableDisksWithPartitions[row + 1] as? Partition,
                 let selectedDiskPartition = self.selectedDisk?.installablePartition,
                 selectedDiskPartition == nextItem {
                 self.tableView(tableView, selectNextRow: row)
@@ -340,7 +322,7 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
 
 extension DiskSelectionViewController: NSTableViewDataSource {
     func numberOfRows(in tableView: NSTableView) -> Int {
-        return diskUtility.installableDisksWithPartitions.count
+        return DiskUtility.installableDisksWithPartitions.count
     }
 }
 

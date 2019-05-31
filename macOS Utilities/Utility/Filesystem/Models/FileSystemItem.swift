@@ -13,6 +13,7 @@ enum FileSystemItemType {
     case partition
     case diskImage
     case remoteShare
+    case logicalVolumeGroup
 }
 
 protocol FileSystemItem: CustomStringConvertible {

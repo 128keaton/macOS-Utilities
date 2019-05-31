@@ -22,7 +22,7 @@ class Installer: Application {
         if !isFakeInstaller {
             versionName = versionName.replacingOccurrences(of: ".[0-9].*", with: "", options: .regularExpression)
         }
-        
+
         return Version(versionName: versionName)
     }
 
@@ -76,16 +76,18 @@ class Installer: Application {
         return false
     }
 
-    init(volumePath: String, mountPoint: URL, appName: String) {
+    init(volumePath: String, appName: String, addToRepo: Bool = true) {
         self.volumePath = volumePath
         self.installerPath = "\(volumePath)/\(appName).app"
 
         super.init(name: appName, path: self.installerPath)
 
-        self.addToRepo()
+        if addToRepo {
+            self.addToRepo()
+        }
     }
 
-    init(isFakeInstaller: Bool = true, canInstallOnMachine: Bool) {
+    init(isFakeInstaller: Bool = true, canInstallOnMachine: Bool, addToRepo: Bool = true) {
         if(isFakeInstaller) {
             self.volumePath = String.random(12)
             self.installerPath = String.random(12)
@@ -95,7 +97,9 @@ class Installer: Application {
             self.isFakeInstaller = true
             self.fakeInstallerCanInstall = canInstallOnMachine
 
-            self.addToRepo()
+            if addToRepo {
+                self.addToRepo()
+            }
         } else {
             DDLogError("FakeInstaller initializer called with isFakeInstaller == false. FakeInstaller initializer should only be called with isFakeInstaller == true")
             fatalError("FakeInstaller initializer called with isFakeInstaller == false. FakeInstaller initializer should only be called with isFakeInstaller == true")

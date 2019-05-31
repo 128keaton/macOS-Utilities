@@ -172,7 +172,7 @@ class DeviceInformationViewController: NSViewController {
         self.disksAndPartitionsTableView.sizeToFit()
 
         self.reloadTableView(disksAndPartitionsTableView)
-        NotificationCenter.default.addObserver(self, selector: #selector(reloadTableView(_:)), name: DiskUtility.newDisks, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadTableView(_:)), name: GlobalNotifications.newDisks, object: nil)
     }
 
     private func createProgressIndicator() {
@@ -240,15 +240,18 @@ extension DeviceInformationViewController: NSTableViewDelegate, NSTableViewDeleg
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         var text: String = ""
         var cellIdentifier: String = ""
+        var textFieldColor: NSColor? = nil
         var image: NSImage? = nil
 
         if tableView == self.disksAndPartitionsTableView {
-            let fileSystemItem = DiskUtility.shared.allDisksWithPartitions[row]
+            let fileSystemItem = DiskUtility.allDisksWithPartitions[row]
             if fileSystemItem.itemType == .disk {
                 let disk = fileSystemItem as! Disk
 
                 if tableColumn == tableView.tableColumns[0] {
-                    text = disk.deviceIdentifier
+                    text = disk.partitions.count == 0 ? "\(disk.deviceIdentifier) - (no partitions)" : disk.deviceIdentifier
+                    textFieldColor = disk.partitions.count == 0 ? NSColor.tertiaryLabelColor : nil
+
                     cellIdentifier = CellIdentifiers.DiskNameCell
                 } else if tableColumn == tableView.tableColumns[1] {
                     text = disk.size.getReadableUnit()
@@ -259,15 +262,12 @@ extension DeviceInformationViewController: NSTableViewDelegate, NSTableViewDeleg
                 let partition = fileSystemItem as! Partition
 
                 if tableColumn == tableView.tableColumns[0] {
-                    text = partition.volumeName
+                    text = partition.volumeName != "Not mounted" ? partition.volumeName : partition.deviceIdentifier
+                    textFieldColor = partition.rawVolumeName == nil ? NSColor.tertiaryLabelColor : nil
                     cellIdentifier = CellIdentifiers.PartitionNameCell
                 } else if tableColumn == tableView.tableColumns[1] {
                     text = partition.size.getReadableUnit()
                     cellIdentifier = CellIdentifiers.PartitionSizeCell
-                }
-                if let cell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: cellIdentifier), owner: nil) as? NSTableCellView {
-                    cell.textField?.stringValue = text
-                    return cell
                 }
             }
         } else if tableView == graphicsCardTableView {
@@ -287,6 +287,11 @@ extension DeviceInformationViewController: NSTableViewDelegate, NSTableViewDeleg
             if let cellImage = image {
                 cell.imageView?.image = cellImage
             }
+
+            if let textColor = textFieldColor {
+                cell.textField?.textColor = textColor
+            }
+
             return cell
         }
         return nil
@@ -325,7 +330,7 @@ extension DeviceInformationViewController: NSTableViewDelegate, NSTableViewDeleg
 extension DeviceInformationViewController: NSTableViewDataSource {
     func numberOfRows(in tableView: NSTableView) -> Int {
         if tableView == self.disksAndPartitionsTableView {
-            return DiskUtility.shared.allDisksWithPartitions.count
+            return DiskUtility.allDisksWithPartitions.count
         }
         return allGraphicsCards.count
     }

@@ -11,6 +11,7 @@ import CocoaLumberjack
 
 class DiskImage: FileSystemItem, Codable, Equatable {
     var contentHint: String?
+    var itemPath: String? = nil
     var devEntry: String?
     var potentiallyMountable: Bool? = false
     var unmappedContentHint: String?
@@ -51,6 +52,7 @@ class DiskImage: FileSystemItem, Codable, Equatable {
         if isMountable,
             let validMountPoint = self.mountPoint,
             validMountPoint.fileURL.filestatus != .isNot {
+            ItemRepository.shared.scanForMountedInstallers()
             DDLogVerbose("Mounted at: \(validMountPoint)")
         }
     }
@@ -79,6 +81,6 @@ class DiskImage: FileSystemItem, Codable, Equatable {
     }
 
     static func == (lhs: DiskImage, rhs: DiskImage) -> Bool {
-        return lhs.id == rhs.id
+        return lhs.id == rhs.id && lhs.itemPath == rhs.itemPath
     }
 }
