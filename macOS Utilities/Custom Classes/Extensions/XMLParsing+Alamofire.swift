@@ -18,7 +18,7 @@ extension XMLDecoder {
 
     func decodeResponse<T: Decodable>(from response: DataResponse<Data>) -> Result<T> {
         guard response.error == nil else {
-            DDLogError(response.error!)
+            DDLogError(response.error!.localizedDescription)
             return .failure(response.error!)
         }
 
@@ -31,7 +31,7 @@ extension XMLDecoder {
             let item = try decode(T.self, from: responseData)
             return .success(item)
         } catch {
-            DDLogError(error)
+            DDLogError(error.localizedDescription)
             return .failure(error)
         }
     }
