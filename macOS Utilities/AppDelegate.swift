@@ -63,6 +63,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillFinishLaunching(_ notification: Notification) {
         NSAppleEventManager.shared().setEventHandler(self, andSelector: #selector(self.handleAppleEvent(event: replyEvent:)), forEventClass: AEEventClass(kInternetEventClass), andEventID: AEEventID(kAEGetURL))
+        
+        NSSetUncaughtExceptionHandler { exception in
+            ExceptionHandler.handle(exception: exception)
+        }
     }
 
     private func registerForNotifications() {
@@ -201,5 +205,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 }
             }
         }
+    }
+    
+    public static func getApplicationVersion() -> String? {
+        guard let dictionary = Bundle.main.infoDictionary else { return nil }
+        return dictionary["CFBundleShortVersionString"] as? String
     }
 }

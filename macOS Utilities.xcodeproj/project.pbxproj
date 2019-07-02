@@ -12,6 +12,9 @@
 		8A0138D62217624700C77DA0 /* InfoPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0138D52217624700C77DA0 /* InfoPopoverViewController.swift */; };
 		8A175AAC225EFEE50018C977 /* ErrorAlertLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A175AAB225EFEE50018C977 /* ErrorAlertLogger.swift */; };
 		8A175AAE225F2BE70018C977 /* PreferencesApplicationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A175AAD225F2BE70018C977 /* PreferencesApplicationsViewController.swift */; };
+		8A27EF0122C56159005F45AF /* NetworkUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A27EF0022C56159005F45AF /* NetworkUtils.swift */; };
+		8A27EF0322C5667B005F45AF /* ExceptionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A27EF0222C5667B005F45AF /* ExceptionHandler.swift */; };
+		8A27EF0622C566F8005F45AF /* ExceptionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A27EF0522C566F8005F45AF /* ExceptionItem.swift */; };
 		8A2B05F32266888A0089F3A3 /* MenuHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2B05F22266888A0089F3A3 /* MenuHandler.swift */; };
 		8A2DB93B2289DDA400261B9E /* OutputParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2DB93A2289DDA400261B9E /* OutputParser.swift */; };
 		8A2DB9432289DE7C00261B9E /* DiskUtilityList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2DB9422289DE7C00261B9E /* DiskUtilityList.swift */; };
@@ -108,6 +111,9 @@
 		8A175AAB225EFEE50018C977 /* ErrorAlertLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorAlertLogger.swift; sourceTree = "<group>"; };
 		8A175AAD225F2BE70018C977 /* PreferencesApplicationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PreferencesApplicationsViewController.swift; path = ../PreferencesApplicationsViewController.swift; sourceTree = "<group>"; };
 		8A175AAF225FD8770018C977 /* macOS Utilities.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "macOS Utilities.entitlements"; sourceTree = "<group>"; };
+		8A27EF0022C56159005F45AF /* NetworkUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkUtils.swift; sourceTree = "<group>"; };
+		8A27EF0222C5667B005F45AF /* ExceptionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExceptionHandler.swift; sourceTree = "<group>"; };
+		8A27EF0522C566F8005F45AF /* ExceptionItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExceptionItem.swift; sourceTree = "<group>"; };
 		8A2B05F22266888A0089F3A3 /* MenuHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuHandler.swift; sourceTree = "<group>"; };
 		8A2DB93A2289DDA400261B9E /* OutputParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutputParser.swift; sourceTree = "<group>"; };
 		8A2DB9422289DE7C00261B9E /* DiskUtilityList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskUtilityList.swift; sourceTree = "<group>"; };
@@ -260,6 +266,8 @@
 				8A2B05F22266888A0089F3A3 /* MenuHandler.swift */,
 				8A3243C622A1B2510042E6D9 /* BarcodeGenerator.swift */,
 				8A2DB9532289FEFF00261B9E /* GlobalNotifications.swift */,
+				8A27EF0022C56159005F45AF /* NetworkUtils.swift */,
+				8A27EF0422C566EC005F45AF /* ExceptionHandler */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -318,6 +326,15 @@
 				8A9D9A952262F24A00E4D36F /* IPAddressChooserDialog.swift */,
 			);
 			path = Preferences;
+			sourceTree = "<group>";
+		};
+		8A27EF0422C566EC005F45AF /* ExceptionHandler */ = {
+			isa = PBXGroup;
+			children = (
+				8A27EF0222C5667B005F45AF /* ExceptionHandler.swift */,
+				8A27EF0522C566F8005F45AF /* ExceptionItem.swift */,
+			);
+			path = ExceptionHandler;
 			sourceTree = "<group>";
 		};
 		8A2B05F1226685E90089F3A3 /* Models */ = {
@@ -803,6 +820,7 @@
 				8AD01F0D22A16F5600C722B6 /* HardwareItem.swift in Sources */,
 				8A2DB9542289FEFF00261B9E /* GlobalNotifications.swift in Sources */,
 				8A2DB9452289DF8800261B9E /* DiskUtilityInfo.swift in Sources */,
+				8A27EF0622C566F8005F45AF /* ExceptionItem.swift in Sources */,
 				8AA841D02265A509009C5948 /* Units.swift in Sources */,
 				8ABAE3132252C1D800E537D3 /* TaskHandler.swift in Sources */,
 				8A3243D222A1CA2C0042E6D9 /* SelectInstallerViewController.swift in Sources */,
@@ -867,8 +885,10 @@
 				8A2DB94E2289EAF600261B9E /* RawOutputType.swift in Sources */,
 				8A87B8B721A47DD8004496AA /* CwlSysctl.swift in Sources */,
 				8A6C646E225DD2CA00CD6DCF /* WizardViewController.swift in Sources */,
+				8A27EF0122C56159005F45AF /* NetworkUtils.swift in Sources */,
 				8A9370CD2256B53C002B3838 /* DiskUtility.swift in Sources */,
 				8AA841D322664276009C5948 /* PaddedTextField.swift in Sources */,
+				8A27EF0322C5667B005F45AF /* ExceptionHandler.swift in Sources */,
 				8ACB65D521063E6F004B9C5A /* AppDelegate.swift in Sources */,
 				8AD01F2322A187D300C722B6 /* CheckCoverageViewController.swift in Sources */,
 				8A57BF402262A0C200719E74 /* LegacyPreferences.swift in Sources */,

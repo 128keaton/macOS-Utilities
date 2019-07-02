@@ -605,11 +605,23 @@
                                                 <action selector="forceReloadAllDisks:" target="FXb-Ej-UYn" id="ndz-jD-d47"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Force Fusion Drive Support" allowsKeyEquivalentWhenHidden="YES" id="eCM-Fp-TRb">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="forceFusionDrive:" target="FXb-Ej-UYn" id="xK2-ce-hyc"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem isSeparatorItem="YES" id="sbP-hP-eoY"/>
                                         <menuItem title="Test URL Scheme" allowsKeyEquivalentWhenHidden="YES" id="aR6-Zx-Qlx">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="testURLScheme:" target="FXb-Ej-UYn" id="avp-J4-MHX"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Trigger Fatal Exception" allowsKeyEquivalentWhenHidden="YES" id="cPx-xf-weW">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="triggerException:" target="FXb-Ej-UYn" id="n4x-lK-m2o"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="2BW-R3-D05"/>
@@ -830,7 +842,7 @@
                                 </constraints>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Copyright 2018 ER2" id="eF2-Cq-vHA">
                                     <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="gridColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
@@ -842,44 +854,54 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="VFu-S9-ocT" customClass="NSHidingButton" customModule="macOS_Utilities" customModuleProvider="target">
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="VFu-S9-ocT">
                                 <rect key="frame" x="562" y="13" width="124" height="32"/>
-                                <buttonCell key="cell" type="push" title="Install macOS" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="WnH-8a-5LP">
+                                <buttonCell key="cell" type="push" title="Install macOS" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="WnH-8a-5LP">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="shouldHideWhenRunning" value="YES"/>
-                                </userDefinedRuntimeAttributes>
                                 <connections>
                                     <action selector="installMacOSButtonClicked:" target="Xny-k9-8PW" id="Tug-Dz-r3w"/>
                                 </connections>
                             </button>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="UlG-ks-XLp">
+                                <rect key="frame" x="599" y="404" width="83" height="17"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="Version 0.0.0" id="dyt-34-TWs">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="tertiaryLabelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                         </subviews>
                         <constraints>
                             <constraint firstItem="qEG-Vb-Iz3" firstAttribute="trailing" secondItem="Ath-4B-XY8" secondAttribute="trailing" id="2Qh-U3-RQE"/>
+                            <constraint firstAttribute="trailing" secondItem="UlG-ks-XLp" secondAttribute="trailing" constant="20" id="2qH-qb-svF"/>
                             <constraint firstAttribute="bottom" secondItem="cPQ-Xw-iZP" secondAttribute="bottom" constant="20" symbolic="YES" id="3tG-bi-1fU"/>
                             <constraint firstItem="VFu-S9-ocT" firstAttribute="trailing" secondItem="Ath-4B-XY8" secondAttribute="trailing" id="HTk-9f-H5r"/>
                             <constraint firstItem="cPQ-Xw-iZP" firstAttribute="centerX" secondItem="rmT-8I-ks0" secondAttribute="centerX" constant="-269.5" id="Iyv-4z-aX0"/>
                             <constraint firstItem="cPQ-Xw-iZP" firstAttribute="top" secondItem="Ath-4B-XY8" secondAttribute="bottom" constant="53" id="RNK-Br-WOt"/>
                             <constraint firstItem="Ath-4B-XY8" firstAttribute="top" secondItem="rmT-8I-ks0" secondAttribute="top" constant="71" id="Y0M-hD-DHI"/>
                             <constraint firstItem="qEG-Vb-Iz3" firstAttribute="leading" secondItem="Ath-4B-XY8" secondAttribute="leading" id="aog-vy-ydE"/>
+                            <constraint firstItem="UlG-ks-XLp" firstAttribute="bottom" secondItem="qEG-Vb-Iz3" secondAttribute="bottom" constant="-4" id="f0B-yp-zEz"/>
                             <constraint firstItem="VFu-S9-ocT" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="cPQ-Xw-iZP" secondAttribute="trailing" id="ig3-tW-JdG"/>
                             <constraint firstItem="Ath-4B-XY8" firstAttribute="leading" secondItem="rmT-8I-ks0" secondAttribute="leading" constant="20" symbolic="YES" id="lqm-Zb-5Qs"/>
                             <constraint firstItem="VFu-S9-ocT" firstAttribute="bottom" secondItem="cPQ-Xw-iZP" secondAttribute="bottom" id="sez-UL-STd"/>
                             <constraint firstItem="cPQ-Xw-iZP" firstAttribute="centerX" secondItem="Ath-4B-XY8" secondAttribute="centerX" constant="-269.5" id="tmZ-d3-FJK"/>
+                            <constraint firstItem="UlG-ks-XLp" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="rmT-8I-ks0" secondAttribute="leading" constant="20" symbolic="YES" id="w4w-PK-T23"/>
                             <constraint firstItem="Ath-4B-XY8" firstAttribute="top" secondItem="qEG-Vb-Iz3" secondAttribute="bottom" constant="16" id="w6R-oT-3zS"/>
                             <constraint firstItem="cPQ-Xw-iZP" firstAttribute="leading" secondItem="rmT-8I-ks0" secondAttribute="leading" constant="20" id="wR7-q9-Gva"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="collectionView" destination="e9c-GW-a3y" id="8Ht-qB-bmO"/>
+                        <outlet property="copyrightLabel" destination="cPQ-Xw-iZP" id="fkS-oA-g7A"/>
                         <outlet property="installMacOSButton" destination="VFu-S9-ocT" id="Yju-Jj-Jbi"/>
+                        <outlet property="versionLabel" destination="UlG-ks-XLp" id="Bwd-RK-TIu"/>
                     </connections>
                 </viewController>
                 <customObject id="Uhy-ZN-Yif" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3" y="665"/>
+            <point key="canvasLocation" x="3" y="664.5"/>
         </scene>
         <!--Preferences-->
         <scene sceneID="2cQ-Xx-iIz">

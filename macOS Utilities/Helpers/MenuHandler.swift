@@ -137,6 +137,22 @@ class MenuHandler: NSObject {
         }
     }
 
+    @IBAction func triggerException(_ sender: NSMenuItem){
+        fatalError("Test Fatal Error")
+    }
+    
+    @IBAction func forceFusionDrive(_ sender: NSMenuItem) {
+        if DiskUtility.forceFusionDrive {
+            DDLogVerbose("Forcing scanning for Fusion Drive is now on")
+            sender.state = .off
+        } else {
+            DDLogVerbose("Forcing scanning for Fusion Drive is now off")
+            sender.state = .on
+        }
+
+        DiskUtility.forceFusionDrive = !DiskUtility.forceFusionDrive
+    }
+
     @IBAction func createFakeInstallerNonInstallable(_ sender: NSMenuItem) {
         ItemRepository.shared.addFakeInstaller()
     }

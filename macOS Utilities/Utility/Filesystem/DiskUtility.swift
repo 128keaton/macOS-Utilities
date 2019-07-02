@@ -13,6 +13,7 @@ class DiskUtility: NSObject, NSFilePresenter {
     var presentedItemURL: URL?
     var presentedItemOperationQueue: OperationQueue = OperationQueue.main
 
+    public static var forceFusionDrive = false
     public static let shared = DiskUtility()
 
     // MARK: Cached properties
@@ -87,8 +88,12 @@ class DiskUtility: NSObject, NSFilePresenter {
     }
 
     public static var hasFusionDrive: Bool {
-        if Sysctl.model.contains("MacPro") {
-            DDLogVerbose("A Mac Pro will never contain a Fusion Drive.")
+        if (forceFusionDrive) {
+            return true
+        }
+
+        if !(Sysctl.model.contains("iMac") || Sysctl.model.contains("Macmini")) {
+            DDLogVerbose("A \(Sysctl.model) will never contain a Fusion Drive.")
             return false
         }
 
@@ -206,14 +211,14 @@ class DiskUtility: NSObject, NSFilePresenter {
 
     private static func removeMountPoint(_ path: String, didComplete: @escaping (Bool) -> ()) {
         TaskHandler.createTask(command: "/bin/rm", arguments: ["-rf", path], returnEscaping: { (taskOutput) in
-            if let rmOutput = taskOutput {
-                DDLogError("Error removing \(path): \(rmOutput)")
-                didComplete(false)
-            } else {
-                DDLogInfo("Successfully removed \(path)")
-                didComplete(true)
-            }
-        })
+                if let rmOutput = taskOutput {
+                    DDLogError("Error removing \(path): \(rmOutput)")
+                    didComplete(false)
+                } else {
+                    DDLogInfo("Successfully removed \(path)")
+                    didComplete(true)
+                }
+            })
     }
 
     // MARK: CoreStorage/Fusion Drive functions
@@ -221,15 +226,15 @@ class DiskUtility: NSObject, NSFilePresenter {
     /// MARK: Get all of the logical volume groups
     public static func getLogicalVolumeGroups(completion: @escaping ([LogicalVolumeGroup]?) -> ()) {
         TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["cs", "list", "-plist"], returnEscaping: { (output) in
-            if let coreStorageListOutput = output {
-                do {
-                    let coreStorageList: DiskUtilityCoreStorageList = try OutputParser().parseOutput(coreStorageListOutput, toolType: .diskUtility, outputType: .coreStorageList)
-                    completion(coreStorageList.logicalVolumeGroups)
-                } catch {
-                    DDLogError("Could not list Core Storage Volumes: \(error)")
+                if let coreStorageListOutput = output {
+                    do {
+                        let coreStorageList: DiskUtilityCoreStorageList = try OutputParser().parseOutput(coreStorageListOutput, toolType: .diskUtility, outputType: .coreStorageList)
+                        completion(coreStorageList.logicalVolumeGroups)
+                    } catch {
+                        DDLogError("Could not list Core Storage Volumes: \(error)")
+                    }
                 }
-            }
-        })
+            })
     }
 
     /// Create a Core Storage volume. Requires the Logical Volume Group UUID to be passed
@@ -452,11 +457,11 @@ class DiskUtility: NSObject, NSFilePresenter {
             let currentShare = $0
             if let mountPoint = currentShare.mountPoint {
                 TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["unmount", "force", mountPoint], returnEscaping: { (output) in
-                    if let unmountOutput = output,
-                        unmountOutput.contains("Unmount successful for") {
-                        didComplete(true)
-                    }
-                })
+                        if let unmountOutput = output,
+                            unmountOutput.contains("Unmount successful for") {
+                            didComplete(true)
+                        }
+                    })
             }
         }
     }
