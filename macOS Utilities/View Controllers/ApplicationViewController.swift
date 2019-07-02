@@ -13,6 +13,8 @@ import CocoaLumberjack
 class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     @IBOutlet weak var collectionView: NSCollectionView!
     @IBOutlet weak var installMacOSButton: NSButton?
+    @IBOutlet weak var copyrightLabel: NSTextField!
+    @IBOutlet weak var versionLabel: NSTextField!
 
     private var preferenceLoader: PreferenceLoader? = nil
     private let itemRepository = ItemRepository.shared
@@ -42,14 +44,40 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if let appVersion = AppDelegate.getApplicationVersion() {
+            self.versionLabel.stringValue = "Version \(appVersion)"
+        }
+        
 
         self.registerForNotifications()
+        self.showIPAddress()
 
         if let collectionViewNib = NSNib(nibNamed: "NSCollectionAppCell", bundle: nil) {
             collectionView.register(collectionViewNib, forItemWithIdentifier: NSUserInterfaceItemIdentifier(rawValue: "NSCollectionAppCell"))
         }
 
         DDLogInfo("Launched macOS Utilities")
+    }
+    
+    private func checkForExceptions(){
+        if !ExceptionHandler.hasExceptions {
+            return
+        }
+        
+        showInfoAlert(title: "Hello There", message: "Looks like macOS Utilities crashed the last time it was used. Would you like to log this issue?") { (shouldLog) in
+            if (shouldLog) {
+                ExceptionHandler.exceptions.forEach({ (exceptionItem) in
+                    var message = "Exception at \(exceptionItem.exceptionDate): \n"
+                    message += "Name: \(exceptionItem.exception.name).\n"
+                    message += "\(exceptionItem.exception)"
+                    
+                    DDLogError(message)
+                })
+                
+                ExceptionHandler.clearExceptions()
+            }
+        }
     }
 
     private func registerForNotifications() {
@@ -59,14 +87,24 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(ApplicationViewController.addInstaller(_:)), name: GlobalNotifications.newInstaller, object: nil)
     }
 
+    private func showIPAddress() {
+        guard let networkAddress = (NetworkUtils.getAllAddresses().first { (address) -> Bool in
+            let validIP = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
+            return (address.range(of: validIP, options: .regularExpression) != nil)
+        }) else {
+            return
+        }
+
+        self.copyrightLabel.stringValue = "Copyright 2018 ER2 - IP: \(networkAddress)"
+    }
+
     @objc private func addInstaller(_ aNotification: Notification? = nil) {
         guard let notification = aNotification else { return }
         if (notification.object as? Installer) != nil {
-            NSAnimationContext.runAnimationGroup { (context) in
-                context.duration = 0.5
-                self.installMacOSButton?.animator().alphaValue = 1.0
+            DispatchQueue.main.async {
+                self.installMacOSButton?.isEnabled = true
+                self.addTouchBarInstallButton()
             }
-            self.addTouchBarInstallButton()
         }
     }
 

@@ -204,6 +204,10 @@ extension SelectInstallerViewController: NSTableViewDataSource {
 
 extension SelectInstallerViewController: NSTableViewDelegate, NSTableViewDelegateDeselectListener {
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        if (!installers.indices.contains(row)) {
+            return nil
+        }
+
         let installer = installers[row]
 
         if let installerCell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "osCell"), owner: nil) as? InstallerCellView {
