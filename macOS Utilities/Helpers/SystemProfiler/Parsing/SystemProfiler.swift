@@ -35,19 +35,6 @@ class SystemProfiler {
         return self.hardwareItem != nil
     }
 
-    public static func testGetInfo() {
-        let downloadsDirectory = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first!
-        let testPropertyList = downloadsDirectory.appendingPathComponent("TestParse.plist")
-        print(testPropertyList)
-
-        do {
-            let testData = try Data(contentsOf: testPropertyList)
-            self.parseInto(testData)
-        } catch {
-            print(error)
-        }
-    }
-
     public static func getInfo(force: Bool = false) {
         if hasParsed && !force {
             NotificationCenter.default.post(name: dataWasParsed, object: nil)

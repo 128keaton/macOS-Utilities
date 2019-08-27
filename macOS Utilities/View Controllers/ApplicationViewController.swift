@@ -103,7 +103,10 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         if (notification.object as? Installer) != nil {
             DispatchQueue.main.async {
                 self.installMacOSButton?.isEnabled = true
-                self.addTouchBarInstallButton()
+                
+                if #available(OSX 10.12.2, *) {
+                    self.addTouchBarInstallButton()
+                }
             }
         }
     }
@@ -226,12 +229,14 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         }
     }
 
+    @available(OSX 10.12.2, *)
     func removeTouchBarInstallButton() {
         if let touchBar = self.touchBar {
             touchBar.defaultItemIdentifiers = [.getInfo, .openPreferences]
         }
     }
 
+    @available(OSX 10.12.2, *)
     func addTouchBarInstallButton() {
         if let touchBar = self.touchBar {
             touchBar.defaultItemIdentifiers = [.installMacOS, .getInfo, .openPreferences]
@@ -292,7 +297,7 @@ extension ApplicationViewController: NSCollectionViewDataSource {
     }
 }
 
-@available(OSX 10.12.1, *)
+@available(OSX 10.12.2, *)
 extension NSTouchBarItem.Identifier {
     static let installMacOS = NSTouchBarItem.Identifier("com.keaton.utilities.installMacOS")
     static let getInfo = NSTouchBarItem.Identifier("com.keaton.utilities.getInfo")
@@ -302,7 +307,7 @@ extension NSTouchBarItem.Identifier {
     static let openPreferences = NSTouchBarItem.Identifier("com.keaton.utilities.openPreferences")
 }
 
-@available(OSX 10.12.1, *)
+@available(OSX 10.12.2, *)
 extension ApplicationViewController: NSTouchBarDelegate {
 
     override func makeTouchBar() -> NSTouchBar? {

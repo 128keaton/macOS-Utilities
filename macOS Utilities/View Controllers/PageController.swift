@@ -279,7 +279,7 @@ extension PageController: NSPageControllerDelegate {
 }
 
 
-@available(OSX 10.12.1, *)
+@available(OSX 10.12.2, *)
 extension PageController: NSTouchBarDelegate {
     func makeTouchBar() -> NSTouchBar? {
         let touchBar = NSTouchBar()

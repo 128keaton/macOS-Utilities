@@ -35,10 +35,6 @@ class DeviceInformationViewController: NSViewController {
     override func viewDidAppear() {
         super.viewDidAppear()
 
-        #if DEBUG
-            SystemProfiler.testGetInfo()
-        #endif
-        
         if SystemProfiler.hasMachineData && barcodeURL == nil {
             saveBarcode()
         }
@@ -340,7 +336,7 @@ extension DeviceInformationViewController: NSTableViewDataSource {
     }
 }
 
-@available(OSX 10.12.1, *)
+@available(OSX 10.12.2, *)
 extension DeviceInformationViewController: NSTouchBarDelegate {
 
     override func makeTouchBar() -> NSTouchBar? {

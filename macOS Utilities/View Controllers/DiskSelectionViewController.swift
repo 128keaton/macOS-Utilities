@@ -17,8 +17,6 @@ class DiskSelectionViewController: NSViewController {
     @IBOutlet weak var installingVersionLabel: NSTextField?
     @IBOutlet weak var backButton: NSButton!
 
-    private var defaultItemIdentifiers: [NSTouchBarItem.Identifier] = [.backPageController]
-
     private var selectedInstaller: Installer? = nil
     private var selectedPartition: Partition? = nil
     private var selectedDisk: Disk? = nil
@@ -156,12 +154,14 @@ class DiskSelectionViewController: NSViewController {
         }
     }
 
+    @available(OSX 10.12.2, *)
     private func removeTouchBarNextButton() {
         if let touchBar = self.touchBar {
-            touchBar.defaultItemIdentifiers = self.defaultItemIdentifiers
+            touchBar.defaultItemIdentifiers = [.backPageController]
         }
     }
 
+    @available(OSX 10.12.2, *)
     private func addTouchBarNextButton() {
         if let touchBar = self.touchBar {
             touchBar.defaultItemIdentifiers = [.backPageController, .nextPageController]
@@ -250,7 +250,10 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
         }
 
         nextButton?.isEnabled = true
-        self.addTouchBarNextButton()
+
+        if #available(OSX 10.12.2, *) {
+            self.addTouchBarNextButton()
+        }
 
         return true
     }
@@ -267,7 +270,10 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
             nextButton?.isEnabled = false
             nextButton?.title = "Next"
             selectedPartition = nil
-            self.removeTouchBarNextButton()
+
+            if #available(OSX 10.12.2, *) {
+                self.removeTouchBarNextButton()
+            }
         }
     }
 
@@ -326,19 +332,18 @@ extension DiskSelectionViewController: NSTableViewDataSource {
     }
 }
 
-@available(OSX 10.12.1, *)
+@available(OSX 10.12.2, *)
 extension DiskSelectionViewController: NSTouchBarDelegate {
     override func makeTouchBar() -> NSTouchBar? {
         let touchBar = NSTouchBar()
         touchBar.delegate = self
 
         if PageController.shared.isInitialPage(self) {
-            self.defaultItemIdentifiers = [.closeCurrentWindow]
+            touchBar.defaultItemIdentifiers = [.closeCurrentWindow]
         } else {
-            self.defaultItemIdentifiers = [.backPageController]
+            touchBar.defaultItemIdentifiers = [.backPageController]
         }
 
-        touchBar.defaultItemIdentifiers = self.defaultItemIdentifiers
         return touchBar
     }
 
