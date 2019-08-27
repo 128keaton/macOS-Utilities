@@ -3,3 +3,9 @@
 Pods/
 macOS Utilities.xcworkspace/xcshareddata/
 macOS Utilities.xcworkspace/xcuserdata/
+
+# Sourcery
+macOS Utilities/Sourcery/Generated/*.generated.swift
+macOS Utilities/Sourcery/Configuration/sourcery.yml
+macOS Utilities/Sourcery/Configuration/sourcery.yml
+

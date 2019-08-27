@@ -4,6 +4,12 @@ PODS:
     - Alamofire (~> 4.5)
     - SwiftyJSON (~> 4.0.0)
   - AppFolder (0.2.0)
+  - AudioKit (4.8):
+    - AudioKit/Core (= 4.8)
+    - AudioKit/UI (= 4.8)
+  - AudioKit/Core (4.8)
+  - AudioKit/UI (4.8):
+    - AudioKit/Core
   - BMExtendablePageController (0.2.0):
     - CAAnimationBlocks (~> 0.0.1)
   - CAAnimationBlocks (0.0.1)
@@ -19,7 +25,7 @@ PODS:
   - PaperTrailLumberjack/Swift (0.2.0):
     - CocoaLumberjack/Swift (~> 3.4)
     - PaperTrailLumberjack/Core
-  - RainbowSwift (3.1.5)
+  - Sourcery (0.16.2)
   - STPrivilegedTask (1.0.1)
   - SwiftyJSON (4.0.0)
   - XMLParsing (0.0.3)
@@ -28,16 +34,17 @@ DEPENDENCIES:
   - Alamofire
   - Alamofire-SwiftyJSON
   - AppFolder (~> 0.2.0)
+  - AudioKit
   - BMExtendablePageController (from `https://github.com/Foboz/BMExtPageController`)
   - CocoaAsyncSocket
   - CocoaLumberjack/Swift
   - PaperTrailLumberjack/Swift (from `https://github.com/128keaton/PaperTrailLumberjack`)
-  - RainbowSwift (from `https://github.com/128keaton/Rainbow.git`, tag `3.1.5-swift5`)
+  - Sourcery
   - STPrivilegedTask
   - XMLParsing (from `https://github.com/128keaton/XMLParsing.git`)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - Alamofire
     - Alamofire-SwiftyJSON
     - AppFolder
@@ -46,15 +53,15 @@ SPEC REPOS:
     - CocoaLumberjack
     - STPrivilegedTask
     - SwiftyJSON
+  trunk:
+    - AudioKit
+    - Sourcery
 
 EXTERNAL SOURCES:
   BMExtendablePageController:
     :git: https://github.com/Foboz/BMExtPageController
   PaperTrailLumberjack:
     :git: https://github.com/128keaton/PaperTrailLumberjack
-  RainbowSwift:
-    :git: https://github.com/128keaton/Rainbow.git
-    :tag: 3.1.5-swift5
   XMLParsing:
     :git: https://github.com/128keaton/XMLParsing.git
 
@@ -65,9 +72,6 @@ CHECKOUT OPTIONS:
   PaperTrailLumberjack:
     :commit: d469aa89e0023dcacc549a605f58669053ac7d5a
     :git: https://github.com/128keaton/PaperTrailLumberjack
-  RainbowSwift:
-    :git: https://github.com/128keaton/Rainbow.git
-    :tag: 3.1.5-swift5
   XMLParsing:
     :commit: f173abf8f782bd7072b0b423aa154358ef6a7ae7
     :git: https://github.com/128keaton/XMLParsing.git
@@ -76,16 +80,17 @@ SPEC CHECKSUMS:
   Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
   Alamofire-SwiftyJSON: 2b3649d57dc7bb2880fb8b86f8bb969397666916
   AppFolder: d10ba19488bd441d60ffcf96eb2ab639a4825231
+  AudioKit: 04ecf14d5ca795b16fc92c76fc84e2421ade7df0
   BMExtendablePageController: 0c144c22853ad09cd321c9b2330af2cac3fbb0c6
   CAAnimationBlocks: 1aaca5fb6447a95d83b20cc786992956ef46e4ee
   CocoaAsyncSocket: eafaa68a7e0ec99ead0a7b35015e0bf25d2c8987
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
   PaperTrailLumberjack: 7a89283286f82da814a3b5748630b6002ae160a3
-  RainbowSwift: 6d4b16b5cc825a8a9a69d8fb5128b76d49133d5a
+  Sourcery: 3f406d227efd179773b3c3599ebd1700d1a6013c
   STPrivilegedTask: 103f97827454e786074640cf89d303be344498c7
   SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
   XMLParsing: 5b2e061ac61c95eb246f169f89ffb049f8bff668
 
-PODFILE CHECKSUM: 8ee05654dc88eeb75226cb229e0f66f905edc41f
+PODFILE CHECKSUM: 4822cfcb439bd217b23da0aa537978b144d12b7d
 
-COCOAPODS: 1.7.0
+COCOAPODS: 1.8.0.beta.2

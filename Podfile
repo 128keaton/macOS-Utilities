@@ -11,8 +11,9 @@ target 'macOS Utilities' do
  pod "PaperTrailLumberjack/Swift", :git => "https://github.com/128keaton/PaperTrailLumberjack"
  pod 'BMExtendablePageController', :git => "https://github.com/Foboz/BMExtPageController"
  pod "STPrivilegedTask"
- pod 'RainbowSwift', :git => 'https://github.com/128keaton/Rainbow.git', :tag => '3.1.5-swift5'
  pod 'XMLParsing', :git => 'https://github.com/128keaton/XMLParsing.git'
+ pod 'AudioKit'
+ pod 'Sourcery'
 end
 
 post_install do |installer|
