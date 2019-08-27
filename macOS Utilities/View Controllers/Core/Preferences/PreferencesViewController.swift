@@ -29,6 +29,7 @@ class PreferencesViewController: NSViewController {
     @IBOutlet weak var installerMountTypeLabel: NSTextField!
     @IBOutlet weak var installerCheckBox: NSButton!
 
+    @IBOutlet weak var printServerAddressField: NSTextField!
     @IBOutlet weak var sendLogAddressField: NSTextField!
     @IBOutlet weak var savePathLabel: NSTextField!
     @IBOutlet weak var applicationsCountLabel: NSTextField!
@@ -148,6 +149,12 @@ class PreferencesViewController: NSViewController {
                     self.installerCheckBox.state = .off
                 }
 
+                if let printServerAddress = preferences.printServerAddress {
+                    self.printServerAddressField.stringValue = printServerAddress
+                } else {
+                    self.printServerAddressField.stringValue = ""
+                }
+                
                 if let helpEmailAddress = preferences.helpEmailAddress {
                     self.sendLogAddressField.stringValue = helpEmailAddress
                 } else {
@@ -252,9 +259,10 @@ class PreferencesViewController: NSViewController {
             loggingPreferences.loggingURL = loggingURLField.stringValue
             loggingPreferences.loggingPort = UInt(loggingPortField.stringValue) ?? 0
 
+            preferences.printServerAddress = printServerAddressField.stringValue
             preferences.helpEmailAddress = sendLogAddressField.stringValue
             preferences.ejectDrivesOnQuit = (ejectDrivesOnQuitButton.state == .on)
-            
+
             if let serverType = installerServerTypePopup.selectedItem?.title {
                 installerServerPreferences.serverType = serverType
             }

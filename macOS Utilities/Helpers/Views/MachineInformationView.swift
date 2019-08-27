@@ -13,7 +13,7 @@ class MachineInformationView: NSView {
     @IBOutlet private var machineModelField: NSTextField!
     @IBOutlet private var machineMemoryField: NSTextField!
     @IBOutlet private var machineProcessorField: NSTextField!
-    
+
     @IBOutlet private var machineBatteryHealthLabel: NSTextField!
     @IBOutlet private var machineBatteryHealthField: NSTextField!
 
@@ -34,20 +34,14 @@ class MachineInformationView: NSView {
         }
     }
 
-    convenience init(frame frameRect: NSRect, hidden: Bool, hardwareItem: HardwareItem) {
-        self.init(frame: frameRect, hidden: hidden)
-        
-        populateFields(withHardwareItem: hardwareItem)
-    }
-
-    init(frame frameRect: NSRect, hidden: Bool) {
-        super.init(frame: frameRect)
+    convenience init(frame frameRect: NSRect, hidden: Bool) {
+        self.init(frame: frameRect)
 
         if hidden {
             self.alphaValue = 0.0
         }
 
-        loadInterface()
+        populateFields()
     }
 
     override init(frame frameRect: NSRect) {
@@ -62,18 +56,19 @@ class MachineInformationView: NSView {
         loadInterface()
     }
 
-    public func showBatteryHealth(batteryStatus: String){
+    public func showBatteryHealth(batteryStatus: String) {
         machineBatteryHealthField.alphaValue = 1.0
         machineBatteryHealthLabel.alphaValue = 1.0
-        
+
         machineBatteryHealthField.stringValue = batteryStatus
     }
-    
-    private func populateFields(withHardwareItem hardwareItem: HardwareItem) {
-        machineModelField.stringValue = hardwareItem.machineModel ?? "Unknown"
-        machineMemoryField.stringValue = hardwareItem.physicalMemory ?? "Unknown"
-        machineProcessorField.stringValue = hardwareItem.cpuType ?? "Unknown"
-        
+
+    private func populateFields() {
+
+        machineModelField.stringValue = SystemProfiler.modelIdentifier
+        machineMemoryField.stringValue = "\(SystemProfiler.amountOfMemoryInstalled) GB"
+        machineProcessorField.stringValue = SystemProfiler.processorInformation
+
         fieldsPopulated = true
     }
 
@@ -81,11 +76,11 @@ class MachineInformationView: NSView {
         machineModelField.sizeToFitText()
         machineProcessorField.sizeToFitText()
         machineMemoryField.sizeToFitText()
-        
+
         machineModelField.delegate = self
         machineProcessorField.delegate = self
         machineMemoryField.delegate = self
-        
+
         machineModel = machineModelField.stringValue
         machineProcesser = machineProcessorField.stringValue
         machineMemory = machineMemoryField.stringValue
@@ -96,7 +91,7 @@ class MachineInformationView: NSView {
         addSubview(contentBox)
         contentBox.frame = self.bounds
         contentBox.autoresizingMask = [.height, .width]
-        
+
         machineBatteryHealthField.alphaValue = 0.0
         machineBatteryHealthLabel.alphaValue = 0.0
     }

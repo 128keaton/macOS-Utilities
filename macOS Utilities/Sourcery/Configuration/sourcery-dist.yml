@@ -1,7 +1,0 @@
-args:
-    printServerAddress: "Test"
-sources:
-    - ../../../../macOS\ Utilities
-templates:
-    - ../Templates
-output: ../Generated

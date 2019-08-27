@@ -14,6 +14,7 @@ class Preferences: Codable, NSCopying, CustomStringConvertible, Equatable {
     }
 
     var helpEmailAddress: String?
+    var printServerAddress: String?
     var deviceIdentifierAuthenticationToken: String?
     var loggingPreferences: LoggingPreferences?
     var installerServerPreferences: InstallerServerPreferences?

@@ -8,6 +8,7 @@
 
 import Cocoa
 import PaperTrailLumberjack
+import AVFoundation
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -31,12 +32,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     public var preferenceLoader: PreferenceLoader? = nil
 
+    private (set) public var audioPlayer: AVAudioPlayer?
+
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         registerForNotifications()
+        setupAudioPlayer()
 
         PreferenceLoader.setup()
         SystemProfiler.getInfo()
-        
+
         if let preferenceLoader = PreferenceLoader.sharedInstance {
             self.preferenceLoader = preferenceLoader
             NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.readPreferences(_:)), name: GlobalNotifications.preferencesLoaded, object: nil)
@@ -63,7 +67,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillFinishLaunching(_ notification: Notification) {
         NSAppleEventManager.shared().setEventHandler(self, andSelector: #selector(self.handleAppleEvent(event: replyEvent:)), forEventClass: AEEventClass(kInternetEventClass), andEventID: AEEventID(kAEGetURL))
-        
+
         NSSetUncaughtExceptionHandler { exception in
             ExceptionHandler.handle(exception: exception)
         }
@@ -138,11 +142,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if !Thread.isMainThread || waitingDialog != nil {
             return
         }
-        
+
         closeMainWindow()
         waitingDialog = NSStoryboard(name: "Main", bundle: nil).instantiateController(withIdentifier: "waitingToQuitDialog") as? NSWindowController
-       
-        if let dialog = waitingDialog{
+
+        if let dialog = waitingDialog {
             dialog.showWindow(self)
         }
     }
@@ -206,9 +210,27 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
     }
-    
+
     public static func getApplicationVersion() -> String? {
         guard let dictionary = Bundle.main.infoDictionary else { return nil }
         return dictionary["CFBundleShortVersionString"] as? String
+    }
+
+    public func setupAudioPlayer() {
+        let path = Bundle.main.path(forResource: "nt4", ofType: "mp3")!
+        let url = URL(fileURLWithPath: path)
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: url)
+            audioPlayer?.delegate = self
+            NotificationCenter.default.post(name: Notification.Name("AudioPlayerReady"), object: audioPlayer)
+        } catch {
+            print("Unable to load file")
+        }
+    }
+}
+
+extension AppDelegate: AVAudioPlayerDelegate {
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        NotificationCenter.default.post(name: Notification.Name("AudioFinished"), object: nil)
     }
 }

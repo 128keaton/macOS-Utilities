@@ -25,7 +25,6 @@ PODS:
   - PaperTrailLumberjack/Swift (0.2.0):
     - CocoaLumberjack/Swift (~> 3.4)
     - PaperTrailLumberjack/Core
-  - Sourcery (0.16.2)
   - STPrivilegedTask (1.0.1)
   - SwiftyJSON (4.0.0)
   - XMLParsing (0.0.3)
@@ -39,7 +38,6 @@ DEPENDENCIES:
   - CocoaAsyncSocket
   - CocoaLumberjack/Swift
   - PaperTrailLumberjack/Swift (from `https://github.com/128keaton/PaperTrailLumberjack`)
-  - Sourcery
   - STPrivilegedTask
   - XMLParsing (from `https://github.com/128keaton/XMLParsing.git`)
 
@@ -55,7 +53,6 @@ SPEC REPOS:
     - SwiftyJSON
   trunk:
     - AudioKit
-    - Sourcery
 
 EXTERNAL SOURCES:
   BMExtendablePageController:
@@ -86,11 +83,10 @@ SPEC CHECKSUMS:
   CocoaAsyncSocket: eafaa68a7e0ec99ead0a7b35015e0bf25d2c8987
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
   PaperTrailLumberjack: 7a89283286f82da814a3b5748630b6002ae160a3
-  Sourcery: 3f406d227efd179773b3c3599ebd1700d1a6013c
   STPrivilegedTask: 103f97827454e786074640cf89d303be344498c7
   SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
   XMLParsing: 5b2e061ac61c95eb246f169f89ffb049f8bff668
 
-PODFILE CHECKSUM: 4822cfcb439bd217b23da0aa537978b144d12b7d
+PODFILE CHECKSUM: 14bf6f3c74cfb1d3db78a5f63ba6cf5ce7a0fa09
 
 COCOAPODS: 1.8.0.beta.2
