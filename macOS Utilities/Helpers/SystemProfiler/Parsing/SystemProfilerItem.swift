@@ -49,6 +49,8 @@ struct SystemProfilerItem: Decodable, CustomStringConvertible {
 
     func getItems<A: ItemType>(_ type: A.Type) -> [A] {
         if A.isNested, let items = self.items, let nestedItem = items.first as? NestedItemType {
+            print("Getting nested items")
+            print(nestedItem.items as! [A])
             return nestedItem.items as! [A]
         }
 

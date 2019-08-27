@@ -189,11 +189,16 @@ class SystemProfiler {
             SystemProfilerItem.register(DiscBurningItem.self, for: .discBurning)
             SystemProfilerItem.register(SerialATAControllerItem.self, for: .serialATA)
 
-            self.matchTypes(try decoder.decode([SystemProfilerItem].self, from: data))
+            let unmatchedTypes = try decoder.decode([SystemProfilerItem].self, from: data)
+            self.matchTypes(unmatchedTypes)
+
+            print(unmatchedTypes)
 
             if let validHardwareItem = self.hardwareItem,
                 let detailedCPUInfo = String(data: detailedCPUInfoData, encoding: .utf8) {
                 validHardwareItem.cpuType = detailedCPUInfo
+            } else {
+                DDLogInfo("Could not get a valid hardware item")
             }
 
             for graphicsCard in self.displayItems {
@@ -223,15 +228,15 @@ class SystemProfiler {
     }
 
     public static var modelIdentifier: String {
-        if let hardwareInfo = self.hardwareItem {
-            return hardwareInfo.machineModel
+        if let hardwareInfo = self.hardwareItem, let machineModel = hardwareInfo.machineModel {
+            return machineModel
         }
         return Sysctl.model
     }
 
     public static var serialNumber: String {
-        if let hardwareInfo = self.hardwareItem {
-            return hardwareInfo.serialNumber
+        if let hardwareInfo = self.hardwareItem, let serialNumber = hardwareInfo.serialNumber {
+            return serialNumber
         }
 
         return NSApplication.shared.getSerialNumber() ?? "No serial found for machine \(Sysctl.model)"
@@ -298,8 +303,8 @@ class SystemProfiler {
 
 
     public static var processorInformation: String {
-        if let hardwareInfo = self.hardwareItem {
-            return hardwareInfo.cpuType
+        if let hardwareInfo = self.hardwareItem, let cpuType = hardwareInfo.cpuType {
+            return cpuType.replacingOccurrences(of: "  ", with: "").replacingOccurrences(of: "(R)", with: "®")
         }
 
         return "Unable to determine processor information"

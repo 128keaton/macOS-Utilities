@@ -9,6 +9,7 @@
 import Foundation
 import CocoaLumberjack
 import PaperTrailLumberjack
+import RainbowSwift
 
 class LoggerManager {
     private static var loggerInitialized = false
@@ -25,7 +26,7 @@ class LoggerManager {
 
             DDLogInfo(NSApplication.shared.getVerboseName())
             DDLogInfo("\n")
-            DDLogInfo("\n---------------------------LOGGER INITIALIZED---------------------------")
+            DDLogInfo("\n---------------------------LOGGER INITIALIZED---------------------------".applyingCodes(Color.red, BackgroundColor.yellow, Style.bold))
             DDLogInfo("\n")
             loggerInitialized = true
             return
