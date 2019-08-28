@@ -114,7 +114,6 @@
 		8AD01F1922A1735A00C722B6 /* NestedItemType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD01F1822A1735900C722B6 /* NestedItemType.swift */; };
 		8AD01F1C22A173E100C722B6 /* SystemProfilerItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD01F1B22A173E100C722B6 /* SystemProfilerItem.swift */; };
 		8AD01F2322A187D300C722B6 /* CheckCoverageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD01F2222A187D300C722B6 /* CheckCoverageViewController.swift */; };
-		8AED6288393102F645E0F76B /* (null) in Frameworks */ = {isa = PBXBuildFile; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -245,7 +244,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8AED6288393102F645E0F76B /* (null) in Frameworks */,
 				4B87EE4A123D4EE1F26E61A2 /* Pods_macOS_Utilities.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1141,6 +1139,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.keatonburleson.macOS-Utilities";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_ENFORCE_EXCLUSIVE_ACCESS = off;
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/macOS Utilities/macOS-Utilities-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
@@ -1155,6 +1154,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 52B5TC74Y7;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "macOS Utilities/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12.1;
@@ -1162,6 +1162,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.keatonburleson.macOS-Utilities";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_COMPILATION_MODE = singlefile;
+				SWIFT_ENFORCE_EXCLUSIVE_ACCESS = off;
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/macOS Utilities/macOS-Utilities-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
