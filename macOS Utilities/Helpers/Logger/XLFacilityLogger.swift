@@ -17,6 +17,8 @@ class XLFacilityLogger: DDAbstractLogger {
         XLSharedFacility.addLogger(XLOverlayLog.shared)
         XLSharedFacility.addLogger(httpLogger)
         XLSharedFacility.minLogLevel = .logLevel_Verbose
+        
+        super.init()
     }
 
     override func log(message logMessage: DDLogMessage) {

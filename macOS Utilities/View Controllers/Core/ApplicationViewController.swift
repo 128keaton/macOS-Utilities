@@ -44,11 +44,11 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         if let appVersion = AppDelegate.getApplicationVersion() {
             self.versionLabel.stringValue = "Version \(appVersion)"
         }
-        
+
 
         self.registerForNotifications()
         self.showIPAddress()
@@ -57,22 +57,32 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
             collectionView.register(collectionViewNib, forItemWithIdentifier: NSUserInterfaceItemIdentifier(rawValue: "NSCollectionAppCell"))
         }
     }
-    
-    private func checkForExceptions(){
+
+    override func viewDidAppear() {
+        super.viewDidAppear()
+
+        let networkUtility = NetworkUtils()
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            networkUtility.startPublishing()
+        }
+    }
+
+    private func checkForExceptions() {
         if !ExceptionHandler.hasExceptions {
             return
         }
-        
+
         showInfoAlert(title: "Hello There", message: "Looks like macOS Utilities crashed the last time it was used. Would you like to log this issue?") { (shouldLog) in
             if (shouldLog) {
                 ExceptionHandler.exceptions.forEach({ (exceptionItem) in
                     var message = "Exception at \(exceptionItem.exceptionDate): \n"
                     message += "Name: \(exceptionItem.exception.name).\n"
                     message += "\(exceptionItem.exception)"
-                    
+
                     DDLogError(message)
                 })
-                
+
                 ExceptionHandler.clearExceptions()
             }
         }
@@ -101,7 +111,7 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         if (notification.object as? Installer) != nil {
             DispatchQueue.main.async {
                 self.installMacOSButton?.isEnabled = true
-                
+
                 if #available(OSX 10.12.2, *) {
                     self.addTouchBarInstallButton()
                 }

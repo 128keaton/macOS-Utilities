@@ -501,15 +501,15 @@
 		8A800B042315D7D300037103 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				8A2DB956228A047C00261B9E /* Filesystem */,
+				8A27EF0022C56159005F45AF /* NetworkUtils.swift */,
 				8A0138D0221749BD00C77DA0 /* Version.swift */,
 				8A87B8B421A47D8C004496AA /* ModelYearDetermination.swift */,
 				8AA841CF2265A509009C5948 /* Units.swift */,
 				8A3243C622A1B2510042E6D9 /* BarcodeGenerator.swift */,
 				8A87B8B621A47DD8004496AA /* CwlSysctl.swift */,
-				8A27EF0022C56159005F45AF /* NetworkUtils.swift */,
 				8A800B012315D77F00037103 /* CoreAudio.swift */,
 				8A800B252315DC1000037103 /* Size.swift */,
+				8A2DB956228A047C00261B9E /* Filesystem */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
