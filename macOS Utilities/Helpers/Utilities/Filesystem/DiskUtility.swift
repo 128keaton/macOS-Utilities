@@ -458,7 +458,8 @@ class DiskUtility: NSObject, NSFilePresenter {
             if let mountPoint = currentShare.mountPoint {
                 TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["unmount", "force", mountPoint], returnEscaping: { (output) in
                         if let unmountOutput = output,
-                            unmountOutput.contains("Unmount successful for") {
+                            (unmountOutput.contains("Unmount successful for") || unmountOutput.contains("Unmount failed for")) {
+                            self.cachedShares.removeAll { $0 == currentShare }
                             didComplete(true)
                         }
                     })

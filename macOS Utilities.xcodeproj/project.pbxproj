@@ -274,6 +274,7 @@
 		8A0138C8221703CC00C77DA0 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				8A9370D22256D5E6002B3838 /* Repository */,
 				8A800B062315D84100037103 /* Miscellaneous */,
 				8A662214226AA4190072B3A4 /* Extensions */,
 				8A800B032315D7BB00037103 /* Handlers */,
@@ -291,15 +292,6 @@
 				8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */,
 			);
 			path = NSCollectionAppCell;
-			sourceTree = "<group>";
-		};
-		8A0138D2221757B200C77DA0 /* Utility */ = {
-			isa = PBXGroup;
-			children = (
-				8A9370D22256D5E6002B3838 /* Repository */,
-				8A2DB956228A047C00261B9E /* Filesystem */,
-			);
-			path = Utility;
 			sourceTree = "<group>";
 		};
 		8A0138D32217623200C77DA0 /* Storyboards */ = {
@@ -503,6 +495,7 @@
 		8A800B042315D7D300037103 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				8A2DB956228A047C00261B9E /* Filesystem */,
 				8A0138D0221749BD00C77DA0 /* Version.swift */,
 				8A87B8B421A47D8C004496AA /* ModelYearDetermination.swift */,
 				8AA841CF2265A509009C5948 /* Units.swift */,
@@ -672,7 +665,6 @@
 				8ACB65D421063E6F004B9C5A /* AppDelegate.swift */,
 				8A0138C8221703CC00C77DA0 /* Helpers */,
 				8A0138D32217623200C77DA0 /* Storyboards */,
-				8A0138D2221757B200C77DA0 /* Utility */,
 				8A0138D42217623700C77DA0 /* View Controllers */,
 				8A9D9AA822632A2900E4D36F /* Resources */,
 			);
