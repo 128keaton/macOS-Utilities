@@ -19,6 +19,7 @@ PODS:
   - CocoaLumberjack/Core (3.5.3)
   - CocoaLumberjack/Swift (3.5.3):
     - CocoaLumberjack/Core
+  - MultiPeer (0.1.2)
   - PaperTrailLumberjack/Core (0.2.0):
     - CocoaAsyncSocket (~> 7.6)
     - CocoaLumberjack (~> 3.4)
@@ -52,13 +53,14 @@ DEPENDENCIES:
   - BMExtendablePageController (from `https://github.com/Foboz/BMExtPageController`)
   - CocoaAsyncSocket
   - CocoaLumberjack/Swift
+  - MultiPeer (from `https://github.com/128keaton/MultiPeer.git`, tag `0.1.2`)
   - PaperTrailLumberjack/Swift (from `https://github.com/128keaton/PaperTrailLumberjack`)
   - STPrivilegedTask
   - XLFacility (~> 1.0)
   - XMLParsing (from `https://github.com/128keaton/XMLParsing.git`)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  trunk:
     - Alamofire
     - Alamofire-SwiftyJSON
     - AppFolder
@@ -73,6 +75,9 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   BMExtendablePageController:
     :git: https://github.com/Foboz/BMExtPageController
+  MultiPeer:
+    :git: https://github.com/128keaton/MultiPeer.git
+    :tag: 0.1.2
   PaperTrailLumberjack:
     :git: https://github.com/128keaton/PaperTrailLumberjack
   XMLParsing:
@@ -82,6 +87,9 @@ CHECKOUT OPTIONS:
   BMExtendablePageController:
     :commit: c280f73244a92a451f3ea4bcd644180ea3609aab
     :git: https://github.com/Foboz/BMExtPageController
+  MultiPeer:
+    :git: https://github.com/128keaton/MultiPeer.git
+    :tag: 0.1.2
   PaperTrailLumberjack:
     :commit: d469aa89e0023dcacc549a605f58669053ac7d5a
     :git: https://github.com/128keaton/PaperTrailLumberjack
@@ -98,12 +106,13 @@ SPEC CHECKSUMS:
   CAAnimationBlocks: 1aaca5fb6447a95d83b20cc786992956ef46e4ee
   CocoaAsyncSocket: eafaa68a7e0ec99ead0a7b35015e0bf25d2c8987
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
-  PaperTrailLumberjack: cb5a8bc63de97df262c2d60e0f39b2ff0bc2646f
+  MultiPeer: f28c91b749ad595e02283a2822334ff8f6fb5059
+  PaperTrailLumberjack: 7a89283286f82da814a3b5748630b6002ae160a3
   STPrivilegedTask: 103f97827454e786074640cf89d303be344498c7
   SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
   XLFacility: f24747c4f586372bddae3525d837ef42b0e26339
   XMLParsing: 5b2e061ac61c95eb246f169f89ffb049f8bff668
 
-PODFILE CHECKSUM: ecf2c3d01bd5ac4642e0ab90aed0788e52cc46e4
+PODFILE CHECKSUM: 0aada9ae87891a7c9e5fe60abca44242d3b595c3
 
-COCOAPODS: 1.7.0.beta.3
+COCOAPODS: 1.8.0.beta.2

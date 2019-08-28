@@ -40,6 +40,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         PreferenceLoader.setup()
         SystemProfiler.getInfo()
+        PeerCommunicationService.instance
 
         if let preferenceLoader = PreferenceLoader.sharedInstance {
             self.preferenceLoader = preferenceLoader

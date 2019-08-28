@@ -12,6 +12,7 @@ target 'macOS Utilities' do
  pod 'BMExtendablePageController', :git => "https://github.com/Foboz/BMExtPageController"
  pod "STPrivilegedTask"
  pod 'XMLParsing', :git => 'https://github.com/128keaton/XMLParsing.git'
+ pod 'MultiPeer', :git => 'https://github.com/128keaton/MultiPeer.git', :tag => '0.1.2'
  pod 'AudioKit'
  pod "XLFacility", "~> 1.0"
 end

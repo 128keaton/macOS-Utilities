@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:/Users/keatonburleson/Documents/ER2/macOS-Utilities/macOS Utilities/Helpers/Utilities/Networking/MultipeerConnectivity/ClientInfo.swift">
+   </FileRef>
+   <FileRef
       location = "group:macOS Utilities.xcodeproj">
    </FileRef>
    <FileRef

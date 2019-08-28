@@ -73,6 +73,11 @@
 		8A800B3D2315DEE500037103 /* MachineInformationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A800B3B2315DEE500037103 /* MachineInformationView.xib */; };
 		8A800B3E2315DEE500037103 /* LoadingView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A800B3C2315DEE500037103 /* LoadingView.xib */; };
 		8A800B402315E58B00037103 /* nt4.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8A800B3F2315E58B00037103 /* nt4.mp3 */; };
+		8A808F6D231730A500B1A29F /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A808F6C231730A500B1A29F /* Client.swift */; };
+		8A808F6F2317311500B1A29F /* ClientInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A808F6E2317311400B1A29F /* ClientInfo.swift */; };
+		8A808F712317312800B1A29F /* MessageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A808F702317312800B1A29F /* MessageType.swift */; };
+		8A808F732317314000B1A29F /* PeerCommunicationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A808F722317314000B1A29F /* PeerCommunicationService.swift */; };
+		8A808F75231739C600B1A29F /* SwTest1_Haptic.caf in Resources */ = {isa = PBXBuildFile; fileRef = 8A808F74231739C600B1A29F /* SwTest1_Haptic.caf */; };
 		8A87B8B521A47D8C004496AA /* ModelYearDetermination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87B8B421A47D8C004496AA /* ModelYearDetermination.swift */; };
 		8A87B8B721A47DD8004496AA /* CwlSysctl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87B8B621A47DD8004496AA /* CwlSysctl.swift */; };
 		8A8B59A5224E9FD100CD4094 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A8B59A4224E9FD100CD4094 /* Application.swift */; };
@@ -193,6 +198,11 @@
 		8A800B3B2315DEE500037103 /* MachineInformationView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MachineInformationView.xib; sourceTree = "<group>"; };
 		8A800B3C2315DEE500037103 /* LoadingView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoadingView.xib; sourceTree = "<group>"; };
 		8A800B3F2315E58B00037103 /* nt4.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = nt4.mp3; sourceTree = "<group>"; };
+		8A808F6C231730A500B1A29F /* Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
+		8A808F6E2317311400B1A29F /* ClientInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ClientInfo.swift; path = "/Users/keatonburleson/Documents/ER2/macOS-Utilities/macOS Utilities/Helpers/Utilities/Networking/MultipeerConnectivity/ClientInfo.swift"; sourceTree = "<absolute>"; };
+		8A808F702317312800B1A29F /* MessageType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageType.swift; sourceTree = "<group>"; };
+		8A808F722317314000B1A29F /* PeerCommunicationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeerCommunicationService.swift; sourceTree = "<group>"; };
+		8A808F74231739C600B1A29F /* SwTest1_Haptic.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SwTest1_Haptic.caf; sourceTree = "<group>"; };
 		8A87B8B421A47D8C004496AA /* ModelYearDetermination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelYearDetermination.swift; sourceTree = "<group>"; };
 		8A87B8B621A47DD8004496AA /* CwlSysctl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CwlSysctl.swift; sourceTree = "<group>"; };
 		8A8B59A4224E9FD100CD4094 /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
@@ -503,6 +513,7 @@
 		8A800B042315D7D300037103 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				8A808F6A2317306A00B1A29F /* Networking */,
 				8AA61ACF231659D600BB7B93 /* BeepService.swift */,
 				8A27EF0022C56159005F45AF /* NetworkUtils.swift */,
 				8A0138D0221749BD00C77DA0 /* Version.swift */,
@@ -589,6 +600,25 @@
 			path = Xibs;
 			sourceTree = "<group>";
 		};
+		8A808F6A2317306A00B1A29F /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				8A808F6B2317307000B1A29F /* MultipeerConnectivity */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		8A808F6B2317307000B1A29F /* MultipeerConnectivity */ = {
+			isa = PBXGroup;
+			children = (
+				8A808F6E2317311400B1A29F /* ClientInfo.swift */,
+				8A808F6C231730A500B1A29F /* Client.swift */,
+				8A808F702317312800B1A29F /* MessageType.swift */,
+				8A808F722317314000B1A29F /* PeerCommunicationService.swift */,
+			);
+			path = MultipeerConnectivity;
+			sourceTree = "<group>";
+		};
 		8A9370D22256D5E6002B3838 /* Repository */ = {
 			isa = PBXGroup;
 			children = (
@@ -613,6 +643,7 @@
 			isa = PBXGroup;
 			children = (
 				8A800B3F2315E58B00037103 /* nt4.mp3 */,
+				8A808F74231739C600B1A29F /* SwTest1_Haptic.caf */,
 				8A9D9AAA22632A7900E4D36F /* Default Settings */,
 				8A9D9AA922632A6A00E4D36F /* Icons */,
 				8A175AAF225FD8770018C977 /* macOS Utilities.entitlements */,
@@ -784,7 +815,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1020;
-				LastUpgradeCheck = 1010;
+				LastUpgradeCheck = 1030;
 				ORGANIZATIONNAME = "Keaton Burleson";
 				TargetAttributes = {
 					8ACB65D021063E6F004B9C5A = {
@@ -823,6 +854,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8ACB65D921063E6F004B9C5A /* Assets.xcassets in Resources */,
+				8A808F75231739C600B1A29F /* SwTest1_Haptic.caf in Resources */,
 				8A47DEDB210A3418003F5CC3 /* NSCollectionAppCell.xib in Resources */,
 				8A9D9AAE2263370800E4D36F /* KBTextFieldDialog-large.xib in Resources */,
 				8A39D3602119E81B00437F4E /* com.er2.applications.plist in Resources */,
@@ -853,6 +885,7 @@
 				"${BUILT_PRODUCTS_DIR}/CAAnimationBlocks/CAAnimationBlocks.framework",
 				"${BUILT_PRODUCTS_DIR}/CocoaAsyncSocket/CocoaAsyncSocket.framework",
 				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack/CocoaLumberjack.framework",
+				"${BUILT_PRODUCTS_DIR}/MultiPeer/MultiPeer.framework",
 				"${BUILT_PRODUCTS_DIR}/PaperTrailLumberjack/PaperTrailLumberjack.framework",
 				"${BUILT_PRODUCTS_DIR}/STPrivilegedTask/STPrivilegedTask.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
@@ -868,6 +901,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CAAnimationBlocks.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaAsyncSocket.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaLumberjack.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MultiPeer.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PaperTrailLumberjack.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/STPrivilegedTask.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
@@ -915,6 +949,7 @@
 				8A27EF0622C566F8005F45AF /* ExceptionItem.swift in Sources */,
 				8AA841D02265A509009C5948 /* Units.swift in Sources */,
 				8ABAE3132252C1D800E537D3 /* TaskHandler.swift in Sources */,
+				8A808F712317312800B1A29F /* MessageType.swift in Sources */,
 				8AA61AA22316277E00BB7B93 /* XLOverlayLog.swift in Sources */,
 				8A800B392315DD7100037103 /* PreferencesViewController.swift in Sources */,
 				8A3243D222A1CA2C0042E6D9 /* SelectInstallerViewController.swift in Sources */,
@@ -930,6 +965,7 @@
 				8A800B262315DC1000037103 /* Size.swift in Sources */,
 				8A87B8B521A47D8C004496AA /* ModelYearDetermination.swift in Sources */,
 				8A6C6479225EA1EA00CD6DCF /* PreferenceLoader.swift in Sources */,
+				8A808F6D231730A500B1A29F /* Client.swift in Sources */,
 				8A800B022315D77F00037103 /* CoreAudio.swift in Sources */,
 				8A800B1F2315DA9500037103 /* CondensedSystemProfilerData.swift in Sources */,
 				8AA841CC22659260009C5948 /* DiskImage.swift in Sources */,
@@ -941,6 +977,7 @@
 				8AD01F1922A1735A00C722B6 /* NestedItemType.swift in Sources */,
 				8A9370D62256D604002B3838 /* RepositoryItem.swift in Sources */,
 				8A9C0CCD226AA1580032FC20 /* FileSystemItem.swift in Sources */,
+				8A808F6F2317311500B1A29F /* ClientInfo.swift in Sources */,
 				8AD01F1522A16F5F00C722B6 /* DiscBurningItem.swift in Sources */,
 				8A3243D122A1C8A80042E6D9 /* WKNoScrollWebView.swift in Sources */,
 				8A3243CD22A1B7700042E6D9 /* KBBarcodePreviewItem.swift in Sources */,
@@ -959,6 +996,7 @@
 				8AD01F0B22A16F5600C722B6 /* PowerItem.swift in Sources */,
 				8A2DB9482289E03400261B9E /* hdiutilMount.swift in Sources */,
 				8A800AFD2315D6B500037103 /* CameraPreview.swift in Sources */,
+				8A808F732317314000B1A29F /* PeerCommunicationService.swift in Sources */,
 				8A3243CB22A1B75D0042E6D9 /* XMLParsing+Alamofire.swift in Sources */,
 				8A2DB94A2289E09200261B9E /* DiskUtilityCoreStorageList.swift in Sources */,
 				8AA61AD0231659D600BB7B93 /* BeepService.swift in Sources */,
@@ -1168,7 +1206,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.keatonburleson.macOS-Utilities";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_COMPILATION_MODE = singlefile;
+				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_ENFORCE_EXCLUSIVE_ACCESS = off;
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/macOS Utilities/macOS-Utilities-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
