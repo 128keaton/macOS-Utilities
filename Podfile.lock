@@ -58,17 +58,16 @@ DEPENDENCIES:
   - XMLParsing (from `https://github.com/128keaton/XMLParsing.git`)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  https://github.com/cocoapods/specs.git:
     - Alamofire
     - Alamofire-SwiftyJSON
     - AppFolder
+    - AudioKit
     - CAAnimationBlocks
     - CocoaAsyncSocket
     - CocoaLumberjack
     - STPrivilegedTask
     - SwiftyJSON
-  trunk:
-    - AudioKit
     - XLFacility
 
 EXTERNAL SOURCES:
@@ -99,7 +98,7 @@ SPEC CHECKSUMS:
   CAAnimationBlocks: 1aaca5fb6447a95d83b20cc786992956ef46e4ee
   CocoaAsyncSocket: eafaa68a7e0ec99ead0a7b35015e0bf25d2c8987
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
-  PaperTrailLumberjack: 7a89283286f82da814a3b5748630b6002ae160a3
+  PaperTrailLumberjack: cb5a8bc63de97df262c2d60e0f39b2ff0bc2646f
   STPrivilegedTask: 103f97827454e786074640cf89d303be344498c7
   SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
   XLFacility: f24747c4f586372bddae3525d837ef42b0e26339
@@ -107,4 +106,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: ecf2c3d01bd5ac4642e0ab90aed0788e52cc46e4
 
-COCOAPODS: 1.8.0.beta.2
+COCOAPODS: 1.7.0.beta.3
