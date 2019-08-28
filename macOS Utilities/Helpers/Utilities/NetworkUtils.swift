@@ -40,7 +40,6 @@ class NetworkUtils {
         
         freeifaddrs(ifaddr)
         
-        print(addresses)
         return addresses
     }
 }

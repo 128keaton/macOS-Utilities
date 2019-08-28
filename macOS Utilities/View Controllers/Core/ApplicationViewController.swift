@@ -56,8 +56,6 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         if let collectionViewNib = NSNib(nibNamed: "NSCollectionAppCell", bundle: nil) {
             collectionView.register(collectionViewNib, forItemWithIdentifier: NSUserInterfaceItemIdentifier(rawValue: "NSCollectionAppCell"))
         }
-
-        DDLogInfo("Launched macOS Utilities")
     }
     
     private func checkForExceptions(){
@@ -95,7 +93,7 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
             return
         }
 
-        self.copyrightLabel.stringValue = "Copyright 2018 ER2 - IP: \(networkAddress)"
+        self.copyrightLabel.stringValue = "Copyright 2018 ER2 - IP: \(networkAddress) - Remote Log: \(networkAddress):8080"
     }
 
     @objc private func addInstaller(_ aNotification: Notification? = nil) {

@@ -13,6 +13,7 @@ target 'macOS Utilities' do
  pod "STPrivilegedTask"
  pod 'XMLParsing', :git => 'https://github.com/128keaton/XMLParsing.git'
  pod 'AudioKit'
+ pod "XLFacility", "~> 1.0"
 end
 
 post_install do |installer|

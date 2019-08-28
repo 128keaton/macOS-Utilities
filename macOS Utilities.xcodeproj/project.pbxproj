@@ -87,6 +87,8 @@
 		8A9D9A9C2263084600E4D36F /* KBTextFieldDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9D9A9B2263084600E4D36F /* KBTextFieldDialog.swift */; };
 		8A9D9AAC22632B4700E4D36F /* config-file-icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 8A9D9AAB22632B4700E4D36F /* config-file-icon.icns */; };
 		8A9D9AAE2263370800E4D36F /* KBTextFieldDialog-large.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A9D9AAD2263370800E4D36F /* KBTextFieldDialog-large.xib */; };
+		8AA61A9E2316187000BB7B93 /* XLFacilityLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA61A9D2316187000BB7B93 /* XLFacilityLogger.swift */; };
+		8AA61AA22316277E00BB7B93 /* XLOverlayLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA61AA12316277E00BB7B93 /* XLOverlayLog.swift */; };
 		8AA841CC22659260009C5948 /* DiskImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841CB22659260009C5948 /* DiskImage.swift */; };
 		8AA841D02265A509009C5948 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841CF2265A509009C5948 /* Units.swift */; };
 		8AA841D322664276009C5948 /* PaddedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841D222664276009C5948 /* PaddedTextField.swift */; };
@@ -204,6 +206,8 @@
 		8A9D9A9B2263084600E4D36F /* KBTextFieldDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KBTextFieldDialog.swift; sourceTree = "<group>"; };
 		8A9D9AAB22632B4700E4D36F /* config-file-icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = "config-file-icon.icns"; sourceTree = "<group>"; };
 		8A9D9AAD2263370800E4D36F /* KBTextFieldDialog-large.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = "KBTextFieldDialog-large.xib"; sourceTree = "<group>"; };
+		8AA61A9D2316187000BB7B93 /* XLFacilityLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XLFacilityLogger.swift; sourceTree = "<group>"; };
+		8AA61AA12316277E00BB7B93 /* XLOverlayLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XLOverlayLog.swift; sourceTree = "<group>"; };
 		8AA841CB22659260009C5948 /* DiskImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskImage.swift; sourceTree = "<group>"; };
 		8AA841CF2265A509009C5948 /* Units.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Units.swift; sourceTree = "<group>"; };
 		8AA841D222664276009C5948 /* PaddedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddedTextField.swift; sourceTree = "<group>"; };
@@ -399,6 +403,8 @@
 			children = (
 				8A175AAB225EFEE50018C977 /* ErrorAlertLogger.swift */,
 				8A57BF422262A1AF00719E74 /* LoggerManager.swift */,
+				8AA61A9D2316187000BB7B93 /* XLFacilityLogger.swift */,
+				8AA61AA12316277E00BB7B93 /* XLOverlayLog.swift */,
 			);
 			path = Logger;
 			sourceTree = "<group>";
@@ -847,6 +853,7 @@
 				"${BUILT_PRODUCTS_DIR}/PaperTrailLumberjack/PaperTrailLumberjack.framework",
 				"${BUILT_PRODUCTS_DIR}/STPrivilegedTask/STPrivilegedTask.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
+				"${BUILT_PRODUCTS_DIR}/XLFacility/XLFacility.framework",
 				"${BUILT_PRODUCTS_DIR}/XMLParsing/XMLParsing.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -861,6 +868,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PaperTrailLumberjack.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/STPrivilegedTask.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XLFacility.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XMLParsing.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -904,6 +912,7 @@
 				8A27EF0622C566F8005F45AF /* ExceptionItem.swift in Sources */,
 				8AA841D02265A509009C5948 /* Units.swift in Sources */,
 				8ABAE3132252C1D800E537D3 /* TaskHandler.swift in Sources */,
+				8AA61AA22316277E00BB7B93 /* XLOverlayLog.swift in Sources */,
 				8A800B392315DD7100037103 /* PreferencesViewController.swift in Sources */,
 				8A3243D222A1CA2C0042E6D9 /* SelectInstallerViewController.swift in Sources */,
 				8A57BF432262A1AF00719E74 /* LoggerManager.swift in Sources */,
@@ -967,6 +976,7 @@
 				8AD01F0422A16F4500C722B6 /* SerialNumberMatcher.swift in Sources */,
 				8A8B59A5224E9FD100CD4094 /* Application.swift in Sources */,
 				8ACB65D721063E6F004B9C5A /* ApplicationViewController.swift in Sources */,
+				8AA61A9E2316187000BB7B93 /* XLFacilityLogger.swift in Sources */,
 				8A584773226AB351008E9DE8 /* KBTableView.swift in Sources */,
 				8A47DED9210A2D30003F5CC3 /* NSCollectionAppCell.swift in Sources */,
 				8A800B362315DD5500037103 /* WizardViewController.swift in Sources */,

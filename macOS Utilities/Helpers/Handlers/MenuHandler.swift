@@ -32,8 +32,11 @@ class MenuHandler: NSObject {
 
     public static let shared = MenuHandler()
 
+    private let sharedOverlayLogger = XLOverlayLog.shared
+
     private override init() {
         super.init()
+        
         registerForNotifications()
     }
 
@@ -137,10 +140,10 @@ class MenuHandler: NSObject {
         }
     }
 
-    @IBAction func triggerException(_ sender: NSMenuItem){
+    @IBAction func triggerException(_ sender: NSMenuItem) {
         fatalError("Test Fatal Error")
     }
-    
+
     @IBAction func forceFusionDrive(_ sender: NSMenuItem) {
         if DiskUtility.forceFusionDrive {
             DDLogVerbose("Forcing scanning for Fusion Drive is now on")
@@ -216,6 +219,16 @@ class MenuHandler: NSObject {
     @IBAction func showLog(_ sender: NSMenuItem) {
         if let logFilePath = (DDLog.allLoggers.first { $0 is DDFileLogger } as! DDFileLogger).logFileManager.sortedLogFilePaths.first {
             NSWorkspace.shared.open(logFilePath.fileURL)
+        }
+    }
+
+    @IBAction func toggleLog(_ sender: NSMenuItem) {
+        if !sharedOverlayLogger.isHidden {
+            sharedOverlayLogger.hide()
+            sender.title = "Show Log Overlay"
+        } else {
+            sharedOverlayLogger.show()
+            sender.title = "Hide Log Overlay"
         }
     }
 

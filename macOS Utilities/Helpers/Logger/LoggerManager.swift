@@ -21,6 +21,7 @@ class LoggerManager {
         if loggerInitialized == false {
             DDLog.add(fileLogger)
             DDLog.add(ErrorAlertLogger())
+            DDLog.add(XLFacilityLogger())
             DDLog.add(DDOSLogger.sharedInstance)
 
             DDLogInfo(NSApplication.shared.getVerboseName())

@@ -224,9 +224,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             audioPlayer?.delegate = self
             NotificationCenter.default.post(name: Notification.Name("AudioPlayerReady"), object: audioPlayer)
         } catch {
-            print("Unable to load file")
+            DDLogError("Unable to load file")
         }
     }
+    
 }
 
 extension AppDelegate: AVAudioPlayerDelegate {

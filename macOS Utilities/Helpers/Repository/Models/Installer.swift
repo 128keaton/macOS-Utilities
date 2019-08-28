@@ -53,7 +53,7 @@ class Installer: Application {
         let installerCanInstall = fakeInstallerCanInstall == true || installableVersions.contains(self.version)
 
         if(installerCanInstall) {
-            DDLogInfo("\(Sysctl.model) can install \(self.version)")
+            DDLogInfo("\(Sysctl.model) can install \(self.version.number)")
         }
 
         self.alreadyDeterminedCanInstall = installerCanInstall
@@ -62,7 +62,7 @@ class Installer: Application {
     }
 
     override var description: String {
-        return isFakeInstaller ? "FakeInstaller: \(self.version)" : "Installer: \(self.version)"
+        return isFakeInstaller ? "FakeInstaller: \(self.version)" : "Installer: \(self.version.number)"
     }
 
     override func open() -> Bool {

@@ -42,7 +42,7 @@ class SystemProfiler {
             if let _delegate = self.delegate {
                 _delegate.dataParsedSuccessfully()
             } else {
-                print("Data has already been parsed")
+                DDLogVerbose("Data has already been parsed")
             }
             return
         }
@@ -103,7 +103,6 @@ class SystemProfiler {
             let userInfo = notification.userInfo as? [String: Any],
             let newData = userInfo[NSFileHandleNotificationDataItem] as? Data, newData.count > 0 {
 
-            DDLogVerbose("Appending to propertyListData")
             self.propertyListData.append(newData)
 
             fileHandle.readInBackgroundAndNotify()
@@ -115,7 +114,6 @@ class SystemProfiler {
             let userInfo = notification.userInfo as? [String: Any],
             let newData = userInfo[NSFileHandleNotificationDataItem] as? Data, newData.count > 0 {
 
-            DDLogVerbose("Appending to detailedCPUInfoData")
             self.detailedCPUInfoData.append(newData)
 
             fileHandle.readInBackgroundAndNotify()
@@ -146,7 +144,6 @@ class SystemProfiler {
         var allData: [[ItemType]] = [self.audioItems, self.discBurningItems, self.displayItems,
                                      self.memoryItems, self.NVMeItems, self.powerItems, self.serialATAItems]
         
-        print(allData)
         if let validHardwareItem = self.hardwareItem {
             allData.append([validHardwareItem])
         }
@@ -183,7 +180,6 @@ class SystemProfiler {
                 self.serialATAItems = anItem.getItems(SerialATAItem.self)
                 break
             case .invalid:
-                DDLogVerbose("An invalid item was attempted to match against: \(anItem)")
                 break
             }
         }
@@ -205,7 +201,6 @@ class SystemProfiler {
             let unmatchedTypes = try decoder.decode([SystemProfilerItem].self, from: data)
             self.matchTypes(unmatchedTypes)
 
-            print(unmatchedTypes)
 
             if let validHardwareItem = self.hardwareItem,
                 let detailedCPUInfo = String(data: detailedCPUInfoData, encoding: .utf8) {

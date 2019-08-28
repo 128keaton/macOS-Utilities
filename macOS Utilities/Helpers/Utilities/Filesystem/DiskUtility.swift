@@ -495,7 +495,6 @@ class DiskUtility: NSObject, NSFilePresenter {
                 print("Other?")
             }
         }
-        print(notification.userInfo!)
     }
 
     @objc func didUnmount(_ notification: NSNotification) {
@@ -514,6 +513,5 @@ class DiskUtility: NSObject, NSFilePresenter {
                 DiskUtility.getAllDisks()
             }
         }
-        print(notification.userInfo!)
     }
 }

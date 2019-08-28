@@ -27,6 +27,21 @@ PODS:
     - PaperTrailLumberjack/Core
   - STPrivilegedTask (1.0.1)
   - SwiftyJSON (4.0.0)
+  - XLFacility (1.5.18):
+    - XLFacility/Core (= 1.5.18)
+    - XLFacility/GCDNetworking (= 1.5.18)
+    - XLFacility/GCDTelnetServer (= 1.5.18)
+    - XLFacility/Networking (= 1.5.18)
+    - XLFacility/UserInterface (= 1.5.18)
+  - XLFacility/Core (1.5.18)
+  - XLFacility/GCDNetworking (1.5.18)
+  - XLFacility/GCDTelnetServer (1.5.18):
+    - XLFacility/GCDNetworking
+  - XLFacility/Networking (1.5.18):
+    - XLFacility/Core
+    - XLFacility/GCDTelnetServer
+  - XLFacility/UserInterface (1.5.18):
+    - XLFacility/Core
   - XMLParsing (0.0.3)
 
 DEPENDENCIES:
@@ -39,6 +54,7 @@ DEPENDENCIES:
   - CocoaLumberjack/Swift
   - PaperTrailLumberjack/Swift (from `https://github.com/128keaton/PaperTrailLumberjack`)
   - STPrivilegedTask
+  - XLFacility (~> 1.0)
   - XMLParsing (from `https://github.com/128keaton/XMLParsing.git`)
 
 SPEC REPOS:
@@ -53,6 +69,7 @@ SPEC REPOS:
     - SwiftyJSON
   trunk:
     - AudioKit
+    - XLFacility
 
 EXTERNAL SOURCES:
   BMExtendablePageController:
@@ -85,8 +102,9 @@ SPEC CHECKSUMS:
   PaperTrailLumberjack: 7a89283286f82da814a3b5748630b6002ae160a3
   STPrivilegedTask: 103f97827454e786074640cf89d303be344498c7
   SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
+  XLFacility: f24747c4f586372bddae3525d837ef42b0e26339
   XMLParsing: 5b2e061ac61c95eb246f169f89ffb049f8bff668
 
-PODFILE CHECKSUM: 14bf6f3c74cfb1d3db78a5f63ba6cf5ce7a0fa09
+PODFILE CHECKSUM: ecf2c3d01bd5ac4642e0ab90aed0788e52cc46e4
 
 COCOAPODS: 1.8.0.beta.2
