@@ -89,6 +89,7 @@
 		8A9D9AAE2263370800E4D36F /* KBTextFieldDialog-large.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A9D9AAD2263370800E4D36F /* KBTextFieldDialog-large.xib */; };
 		8AA61A9E2316187000BB7B93 /* XLFacilityLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA61A9D2316187000BB7B93 /* XLFacilityLogger.swift */; };
 		8AA61AA22316277E00BB7B93 /* XLOverlayLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA61AA12316277E00BB7B93 /* XLOverlayLog.swift */; };
+		8AA61AD0231659D600BB7B93 /* BeepService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA61ACF231659D600BB7B93 /* BeepService.swift */; };
 		8AA841CC22659260009C5948 /* DiskImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841CB22659260009C5948 /* DiskImage.swift */; };
 		8AA841D02265A509009C5948 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841CF2265A509009C5948 /* Units.swift */; };
 		8AA841D322664276009C5948 /* PaddedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841D222664276009C5948 /* PaddedTextField.swift */; };
@@ -208,6 +209,7 @@
 		8A9D9AAD2263370800E4D36F /* KBTextFieldDialog-large.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = "KBTextFieldDialog-large.xib"; sourceTree = "<group>"; };
 		8AA61A9D2316187000BB7B93 /* XLFacilityLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XLFacilityLogger.swift; sourceTree = "<group>"; };
 		8AA61AA12316277E00BB7B93 /* XLOverlayLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XLOverlayLog.swift; sourceTree = "<group>"; };
+		8AA61ACF231659D600BB7B93 /* BeepService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeepService.swift; sourceTree = "<group>"; };
 		8AA841CB22659260009C5948 /* DiskImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskImage.swift; sourceTree = "<group>"; };
 		8AA841CF2265A509009C5948 /* Units.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Units.swift; sourceTree = "<group>"; };
 		8AA841D222664276009C5948 /* PaddedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddedTextField.swift; sourceTree = "<group>"; };
@@ -501,6 +503,7 @@
 		8A800B042315D7D300037103 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				8AA61ACF231659D600BB7B93 /* BeepService.swift */,
 				8A27EF0022C56159005F45AF /* NetworkUtils.swift */,
 				8A0138D0221749BD00C77DA0 /* Version.swift */,
 				8A87B8B421A47D8C004496AA /* ModelYearDetermination.swift */,
@@ -958,6 +961,7 @@
 				8A800AFD2315D6B500037103 /* CameraPreview.swift in Sources */,
 				8A3243CB22A1B75D0042E6D9 /* XMLParsing+Alamofire.swift in Sources */,
 				8A2DB94A2289E09200261B9E /* DiskUtilityCoreStorageList.swift in Sources */,
+				8AA61AD0231659D600BB7B93 /* BeepService.swift in Sources */,
 				8ABAE31D2252DA5800E537D3 /* Installer.swift in Sources */,
 				8A2DB9522289F77C00261B9E /* HardDriveImageUtility.swift in Sources */,
 				8A9370D12256BB5A002B3838 /* Share.swift in Sources */,
