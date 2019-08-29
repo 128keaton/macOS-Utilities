@@ -51,7 +51,7 @@ class LoggerManager {
             #endif
 
             logger.programName = NSApplication.shared.getVerboseName()
-            DDLog.add(logger, with: .debug)
+            DDLog.add(logger, with: .all)
             DDLogInfo("NOTICE: Remote logging enabled")
 
         } else {

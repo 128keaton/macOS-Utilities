@@ -74,6 +74,8 @@ class TestViewController: NSViewController {
         startCameraSession()
         setupAudioPreview()
         startAudioKit()
+
+        PeerCommunicationService.instance.updateStatus("Testing Hardware")
     }
 
     private func getSampleRate() -> Double {
@@ -220,7 +222,7 @@ class TestViewController: NSViewController {
                     } else if let preferences = PreferenceLoader.currentPreferences,
                         let printServerAddress = preferences.printServerAddress,
                         let requestURL = URL(string: printServerAddress),
-                        
+
                         let host = requestURL.host,
                         let scheme = requestURL.scheme,
                         let baseURL = URL(string: "\(scheme)://\(host)") {

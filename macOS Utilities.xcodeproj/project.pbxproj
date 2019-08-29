@@ -74,10 +74,9 @@
 		8A800B3E2315DEE500037103 /* LoadingView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A800B3C2315DEE500037103 /* LoadingView.xib */; };
 		8A800B402315E58B00037103 /* nt4.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8A800B3F2315E58B00037103 /* nt4.mp3 */; };
 		8A808F6D231730A500B1A29F /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A808F6C231730A500B1A29F /* Client.swift */; };
-		8A808F6F2317311500B1A29F /* ClientInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A808F6E2317311400B1A29F /* ClientInfo.swift */; };
 		8A808F712317312800B1A29F /* MessageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A808F702317312800B1A29F /* MessageType.swift */; };
 		8A808F732317314000B1A29F /* PeerCommunicationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A808F722317314000B1A29F /* PeerCommunicationService.swift */; };
-		8A808F75231739C600B1A29F /* SwTest1_Haptic.caf in Resources */ = {isa = PBXBuildFile; fileRef = 8A808F74231739C600B1A29F /* SwTest1_Haptic.caf */; };
+		8A81F84B231764E6005917BA /* fmd_sound.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 8A81F84A231764E5005917BA /* fmd_sound.aiff */; };
 		8A87B8B521A47D8C004496AA /* ModelYearDetermination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87B8B421A47D8C004496AA /* ModelYearDetermination.swift */; };
 		8A87B8B721A47DD8004496AA /* CwlSysctl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87B8B621A47DD8004496AA /* CwlSysctl.swift */; };
 		8A8B59A5224E9FD100CD4094 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A8B59A4224E9FD100CD4094 /* Application.swift */; };
@@ -94,7 +93,7 @@
 		8A9D9AAE2263370800E4D36F /* KBTextFieldDialog-large.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A9D9AAD2263370800E4D36F /* KBTextFieldDialog-large.xib */; };
 		8AA61A9E2316187000BB7B93 /* XLFacilityLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA61A9D2316187000BB7B93 /* XLFacilityLogger.swift */; };
 		8AA61AA22316277E00BB7B93 /* XLOverlayLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA61AA12316277E00BB7B93 /* XLOverlayLog.swift */; };
-		8AA61AD0231659D600BB7B93 /* BeepService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA61ACF231659D600BB7B93 /* BeepService.swift */; };
+		8AA61AD423175BCC00BB7B93 /* ClientInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA61AD323175BCC00BB7B93 /* ClientInfo.swift */; };
 		8AA841CC22659260009C5948 /* DiskImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841CB22659260009C5948 /* DiskImage.swift */; };
 		8AA841D02265A509009C5948 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841CF2265A509009C5948 /* Units.swift */; };
 		8AA841D322664276009C5948 /* PaddedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841D222664276009C5948 /* PaddedTextField.swift */; };
@@ -199,10 +198,9 @@
 		8A800B3C2315DEE500037103 /* LoadingView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoadingView.xib; sourceTree = "<group>"; };
 		8A800B3F2315E58B00037103 /* nt4.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = nt4.mp3; sourceTree = "<group>"; };
 		8A808F6C231730A500B1A29F /* Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
-		8A808F6E2317311400B1A29F /* ClientInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ClientInfo.swift; path = "/Users/keatonburleson/Documents/ER2/macOS-Utilities/macOS Utilities/Helpers/Utilities/Networking/MultipeerConnectivity/ClientInfo.swift"; sourceTree = "<absolute>"; };
 		8A808F702317312800B1A29F /* MessageType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageType.swift; sourceTree = "<group>"; };
 		8A808F722317314000B1A29F /* PeerCommunicationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeerCommunicationService.swift; sourceTree = "<group>"; };
-		8A808F74231739C600B1A29F /* SwTest1_Haptic.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SwTest1_Haptic.caf; sourceTree = "<group>"; };
+		8A81F84A231764E5005917BA /* fmd_sound.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = fmd_sound.aiff; sourceTree = "<group>"; };
 		8A87B8B421A47D8C004496AA /* ModelYearDetermination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelYearDetermination.swift; sourceTree = "<group>"; };
 		8A87B8B621A47DD8004496AA /* CwlSysctl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CwlSysctl.swift; sourceTree = "<group>"; };
 		8A8B59A4224E9FD100CD4094 /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
@@ -219,7 +217,7 @@
 		8A9D9AAD2263370800E4D36F /* KBTextFieldDialog-large.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = "KBTextFieldDialog-large.xib"; sourceTree = "<group>"; };
 		8AA61A9D2316187000BB7B93 /* XLFacilityLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XLFacilityLogger.swift; sourceTree = "<group>"; };
 		8AA61AA12316277E00BB7B93 /* XLOverlayLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XLOverlayLog.swift; sourceTree = "<group>"; };
-		8AA61ACF231659D600BB7B93 /* BeepService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeepService.swift; sourceTree = "<group>"; };
+		8AA61AD323175BCC00BB7B93 /* ClientInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClientInfo.swift; sourceTree = "<group>"; };
 		8AA841CB22659260009C5948 /* DiskImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskImage.swift; sourceTree = "<group>"; };
 		8AA841CF2265A509009C5948 /* Units.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Units.swift; sourceTree = "<group>"; };
 		8AA841D222664276009C5948 /* PaddedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddedTextField.swift; sourceTree = "<group>"; };
@@ -514,7 +512,6 @@
 			isa = PBXGroup;
 			children = (
 				8A808F6A2317306A00B1A29F /* Networking */,
-				8AA61ACF231659D600BB7B93 /* BeepService.swift */,
 				8A27EF0022C56159005F45AF /* NetworkUtils.swift */,
 				8A0138D0221749BD00C77DA0 /* Version.swift */,
 				8A87B8B421A47D8C004496AA /* ModelYearDetermination.swift */,
@@ -611,7 +608,7 @@
 		8A808F6B2317307000B1A29F /* MultipeerConnectivity */ = {
 			isa = PBXGroup;
 			children = (
-				8A808F6E2317311400B1A29F /* ClientInfo.swift */,
+				8AA61AD323175BCC00BB7B93 /* ClientInfo.swift */,
 				8A808F6C231730A500B1A29F /* Client.swift */,
 				8A808F702317312800B1A29F /* MessageType.swift */,
 				8A808F722317314000B1A29F /* PeerCommunicationService.swift */,
@@ -642,8 +639,8 @@
 		8A9D9AA822632A2900E4D36F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				8A81F84A231764E5005917BA /* fmd_sound.aiff */,
 				8A800B3F2315E58B00037103 /* nt4.mp3 */,
-				8A808F74231739C600B1A29F /* SwTest1_Haptic.caf */,
 				8A9D9AAA22632A7900E4D36F /* Default Settings */,
 				8A9D9AA922632A6A00E4D36F /* Icons */,
 				8A175AAF225FD8770018C977 /* macOS Utilities.entitlements */,
@@ -854,13 +851,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				8ACB65D921063E6F004B9C5A /* Assets.xcassets in Resources */,
-				8A808F75231739C600B1A29F /* SwTest1_Haptic.caf in Resources */,
 				8A47DEDB210A3418003F5CC3 /* NSCollectionAppCell.xib in Resources */,
 				8A9D9AAE2263370800E4D36F /* KBTextFieldDialog-large.xib in Resources */,
 				8A39D3602119E81B00437F4E /* com.er2.applications.plist in Resources */,
 				8A9D9A982262FB5F00E4D36F /* IPAddressChooserDialog.xib in Resources */,
 				8A9D9A9A226307CD00E4D36F /* KBTextFieldDialog-small.xib in Resources */,
 				8A9D9AAC22632B4700E4D36F /* config-file-icon.icns in Resources */,
+				8A81F84B231764E6005917BA /* fmd_sound.aiff in Resources */,
 				8A800B3E2315DEE500037103 /* LoadingView.xib in Resources */,
 				8A800B402315E58B00037103 /* nt4.mp3 in Resources */,
 				8ACB65DC21063E6F004B9C5A /* Main.storyboard in Resources */,
@@ -965,6 +962,7 @@
 				8A800B262315DC1000037103 /* Size.swift in Sources */,
 				8A87B8B521A47D8C004496AA /* ModelYearDetermination.swift in Sources */,
 				8A6C6479225EA1EA00CD6DCF /* PreferenceLoader.swift in Sources */,
+				8AA61AD423175BCC00BB7B93 /* ClientInfo.swift in Sources */,
 				8A808F6D231730A500B1A29F /* Client.swift in Sources */,
 				8A800B022315D77F00037103 /* CoreAudio.swift in Sources */,
 				8A800B1F2315DA9500037103 /* CondensedSystemProfilerData.swift in Sources */,
@@ -977,7 +975,6 @@
 				8AD01F1922A1735A00C722B6 /* NestedItemType.swift in Sources */,
 				8A9370D62256D604002B3838 /* RepositoryItem.swift in Sources */,
 				8A9C0CCD226AA1580032FC20 /* FileSystemItem.swift in Sources */,
-				8A808F6F2317311500B1A29F /* ClientInfo.swift in Sources */,
 				8AD01F1522A16F5F00C722B6 /* DiscBurningItem.swift in Sources */,
 				8A3243D122A1C8A80042E6D9 /* WKNoScrollWebView.swift in Sources */,
 				8A3243CD22A1B7700042E6D9 /* KBBarcodePreviewItem.swift in Sources */,
@@ -999,7 +996,6 @@
 				8A808F732317314000B1A29F /* PeerCommunicationService.swift in Sources */,
 				8A3243CB22A1B75D0042E6D9 /* XMLParsing+Alamofire.swift in Sources */,
 				8A2DB94A2289E09200261B9E /* DiskUtilityCoreStorageList.swift in Sources */,
-				8AA61AD0231659D600BB7B93 /* BeepService.swift in Sources */,
 				8ABAE31D2252DA5800E537D3 /* Installer.swift in Sources */,
 				8A2DB9522289F77C00261B9E /* HardDriveImageUtility.swift in Sources */,
 				8A9370D12256BB5A002B3838 /* Share.swift in Sources */,
@@ -1175,6 +1171,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_ACTIVITY_MODE = enable;
 				DEVELOPMENT_TEAM = 52B5TC74Y7;
 				INFOPLIST_FILE = "macOS Utilities/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -1197,6 +1194,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_ACTIVITY_MODE = disable;
 				DEVELOPMENT_TEAM = 52B5TC74Y7;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "macOS Utilities/Info.plist";

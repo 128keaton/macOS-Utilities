@@ -45,6 +45,7 @@ class DiskSelectionViewController: NSViewController {
             }
         }
 
+        PeerCommunicationService.instance.updateStatus("Choosing Disk")
         alreadyAppeared = true
     }
 
@@ -110,6 +111,7 @@ class DiskSelectionViewController: NSViewController {
         self.showConfirmationAlert(question: "Repair Fusion Drive?", text: "A potential Fusion Drive has been detected, do you want to try and repair it?", window: self.view.window!) { (modalResponse) in
             if modalResponse == .alertFirstButtonReturn {
                 PageController.shared.goToLoadingPage(loadingText: "Repairing..", cancelButtonIdentifier: "repairFusionDrive")
+                PeerCommunicationService.instance.updateStatus("Repairing Fusion Drive")
                 DiskUtility.createFusionDrive { (message, didCreate) in
                     if didCreate {
                         DDLogVerbose(message)
@@ -296,6 +298,7 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
 
     @IBAction func nextButtonClicked(_ sender: NSButton) {
         if let selectedInstaller = self.selectedInstaller {
+            PeerCommunicationService.instance.updateStatus("Erasing Disk")
             if let partition = self.selectedPartition {
                 let volumeName = partition.volumeName
                 let userConfirmedErase = self.showConfirmationAlert(question: "Confirm Disk Destruction", text: "Are you sure you want to erase disk \(volumeName)? This will make all the data on \(volumeName) unrecoverable.")

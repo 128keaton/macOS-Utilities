@@ -162,6 +162,8 @@ class PageController: NSObject {
         self.isActive = false
         pageController.dismiss(self)
 
+        PeerCommunicationService.instance.updateStatus("Idle")
+
         if !savePosition {
             resetPosition()
         }

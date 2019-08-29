@@ -35,6 +35,7 @@ class DeviceInformationViewController: NSViewController {
     override func viewDidAppear() {
         super.viewDidAppear()
 
+        PeerCommunicationService.instance.updateStatus("Viewing Info")
         if SystemProfiler.hasMachineData && barcodeURL == nil {
             saveBarcode()
         }
@@ -87,7 +88,7 @@ class DeviceInformationViewController: NSViewController {
             if !exceptObjects.contains(objectToShow) {
                 objectToShow?.show()
             }
-            
+
             if objectToShow == configurationImage {
                 configurationImage.shake(duration: 0.4, delay: 0.2)
             }

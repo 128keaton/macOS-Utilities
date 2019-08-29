@@ -18,7 +18,7 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
 
     private var preferenceLoader: PreferenceLoader? = nil
     private let itemRepository = ItemRepository.shared
-    private let beepService = BeepService()
+    private var peerCommunicationService: PeerCommunicationService? = nil
 
     private var disabledPaths: [IndexPath] = []
     private let reloadQueue = DispatchQueue(label: "thread-safe-obj", attributes: .concurrent)
@@ -51,13 +51,20 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         }
 
 
-        self.beepService.delegate = self
         self.registerForNotifications()
         self.showIPAddress()
 
         if let collectionViewNib = NSNib(nibNamed: "NSCollectionAppCell", bundle: nil) {
             collectionView.register(collectionViewNib, forItemWithIdentifier: NSUserInterfaceItemIdentifier(rawValue: "NSCollectionAppCell"))
         }
+    }
+
+    override func viewDidAppear() {
+        if self.peerCommunicationService == nil {
+            self.peerCommunicationService = PeerCommunicationService.instance
+        }
+
+        self.peerCommunicationService?.updateStatus("Idle")
     }
 
     private func checkForExceptions() {
@@ -256,6 +263,7 @@ extension ApplicationViewController: NSCollectionViewDataSource {
         }
 
         itemRepository.openApplication(applicationFromSection)
+        PeerCommunicationService.instance.updateStatus("Running \(applicationFromSection.name)")
         deselectAllItems(indexPaths)
     }
 
@@ -338,11 +346,5 @@ extension ApplicationViewController: NSTouchBarDelegate {
 
         default: return nil
         }
-    }
-}
-
-extension ApplicationViewController: BeepServiceDelegate {
-    func beep() {
-        NSSound.beep()
     }
 }

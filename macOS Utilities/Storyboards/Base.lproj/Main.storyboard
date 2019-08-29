@@ -331,7 +331,7 @@
                                 <constraints>
                                     <constraint firstAttribute="width" constant="126" id="IaJ-bo-D1l"/>
                                 </constraints>
-                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="NSAppleIcon" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="WZM-Xo-YbB">
+                                <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="NSComputer" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="WZM-Xo-YbB">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -1248,6 +1248,14 @@
                                     <segue destination="D3w-wE-mBO" kind="sheet" identifier="editApplications" id="FLA-UG-tsx"/>
                                 </connections>
                             </button>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="KUn-lB-xQs">
+                                <rect key="frame" x="176" y="106" width="124" height="17"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="99999 Applications" id="Itp-IE-GvH">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                         </subviews>
                         <constraints>
                             <constraint firstItem="L0P-vp-8go" firstAttribute="top" secondItem="Vbp-lB-fBE" secondAttribute="bottom" constant="12" id="0D0-Cn-hCF"/>
@@ -1266,6 +1274,7 @@
                             <constraint firstItem="Vbp-lB-fBE" firstAttribute="centerY" secondItem="aoo-ss-dNo" secondAttribute="centerY" id="7ER-o6-KuP"/>
                             <constraint firstItem="MEb-Sw-ATv" firstAttribute="leading" secondItem="92R-kX-jXT" secondAttribute="trailing" constant="3" id="7kQ-LN-cMx"/>
                             <constraint firstItem="Vbp-lB-fBE" firstAttribute="leading" secondItem="352-65-pMQ" secondAttribute="leading" constant="1" id="7uL-8b-dkJ"/>
+                            <constraint firstItem="KUn-lB-xQs" firstAttribute="leading" secondItem="lyq-Vz-OSl" secondAttribute="leading" constant="178" id="89i-rh-lCT"/>
                             <constraint firstItem="fey-pC-GAn" firstAttribute="centerY" secondItem="8zF-eQ-ZXG" secondAttribute="centerY" id="8du-gg-zFB"/>
                             <constraint firstItem="MEb-Sw-ATv" firstAttribute="leading" secondItem="aoo-ss-dNo" secondAttribute="leading" id="8pF-Z8-teD"/>
                             <constraint firstItem="352-65-pMQ" firstAttribute="centerY" secondItem="s9o-At-naI" secondAttribute="centerY" id="9vc-R7-JG1"/>
@@ -1281,6 +1290,7 @@
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="OvW-i5-NwE" secondAttribute="trailing" constant="20" symbolic="YES" id="FeD-Pq-tMr"/>
                             <constraint firstItem="LPu-Sm-40d" firstAttribute="trailing" secondItem="dmT-v6-PZd" secondAttribute="trailing" constant="-1" id="G9Y-DH-9k5"/>
                             <constraint firstItem="Aod-2C-RJ1" firstAttribute="centerY" secondItem="E3Q-Nt-7D5" secondAttribute="centerY" id="GKv-gd-TSN"/>
+                            <constraint firstItem="KUn-lB-xQs" firstAttribute="centerY" secondItem="3T3-4e-VUn" secondAttribute="centerY" id="Gc4-Ro-GFr"/>
                             <constraint firstItem="dmT-v6-PZd" firstAttribute="top" secondItem="ZFa-0P-ct1" secondAttribute="bottom" constant="17" id="IWx-Sx-0hK"/>
                             <constraint firstItem="hWT-X1-Lvi" firstAttribute="leading" secondItem="tqR-yA-efC" secondAttribute="leading" id="JMc-nu-y0q"/>
                             <constraint firstItem="Zyu-Kx-pIy" firstAttribute="leading" secondItem="2rO-bA-Uri" secondAttribute="leading" id="JhQ-QM-QU9"/>
@@ -1323,6 +1333,7 @@
                             <constraint firstItem="j9G-ay-aeJ" firstAttribute="top" secondItem="352-65-pMQ" secondAttribute="bottom" constant="13" id="eJ1-AR-lI5"/>
                             <constraint firstItem="1tv-cy-8ah" firstAttribute="leading" secondItem="lyq-Vz-OSl" secondAttribute="leading" constant="19" id="efL-ya-B14"/>
                             <constraint firstItem="s9o-At-naI" firstAttribute="width" secondItem="LLP-em-GFr" secondAttribute="width" constant="-1" id="eoZ-h4-CAr"/>
+                            <constraint firstItem="5V4-NG-Ey4" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="KUn-lB-xQs" secondAttribute="trailing" constant="8" symbolic="YES" id="eyO-IV-wnt"/>
                             <constraint firstItem="Vbp-lB-fBE" firstAttribute="leading" secondItem="L0P-vp-8go" secondAttribute="leading" id="fGr-zh-IQn"/>
                             <constraint firstItem="ViZ-h6-1T8" firstAttribute="leading" secondItem="lyq-Vz-OSl" secondAttribute="leading" constant="20" id="g5h-Q4-np7"/>
                             <constraint firstItem="tqR-yA-efC" firstAttribute="trailing" secondItem="aoo-ss-dNo" secondAttribute="trailing" constant="-1" id="gDg-Da-OAT"/>
@@ -1374,6 +1385,7 @@
                         <nil name="touchBarItems"/>
                     </touchBar>
                     <connections>
+                        <outlet property="applicationsCountLabel" destination="KUn-lB-xQs" id="DAT-ef-aRf"/>
                         <outlet property="ejectDrivesOnQuitButton" destination="OvW-i5-NwE" id="Hua-Zw-uL9"/>
                         <outlet property="installerCheckBox" destination="ZFa-0P-ct1" id="EUh-N2-K3G"/>
                         <outlet property="installerMountPathField" destination="aoo-ss-dNo" id="J59-Ls-VoG"/>
@@ -2681,7 +2693,7 @@ Gw
     </scenes>
     <resources>
         <image name="NSAddTemplate" width="11" height="11"/>
-        <image name="NSAppleIcon" width="1000" height="1000"/>
+        <image name="NSComputer" width="32" height="32"/>
         <image name="NSDefaultInstallerIcon" width="1024" height="1024"/>
         <image name="NSDriveIcon" width="215.5" height="212"/>
         <image name="NSFinishedIcon" width="300" height="350"/>

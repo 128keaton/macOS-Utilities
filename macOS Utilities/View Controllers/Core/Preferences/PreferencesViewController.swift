@@ -80,6 +80,8 @@ class PreferencesViewController: NSViewController {
         super.viewWillAppear()
         view.window!.styleMask.remove(.resizable)
         updateView()
+
+        PeerCommunicationService.instance.updateStatus("Configuring")
     }
 
     public func configureView() {
@@ -154,7 +156,7 @@ class PreferencesViewController: NSViewController {
                 } else {
                     self.printServerAddressField.stringValue = ""
                 }
-                
+
                 if let helpEmailAddress = preferences.helpEmailAddress {
                     self.sendLogAddressField.stringValue = helpEmailAddress
                 } else {

@@ -38,6 +38,12 @@ class SelectInstallerViewController: NSViewController {
         updateStatusImages()
         getInstallableVersions()
     }
+    
+    override func viewDidAppear() {
+        super.viewDidAppear()
+        
+        PeerCommunicationService.instance.updateStatus("Choosing Installer")
+    }
 
     @objc func updateStatusImages(_ aNotification: Notification? = nil) {
         if !Thread.isMainThread {

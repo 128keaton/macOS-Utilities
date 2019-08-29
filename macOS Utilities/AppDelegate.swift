@@ -40,7 +40,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         PreferenceLoader.setup()
         SystemProfiler.getInfo()
-        PeerCommunicationService.instance
 
         if let preferenceLoader = PreferenceLoader.sharedInstance {
             self.preferenceLoader = preferenceLoader
@@ -72,6 +71,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSSetUncaughtExceptionHandler { exception in
             ExceptionHandler.handle(exception: exception)
         }
+    }
+
+    func applicationWillBecomeActive(_ notification: Notification) {
+        PeerCommunicationService.instance.updateStatus("Idle")
     }
 
     private func registerForNotifications() {
@@ -228,7 +231,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             DDLogError("Unable to load file")
         }
     }
-    
+
 }
 
 extension AppDelegate: AVAudioPlayerDelegate {
