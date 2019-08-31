@@ -9,7 +9,17 @@
 import Foundation
 import ExceptionHandling
 
-class ExceptionItem {
+class ExceptionItem: NSObject, NSCoding {
+    func encode(with aCoder: NSCoder) {
+        aCoder.encode(exceptionDate, forKey: "exceptionDate")
+        aCoder.encode(exception, forKey: "exception")
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        self.exceptionDate = aDecoder.decodeObject(forKey: "exceptionDate") as! Date
+        self.exception = aDecoder.decodeObject(forKey: "exception") as! NSException
+    }
+    
     public var exceptionDate: Date
     public var exception: NSException
     

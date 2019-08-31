@@ -18,11 +18,15 @@ public class PeerCommunicationService: NSObject {
 
     public static var instance = PeerCommunicationService()
 
+    private let notificationCenter = NSUserNotificationCenter.default
+
     override init() {
         super.init()
 
         let modelIdentifier = Sysctl.model
         let ipAddress = NetworkUtils.getNetworkAddress()
+
+        self.notificationCenter.delegate = self
 
         MultiPeer.instance.delegate = self
 
@@ -57,6 +61,15 @@ public class PeerCommunicationService: NSObject {
         IOObjectRelease(platformExpert)
 
         return serialNumber
+    }
+
+    private func createAlertNotification() {
+        let notification = NSUserNotification()
+
+        notification.title = "macOS Utilities"
+        notification.subtitle = "An alert was sent from the hypervisor"
+
+        notificationCenter.deliver(notification)
     }
 
     private func flashScreen() {
@@ -113,10 +126,14 @@ extension PeerCommunicationService: MultiPeerDelegate {
                 audioPlayer.play()
             }
 
+            self.createAlertNotification()
             self.flashScreen()
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
                 self.flashScreen()
+                if let audioPlayer = self.audioPlayer {
+                    audioPlayer.play()
+                }
             }
 
             MultiPeer.instance.send(object: MultiPeer.instance.devicePeerID!, type: MessageType.locateResponse.rawValue, toPeer: self.serverPeer!)
@@ -144,12 +161,18 @@ extension PeerCommunicationService: MultiPeerDelegate {
     public func multiPeer(connectedPeersChanged peers: [Peer]) {
         print("Connected devices changed: \(peers)")
 
-        if (peers.count == 1) {
+        if (peers.filter { $0.state == .connected }.count >= 1) {
             DDLogVerbose("Stop accepting connections, we have a single peer")
             MultiPeer.instance.stopAccepting()
         } else {
             DDLogVerbose("Start accepting connections, we have no peer")
             MultiPeer.instance.startAccepting()
         }
+    }
+}
+
+extension PeerCommunicationService: NSUserNotificationCenterDelegate {
+    public func userNotificationCenter(_ center: NSUserNotificationCenter, shouldPresent notification: NSUserNotification) -> Bool {
+        return true
     }
 }

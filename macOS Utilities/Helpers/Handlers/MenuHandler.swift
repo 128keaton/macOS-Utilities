@@ -53,7 +53,11 @@ class MenuHandler: NSObject {
             #endif
 
             if helpEmailAddress == nil {
-                helpMenu!.items.removeAll { $0.title == "Send Log" }
+                helpMenu!.items.forEach {
+                    if $0.title == "Send Log" {
+                         helpMenu!.removeItem($0)
+                    }
+                }
                 DDLogInfo("Disabling 'Send Log' menu item. helpEmailAddress is nil")
             } else {
                 if (helpMenu?.items.filter { $0.title == "Send Log" })!.count == 0 {
@@ -246,7 +250,11 @@ class MenuHandler: NSObject {
 
     private func removeUtilityPlaceholder() {
         if (utilitiesMenu?.items.first { $0.isEnabled == false }) != nil {
-            utilitiesMenu?.items.removeAll { $0.isEnabled == false }
+            utilitiesMenu?.items.forEach {
+                if $0.isEnabled == false {
+                    utilitiesMenu?.removeItem($0)
+                }
+            }
         }
     }
 
