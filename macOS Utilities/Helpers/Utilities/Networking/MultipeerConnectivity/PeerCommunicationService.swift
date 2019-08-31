@@ -15,6 +15,7 @@ import AVFoundation
 public class PeerCommunicationService: NSObject {
     private var audioPlayer: AVAudioPlayer?
     private var serverPeer: Peer?
+    private var currentHypervisorPeer: Peer?
 
     public static var instance = PeerCommunicationService()
 
@@ -106,7 +107,7 @@ public class PeerCommunicationService: NSObject {
 
             MultiPeer.instance.send(data: data, type: MessageType.clientInfoResponse.rawValue, toPeer: validServerPeer)
         } else {
-            DDLogError("No valid server peer")
+            DDLogVerbose("Cannot update status: No valid server peer")
         }
     }
 }
@@ -161,7 +162,8 @@ extension PeerCommunicationService: MultiPeerDelegate {
     public func multiPeer(connectedPeersChanged peers: [Peer]) {
         print("Connected devices changed: \(peers)")
 
-        if (peers.filter { $0.state == .connected }.count >= 1) {
+        if (peers.filter { $0.state == .connected }.count >= 1 && (self.currentHypervisorPeer == nil || self.currentHypervisorPeer!.peerID == peers.first!.peerID)) {
+            self.currentHypervisorPeer = peers.first!
             DDLogVerbose("Stop accepting connections, we have a single peer")
             MultiPeer.instance.stopAccepting()
         } else {

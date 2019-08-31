@@ -97,6 +97,9 @@
 		8AA841CC22659260009C5948 /* DiskImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841CB22659260009C5948 /* DiskImage.swift */; };
 		8AA841D02265A509009C5948 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841CF2265A509009C5948 /* Units.swift */; };
 		8AA841D322664276009C5948 /* PaddedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841D222664276009C5948 /* PaddedTextField.swift */; };
+		8ABA1D01231A098D00DBCAC3 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABA1D00231A098D00DBCAC3 /* Secrets.swift */; };
+		8ABA1D03231A0A1700DBCAC3 /* Example_Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABA1D02231A0A1700DBCAC3 /* Example_Secrets.swift */; };
+		8ABA1D05231A0A6900DBCAC3 /* BSApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABA1D04231A0A6900DBCAC3 /* BSApplication.swift */; };
 		8ABAE3112252A46300E537D3 /* DiskSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE3102252A46300E537D3 /* DiskSelectionViewController.swift */; };
 		8ABAE3132252C1D800E537D3 /* TaskHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE3122252C1D800E537D3 /* TaskHandler.swift */; };
 		8ABAE31D2252DA5800E537D3 /* Installer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE31C2252DA5800E537D3 /* Installer.swift */; };
@@ -221,6 +224,9 @@
 		8AA841CB22659260009C5948 /* DiskImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskImage.swift; sourceTree = "<group>"; };
 		8AA841CF2265A509009C5948 /* Units.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Units.swift; sourceTree = "<group>"; };
 		8AA841D222664276009C5948 /* PaddedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddedTextField.swift; sourceTree = "<group>"; };
+		8ABA1D00231A098D00DBCAC3 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
+		8ABA1D02231A0A1700DBCAC3 /* Example_Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Example_Secrets.swift; sourceTree = "<group>"; };
+		8ABA1D04231A0A6900DBCAC3 /* BSApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BSApplication.swift; sourceTree = "<group>"; };
 		8ABAE3102252A46300E537D3 /* DiskSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskSelectionViewController.swift; sourceTree = "<group>"; };
 		8ABAE3122252C1D800E537D3 /* TaskHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskHandler.swift; sourceTree = "<group>"; };
 		8ABAE31C2252DA5800E537D3 /* Installer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Installer.swift; sourceTree = "<group>"; };
@@ -537,6 +543,7 @@
 		8A800B062315D84100037103 /* Miscellaneous */ = {
 			isa = PBXGroup;
 			children = (
+				8ABA1D04231A0A6900DBCAC3 /* BSApplication.swift */,
 				8A3243CC22A1B7700042E6D9 /* KBBarcodePreviewItem.swift */,
 			);
 			path = Miscellaneous;
@@ -700,6 +707,8 @@
 			isa = PBXGroup;
 			children = (
 				8ACB65D421063E6F004B9C5A /* AppDelegate.swift */,
+				8ABA1D00231A098D00DBCAC3 /* Secrets.swift */,
+				8ABA1D02231A0A1700DBCAC3 /* Example_Secrets.swift */,
 				8A0138C8221703CC00C77DA0 /* Helpers */,
 				8A0138D32217623200C77DA0 /* Storyboards */,
 				8A0138D42217623700C77DA0 /* View Controllers */,
@@ -880,6 +889,7 @@
 				"${BUILT_PRODUCTS_DIR}/Alamofire-SwiftyJSON/Alamofire_SwiftyJSON.framework",
 				"${BUILT_PRODUCTS_DIR}/AppFolder/AppFolder.framework",
 				"${BUILT_PRODUCTS_DIR}/BMExtendablePageController/BMExtendablePageController.framework",
+				"${BUILT_PRODUCTS_DIR}/Bugsnag/Bugsnag.framework",
 				"${BUILT_PRODUCTS_DIR}/CAAnimationBlocks/CAAnimationBlocks.framework",
 				"${BUILT_PRODUCTS_DIR}/CocoaAsyncSocket/CocoaAsyncSocket.framework",
 				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack/CocoaLumberjack.framework",
@@ -896,6 +906,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire_SwiftyJSON.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AppFolder.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BMExtendablePageController.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Bugsnag.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CAAnimationBlocks.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaAsyncSocket.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaLumberjack.framework",
@@ -974,6 +985,7 @@
 				8A9D9A9C2263084600E4D36F /* KBTextFieldDialog.swift in Sources */,
 				8AD01F1022A16F5600C722B6 /* DisplayItem.swift in Sources */,
 				8AD01F1C22A173E100C722B6 /* SystemProfilerItem.swift in Sources */,
+				8ABA1D05231A0A6900DBCAC3 /* BSApplication.swift in Sources */,
 				8A2DB958228A08D800261B9E /* WaitingViewController.swift in Sources */,
 				8A584771226AAF67008E9DE8 /* Foundation-Extensions.swift in Sources */,
 				8A800B242315DBC800037103 /* String+CondenseWhitespace.swift in Sources */,
@@ -1013,6 +1025,7 @@
 				8A800AFD2315D6B500037103 /* CameraPreview.swift in Sources */,
 				8A808F732317314000B1A29F /* PeerCommunicationService.swift in Sources */,
 				8A3243CB22A1B75D0042E6D9 /* XMLParsing+Alamofire.swift in Sources */,
+				8ABA1D03231A0A1700DBCAC3 /* Example_Secrets.swift in Sources */,
 				8A2DB94A2289E09200261B9E /* DiskUtilityCoreStorageList.swift in Sources */,
 				8ABAE31D2252DA5800E537D3 /* Installer.swift in Sources */,
 				8A2DB9522289F77C00261B9E /* HardDriveImageUtility.swift in Sources */,
@@ -1026,6 +1039,7 @@
 				8A0138D62217624700C77DA0 /* InfoPopoverViewController.swift in Sources */,
 				8A2DB9502289F21900261B9E /* LogicalVolumeGroup.swift in Sources */,
 				8A800B212315DA9500037103 /* CondensedBatteryHealth.swift in Sources */,
+				8ABA1D01231A098D00DBCAC3 /* Secrets.swift in Sources */,
 				8ABAE3112252A46300E537D3 /* DiskSelectionViewController.swift in Sources */,
 				8AD01F1422A16F5F00C722B6 /* NVMeItem.swift in Sources */,
 				8AD01F0E22A16F5600C722B6 /* AudioItem.swift in Sources */,

@@ -12,6 +12,7 @@ PODS:
     - AudioKit/Core
   - BMExtendablePageController (0.2.0):
     - CAAnimationBlocks (~> 0.0.1)
+  - Bugsnag (5.22.5)
   - CAAnimationBlocks (0.0.1)
   - CocoaAsyncSocket (7.6.3)
   - CocoaLumberjack (3.5.3):
@@ -51,6 +52,7 @@ DEPENDENCIES:
   - AppFolder (~> 0.2.0)
   - AudioKit
   - BMExtendablePageController (from `https://github.com/Foboz/BMExtPageController`)
+  - Bugsnag
   - CocoaAsyncSocket
   - CocoaLumberjack/Swift
   - MultiPeer (from `https://github.com/128keaton/MultiPeer.git`, tag `0.1.2`)
@@ -65,6 +67,7 @@ SPEC REPOS:
     - Alamofire-SwiftyJSON
     - AppFolder
     - AudioKit
+    - Bugsnag
     - CAAnimationBlocks
     - CocoaAsyncSocket
     - CocoaLumberjack
@@ -103,6 +106,7 @@ SPEC CHECKSUMS:
   AppFolder: d10ba19488bd441d60ffcf96eb2ab639a4825231
   AudioKit: 04ecf14d5ca795b16fc92c76fc84e2421ade7df0
   BMExtendablePageController: 0c144c22853ad09cd321c9b2330af2cac3fbb0c6
+  Bugsnag: 60e887aa63a5a842fc77f7b1e7c1310800f5b4e1
   CAAnimationBlocks: 1aaca5fb6447a95d83b20cc786992956ef46e4ee
   CocoaAsyncSocket: eafaa68a7e0ec99ead0a7b35015e0bf25d2c8987
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
@@ -113,6 +117,6 @@ SPEC CHECKSUMS:
   XLFacility: f24747c4f586372bddae3525d837ef42b0e26339
   XMLParsing: 5b2e061ac61c95eb246f169f89ffb049f8bff668
 
-PODFILE CHECKSUM: 0aada9ae87891a7c9e5fe60abca44242d3b595c3
+PODFILE CHECKSUM: 6fa47d633eb0721b06c2a2ac17e374afd976933e
 
 COCOAPODS: 1.8.0.beta.2

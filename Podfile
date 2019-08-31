@@ -15,6 +15,7 @@ target 'macOS Utilities' do
  pod 'MultiPeer', :git => 'https://github.com/128keaton/MultiPeer.git', :tag => '0.1.2'
  pod 'AudioKit'
  pod "XLFacility", "~> 1.0"
+ pod 'Bugsnag'
 end
 
 post_install do |installer|

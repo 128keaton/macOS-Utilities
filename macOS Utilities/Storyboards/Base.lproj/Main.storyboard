@@ -515,10 +515,9 @@
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="uYj-ZJ-cB3"/>
-                                        <menuItem title="Test Hardware" keyEquivalent="t" id="pWk-jj-seU">
+                                        <menuItem title="Test Hardware" keyEquivalent="t" allowsKeyEquivalentWhenHidden="YES" id="pWk-jj-seU">
                                             <connections>
-                                                <action selector="loadConfigurationFile:" target="FXb-Ej-UYn" id="UsY-63-yQ0"/>
-                                                <segue destination="uqp-Ia-UHh" kind="show" id="3jG-Ls-sue"/>
+                                                <segue destination="mT2-XL-1HJ" kind="show" id="cQ4-B1-KaU"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Load Configuration From File" keyEquivalent="o" id="Bh3-IQ-jnq">
@@ -2667,28 +2666,6 @@ Gw
                 <customObject id="Xuh-Hh-uZf" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1853.5" y="765"/>
-        </scene>
-        <!--Window Controller-->
-        <scene sceneID="QYe-24-caH">
-            <objects>
-                <windowController id="uqp-Ia-UHh" sceneMemberID="viewController">
-                    <window key="window" title="Evaluation" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" titlebarAppearsTransparent="YES" titleVisibility="hidden" id="xVa-BS-m5x">
-                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
-                        <rect key="contentRect" x="196" y="240" width="669" height="652"/>
-                        <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1577"/>
-                        <value key="minSize" type="size" width="669" height="652"/>
-                        <value key="maxSize" type="size" width="669" height="652"/>
-                        <connections>
-                            <outlet property="delegate" destination="uqp-Ia-UHh" id="ZGd-kd-xoR"/>
-                        </connections>
-                    </window>
-                    <connections>
-                        <segue destination="mT2-XL-1HJ" kind="relationship" relationship="window.shadowedContentViewController" id="IXg-so-lGp"/>
-                    </connections>
-                </windowController>
-                <customObject id="XXT-zP-ZNK" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-2647" y="778"/>
         </scene>
     </scenes>
     <resources>

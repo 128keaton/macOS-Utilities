@@ -9,6 +9,7 @@
 import Cocoa
 import PaperTrailLumberjack
 import AVFoundation
+import Bugsnag
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -35,6 +36,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private (set) public var audioPlayer: AVAudioPlayer?
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        // Change me in Secrets
+        Bugsnag.start(withApiKey: BUGSNAG_KEY)
+
         registerForNotifications()
         setupAudioPlayer()
 
@@ -55,6 +59,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         readPreferences()
         setupMenuHandler()
+
+        #if DEBUG
+            Bugsnag.notifyError(NSError(domain: "com.example", code: 408, userInfo: nil))
+        #endif
     }
 
     func setupMenuHandler() {
