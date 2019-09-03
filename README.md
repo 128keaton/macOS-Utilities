@@ -18,3 +18,8 @@
 * Web-based log for debugging
 * Local logging (port 8080)
 * Hypervisor companion [application](https://github.com/128keaton/macOS-Utilities-Hypervisor)
+
+# Usage
+
+* Bundle with AutoCasperNBI
+* Run from USB
