@@ -111,7 +111,7 @@ SPEC CHECKSUMS:
   CocoaAsyncSocket: eafaa68a7e0ec99ead0a7b35015e0bf25d2c8987
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
   MultiPeer: f28c91b749ad595e02283a2822334ff8f6fb5059
-  PaperTrailLumberjack: 7a89283286f82da814a3b5748630b6002ae160a3
+  PaperTrailLumberjack: a276bf494e7c0cc3f6c8356fa970578410e53c5d
   STPrivilegedTask: 103f97827454e786074640cf89d303be344498c7
   SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
   XLFacility: f24747c4f586372bddae3525d837ef42b0e26339

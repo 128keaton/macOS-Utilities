@@ -32,7 +32,6 @@
 		8A3243CE22A1B8190042E6D9 /* Disk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9370CE2256B7F4002B3838 /* Disk.swift */; };
 		8A3243D122A1C8A80042E6D9 /* WKNoScrollWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A3243D022A1C8A80042E6D9 /* WKNoScrollWebView.swift */; };
 		8A3243D222A1CA2C0042E6D9 /* SelectInstallerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6F28EF221B9F5C00FF9DB3 /* SelectInstallerViewController.swift */; };
-		8A39D3602119E81B00437F4E /* com.er2.applications.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8A39D35F2119E81B00437F4E /* com.er2.applications.plist */; };
 		8A47DED9210A2D30003F5CC3 /* NSCollectionAppCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */; };
 		8A47DEDB210A3418003F5CC3 /* NSCollectionAppCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */; };
 		8A57BF402262A0C200719E74 /* LegacyPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A57BF3F2262A0C200719E74 /* LegacyPreferences.swift */; };
@@ -97,7 +96,7 @@
 		8AA841CC22659260009C5948 /* DiskImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841CB22659260009C5948 /* DiskImage.swift */; };
 		8AA841D02265A509009C5948 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841CF2265A509009C5948 /* Units.swift */; };
 		8AA841D322664276009C5948 /* PaddedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841D222664276009C5948 /* PaddedTextField.swift */; };
-		8ABA1D01231A098D00DBCAC3 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABA1D00231A098D00DBCAC3 /* Secrets.swift */; };
+		8AB65A8C231EF4D2006C7112 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB65A8B231EF4D2006C7112 /* Secrets.swift */; };
 		8ABA1D03231A0A1700DBCAC3 /* Example_Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABA1D02231A0A1700DBCAC3 /* Example_Secrets.swift */; };
 		8ABA1D05231A0A6900DBCAC3 /* BSApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABA1D04231A0A6900DBCAC3 /* BSApplication.swift */; };
 		8ABAE3112252A46300E537D3 /* DiskSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE3102252A46300E537D3 /* DiskSelectionViewController.swift */; };
@@ -224,7 +223,7 @@
 		8AA841CB22659260009C5948 /* DiskImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskImage.swift; sourceTree = "<group>"; };
 		8AA841CF2265A509009C5948 /* Units.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Units.swift; sourceTree = "<group>"; };
 		8AA841D222664276009C5948 /* PaddedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddedTextField.swift; sourceTree = "<group>"; };
-		8ABA1D00231A098D00DBCAC3 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
+		8AB65A8B231EF4D2006C7112 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		8ABA1D02231A0A1700DBCAC3 /* Example_Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Example_Secrets.swift; sourceTree = "<group>"; };
 		8ABA1D04231A0A6900DBCAC3 /* BSApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BSApplication.swift; sourceTree = "<group>"; };
 		8ABAE3102252A46300E537D3 /* DiskSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskSelectionViewController.swift; sourceTree = "<group>"; };
@@ -707,12 +706,12 @@
 			isa = PBXGroup;
 			children = (
 				8ACB65D421063E6F004B9C5A /* AppDelegate.swift */,
-				8ABA1D00231A098D00DBCAC3 /* Secrets.swift */,
 				8ABA1D02231A0A1700DBCAC3 /* Example_Secrets.swift */,
 				8A0138C8221703CC00C77DA0 /* Helpers */,
 				8A0138D32217623200C77DA0 /* Storyboards */,
 				8A0138D42217623700C77DA0 /* View Controllers */,
 				8A9D9AA822632A2900E4D36F /* Resources */,
+				8AB65A8B231EF4D2006C7112 /* Secrets.swift */,
 			);
 			path = "macOS Utilities";
 			sourceTree = "<group>";
@@ -863,7 +862,6 @@
 				8ACB65D921063E6F004B9C5A /* Assets.xcassets in Resources */,
 				8A47DEDB210A3418003F5CC3 /* NSCollectionAppCell.xib in Resources */,
 				8A9D9AAE2263370800E4D36F /* KBTextFieldDialog-large.xib in Resources */,
-				8A39D3602119E81B00437F4E /* com.er2.applications.plist in Resources */,
 				8A9D9A982262FB5F00E4D36F /* IPAddressChooserDialog.xib in Resources */,
 				8A9D9A9A226307CD00E4D36F /* KBTextFieldDialog-small.xib in Resources */,
 				8A9D9AAC22632B4700E4D36F /* config-file-icon.icns in Resources */,
@@ -1039,7 +1037,6 @@
 				8A0138D62217624700C77DA0 /* InfoPopoverViewController.swift in Sources */,
 				8A2DB9502289F21900261B9E /* LogicalVolumeGroup.swift in Sources */,
 				8A800B212315DA9500037103 /* CondensedBatteryHealth.swift in Sources */,
-				8ABA1D01231A098D00DBCAC3 /* Secrets.swift in Sources */,
 				8ABAE3112252A46300E537D3 /* DiskSelectionViewController.swift in Sources */,
 				8AD01F1422A16F5F00C722B6 /* NVMeItem.swift in Sources */,
 				8AD01F0E22A16F5600C722B6 /* AudioItem.swift in Sources */,
@@ -1054,6 +1051,7 @@
 				8A584776226ABDA5008E9DE8 /* CocoaLumberjack-Extensions.swift in Sources */,
 				8A800B372315DD5500037103 /* PageController.swift in Sources */,
 				8A2DB94E2289EAF600261B9E /* RawOutputType.swift in Sources */,
+				8AB65A8C231EF4D2006C7112 /* Secrets.swift in Sources */,
 				8A87B8B721A47DD8004496AA /* CwlSysctl.swift in Sources */,
 				8A27EF0122C56159005F45AF /* NetworkUtils.swift in Sources */,
 				8A9370CD2256B53C002B3838 /* DiskUtility.swift in Sources */,
