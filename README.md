@@ -1,7 +1,7 @@
 <p align="center">
-  <h1>macOS Utilities</h1>
-  <img src="https://raw.githubusercontent.com/128keaton/macOS-Utilities/master/macOS%20Utilities/Assets.xcassets/AppIcon.appiconset/1024.png">
-    <p>A custom macOS Utilities app.</p>
+  <h1 align="center">macOS Utilities</h1>
+  <img align="center" src="https://raw.githubusercontent.com/128keaton/macOS-Utilities/master/macOS%20Utilities/Assets.xcassets/AppIcon.appiconset/256.png?raw=true">
+    <p align="center">A custom macOS Utilities app.</p>
  </p>
   
 
