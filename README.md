@@ -1,22 +1,41 @@
 # macOS-Utilities
 A custom macOS Utilities app.
 
+
 ![](https://github.com/128keaton/macOS-Utilities/blob/disk-manager/Screenshots/macOSUtillities-10.png?raw=true)
+
 
 ## Usage
 Bundle this with your NBI. Use something like [outset](https://github.com/chilcote/outset) to run it on launch.
-
-## macOS Installation
-This app expects to have 'Install macOS High Sierra' mounted. Due to the laziness of the author, this is hardcoded.
-If you wish to change the installer version, and kick off app, please make your own changes in your own repository. Sorry.
 
 ## Customizing
 The `com.er2.applications.plist` file is full of options like:
 * Applications
 * Remote NFS server containing install images
 * Papertrail Remote Logging
+* Email address to email logs to
+* [DeviceIdentifier](https://docs.reincubate.com/deviceidentifier/) API key
 
-## [10.13 'Kickoff'](https://github.com/128keaton/macOS-Installer-Kickoff)
+## Screenshots
 
-Currently, the software installation is kicked off by an AppleScript app that calls a bash script to erase the drive and open the High Sierra installer application. If you do not require the drive to be erased, you can replace the path string in the application yourself. 
+### Installer Selection (from NFS):
+![](https://github.com/128keaton/macOS-Utilities/blob/disk-manager/Screenshots/screenshot7.png?raw=true)
 
+### Internal Disk Selection:
+![](https://github.com/128keaton/macOS-Utilities/blob/disk-manager/Screenshots/screenshot6.png?raw=true)
+
+### Get Info (DeviceIdentifier API):
+![](https://github.com/128keaton/macOS-Utilities/blob/disk-manager/Screenshots/screenshot8.png?raw=true)
+
+
+### Menus:
+![](https://github.com/128keaton/macOS-Utilities/blob/disk-manager/Screenshots/screenshot0.png?raw=true)
+
+![Main](https://github.com/128keaton/macOS-Utilities/blob/disk-manager/Screenshots/screenshot1.png?raw=true)
+![Help](https://github.com/128keaton/macOS-Utilities/blob/disk-manager/Screenshots/screenshot2.png?raw=true)
+![Info](https://github.com/128keaton/macOS-Utilities/blob/disk-manager/Screenshots/screenshot3.png?raw=true)
+![Utilities](https://github.com/128keaton/macOS-Utilities/blob/disk-manager/Screenshots/screenshot4.png?raw=true)
+![Debug](https://github.com/128keaton/macOS-Utilities/blob/disk-manager/Screenshots/screenshot5.png?raw=true)
+
+### Other:
+![](https://github.com/128keaton/macOS-Utilities/blob/disk-manager/Screenshots/screenshot10.png?raw=true)

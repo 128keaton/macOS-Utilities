@@ -1,37 +1,122 @@
 PODS:
+  - Alamofire (4.8.2)
+  - Alamofire-SwiftyJSON (3.0.0):
+    - Alamofire (~> 4.5)
+    - SwiftyJSON (~> 4.0.0)
   - AppFolder (0.2.0)
+  - AudioKit (4.8):
+    - AudioKit/Core (= 4.8)
+    - AudioKit/UI (= 4.8)
+  - AudioKit/Core (4.8)
+  - AudioKit/UI (4.8):
+    - AudioKit/Core
+  - BMExtendablePageController (0.2.0):
+    - CAAnimationBlocks (~> 0.0.1)
+  - Bugsnag (5.22.5)
+  - CAAnimationBlocks (0.0.1)
   - CocoaAsyncSocket (7.6.3)
-  - CocoaLumberjack (3.5.2):
-    - CocoaLumberjack/Core (= 3.5.2)
-  - CocoaLumberjack/Core (3.5.2)
-  - CocoaLumberjack/Swift (3.5.2):
+  - CocoaLumberjack (3.5.3):
+    - CocoaLumberjack/Core (= 3.5.3)
+  - CocoaLumberjack/Core (3.5.3)
+  - CocoaLumberjack/Swift (3.5.3):
     - CocoaLumberjack/Core
-  - PaperTrailLumberjack/Core (0.1.9):
+  - MultiPeer (0.1.2)
+  - PaperTrailLumberjack/Core (0.2.0):
     - CocoaAsyncSocket (~> 7.6)
     - CocoaLumberjack (~> 3.4)
-  - PaperTrailLumberjack/Swift (0.1.9):
+  - PaperTrailLumberjack/Swift (0.2.0):
     - CocoaLumberjack/Swift (~> 3.4)
     - PaperTrailLumberjack/Core
+  - STPrivilegedTask (1.0.1)
+  - SwiftyJSON (4.0.0)
+  - XLFacility (1.5.18):
+    - XLFacility/Core (= 1.5.18)
+    - XLFacility/GCDNetworking (= 1.5.18)
+    - XLFacility/GCDTelnetServer (= 1.5.18)
+    - XLFacility/Networking (= 1.5.18)
+    - XLFacility/UserInterface (= 1.5.18)
+  - XLFacility/Core (1.5.18)
+  - XLFacility/GCDNetworking (1.5.18)
+  - XLFacility/GCDTelnetServer (1.5.18):
+    - XLFacility/GCDNetworking
+  - XLFacility/Networking (1.5.18):
+    - XLFacility/Core
+    - XLFacility/GCDTelnetServer
+  - XLFacility/UserInterface (1.5.18):
+    - XLFacility/Core
+  - XMLParsing (0.0.3)
 
 DEPENDENCIES:
+  - Alamofire
+  - Alamofire-SwiftyJSON
   - AppFolder (~> 0.2.0)
+  - AudioKit
+  - BMExtendablePageController (from `https://github.com/Foboz/BMExtPageController`)
+  - Bugsnag
   - CocoaAsyncSocket
   - CocoaLumberjack/Swift
-  - PaperTrailLumberjack/Swift
+  - MultiPeer (from `https://github.com/128keaton/MultiPeer.git`, tag `0.1.2`)
+  - PaperTrailLumberjack/Swift (from `https://github.com/128keaton/PaperTrailLumberjack`)
+  - STPrivilegedTask
+  - XLFacility (~> 1.0)
+  - XMLParsing (from `https://github.com/128keaton/XMLParsing.git`)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  trunk:
+    - Alamofire
+    - Alamofire-SwiftyJSON
     - AppFolder
+    - AudioKit
+    - Bugsnag
+    - CAAnimationBlocks
     - CocoaAsyncSocket
     - CocoaLumberjack
-    - PaperTrailLumberjack
+    - STPrivilegedTask
+    - SwiftyJSON
+    - XLFacility
+
+EXTERNAL SOURCES:
+  BMExtendablePageController:
+    :git: https://github.com/Foboz/BMExtPageController
+  MultiPeer:
+    :git: https://github.com/128keaton/MultiPeer.git
+    :tag: 0.1.2
+  PaperTrailLumberjack:
+    :git: https://github.com/128keaton/PaperTrailLumberjack
+  XMLParsing:
+    :git: https://github.com/128keaton/XMLParsing.git
+
+CHECKOUT OPTIONS:
+  BMExtendablePageController:
+    :commit: c280f73244a92a451f3ea4bcd644180ea3609aab
+    :git: https://github.com/Foboz/BMExtPageController
+  MultiPeer:
+    :git: https://github.com/128keaton/MultiPeer.git
+    :tag: 0.1.2
+  PaperTrailLumberjack:
+    :commit: d469aa89e0023dcacc549a605f58669053ac7d5a
+    :git: https://github.com/128keaton/PaperTrailLumberjack
+  XMLParsing:
+    :commit: f173abf8f782bd7072b0b423aa154358ef6a7ae7
+    :git: https://github.com/128keaton/XMLParsing.git
 
 SPEC CHECKSUMS:
+  Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
+  Alamofire-SwiftyJSON: 2b3649d57dc7bb2880fb8b86f8bb969397666916
   AppFolder: d10ba19488bd441d60ffcf96eb2ab639a4825231
+  AudioKit: 04ecf14d5ca795b16fc92c76fc84e2421ade7df0
+  BMExtendablePageController: 0c144c22853ad09cd321c9b2330af2cac3fbb0c6
+  Bugsnag: 60e887aa63a5a842fc77f7b1e7c1310800f5b4e1
+  CAAnimationBlocks: 1aaca5fb6447a95d83b20cc786992956ef46e4ee
   CocoaAsyncSocket: eafaa68a7e0ec99ead0a7b35015e0bf25d2c8987
-  CocoaLumberjack: 118bf4a820efc641f79fa487b75ed928dccfae23
-  PaperTrailLumberjack: 449587968d5aeb3eab2d4de041ffc61ee2d49f25
+  CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
+  MultiPeer: f28c91b749ad595e02283a2822334ff8f6fb5059
+  PaperTrailLumberjack: 7a89283286f82da814a3b5748630b6002ae160a3
+  STPrivilegedTask: 103f97827454e786074640cf89d303be344498c7
+  SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
+  XLFacility: f24747c4f586372bddae3525d837ef42b0e26339
+  XMLParsing: 5b2e061ac61c95eb246f169f89ffb049f8bff668
 
-PODFILE CHECKSUM: 8383ba248433b29c2ca4a3f801a2b61dbe6f976e
+PODFILE CHECKSUM: 6fa47d633eb0721b06c2a2ac17e374afd976933e
 
-COCOAPODS: 1.6.1
+COCOAPODS: 1.8.0.beta.2

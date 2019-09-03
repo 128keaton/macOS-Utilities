@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="LoadingView" customModule="AVTest" customModuleProvider="target">
+            <connections>
+                <outlet property="contentView" destination="Gin-hd-qcz" id="6uU-JC-54q"/>
+                <outlet property="progressIndicator" destination="vpR-UD-iQP" id="Iaa-Oc-9UV"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView id="Gin-hd-qcz">
+            <rect key="frame" x="0.0" y="0.0" width="301" height="293"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4IO-fH-F8p">
+                    <rect key="frame" x="18" y="150" width="265" height="24"/>
+                    <textFieldCell key="cell" lineBreakMode="clipping" alignment="center" title="Fetching System Info..." id="zHR-gg-WeP">
+                        <font key="font" metaFont="systemMedium" size="20"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="vpR-UD-iQP">
+                    <rect key="frame" x="143" y="119" width="16" height="16"/>
+                </progressIndicator>
+            </subviews>
+            <constraints>
+                <constraint firstItem="4IO-fH-F8p" firstAttribute="centerX" secondItem="vpR-UD-iQP" secondAttribute="centerX" id="Tau-GL-7zY"/>
+                <constraint firstItem="4IO-fH-F8p" firstAttribute="leading" secondItem="Gin-hd-qcz" secondAttribute="leading" constant="20" symbolic="YES" id="aHq-2Q-hJu"/>
+                <constraint firstItem="4IO-fH-F8p" firstAttribute="centerX" secondItem="Gin-hd-qcz" secondAttribute="centerX" id="bqu-km-1xb"/>
+                <constraint firstItem="4IO-fH-F8p" firstAttribute="top" secondItem="Gin-hd-qcz" secondAttribute="top" constant="119" id="rhI-Vz-Q0l"/>
+                <constraint firstItem="vpR-UD-iQP" firstAttribute="top" secondItem="4IO-fH-F8p" secondAttribute="bottom" constant="15" id="you-VF-Ob9"/>
+            </constraints>
+            <point key="canvasLocation" x="140" y="153.5"/>
+        </customView>
+    </objects>
+</document>

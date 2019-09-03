@@ -1,0 +1,3 @@
+[submodule "macOS Utilities/Helpers/DeviceIdentifier"]
+	path = macOS Utilities/Helpers/DeviceIdentifier
+	url = https://github.com/128keaton/DeviceIdentifier
