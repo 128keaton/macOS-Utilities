@@ -1,8 +1,8 @@
 <p align="center">
-  <h1 align="center">macOS Utilities</h1>
   <p align="center">
   <img align="center" src="https://raw.githubusercontent.com/128keaton/macOS-Utilities/master/macOS%20Utilities/Assets.xcassets/AppIcon.appiconset/256.png?raw=true">
   </p>
+    <h1 align="center">macOS Utilities</h1>
     <p align="center">A custom macOS Utilities app.</p>
  </p>
   
