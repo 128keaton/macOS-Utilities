@@ -80,6 +80,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             ExceptionHandler.handle(exception: exception)
         }
     }
+    
+    func applicationWillTerminate(_ notification: Notification) {
+        if let currentPreferenceLoader = PreferenceLoader.sharedInstance,
+            let validPreferences = PreferenceLoader.currentPreferences {
+            currentPreferenceLoader.save(validPreferences, notify: false)
+        }
+    }
 
     func applicationWillBecomeActive(_ notification: Notification) {
         PeerCommunicationService.instance.updateStatus("Idle")
@@ -187,6 +194,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 return .terminateCancel
             }
         }
+        
         return .terminateNow
     }
 
