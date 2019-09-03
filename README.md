@@ -1,41 +1,18 @@
-# macOS-Utilities
-A custom macOS Utilities app.
+<p align="center">
+  <h1>macOS Utilities</h1>
+  <img src="https://raw.githubusercontent.com/128keaton/macOS-Utilities/master/macOS%20Utilities/Assets.xcassets/AppIcon.appiconset/1024.png">
+    <p>A custom macOS Utilities app.</p>
+ </p>
+  
 
-
-![](https://github.com/128keaton/macOS-Utilities/blob/disk-manager/Screenshots/macOSUtillities-10.png?raw=true)
-
-
-## Usage
-Bundle this with your NBI. Use something like [outset](https://github.com/chilcote/outset) to run it on launch.
-
-## Customizing
-The `com.er2.applications.plist` file is full of options like:
-* Applications
-* Remote NFS server containing install images
-* Papertrail Remote Logging
-* Email address to email logs to
-* [DeviceIdentifier](https://docs.reincubate.com/deviceidentifier/) API key
-
-## Screenshots
-
-### Installer Selection (from NFS):
-![](https://github.com/128keaton/macOS-Utilities/blob/disk-manager/Screenshots/screenshot7.png?raw=true)
-
-### Internal Disk Selection:
-![](https://github.com/128keaton/macOS-Utilities/blob/disk-manager/Screenshots/screenshot6.png?raw=true)
-
-### Get Info (DeviceIdentifier API):
-![](https://github.com/128keaton/macOS-Utilities/blob/disk-manager/Screenshots/screenshot8.png?raw=true)
-
-
-### Menus:
-![](https://github.com/128keaton/macOS-Utilities/blob/disk-manager/Screenshots/screenshot0.png?raw=true)
-
-![Main](https://github.com/128keaton/macOS-Utilities/blob/disk-manager/Screenshots/screenshot1.png?raw=true)
-![Help](https://github.com/128keaton/macOS-Utilities/blob/disk-manager/Screenshots/screenshot2.png?raw=true)
-![Info](https://github.com/128keaton/macOS-Utilities/blob/disk-manager/Screenshots/screenshot3.png?raw=true)
-![Utilities](https://github.com/128keaton/macOS-Utilities/blob/disk-manager/Screenshots/screenshot4.png?raw=true)
-![Debug](https://github.com/128keaton/macOS-Utilities/blob/disk-manager/Screenshots/screenshot5.png?raw=true)
-
-### Other:
-![](https://github.com/128keaton/macOS-Utilities/blob/disk-manager/Screenshots/screenshot10.png?raw=true)
+# Features
+* Remote NFS installer support
+* [Papertrail](https://papertrailapp.com/) logging
+* Fusion Drive detection and repair
+* macOS Installation and auto-detection of versions
+* Sound and webcam hardware tests
+* CURL System Profiler results to remote server
+* Bundle/map any application to appear in window
+* Web-based log for debugging
+* Local logging (port 8080)
+* Hypervisor companion [application](https://github.com/128keaton/macOS-Utilities-Hypervisor)
