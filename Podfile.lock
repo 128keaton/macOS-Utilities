@@ -1,24 +1,24 @@
 PODS:
-  - Alamofire (4.8.2)
+  - Alamofire (4.9.1)
   - Alamofire-SwiftyJSON (3.0.0):
     - Alamofire (~> 4.5)
     - SwiftyJSON (~> 4.0.0)
   - AppFolder (0.2.0)
-  - AudioKit (4.8):
-    - AudioKit/Core (= 4.8)
-    - AudioKit/UI (= 4.8)
-  - AudioKit/Core (4.8)
-  - AudioKit/UI (4.8):
+  - AudioKit (4.9.5):
+    - AudioKit/Core (= 4.9.5)
+    - AudioKit/UI (= 4.9.5)
+  - AudioKit/Core (4.9.5)
+  - AudioKit/UI (4.9.5):
     - AudioKit/Core
   - BMExtendablePageController (0.2.0):
     - CAAnimationBlocks (~> 0.0.1)
-  - Bugsnag (5.22.5)
+  - Bugsnag (5.23.1)
   - CAAnimationBlocks (0.0.1)
-  - CocoaAsyncSocket (7.6.3)
-  - CocoaLumberjack (3.5.3):
-    - CocoaLumberjack/Core (= 3.5.3)
-  - CocoaLumberjack/Core (3.5.3)
-  - CocoaLumberjack/Swift (3.5.3):
+  - CocoaAsyncSocket (7.6.4)
+  - CocoaLumberjack (3.6.1):
+    - CocoaLumberjack/Core (= 3.6.1)
+  - CocoaLumberjack/Core (3.6.1)
+  - CocoaLumberjack/Swift (3.6.1):
     - CocoaLumberjack/Core
   - MultiPeer (0.1.2)
   - PaperTrailLumberjack/Core (0.2.0):
@@ -101,17 +101,17 @@ CHECKOUT OPTIONS:
     :git: https://github.com/128keaton/XMLParsing.git
 
 SPEC CHECKSUMS:
-  Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
+  Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
   Alamofire-SwiftyJSON: 2b3649d57dc7bb2880fb8b86f8bb969397666916
   AppFolder: d10ba19488bd441d60ffcf96eb2ab639a4825231
-  AudioKit: 04ecf14d5ca795b16fc92c76fc84e2421ade7df0
+  AudioKit: ccf4e39c89ed6e5cbbce5fef58d819db39446437
   BMExtendablePageController: 0c144c22853ad09cd321c9b2330af2cac3fbb0c6
-  Bugsnag: 60e887aa63a5a842fc77f7b1e7c1310800f5b4e1
+  Bugsnag: caa15cf2a5d9278f04e1dda70c0cc6d42d3c9625
   CAAnimationBlocks: 1aaca5fb6447a95d83b20cc786992956ef46e4ee
-  CocoaAsyncSocket: eafaa68a7e0ec99ead0a7b35015e0bf25d2c8987
-  CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
+  CocoaAsyncSocket: 694058e7c0ed05a9e217d1b3c7ded962f4180845
+  CocoaLumberjack: b17ae15142558d08bbacf69775fa10c4abbebcc9
   MultiPeer: f28c91b749ad595e02283a2822334ff8f6fb5059
-  PaperTrailLumberjack: a276bf494e7c0cc3f6c8356fa970578410e53c5d
+  PaperTrailLumberjack: 7a89283286f82da814a3b5748630b6002ae160a3
   STPrivilegedTask: 103f97827454e786074640cf89d303be344498c7
   SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
   XLFacility: f24747c4f586372bddae3525d837ef42b0e26339
@@ -119,4 +119,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 6fa47d633eb0721b06c2a2ac17e374afd976933e
 
-COCOAPODS: 1.8.0.beta.2
+COCOAPODS: 1.9.1
