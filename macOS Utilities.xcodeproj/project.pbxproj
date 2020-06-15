@@ -41,6 +41,7 @@
 		8A584776226ABDA5008E9DE8 /* CocoaLumberjack-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A584775226ABDA5008E9DE8 /* CocoaLumberjack-Extensions.swift */; };
 		8A584778226AC446008E9DE8 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A584777226AC446008E9DE8 /* Utility.swift */; };
 		8A662216226AA42B0072B3A4 /* AppKit-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A662215226AA42B0072B3A4 /* AppKit-Extensions.swift */; };
+		8A6B95662497FEEE00FAAFC8 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6B95652497FEEE00FAAFC8 /* Secrets.swift */; };
 		8A6C645C225D4E9900CD6DCF /* InstallerCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C645B225D4E9900CD6DCF /* InstallerCellView.swift */; };
 		8A6C6460225DB39500CD6DCF /* DeviceInformationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C645F225DB39500CD6DCF /* DeviceInformationViewController.swift */; };
 		8A6C6472225EA05300CD6DCF /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6C6471225EA05300CD6DCF /* Preferences.swift */; };
@@ -96,7 +97,6 @@
 		8AA841CC22659260009C5948 /* DiskImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841CB22659260009C5948 /* DiskImage.swift */; };
 		8AA841D02265A509009C5948 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841CF2265A509009C5948 /* Units.swift */; };
 		8AA841D322664276009C5948 /* PaddedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841D222664276009C5948 /* PaddedTextField.swift */; };
-		8AB65A8C231EF4D2006C7112 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB65A8B231EF4D2006C7112 /* Secrets.swift */; };
 		8ABA1D03231A0A1700DBCAC3 /* Example_Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABA1D02231A0A1700DBCAC3 /* Example_Secrets.swift */; };
 		8ABA1D05231A0A6900DBCAC3 /* BSApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABA1D04231A0A6900DBCAC3 /* BSApplication.swift */; };
 		8ABAE3112252A46300E537D3 /* DiskSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE3102252A46300E537D3 /* DiskSelectionViewController.swift */; };
@@ -166,6 +166,7 @@
 		8A584781226AD8E7008E9DE8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8A584787226ADD9A008E9DE8 /* TestPreferenceLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestPreferenceLoader.swift; sourceTree = "<group>"; };
 		8A662215226AA42B0072B3A4 /* AppKit-Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppKit-Extensions.swift"; sourceTree = "<group>"; };
+		8A6B95652497FEEE00FAAFC8 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		8A6C6452225BADC900CD6DCF /* macOS-Utilities-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "macOS-Utilities-Bridging-Header.h"; sourceTree = "<group>"; };
 		8A6C645B225D4E9900CD6DCF /* InstallerCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallerCellView.swift; sourceTree = "<group>"; };
 		8A6C645F225DB39500CD6DCF /* DeviceInformationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInformationViewController.swift; sourceTree = "<group>"; };
@@ -712,6 +713,7 @@
 				8A0138D42217623700C77DA0 /* View Controllers */,
 				8A9D9AA822632A2900E4D36F /* Resources */,
 				8AB65A8B231EF4D2006C7112 /* Secrets.swift */,
+				8A6B95652497FEEE00FAAFC8 /* Secrets.swift */,
 			);
 			path = "macOS Utilities";
 			sourceTree = "<group>";
@@ -821,7 +823,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1020;
-				LastUpgradeCheck = 1030;
+				LastUpgradeCheck = 1150;
 				ORGANIZATIONNAME = "Keaton Burleson";
 				TargetAttributes = {
 					8ACB65D021063E6F004B9C5A = {
@@ -978,6 +980,7 @@
 				8A800B392315DD7100037103 /* PreferencesViewController.swift in Sources */,
 				8A3243D222A1CA2C0042E6D9 /* SelectInstallerViewController.swift in Sources */,
 				8A57BF432262A1AF00719E74 /* LoggerManager.swift in Sources */,
+				8A6B95662497FEEE00FAAFC8 /* Secrets.swift in Sources */,
 				8A175AAC225EFEE50018C977 /* ErrorAlertLogger.swift in Sources */,
 				8A800B202315DA9500037103 /* CondensedDisplayInfo.swift in Sources */,
 				8A9D9A9C2263084600E4D36F /* KBTextFieldDialog.swift in Sources */,
@@ -1051,7 +1054,6 @@
 				8A584776226ABDA5008E9DE8 /* CocoaLumberjack-Extensions.swift in Sources */,
 				8A800B372315DD5500037103 /* PageController.swift in Sources */,
 				8A2DB94E2289EAF600261B9E /* RawOutputType.swift in Sources */,
-				8AB65A8C231EF4D2006C7112 /* Secrets.swift in Sources */,
 				8A87B8B721A47DD8004496AA /* CwlSysctl.swift in Sources */,
 				8A27EF0122C56159005F45AF /* NetworkUtils.swift in Sources */,
 				8A9370CD2256B53C002B3838 /* DiskUtility.swift in Sources */,
@@ -1221,7 +1223,7 @@
 			baseConfigurationReference = D8A022574234BFBF730A7F5C /* Pods-macOS Utilities.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_ACTIVITY_MODE = disable;
