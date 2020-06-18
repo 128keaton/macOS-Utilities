@@ -41,7 +41,6 @@ if [ ! $? -eq 0 ]; then
   exit 1
 fi
 
-/bin/rm -rf Output/*.xcarchive
+/bin/rm -rf ./Output/*.xcarchive
 
 echo 'Done! Available at ./Output/macOS\ Utilities.app'
-/bin/rm -rf build.log
