@@ -44,3 +44,4 @@ fi
 /bin/rm -rf Output/*.xcarchive
 
 echo 'Done! Available at ./Output/macOS\ Utilities.app'
+/bin/rm -rf build.log
