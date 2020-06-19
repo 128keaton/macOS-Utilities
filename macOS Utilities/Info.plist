@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSSystemAdministrationUsageDescription</key>
+	<string>We need this to save/load preferences</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDocumentTypes</key>
@@ -72,7 +74,7 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>XCode c'mon you bitch</string>
+	<string>XCode c&apos;mon you bitch</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2018 Keaton Burleson. All rights reserved.</string>
 	<key>NSMainStoryboardFile</key>

@@ -27,6 +27,7 @@ PODS:
   - PaperTrailLumberjack/Swift (0.2.0):
     - CocoaLumberjack/Swift (~> 3.4)
     - PaperTrailLumberjack/Core
+  - PermissionsKit-macOS (1.0.1)
   - STPrivilegedTask (1.0.1)
   - SwiftyJSON (4.0.0)
   - XLFacility (1.5.18):
@@ -57,6 +58,7 @@ DEPENDENCIES:
   - CocoaLumberjack/Swift
   - MultiPeer (from `https://github.com/128keaton/MultiPeer.git`, tag `0.1.2`)
   - PaperTrailLumberjack/Swift (from `https://github.com/128keaton/PaperTrailLumberjack`)
+  - PermissionsKit-macOS
   - STPrivilegedTask
   - XLFacility (~> 1.0)
   - XMLParsing (from `https://github.com/128keaton/XMLParsing.git`)
@@ -71,6 +73,7 @@ SPEC REPOS:
     - CAAnimationBlocks
     - CocoaAsyncSocket
     - CocoaLumberjack
+    - PermissionsKit-macOS
     - STPrivilegedTask
     - SwiftyJSON
     - XLFacility
@@ -112,11 +115,12 @@ SPEC CHECKSUMS:
   CocoaLumberjack: b17ae15142558d08bbacf69775fa10c4abbebcc9
   MultiPeer: f28c91b749ad595e02283a2822334ff8f6fb5059
   PaperTrailLumberjack: 7a89283286f82da814a3b5748630b6002ae160a3
+  PermissionsKit-macOS: ae9f01fc3387e0b34bb25508802a287ffa4110f1
   STPrivilegedTask: 103f97827454e786074640cf89d303be344498c7
   SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
   XLFacility: f24747c4f586372bddae3525d837ef42b0e26339
   XMLParsing: 5b2e061ac61c95eb246f169f89ffb049f8bff668
 
-PODFILE CHECKSUM: 6fa47d633eb0721b06c2a2ac17e374afd976933e
+PODFILE CHECKSUM: 8eeee516a69f4a9f5981d03fcb7a0aa22d547d92
 
 COCOAPODS: 1.9.3

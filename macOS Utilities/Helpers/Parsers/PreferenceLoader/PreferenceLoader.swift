@@ -11,7 +11,7 @@ import AppFolder
 import PaperTrailLumberjack
 
 class PreferenceLoader {
-    public static let libraryFolder = "\(AppFolder.Library.Application_Support.url.path)/ER2/"
+    public static let libraryFolder = "\(AppFolder.Library.Application_Support.url.path)/macOS Utilities/"
     public static let bundle = Bundle.main
     public static let propertyListName = "com.er2.applications"
 

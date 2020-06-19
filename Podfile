@@ -1,4 +1,4 @@
-platform :osx, '10.12'
+platform :osx, '10.13'
 inhibit_all_warnings!
 
 target 'macOS Utilities' do
@@ -16,6 +16,7 @@ target 'macOS Utilities' do
  pod 'AudioKit'
  pod "XLFacility", "~> 1.0"
  pod 'Bugsnag'
+ pod 'PermissionsKit-macOS'
 end
 
 post_install do |installer|

@@ -32,6 +32,7 @@
 		8A3243CE22A1B8190042E6D9 /* Disk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9370CE2256B7F4002B3838 /* Disk.swift */; };
 		8A3243D122A1C8A80042E6D9 /* WKNoScrollWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A3243D022A1C8A80042E6D9 /* WKNoScrollWebView.swift */; };
 		8A3243D222A1CA2C0042E6D9 /* SelectInstallerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6F28EF221B9F5C00FF9DB3 /* SelectInstallerViewController.swift */; };
+		8A426BAD249D207000A38542 /* com.er2.applications.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8A39D35F2119E81B00437F4E /* com.er2.applications.plist */; };
 		8A47DED9210A2D30003F5CC3 /* NSCollectionAppCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */; };
 		8A47DEDB210A3418003F5CC3 /* NSCollectionAppCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */; };
 		8A57BF402262A0C200719E74 /* LegacyPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A57BF3F2262A0C200719E74 /* LegacyPreferences.swift */; };
@@ -864,6 +865,7 @@
 				8ACB65D921063E6F004B9C5A /* Assets.xcassets in Resources */,
 				8A47DEDB210A3418003F5CC3 /* NSCollectionAppCell.xib in Resources */,
 				8A9D9AAE2263370800E4D36F /* KBTextFieldDialog-large.xib in Resources */,
+				8A426BAD249D207000A38542 /* com.er2.applications.plist in Resources */,
 				8A9D9A982262FB5F00E4D36F /* IPAddressChooserDialog.xib in Resources */,
 				8A9D9A9A226307CD00E4D36F /* KBTextFieldDialog-small.xib in Resources */,
 				8A9D9AAC22632B4700E4D36F /* config-file-icon.icns in Resources */,
@@ -895,6 +897,7 @@
 				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack/CocoaLumberjack.framework",
 				"${BUILT_PRODUCTS_DIR}/MultiPeer/MultiPeer.framework",
 				"${BUILT_PRODUCTS_DIR}/PaperTrailLumberjack/PaperTrailLumberjack.framework",
+				"${BUILT_PRODUCTS_DIR}/PermissionsKit-macOS/PermissionsKit.framework",
 				"${BUILT_PRODUCTS_DIR}/STPrivilegedTask/STPrivilegedTask.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 				"${BUILT_PRODUCTS_DIR}/XLFacility/XLFacility.framework",
@@ -912,6 +915,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaLumberjack.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MultiPeer.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PaperTrailLumberjack.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PermissionsKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/STPrivilegedTask.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XLFacility.framework",
@@ -1207,7 +1211,7 @@
 				DEVELOPMENT_TEAM = 52B5TC74Y7;
 				INFOPLIST_FILE = "macOS Utilities/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.12.2;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.keatonburleson.macOS-Utilities";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1231,7 +1235,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "macOS Utilities/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.12.2;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.keatonburleson.macOS-Utilities";
 				PRODUCT_NAME = "$(TARGET_NAME)";

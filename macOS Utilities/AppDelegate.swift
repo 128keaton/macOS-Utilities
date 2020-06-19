@@ -10,6 +10,7 @@ import Cocoa
 import PaperTrailLumberjack
 import AVFoundation
 import Bugsnag
+import PermissionsKit
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -38,7 +39,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Change me in Secrets
         Bugsnag.start(withApiKey: BUGSNAG_KEY)
-
+        
         registerForNotifications()
         setupAudioPlayer()
 
@@ -56,6 +57,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         pageControllerDelegate.setPageController(pageController: self.pageController)
         self.preferencesMenuItem?.isEnabled = false
+        
+        if (PermissionsKit.authorizationStatus(for: .fullDiskAccess) == .notDetermined || PermissionsKit.authorizationStatus(for: .fullDiskAccess) == .denied) {
+            PermissionsKit.requestAuthorization(for: .fullDiskAccess) { (authStatus) in
+                print(authStatus)
+                NSApp.terminate(self)
+            }
+        } else {
+            DDLogInfo("Full disk access: \(PermissionsKit.authorizationStatus(for: .fullDiskAccess) == .authorized)")
+        }
 
         readPreferences()
         setupMenuHandler()
