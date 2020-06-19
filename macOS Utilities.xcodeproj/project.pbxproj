@@ -33,6 +33,7 @@
 		8A3243D122A1C8A80042E6D9 /* WKNoScrollWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A3243D022A1C8A80042E6D9 /* WKNoScrollWebView.swift */; };
 		8A3243D222A1CA2C0042E6D9 /* SelectInstallerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6F28EF221B9F5C00FF9DB3 /* SelectInstallerViewController.swift */; };
 		8A426BAD249D207000A38542 /* com.er2.applications.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8A39D35F2119E81B00437F4E /* com.er2.applications.plist */; };
+		8A426BAF249D37D300A38542 /* deepnote.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8A426BAE249D37D300A38542 /* deepnote.mp3 */; };
 		8A47DED9210A2D30003F5CC3 /* NSCollectionAppCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */; };
 		8A47DEDB210A3418003F5CC3 /* NSCollectionAppCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */; };
 		8A57BF402262A0C200719E74 /* LegacyPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A57BF3F2262A0C200719E74 /* LegacyPreferences.swift */; };
@@ -155,6 +156,7 @@
 		8A3243CC22A1B7700042E6D9 /* KBBarcodePreviewItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KBBarcodePreviewItem.swift; path = "macOS Utilities/Helpers/Miscellaneous/KBBarcodePreviewItem.swift"; sourceTree = SOURCE_ROOT; };
 		8A3243D022A1C8A80042E6D9 /* WKNoScrollWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKNoScrollWebView.swift; sourceTree = "<group>"; };
 		8A39D35F2119E81B00437F4E /* com.er2.applications.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = com.er2.applications.plist; sourceTree = "<group>"; };
+		8A426BAE249D37D300A38542 /* deepnote.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = deepnote.mp3; sourceTree = "<group>"; };
 		8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSCollectionAppCell.swift; sourceTree = "<group>"; };
 		8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NSCollectionAppCell.xib; sourceTree = "<group>"; };
 		8A57BF3F2262A0C200719E74 /* LegacyPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyPreferences.swift; sourceTree = "<group>"; };
@@ -647,6 +649,7 @@
 		8A9D9AA822632A2900E4D36F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				8A426BAE249D37D300A38542 /* deepnote.mp3 */,
 				8A81F84A231764E5005917BA /* fmd_sound.aiff */,
 				8A800B3F2315E58B00037103 /* nt4.mp3 */,
 				8A9D9AAA22632A7900E4D36F /* Default Settings */,
@@ -867,6 +870,7 @@
 				8A9D9AAE2263370800E4D36F /* KBTextFieldDialog-large.xib in Resources */,
 				8A426BAD249D207000A38542 /* com.er2.applications.plist in Resources */,
 				8A9D9A982262FB5F00E4D36F /* IPAddressChooserDialog.xib in Resources */,
+				8A426BAF249D37D300A38542 /* deepnote.mp3 in Resources */,
 				8A9D9A9A226307CD00E4D36F /* KBTextFieldDialog-small.xib in Resources */,
 				8A9D9AAC22632B4700E4D36F /* config-file-icon.icns in Resources */,
 				8A81F84B231764E6005917BA /* fmd_sound.aiff in Resources */,

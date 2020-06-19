@@ -247,7 +247,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     public func setupAudioPlayer() {
-        let path = Bundle.main.path(forResource: "nt4", ofType: "mp3")!
+        let path = Bundle.main.path(forResource: "deepnote", ofType: "mp3")!
         let url = URL(fileURLWithPath: path)
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: url)
