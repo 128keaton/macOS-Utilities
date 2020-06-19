@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="MachineInformationView" customModule="AVTest" customModuleProvider="target">
+        <customObject id="-2" userLabel="File's Owner" customClass="MachineInformationView" customModule="macOS_Utilities" customModuleProvider="target">
             <connections>
                 <outlet property="contentBox" destination="qj1-Uq-QS8" id="J1a-RD-hCy"/>
                 <outlet property="machineBatteryHealthField" destination="pcd-S5-VF7" id="vCj-Kw-rvX"/>
@@ -19,128 +19,109 @@
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <box title="Machine Information" titlePosition="noTitle" id="qj1-Uq-QS8">
+        <box title="System Info" id="qj1-Uq-QS8">
             <rect key="frame" x="0.0" y="0.0" width="300" height="293"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <view key="contentView" id="n7q-hs-qjG">
-                <rect key="frame" x="3" y="3" width="294" height="287"/>
+                <rect key="frame" x="3" y="3" width="294" height="274"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
-                    <stackView distribution="equalSpacing" orientation="vertical" alignment="leading" spacing="0.0" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZQj-Ry-4gm">
-                        <rect key="frame" x="12" y="115" width="270" height="160"/>
+                    <stackView distribution="equalSpacing" orientation="vertical" alignment="leading" spacing="5" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZQj-Ry-4gm">
+                        <rect key="frame" x="12" y="77" width="270" height="185"/>
                         <subviews>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="DfD-Ud-MPc">
-                                <rect key="frame" x="-2" y="146" width="40" height="14"/>
+                                <rect key="frame" x="-2" y="169" width="46" height="16"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Model:" id="T3U-y0-U79">
-                                    <font key="font" metaFont="smallSystem"/>
+                                    <font key="font" metaFont="system"/>
                                     <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="YUa-i4-KNf">
-                                <rect key="frame" x="-2" y="129" width="258" height="17"/>
+                            <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="YUa-i4-KNf">
+                                <rect key="frame" x="-2" y="147" width="262" height="17"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="17" id="uHP-Rm-gub"/>
                                 </constraints>
-                                <textFieldCell key="cell" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" placeholderString="Machine Model" id="hgW-nf-dAZ">
-                                    <font key="font" metaFont="systemMedium" size="15"/>
+                                <textFieldCell key="cell" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" focusRingType="none" placeholderString="Machine Model" id="hgW-nf-dAZ">
+                                    <font key="font" metaFont="systemMedium" size="14"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ADH-h0-jDA" userLabel="Spacer">
-                                <rect key="frame" x="-2" y="117" width="54" height="12"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="12" id="hv8-VO-b6C"/>
-                                </constraints>
-                                <textFieldCell key="cell" lineBreakMode="clipping" id="PDf-QX-TkA">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
+                            <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="y2l-uA-dAI">
+                                <rect key="frame" x="0.0" y="139" width="270" height="5"/>
+                            </box>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="B0e-gW-gVz">
-                                <rect key="frame" x="-2" y="103" width="57" height="14"/>
+                                <rect key="frame" x="-2" y="120" width="65" height="16"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" title="Processor" allowsEditingTextAttributes="YES" usesSingleLineMode="YES" id="13M-he-tIM">
-                                    <font key="font" metaFont="smallSystem"/>
+                                    <font key="font" metaFont="system"/>
                                     <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zf7-0v-FWb">
-                                <rect key="frame" x="-2" y="86" width="258" height="17"/>
+                            <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zf7-0v-FWb">
+                                <rect key="frame" x="-2" y="98" width="258" height="17"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="17" id="cb4-SF-tDc"/>
                                 </constraints>
-                                <textFieldCell key="cell" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" placeholderString="Machine CPU Info" id="lTC-gR-QFr">
-                                    <font key="font" metaFont="systemMedium" size="15"/>
+                                <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" focusRingType="none" placeholderString="Machine CPU Info" id="lTC-gR-QFr">
+                                    <font key="font" metaFont="systemMedium" size="14"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="AQQ-nG-J0B" userLabel="Spacer">
-                                <rect key="frame" x="-2" y="74" width="54" height="12"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="12" id="6OK-uZ-8JK"/>
-                                </constraints>
-                                <textFieldCell key="cell" lineBreakMode="clipping" id="MhQ-s8-5rR">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
+                            <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="M8Q-6O-J7i">
+                                <rect key="frame" x="0.0" y="90" width="270" height="5"/>
+                            </box>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="A07-2K-Fmi">
-                                <rect key="frame" x="-2" y="60" width="47" height="14"/>
+                                <rect key="frame" x="-2" y="71" width="54" height="16"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" title="Memory" allowsEditingTextAttributes="YES" usesSingleLineMode="YES" id="BDg-FO-vvG">
-                                    <font key="font" metaFont="smallSystem"/>
+                                    <font key="font" metaFont="system"/>
                                     <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="KzU-V0-ESU">
-                                <rect key="frame" x="-2" y="43" width="258" height="17"/>
+                            <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="KzU-V0-ESU">
+                                <rect key="frame" x="-2" y="49" width="258" height="17"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="17" id="H2b-xO-nWN"/>
                                 </constraints>
-                                <textFieldCell key="cell" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" placeholderString="Machine RAM Info" id="qxY-yV-ZTZ">
-                                    <font key="font" metaFont="systemMedium" size="15"/>
+                                <textFieldCell key="cell" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" focusRingType="none" placeholderString="Machine RAM Info" id="qxY-yV-ZTZ">
+                                    <font key="font" metaFont="systemMedium" size="14"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="CyX-Qz-sF5" userLabel="Spacer">
-                                <rect key="frame" x="-2" y="31" width="54" height="12"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="12" id="n6V-Cw-zVv"/>
-                                </constraints>
-                                <textFieldCell key="cell" lineBreakMode="clipping" id="Epi-0O-OvA">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
+                            <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="mtP-lh-FmL">
+                                <rect key="frame" x="0.0" y="41" width="270" height="5"/>
+                            </box>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="48w-7l-k0a">
-                                <rect key="frame" x="-2" y="17" width="80" height="14"/>
+                                <rect key="frame" x="-2" y="22" width="92" height="16"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" title="Battery Health" allowsEditingTextAttributes="YES" usesSingleLineMode="YES" id="ak5-Mx-rqg">
-                                    <font key="font" metaFont="smallSystem"/>
+                                    <font key="font" metaFont="system"/>
                                     <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="pcd-S5-VF7">
-                                <rect key="frame" x="-2" y="0.0" width="169" height="17"/>
+                            <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="pcd-S5-VF7">
+                                <rect key="frame" x="-2" y="0.0" width="160" height="17"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="17" id="SZ9-id-eh7"/>
                                 </constraints>
-                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" placeholderString="Machine Battery Health" id="C5z-AE-yxe">
-                                    <font key="font" metaFont="systemMedium" size="15"/>
+                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" focusRingType="none" placeholderString="Machine Battery Health" id="C5z-AE-yxe">
+                                    <font key="font" metaFont="systemMedium" size="14"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
                         </subviews>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="M8Q-6O-J7i" secondAttribute="trailing" id="OHY-Z6-p7B"/>
                             <constraint firstAttribute="height" relation="lessThanOrEqual" constant="230" id="QRK-UI-s8K"/>
+                            <constraint firstAttribute="width" constant="270" id="SaU-pT-qfb"/>
+                            <constraint firstAttribute="trailing" secondItem="mtP-lh-FmL" secondAttribute="trailing" id="dnX-bJ-uek"/>
+                            <constraint firstAttribute="trailing" secondItem="y2l-uA-dAI" secondAttribute="trailing" id="r6D-SS-THh"/>
+                            <constraint firstItem="mtP-lh-FmL" firstAttribute="top" secondItem="48w-7l-k0a" secondAttribute="bottom" id="sGE-lp-8bi"/>
                         </constraints>
                         <visibilityPriorities>
                             <integer value="1000"/>
@@ -189,6 +170,7 @@
                 </constraints>
             </view>
             <font key="titleFont" metaFont="systemMedium" size="12"/>
+            <point key="canvasLocation" x="140" y="155"/>
         </box>
     </objects>
 </document>

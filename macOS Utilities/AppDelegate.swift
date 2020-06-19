@@ -10,7 +10,6 @@ import Cocoa
 import PaperTrailLumberjack
 import AVFoundation
 import Bugsnag
-import PermissionsKit
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -39,9 +38,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Change me in Secrets
         Bugsnag.start(withApiKey: BUGSNAG_KEY)
-        
+
         registerForNotifications()
-        setupAudioPlayer()
+
 
         PreferenceLoader.setup()
         SystemProfiler.getInfo()
@@ -57,15 +56,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         pageControllerDelegate.setPageController(pageController: self.pageController)
         self.preferencesMenuItem?.isEnabled = false
-        
-        if (PermissionsKit.authorizationStatus(for: .fullDiskAccess) == .notDetermined || PermissionsKit.authorizationStatus(for: .fullDiskAccess) == .denied) {
-            PermissionsKit.requestAuthorization(for: .fullDiskAccess) { (authStatus) in
-                print(authStatus)
-                NSApp.terminate(self)
-            }
-        } else {
-            DDLogInfo("Full disk access: \(PermissionsKit.authorizationStatus(for: .fullDiskAccess) == .authorized)")
-        }
+
 
         readPreferences()
         setupMenuHandler()
@@ -90,7 +81,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             ExceptionHandler.handle(exception: exception)
         }
     }
-    
+
     func applicationWillTerminate(_ notification: Notification) {
         if let currentPreferenceLoader = PreferenceLoader.sharedInstance,
             let validPreferences = PreferenceLoader.currentPreferences {
@@ -204,7 +195,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 return .terminateCancel
             }
         }
-        
+
         return .terminateNow
     }
 
@@ -246,15 +237,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return dictionary["CFBundleShortVersionString"] as? String
     }
 
-    public func setupAudioPlayer() {
-        let path = Bundle.main.path(forResource: "deepnote", ofType: "mp3")!
+    public func setupAudioPlayer(forFileAtPath path: String) {
         let url = URL(fileURLWithPath: path)
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: url)
             audioPlayer?.delegate = self
             NotificationCenter.default.post(name: Notification.Name("AudioPlayerReady"), object: audioPlayer)
         } catch {
-            DDLogError("Unable to load file")
+            DDLogError("Unable to load file at path: \(path)")
+        }
+    }
+
+    @IBAction func closeCurrentWindow(_ sender: NSMenuItem) {
+        if let window = NSApp.keyWindow, (window.title != "macOS Utilities") {
+            window.close()
         }
     }
 

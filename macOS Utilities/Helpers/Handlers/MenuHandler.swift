@@ -241,8 +241,11 @@ class MenuHandler: NSObject {
         if let validNotification = notification {
             if let utility = validNotification.object as? Utility {
                 removeUtilityPlaceholder()
-                let newItem = NSMenuItem(title: utility.name, action: #selector(MenuHandler.openApp(_:)), keyEquivalent: "")
+                let newItem = NSMenuItem(title: "  \(utility.name)", action: #selector(MenuHandler.openApp(_:)), keyEquivalent: "")
+                
+                newItem.image = utility.icon.resize(withSize: NSSize(width: 20, height: 20))
                 newItem.target = self
+                
                 utilitiesMenu?.addItem(newItem)
             }
         }

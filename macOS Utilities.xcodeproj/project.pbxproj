@@ -33,7 +33,7 @@
 		8A3243D122A1C8A80042E6D9 /* WKNoScrollWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A3243D022A1C8A80042E6D9 /* WKNoScrollWebView.swift */; };
 		8A3243D222A1CA2C0042E6D9 /* SelectInstallerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6F28EF221B9F5C00FF9DB3 /* SelectInstallerViewController.swift */; };
 		8A426BAD249D207000A38542 /* com.er2.applications.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8A39D35F2119E81B00437F4E /* com.er2.applications.plist */; };
-		8A426BAF249D37D300A38542 /* deepnote.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8A426BAE249D37D300A38542 /* deepnote.mp3 */; };
+		8A426BAF249D37D300A38542 /* THX.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8A426BAE249D37D300A38542 /* THX.mp3 */; };
 		8A47DED9210A2D30003F5CC3 /* NSCollectionAppCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */; };
 		8A47DEDB210A3418003F5CC3 /* NSCollectionAppCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */; };
 		8A57BF402262A0C200719E74 /* LegacyPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A57BF3F2262A0C200719E74 /* LegacyPreferences.swift */; };
@@ -74,7 +74,7 @@
 		8A800B392315DD7100037103 /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A800B382315DD7100037103 /* PreferencesViewController.swift */; };
 		8A800B3D2315DEE500037103 /* MachineInformationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A800B3B2315DEE500037103 /* MachineInformationView.xib */; };
 		8A800B3E2315DEE500037103 /* LoadingView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A800B3C2315DEE500037103 /* LoadingView.xib */; };
-		8A800B402315E58B00037103 /* nt4.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8A800B3F2315E58B00037103 /* nt4.mp3 */; };
+		8A800B402315E58B00037103 /* NT Boot.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8A800B3F2315E58B00037103 /* NT Boot.mp3 */; };
 		8A808F6D231730A500B1A29F /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A808F6C231730A500B1A29F /* Client.swift */; };
 		8A808F712317312800B1A29F /* MessageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A808F702317312800B1A29F /* MessageType.swift */; };
 		8A808F732317314000B1A29F /* PeerCommunicationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A808F722317314000B1A29F /* PeerCommunicationService.swift */; };
@@ -156,7 +156,7 @@
 		8A3243CC22A1B7700042E6D9 /* KBBarcodePreviewItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KBBarcodePreviewItem.swift; path = "macOS Utilities/Helpers/Miscellaneous/KBBarcodePreviewItem.swift"; sourceTree = SOURCE_ROOT; };
 		8A3243D022A1C8A80042E6D9 /* WKNoScrollWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKNoScrollWebView.swift; sourceTree = "<group>"; };
 		8A39D35F2119E81B00437F4E /* com.er2.applications.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = com.er2.applications.plist; sourceTree = "<group>"; };
-		8A426BAE249D37D300A38542 /* deepnote.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = deepnote.mp3; sourceTree = "<group>"; };
+		8A426BAE249D37D300A38542 /* THX.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = THX.mp3; sourceTree = "<group>"; };
 		8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSCollectionAppCell.swift; sourceTree = "<group>"; };
 		8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NSCollectionAppCell.xib; sourceTree = "<group>"; };
 		8A57BF3F2262A0C200719E74 /* LegacyPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyPreferences.swift; sourceTree = "<group>"; };
@@ -202,7 +202,7 @@
 		8A800B382315DD7100037103 /* PreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesViewController.swift; sourceTree = "<group>"; };
 		8A800B3B2315DEE500037103 /* MachineInformationView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MachineInformationView.xib; sourceTree = "<group>"; };
 		8A800B3C2315DEE500037103 /* LoadingView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoadingView.xib; sourceTree = "<group>"; };
-		8A800B3F2315E58B00037103 /* nt4.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = nt4.mp3; sourceTree = "<group>"; };
+		8A800B3F2315E58B00037103 /* NT Boot.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "NT Boot.mp3"; sourceTree = "<group>"; };
 		8A808F6C231730A500B1A29F /* Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
 		8A808F702317312800B1A29F /* MessageType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageType.swift; sourceTree = "<group>"; };
 		8A808F722317314000B1A29F /* PeerCommunicationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeerCommunicationService.swift; sourceTree = "<group>"; };
@@ -649,9 +649,9 @@
 		8A9D9AA822632A2900E4D36F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				8A426BAE249D37D300A38542 /* deepnote.mp3 */,
+				8A426BAE249D37D300A38542 /* THX.mp3 */,
 				8A81F84A231764E5005917BA /* fmd_sound.aiff */,
-				8A800B3F2315E58B00037103 /* nt4.mp3 */,
+				8A800B3F2315E58B00037103 /* NT Boot.mp3 */,
 				8A9D9AAA22632A7900E4D36F /* Default Settings */,
 				8A9D9AA922632A6A00E4D36F /* Icons */,
 				8A175AAF225FD8770018C977 /* macOS Utilities.entitlements */,
@@ -870,12 +870,12 @@
 				8A9D9AAE2263370800E4D36F /* KBTextFieldDialog-large.xib in Resources */,
 				8A426BAD249D207000A38542 /* com.er2.applications.plist in Resources */,
 				8A9D9A982262FB5F00E4D36F /* IPAddressChooserDialog.xib in Resources */,
-				8A426BAF249D37D300A38542 /* deepnote.mp3 in Resources */,
+				8A426BAF249D37D300A38542 /* THX.mp3 in Resources */,
 				8A9D9A9A226307CD00E4D36F /* KBTextFieldDialog-small.xib in Resources */,
 				8A9D9AAC22632B4700E4D36F /* config-file-icon.icns in Resources */,
 				8A81F84B231764E6005917BA /* fmd_sound.aiff in Resources */,
 				8A800B3E2315DEE500037103 /* LoadingView.xib in Resources */,
-				8A800B402315E58B00037103 /* nt4.mp3 in Resources */,
+				8A800B402315E58B00037103 /* NT Boot.mp3 in Resources */,
 				8ACB65DC21063E6F004B9C5A /* Main.storyboard in Resources */,
 				8A800B3D2315DEE500037103 /* MachineInformationView.xib in Resources */,
 			);
@@ -901,7 +901,6 @@
 				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack/CocoaLumberjack.framework",
 				"${BUILT_PRODUCTS_DIR}/MultiPeer/MultiPeer.framework",
 				"${BUILT_PRODUCTS_DIR}/PaperTrailLumberjack/PaperTrailLumberjack.framework",
-				"${BUILT_PRODUCTS_DIR}/PermissionsKit-macOS/PermissionsKit.framework",
 				"${BUILT_PRODUCTS_DIR}/STPrivilegedTask/STPrivilegedTask.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 				"${BUILT_PRODUCTS_DIR}/XLFacility/XLFacility.framework",
@@ -919,7 +918,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaLumberjack.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MultiPeer.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PaperTrailLumberjack.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PermissionsKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/STPrivilegedTask.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XLFacility.framework",

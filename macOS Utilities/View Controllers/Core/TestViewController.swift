@@ -13,18 +13,21 @@ import AudioKitUI
 
 class TestViewController: NSViewController {
     @IBOutlet var cameraPreview: CameraPreview!
-    @IBOutlet private var audioPreview: AudioPreview!
 
+    @IBOutlet private var audioPreview: AudioPreview!
     @IBOutlet private var testAudioButton: NSButton!
     @IBOutlet private var noCameraLabel: NSTextField!
     @IBOutlet private var noMicrophoneLabel: NSTextField!
     @IBOutlet private var testingNotesTextView: NSTextView!
-
+    @IBOutlet private var audioTestStatusLabel: NSTextField!
     @IBOutlet private var loadingView: LoadingView!
+    @IBOutlet private var audioFileSelectionButton: NSPopUpButton!
 
+    private var testAudioFiles: [String] = []
     private var mic: AKMicrophone!
     private var tracker: AKFrequencyTracker!
     private var silence: AKBooster!
+    private var currentCameraSession: AVCaptureSession?
     private var audioPlayer: AVAudioPlayer?
     private var machineInformationView: MachineInformationView? {
         didSet {
@@ -52,6 +55,24 @@ class TestViewController: NSViewController {
         }
     }
 
+    override func viewDidDisappear() {
+        if let session = self.currentCameraSession {
+            session.stopRunning()
+        }
+
+        do {
+            try AudioKit.stop()
+        } catch {
+            self.hasMicrophone = false
+            AKLog("AudioKit did not stop!")
+            return
+        }
+        
+        if let currentPlayer = audioPlayer, currentPlayer.isPlaying {
+            stopAudioTest(withPlayer: currentPlayer)
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.wantsLayer = true
@@ -60,11 +81,12 @@ class TestViewController: NSViewController {
 
         NotificationCenter.default.addObserver(self, selector: #selector(audioPlayerReady(_:)), name: Notification.Name("AudioPlayerReady"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(audioTestStopped), name: Notification.Name("AudioFinished"), object: nil)
-        (NSApp.delegate as! AppDelegate).setupAudioPlayer()
+
 
         SystemProfiler.delegate = self
         SystemProfiler.getInfo()
 
+        setupAudioTest()
         setupAudioKit()
     }
 
@@ -76,6 +98,22 @@ class TestViewController: NSViewController {
         startAudioKit()
 
         PeerCommunicationService.instance.updateStatus("Testing Hardware")
+
+        if let session = self.currentCameraSession {
+            session.startRunning()
+        }
+    }
+
+    @IBAction func audioFileSelectionButtonUpdated(_ sender: NSPopUpButton) {
+        // Stop the current audio test
+        if let currentPlayer = audioPlayer, currentPlayer.isPlaying {
+            stopAudioTest(withPlayer: currentPlayer)
+        }
+        
+        // Get the new audio file from the selection
+        if let selectedAudioFile = self.getSelectedAudioFilePath() {
+            (NSApp.delegate as! AppDelegate).setupAudioPlayer(forFileAtPath: selectedAudioFile)
+        }
     }
 
     private func getSampleRate() -> Double {
@@ -108,7 +146,7 @@ class TestViewController: NSViewController {
         cameraPreview.wantsLayer = true
 
         let session = AVCaptureSession()
-        session.sessionPreset = .low
+        session.sessionPreset = .high
 
         guard let device = AVCaptureDevice.default(for: .video)
             else {
@@ -130,6 +168,7 @@ class TestViewController: NSViewController {
 
         hasCamera = true
         session.startRunning()
+        self.currentCameraSession = session
     }
 
     private func setupAudioPreview() {
@@ -173,11 +212,19 @@ class TestViewController: NSViewController {
 
     @objc func audioTestStarted() {
         self.testAudioButton.isEnabled = true
-        testAudioButton.title = "Stop Audio Test"
+        self.audioTestStatusLabel.stringValue = "Playing"
+        self.testAudioButton.image = NSImage(named: "NSTouchBarRecordStopTemplate")
+        if #available(OSX 10.14, *) {
+            self.testAudioButton.contentTintColor = NSColor.systemRed
+        }
     }
 
     @objc func audioTestStopped() {
-        testAudioButton.title = "Start Audio Test"
+        self.audioTestStatusLabel.stringValue = "Not Playing"
+        self.testAudioButton.image = NSImage(named: "NSTouchBarPlayTemplate")
+        if #available(OSX 10.14, *) {
+            self.testAudioButton.contentTintColor = NSColor.systemGreen
+        }
     }
 
     @IBAction func playSound(_ sender: NSButton) {
@@ -186,6 +233,19 @@ class TestViewController: NSViewController {
             stopAudioTest(withPlayer: currentPlayer)
         } else if let currentPlayer = audioPlayer {
             startAudioTest(withPlayer: currentPlayer)
+        }
+    }
+
+    private func setupAudioTest() {
+        self.audioFileSelectionButton.removeAllItems()
+        self.testAudioFiles = self.getAudioFiles()
+        self.testAudioFiles.forEach { (audioFile) in
+            let audioFileName = audioFile.split(separator: "/").last!.split(separator: ".").first!
+            self.audioFileSelectionButton.addItem(withTitle: "\(audioFileName)")
+        }
+
+        if let selectedAudioFile = self.getSelectedAudioFilePath() {
+            (NSApp.delegate as! AppDelegate).setupAudioPlayer(forFileAtPath: selectedAudioFile)
         }
     }
 
@@ -246,6 +306,33 @@ class TestViewController: NSViewController {
 
         windowController.showWindow(self)
     }
+
+    private func getSelectedAudioFilePath() -> String? {
+        if let selectedItem = self.audioFileSelectionButton.selectedItem,
+            let resourcesPath = Bundle.main.resourcePath {
+
+            return "\(resourcesPath)/\(selectedItem.title).mp3"
+        }
+
+        return nil
+    }
+
+    private func getAudioFiles() -> [String] {
+        let resourcesPath = Bundle.main.resourcePath!
+        let fileManager = FileManager.default
+        var files: [String] = []
+
+        do {
+            files = try fileManager.contentsOfDirectory(atPath: resourcesPath)
+            files = files.filter({ (filePath) -> Bool in
+                return filePath.contains(".mp3")
+            })
+        } catch {
+            files = [Bundle.main.path(forResource: "THX", ofType: "mp3")!]
+        }
+
+        return files
+    }
 }
 
 extension TestViewController: MachineInformationViewDelegate {
@@ -257,15 +344,13 @@ extension TestViewController: MachineInformationViewDelegate {
 
 extension TestViewController: SystemProfilerDelegate {
     func handleError(_ error: Error) {
-        //
+        self.displayAlert(error: error)
     }
 
     func dataParsedSuccessfully() {
         NotificationCenter.default.post(name: Notification.Name("CanPrintLabel"), object: nil)
 
         loadingView.hide {
-            print("LoadingView hid")
-
             if SystemProfiler.hardwareItem !== nil {
                 let newMachineInformationView = MachineInformationView(frame: self.loadingView.bounds, hidden: true)
                 self.view.replaceSubviewPreservingConstraints(subview: self.loadingView, replacement: newMachineInformationView)
@@ -281,7 +366,6 @@ extension TestViewController: SystemProfilerDelegate {
 
                 if newMachineInformationView.fieldsPopulated {
                     newMachineInformationView.show(animated: true, completion: {
-                        print("MachineInformationView shown")
                         self.machineInformationView = newMachineInformationView
                     })
                 }
