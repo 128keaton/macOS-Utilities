@@ -180,7 +180,7 @@ class DeviceInformationViewController: NSViewController {
         if progressIndicator == nil {
             let size: CGFloat = 18.0
             let xValue = (self.view.frame.width / 2.0) - (size / 2.0)
-            let yValue: CGFloat = 390.0
+            let yValue: CGFloat = 280.0
 
             progressIndicator = NSProgressIndicator(frame: NSRect(x: xValue, y: yValue, width: size, height: size))
             progressIndicator?.style = .spinning

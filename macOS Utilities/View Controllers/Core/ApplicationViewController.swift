@@ -160,7 +160,7 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
             let flowLayout = NSCollectionViewFlowLayout()
 
             let collectionViewWidth = 640
-            let collectionViewHeight = 291.0
+            let collectionViewHeight = 270.0
 
             let itemWidth = 100
             let itemHeight = 120
@@ -189,23 +189,6 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
 
             flowLayout.minimumInteritemSpacing = CGFloat(itemSpacing)
             collectionView.collectionViewLayout = flowLayout
-        }
-    }
-
-    private func updateScrollViewContentSize() {
-        if let window = collectionView?.window {
-            CATransaction.begin()
-            CATransaction.setDisableActions(true)
-            CATransaction.setAnimationDuration(0.0)
-            let originalFrame = window.frame
-            var frame = originalFrame
-            frame.origin.y = frame.origin.y - 0.025
-            frame.size.height = frame.size.height + 0.025
-            window.setFrame(frame, display: false)
-            CATransaction.commit()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.045) {
-                window.setFrame(originalFrame, display: false)
-            }
         }
     }
 

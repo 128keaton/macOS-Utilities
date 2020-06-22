@@ -37,7 +37,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Change me in Secrets
-        Bugsnag.start(withApiKey: BUGSNAG_KEY)
+        if (BUGSNAG_KEY != "") {
+            Bugsnag.start(withApiKey: BUGSNAG_KEY)
+        }
 
         registerForNotifications()
 

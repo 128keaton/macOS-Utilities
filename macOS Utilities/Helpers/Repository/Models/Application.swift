@@ -174,9 +174,11 @@ import CocoaLumberjack
 
         if UTTypeConformsTo((UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, validIconURL.pathExtension as CFString, nil)?.takeRetainedValue())!, kUTTypeImage) {
             return NSImage(contentsOf: validIconURL)!
-        } else {
-            return NSImage(contentsOf: validIconURL.appendingPathExtension("icns"))!
+        } else if let icnsImage = NSImage(contentsOf: validIconURL.appendingPathExtension("icns")) {
+            return icnsImage
         }
+        
+        return self.defaultIcon
     }
 
 

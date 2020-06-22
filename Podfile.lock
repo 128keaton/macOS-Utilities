@@ -12,7 +12,7 @@ PODS:
     - AudioKit/Core
   - BMExtendablePageController (0.2.0):
     - CAAnimationBlocks (~> 0.0.1)
-  - Bugsnag (5.23.3)
+  - Bugsnag (6.0.0)
   - CAAnimationBlocks (0.0.1)
   - CocoaAsyncSocket (7.6.4)
   - CocoaLumberjack (3.6.1):
@@ -106,7 +106,7 @@ SPEC CHECKSUMS:
   AppFolder: d10ba19488bd441d60ffcf96eb2ab639a4825231
   AudioKit: b8e508a0af3dc7d53caf0ca1002b187a662f949e
   BMExtendablePageController: 0c144c22853ad09cd321c9b2330af2cac3fbb0c6
-  Bugsnag: bf6b2c747080f62d0dff35ba57bc945498185378
+  Bugsnag: 20b77e457bf615b43a7acbe8c49eba154e0e6ed7
   CAAnimationBlocks: 1aaca5fb6447a95d83b20cc786992956ef46e4ee
   CocoaAsyncSocket: 694058e7c0ed05a9e217d1b3c7ded962f4180845
   CocoaLumberjack: b17ae15142558d08bbacf69775fa10c4abbebcc9

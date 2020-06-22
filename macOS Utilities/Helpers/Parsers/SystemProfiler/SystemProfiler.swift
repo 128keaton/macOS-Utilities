@@ -11,7 +11,7 @@ import Cocoa
 import CocoaLumberjack
 
 class SystemProfiler {
-    private static var propertyListData: Data = Data()
+    private static var systemProfilerData: Data = Data()
     private static var detailedCPUInfoData: Data = Data()
     private static var hasParsed: Bool = false
     private static var metalGraphicsCardModels = [String]()
@@ -47,7 +47,7 @@ class SystemProfiler {
             return
         }
 
-        let launchPath = "/usr/sbin/system_profiler"
+        let launchPath = "\(Bundle.main.resourcePath!)/system_profiler_json"
         if !FileManager.default.isExecutableFile(atPath: launchPath) {
             return
         }
@@ -58,7 +58,6 @@ class SystemProfiler {
         let standardPipe = Pipe()
 
         infoTask.launchPath = launchPath
-        infoTask.arguments = ["-xml", "-detailLevel", "full", "SPAudioDataType", "SPBluetoothDataType", "SPCameraDataType", "SPCardReaderDataType", "SPDiagnosticsDataType", "SPDisplaysDataType", "SPHardwareDataType", "SPMemoryDataType", "SPNetworkDataType", "SPPowerDataType", "SPNVMeDataType", "SPAirPortDataType", "SPSerialATADataType", "DPDiscBurningDataType"]
 
         infoTask.standardOutput = standardPipe
 
@@ -103,7 +102,7 @@ class SystemProfiler {
             let userInfo = notification.userInfo as? [String: Any],
             let newData = userInfo[NSFileHandleNotificationDataItem] as? Data, newData.count > 0 {
 
-            self.propertyListData.append(newData)
+            self.systemProfilerData.append(newData)
 
             fileHandle.readInBackgroundAndNotify()
         }
@@ -122,9 +121,9 @@ class SystemProfiler {
 
     @objc static func parseAllData(_ notification: Notification) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            if self.propertyListData.count > 0, self.detailedCPUInfoData.count > 0, !hasParsed {
+            if self.systemProfilerData.count > 0, self.detailedCPUInfoData.count > 0, !hasParsed {
                 self.hasParsed = true
-                self.parseInto(self.propertyListData)
+                self.parseInto(self.systemProfilerData)
             }
         }
     }
@@ -187,7 +186,7 @@ class SystemProfiler {
 
     static func parseInto(_ data: Data) {
         do {
-            let decoder = PropertyListDecoder()
+            let decoder = JSONDecoder()
 
             SystemProfilerItem.register(DisplayItem.self, for: .display)
             SystemProfilerItem.register(HardwareItem.self, for: .hardware)

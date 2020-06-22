@@ -280,7 +280,8 @@ class MenuHandler: NSObject {
     }
 
     @objc func openApp(_ sender: NSMenuItem) {
-        NotificationCenter.default.post(name: GlobalNotifications.openApplication, object: sender.title)
+        let appName = sender.title.trimmingCharacters(in: NSCharacterSet.whitespaces)
+        NotificationCenter.default.post(name: GlobalNotifications.openApplication, object: appName)
     }
 }
 

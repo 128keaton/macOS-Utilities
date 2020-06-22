@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4B87EE4A123D4EE1F26E61A2 /* Pods_macOS_Utilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02F50B1561E3062ADD7CE4B7 /* Pods_macOS_Utilities.framework */; };
+		8A00A46D24A113A30010DECD /* system_profiler_json in Resources */ = {isa = PBXBuildFile; fileRef = 8A00A46C24A113A20010DECD /* system_profiler_json */; };
 		8A0138D1221749BD00C77DA0 /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0138D0221749BD00C77DA0 /* Version.swift */; };
 		8A0138D62217624700C77DA0 /* InfoPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0138D52217624700C77DA0 /* InfoPopoverViewController.swift */; };
 		8A175AAC225EFEE50018C977 /* ErrorAlertLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A175AAB225EFEE50018C977 /* ErrorAlertLogger.swift */; };
@@ -132,6 +133,7 @@
 		6860ADA373D41D17F16C8D3A /* Pods-macOS UtilitiesTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-macOS UtilitiesTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-macOS UtilitiesTests/Pods-macOS UtilitiesTests.release.xcconfig"; sourceTree = "<group>"; };
 		7869FA87384CE89FE146572E /* Pods-macOS UtilitiesTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-macOS UtilitiesTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-macOS UtilitiesTests/Pods-macOS UtilitiesTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7D34D0D826F1DE150B6BEB3E /* Pods_macOS_UtilitiesTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_macOS_UtilitiesTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8A00A46C24A113A20010DECD /* system_profiler_json */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = system_profiler_json; sourceTree = "<group>"; };
 		8A0138D0221749BD00C77DA0 /* Version.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
 		8A0138D52217624700C77DA0 /* InfoPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoPopoverViewController.swift; sourceTree = "<group>"; };
 		8A175AAB225EFEE50018C977 /* ErrorAlertLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorAlertLogger.swift; sourceTree = "<group>"; };
@@ -292,6 +294,14 @@
 				6860ADA373D41D17F16C8D3A /* Pods-macOS UtilitiesTests.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		8A00A46B24A113950010DECD /* Binaries */ = {
+			isa = PBXGroup;
+			children = (
+				8A00A46C24A113A20010DECD /* system_profiler_json */,
+			);
+			path = Binaries;
 			sourceTree = "<group>";
 		};
 		8A0138C8221703CC00C77DA0 /* Helpers */ = {
@@ -710,6 +720,7 @@
 		8ACB65D321063E6F004B9C5A /* macOS Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				8A00A46B24A113950010DECD /* Binaries */,
 				8ACB65D421063E6F004B9C5A /* AppDelegate.swift */,
 				8ABA1D02231A0A1700DBCAC3 /* Example_Secrets.swift */,
 				8A0138C8221703CC00C77DA0 /* Helpers */,
@@ -875,6 +886,7 @@
 				8A9D9AAC22632B4700E4D36F /* config-file-icon.icns in Resources */,
 				8A81F84B231764E6005917BA /* fmd_sound.aiff in Resources */,
 				8A800B3E2315DEE500037103 /* LoadingView.xib in Resources */,
+				8A00A46D24A113A30010DECD /* system_profiler_json in Resources */,
 				8A800B402315E58B00037103 /* NT Boot.mp3 in Resources */,
 				8ACB65DC21063E6F004B9C5A /* Main.storyboard in Resources */,
 				8A800B3D2315DEE500037103 /* MachineInformationView.xib in Resources */,
