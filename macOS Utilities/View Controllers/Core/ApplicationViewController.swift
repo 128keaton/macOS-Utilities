@@ -24,7 +24,6 @@ class ApplicationViewController: NSViewController {
     private var disabledRows: [Int] = []
     private let reloadQueue = DispatchQueue(label: "thread-safe-obj", attributes: .concurrent)
 
-
     static let reloadApplications = Notification.Name("ReloadApplications")
 
     override func viewDidLoad() {
@@ -144,6 +143,12 @@ class ApplicationViewController: NSViewController {
 
     @IBAction func installMacOSButtonClicked(_ sender: NSButton) {
         self.startMacOSInstall()
+    }
+
+    @IBAction func shutdownClicked(_ sender: NSButton) {
+        TaskHandler.createPrivilegedTask(command: "/sbin/shutdown", arguments: ["-h", "now"]) { (_, _) in
+            DDLogDebug("Shutting down..")
+        }
     }
 
     @objc private func startMacOSInstall() {

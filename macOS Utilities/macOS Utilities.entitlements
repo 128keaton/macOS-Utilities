@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict/>
+<dict>
+	<key>com.apple.security.temporary-exception.files.absolute-path.read-write
+
+Enables read/write access to the specified files or directories at specified absolute paths.
+
+com.apple.security.temporary-exception.files.absolute-path.read-write
+
+Enables read/write access to the specified files or directories at specified absolute paths.
+
+</key>
+	<array>
+		<string>/Library/Application Support</string>
+	</array>
+</dict>
 </plist>
