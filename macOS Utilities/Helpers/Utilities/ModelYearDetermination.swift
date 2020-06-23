@@ -18,45 +18,54 @@ class ModelYearDetermination {
         installableVersions.append(Version.mojave)
     }
 
+    func canInstallCatalina() {
+        installableVersions.append(Version.mojave)
+        installableVersions.append(Version.catalina)
+    }
+
     func determineInstallableVersions() -> [Version] {
         if modelIdentifier.contains("MacBookPro") {
             // MacBook Pro
             let identifierDigits = getIdentifierDigitsFor("MacBookPro")
             if(identifierDigits > 91) {
-                canInstallMojave()
+                canInstallCatalina()
             }
         } else if modelIdentifier.contains("MacBookAir") {
             // MacBook Air
             let identifierDigits = getIdentifierDigitsFor("MacBookAir")
             if(identifierDigits > 51) {
-                canInstallMojave()
+                canInstallCatalina()
             }
         } else if modelIdentifier.contains("MacBook") {
             // MacBook
             let identifierDigits = getIdentifierDigitsFor("MacBook")
             if(identifierDigits > 81) {
-                canInstallMojave()
+                canInstallCatalina()
             }
         } else if modelIdentifier.contains("Macmini") {
             // Mac Mini
             let identifierDigits = getIdentifierDigitsFor("Macmini")
             if(identifierDigits > 61) {
-                canInstallMojave()
+                canInstallCatalina()
             }
         } else if modelIdentifier.contains("MacPro") {
             // Mac Pro
             let identifierDigits = getIdentifierDigitsFor("MacPro")
             installableVersions.append(Version.mavericks)
             if(identifierDigits > 41) {
-                canInstallMojave()
+                canInstallCatalina()
             }
         } else if modelIdentifier.contains("iMac") {
             // iMac
             let identifierDigits = getIdentifierDigitsFor("iMac")
             if(identifierDigits > 131) {
-                canInstallMojave()
+                canInstallCatalina()
             }
+        } else if modelIdentifier.contains("VMware") {
+            // VMware
+            canInstallCatalina()
         }
+
         return installableVersions.reversed()
     }
 

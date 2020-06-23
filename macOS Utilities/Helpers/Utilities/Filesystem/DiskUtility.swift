@@ -69,22 +69,27 @@ class DiskUtility: NSObject, NSFilePresenter {
 
     /// Gets the bootable or "first" disk installed on the machine
     public static var bootDisk: Disk? {
-        let path = "/"
-        let mountPoint = path.cString(using: .utf8)! as [Int8]
-        var unsafeMountPoint = mountPoint.map { UInt8(bitPattern: $0) }
+        let paths = ["/", "/Volumes/Macintosh HD"]
+        var bootDisk: Disk? = nil
+        
+        paths.forEach { (path) in
+            let mountPoint = path.cString(using: .utf8)! as [Int8]
+            var unsafeMountPoint = mountPoint.map { UInt8(bitPattern: $0) }
 
-        if let fileURL = CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault, &unsafeMountPoint, Int(strlen(mountPoint)), true),
-            let daSession = DASessionCreate(kCFAllocatorDefault),
-            let daDisk = DADiskCreateFromVolumePath(kCFAllocatorDefault, daSession, fileURL) {
-            if let description = DADiskCopyDescription(daDisk) {
-                if let volumeName = (description as NSDictionary)[kDADiskDescriptionVolumeNameKey] as? String {
-                    if let disk = (self.cachedDisks.first { ($0).volumeName == volumeName }) {
-                        return disk
+            if let fileURL = CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault, &unsafeMountPoint, Int(strlen(mountPoint)), true),
+                let daSession = DASessionCreate(kCFAllocatorDefault),
+                let daDisk = DADiskCreateFromVolumePath(kCFAllocatorDefault, daSession, fileURL) {
+                if let description = DADiskCopyDescription(daDisk) {
+                    if let volumeName = (description as NSDictionary)[kDADiskDescriptionVolumeNameKey] as? String {
+                        if let disk = (self.cachedDisks.first { ($0).volumeName == volumeName }) {
+                            bootDisk = disk
+                        }
                     }
                 }
             }
         }
-        return nil
+        
+        return bootDisk
     }
 
     public static var hasFusionDrive: Bool {

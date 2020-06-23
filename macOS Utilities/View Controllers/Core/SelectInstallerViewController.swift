@@ -98,9 +98,9 @@ class SelectInstallerViewController: NSViewController {
                 self.tableView.selectRowIndexes(IndexSet(integer: firstInstallableIndex), byExtendingSelection: false)
                 ItemRepository.shared.setSelectedInstaller(firstInstallable)
                 self.installButton.isEnabled = true
-                if #available(OSX 10.12.2, *) {
-                    addTouchBarNextButton()
-                }
+
+                self.addTouchBarNextButton()
+                
             }
         }
     }
