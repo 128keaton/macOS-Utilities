@@ -13,7 +13,7 @@ import CocoaLumberjack
 import AVFoundation
 
 public class PeerCommunicationService: NSObject {
-    private var audioPlayer: AVAudioPlayer?
+    private var audioPlayer: AVAudioPlayer!
     private var serverPeer: Peer?
     private var currentHypervisorPeer: Peer?
 

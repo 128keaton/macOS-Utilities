@@ -8,7 +8,9 @@
 
 import Foundation
 
-struct AudioItem: ItemType {
+struct AudioItem: ConcreteItemType {
+    typealias ItemType = AudioItem
+    
     static var isNested: Bool = true
     var dataType: SPDataType = .audio
     

@@ -131,7 +131,8 @@ class SystemProfiler {
 
     public static func condense() -> CondensedSystemProfilerData {
         var allData: [[ItemType]] = [self.audioItems, self.discBurningItems, self.displayItems,
-            self.memoryItems, self.NVMeItems, self.powerItems, self.NVMeItems]
+        self.memoryItems, self.NVMeItems, self.powerItems, self.serialATAItems]
+        
 
         if let validHardwareItem = self.hardwareItem {
             allData.append([validHardwareItem])

@@ -8,7 +8,9 @@
 
 import Foundation
 
-class HardwareItem: ItemType {
+class HardwareItem: ConcreteItemType {
+    typealias ItemType = HardwareItem
+    
     static var isNested: Bool = false
     var dataType: SPDataType = .display
 

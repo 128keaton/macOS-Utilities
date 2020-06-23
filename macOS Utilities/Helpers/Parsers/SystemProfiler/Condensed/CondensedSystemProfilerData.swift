@@ -26,8 +26,8 @@ struct CondensedSystemProfilerData: Encodable {
             self.notes = notes
             
             if let powerItems = allData.first(where: { $0.first != nil && $0.first!.dataType == .power }),
-                let batteryItem = powerItems.first(where: { type(of: $0) == BatteryItem.self }) as? BatteryItem,
-                let healthInfo = batteryItem.healthInfo {
+                let batteryItem = powerItems.first(where: { type(of: $0) == BatteryItem.self }),
+                let healthInfo = (batteryItem as! BatteryItem).healthInfo {
                 self.hardware!.batteryHealth = CondensedBatteryHealth(from: healthInfo)
             }
 

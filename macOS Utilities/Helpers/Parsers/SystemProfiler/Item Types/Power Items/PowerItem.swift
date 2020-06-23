@@ -8,7 +8,9 @@
 
 import Foundation
 
-class PowerItem: ItemType {
+class PowerItem: ConcreteItemType {
+    typealias ItemType = PowerItem
+    
     static var isNested: Bool = false
     var dataType: SPDataType = .power
     

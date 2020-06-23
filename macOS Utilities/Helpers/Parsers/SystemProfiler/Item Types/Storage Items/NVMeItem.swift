@@ -7,7 +7,11 @@
 //
 
 import Foundation
-class NVMeItem: StorageItem {
+class NVMeItem: ConcreteStorageItemType {
+    typealias StorageItem = NVMeItem
+    
+    typealias ItemType = NVMeItem
+    
     static var isNested: Bool = false
     var storageItemType: String = "NVMe"
     var dataType: SPDataType = .NVMe

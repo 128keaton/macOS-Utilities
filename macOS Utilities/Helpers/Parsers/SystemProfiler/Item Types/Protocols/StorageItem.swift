@@ -19,3 +19,7 @@ protocol StorageItem: ItemType {
     var rawSizeUnit: String { get }
     subscript(key: String) -> String { get }
 }
+
+protocol ConcreteStorageItemType: ConcreteItemType, StorageItem {
+    associatedtype StorageItem
+}

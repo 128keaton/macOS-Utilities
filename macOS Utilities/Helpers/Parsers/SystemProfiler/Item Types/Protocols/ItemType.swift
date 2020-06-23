@@ -12,3 +12,7 @@ protocol ItemType: Codable, CustomStringConvertible {
     var dataType: SPDataType { get }
     static var isNested: Bool { get }
 }
+
+protocol ConcreteItemType: ItemType {
+    associatedtype ItemType
+}

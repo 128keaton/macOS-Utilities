@@ -25,7 +25,7 @@ class TestViewController: NSViewController {
     private var mic: AKMicrophone!
     private var tracker: AKFrequencyTracker!
     private var silence: AKBooster!
-    private var audioPlayer: AVAudioPlayer?
+    private var audioPlayer: AVAudioPlayer!
     private var machineInformationView: MachineInformationView? {
         didSet {
             if self.machineInformationView != nil {
@@ -264,8 +264,6 @@ extension TestViewController: SystemProfilerDelegate {
         NotificationCenter.default.post(name: Notification.Name("CanPrintLabel"), object: nil)
 
         loadingView.hide {
-            print("LoadingView hid")
-
             if SystemProfiler.hardwareItem !== nil {
                 let newMachineInformationView = MachineInformationView(frame: self.loadingView.bounds, hidden: true)
                 self.view.replaceSubviewPreservingConstraints(subview: self.loadingView, replacement: newMachineInformationView)
@@ -281,7 +279,6 @@ extension TestViewController: SystemProfilerDelegate {
 
                 if newMachineInformationView.fieldsPopulated {
                     newMachineInformationView.show(animated: true, completion: {
-                        print("MachineInformationView shown")
                         self.machineInformationView = newMachineInformationView
                     })
                 }

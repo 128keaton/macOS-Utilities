@@ -18,7 +18,7 @@ struct CondensedStorageItem: Encodable {
     var isSDD: Bool = false
     var model: String
 
-    init(from storageItem: StorageItem) {
+    init<T: ConcreteStorageItemType>(from storageItem: T) {
         self.deviceSerialNumber = storageItem.serialNumber
 
         if storageItem.size != "Indeterminate" {

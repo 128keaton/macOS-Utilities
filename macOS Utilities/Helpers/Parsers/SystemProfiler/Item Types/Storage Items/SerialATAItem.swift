@@ -8,7 +8,10 @@
 
 import Foundation
 
-class SerialATAItem: StorageItem {
+class SerialATAItem: ConcreteStorageItemType {
+    typealias StorageItem = SerialATAItem
+    typealias ItemType = SerialATAItem
+    
     
     // MARK: StorageItem
     static var isNested: Bool = true

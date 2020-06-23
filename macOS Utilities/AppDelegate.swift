@@ -33,7 +33,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     public var preferenceLoader: PreferenceLoader? = nil
 
-    private (set) public var audioPlayer: AVAudioPlayer?
+    private (set) public var audioPlayer: AVAudioPlayer!
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Change me in Secrets
@@ -241,7 +241,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let url = URL(fileURLWithPath: path)
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: url)
-            audioPlayer?.delegate = self
+            audioPlayer.delegate = self
             NotificationCenter.default.post(name: Notification.Name("AudioPlayerReady"), object: audioPlayer)
         } catch {
             DDLogError("Unable to load file")

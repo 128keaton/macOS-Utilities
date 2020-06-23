@@ -8,7 +8,9 @@
 
 import Foundation
 
-struct DisplayItem: ItemType {
+struct DisplayItem: ConcreteItemType {
+    typealias ItemType = DisplayItem
+    
     static var isNested: Bool = false
     var dataType: SPDataType = .display
 

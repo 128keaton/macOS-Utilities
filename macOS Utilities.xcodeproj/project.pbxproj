@@ -78,6 +78,7 @@
 		8A81F84B231764E6005917BA /* fmd_sound.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 8A81F84A231764E5005917BA /* fmd_sound.aiff */; };
 		8A87B8B521A47D8C004496AA /* ModelYearDetermination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87B8B421A47D8C004496AA /* ModelYearDetermination.swift */; };
 		8A87B8B721A47DD8004496AA /* CwlSysctl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87B8B621A47DD8004496AA /* CwlSysctl.swift */; };
+		8A88C0932461AC7400273BF5 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A88C0922461AC7400273BF5 /* Secrets.swift */; };
 		8A8B59A5224E9FD100CD4094 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A8B59A4224E9FD100CD4094 /* Application.swift */; };
 		8A9370CD2256B53C002B3838 /* DiskUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9370CC2256B53C002B3838 /* DiskUtility.swift */; };
 		8A9370D12256BB5A002B3838 /* Share.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9370D02256BB5A002B3838 /* Share.swift */; };
@@ -96,7 +97,6 @@
 		8AA841CC22659260009C5948 /* DiskImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841CB22659260009C5948 /* DiskImage.swift */; };
 		8AA841D02265A509009C5948 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841CF2265A509009C5948 /* Units.swift */; };
 		8AA841D322664276009C5948 /* PaddedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841D222664276009C5948 /* PaddedTextField.swift */; };
-		8AB65A8C231EF4D2006C7112 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB65A8B231EF4D2006C7112 /* Secrets.swift */; };
 		8ABA1D03231A0A1700DBCAC3 /* Example_Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABA1D02231A0A1700DBCAC3 /* Example_Secrets.swift */; };
 		8ABA1D05231A0A6900DBCAC3 /* BSApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABA1D04231A0A6900DBCAC3 /* BSApplication.swift */; };
 		8ABAE3112252A46300E537D3 /* DiskSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE3102252A46300E537D3 /* DiskSelectionViewController.swift */; };
@@ -205,6 +205,7 @@
 		8A81F84A231764E5005917BA /* fmd_sound.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = fmd_sound.aiff; sourceTree = "<group>"; };
 		8A87B8B421A47D8C004496AA /* ModelYearDetermination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelYearDetermination.swift; sourceTree = "<group>"; };
 		8A87B8B621A47DD8004496AA /* CwlSysctl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CwlSysctl.swift; sourceTree = "<group>"; };
+		8A88C0922461AC7400273BF5 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		8A8B59A4224E9FD100CD4094 /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
 		8A9370CC2256B53C002B3838 /* DiskUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskUtility.swift; sourceTree = "<group>"; };
 		8A9370CE2256B7F4002B3838 /* Disk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Disk.swift; sourceTree = "<group>"; };
@@ -223,7 +224,6 @@
 		8AA841CB22659260009C5948 /* DiskImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskImage.swift; sourceTree = "<group>"; };
 		8AA841CF2265A509009C5948 /* Units.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Units.swift; sourceTree = "<group>"; };
 		8AA841D222664276009C5948 /* PaddedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddedTextField.swift; sourceTree = "<group>"; };
-		8AB65A8B231EF4D2006C7112 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		8ABA1D02231A0A1700DBCAC3 /* Example_Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Example_Secrets.swift; sourceTree = "<group>"; };
 		8ABA1D04231A0A6900DBCAC3 /* BSApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BSApplication.swift; sourceTree = "<group>"; };
 		8ABAE3102252A46300E537D3 /* DiskSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskSelectionViewController.swift; sourceTree = "<group>"; };
@@ -711,7 +711,7 @@
 				8A0138D32217623200C77DA0 /* Storyboards */,
 				8A0138D42217623700C77DA0 /* View Controllers */,
 				8A9D9AA822632A2900E4D36F /* Resources */,
-				8AB65A8B231EF4D2006C7112 /* Secrets.swift */,
+				8A88C0922461AC7400273BF5 /* Secrets.swift */,
 			);
 			path = "macOS Utilities";
 			sourceTree = "<group>";
@@ -821,7 +821,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1020;
-				LastUpgradeCheck = 1030;
+				LastUpgradeCheck = 1140;
 				ORGANIZATIONNAME = "Keaton Burleson";
 				TargetAttributes = {
 					8ACB65D021063E6F004B9C5A = {
@@ -978,6 +978,7 @@
 				8A800B392315DD7100037103 /* PreferencesViewController.swift in Sources */,
 				8A3243D222A1CA2C0042E6D9 /* SelectInstallerViewController.swift in Sources */,
 				8A57BF432262A1AF00719E74 /* LoggerManager.swift in Sources */,
+				8A88C0932461AC7400273BF5 /* Secrets.swift in Sources */,
 				8A175AAC225EFEE50018C977 /* ErrorAlertLogger.swift in Sources */,
 				8A800B202315DA9500037103 /* CondensedDisplayInfo.swift in Sources */,
 				8A9D9A9C2263084600E4D36F /* KBTextFieldDialog.swift in Sources */,
@@ -1051,7 +1052,6 @@
 				8A584776226ABDA5008E9DE8 /* CocoaLumberjack-Extensions.swift in Sources */,
 				8A800B372315DD5500037103 /* PageController.swift in Sources */,
 				8A2DB94E2289EAF600261B9E /* RawOutputType.swift in Sources */,
-				8AB65A8C231EF4D2006C7112 /* Secrets.swift in Sources */,
 				8A87B8B721A47DD8004496AA /* CwlSysctl.swift in Sources */,
 				8A27EF0122C56159005F45AF /* NetworkUtils.swift in Sources */,
 				8A9370CD2256B53C002B3838 /* DiskUtility.swift in Sources */,
@@ -1198,11 +1198,13 @@
 			baseConfigurationReference = D04B207FCA2163F7FF4B0B6B /* Pods-macOS Utilities.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "macOS Utilities/macOS Utilities.entitlements";
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_ACTIVITY_MODE = enable;
 				DEVELOPMENT_TEAM = 52B5TC74Y7;
+				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "macOS Utilities/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12.2;
@@ -1221,7 +1223,8 @@
 			baseConfigurationReference = D8A022574234BFBF730A7F5C /* Pods-macOS Utilities.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_ENTITLEMENTS = "macOS Utilities/macOS Utilities.entitlements";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_ACTIVITY_MODE = disable;
