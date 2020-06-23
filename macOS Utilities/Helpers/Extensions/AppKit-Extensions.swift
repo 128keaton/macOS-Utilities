@@ -303,14 +303,18 @@ extension NSViewController {
 }
 
 extension NSView {
-    func blink(toValue: CGFloat = 0.0) {
+    func blink(toValue: CGFloat = 0.0, once: Bool = false) {
         let animation = CABasicAnimation(keyPath: "opacity")
         animation.fromValue = 1.0
         animation.toValue = toValue
         animation.duration = 0.9
         animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
         animation.autoreverses = true
-        animation.repeatCount = 9999999.0
+        animation.isRemovedOnCompletion = true
+        
+        if (!once) {
+            animation.repeatCount = 9999999.0
+        }
 
         self.wantsLayer = true
         self.layer?.add(animation, forKey: "opacity")

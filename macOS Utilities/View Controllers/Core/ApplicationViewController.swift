@@ -37,6 +37,7 @@ class ApplicationViewController: NSViewController {
         self.errorButton?.blink(toValue: 0.3)
         self.registerForNotifications()
         self.showIPAddress()
+        self.tableView.action = #selector(tableViewClicked)
     }
 
     override func viewDidAppear() {
@@ -161,6 +162,21 @@ class ApplicationViewController: NSViewController {
         }
     }
 
+    @objc private func tableViewClicked() {
+        if self.itemRepository.allowedApplications.indices.contains(self.tableView.selectedRow) {
+            let selectedApp = self.itemRepository.allowedApplications[self.tableView.selectedRow]
+            if let selectedRow = self.tableView.rowView(atRow: self.tableView.selectedRow, makeIfNecessary: false) {
+                selectedRow.blink(toValue: 0.5, once: true)
+            }
+
+
+            self.itemRepository.openApplication(selectedApp)
+            PeerCommunicationService.instance.updateStatus("Running \(selectedApp.name)")
+
+            self.tableView.deselectRow(self.tableView.selectedRow)
+        }
+    }
+
     func removeTouchBarInstallButton() {
         if let touchBar = self.touchBar {
             touchBar.defaultItemIdentifiers = [.getInfo, .openPreferences]
@@ -199,17 +215,6 @@ extension ApplicationViewController: NSTableViewDataSource, NSTableViewDelegate 
         }
 
         return true
-    }
-
-    func tableViewSelectionDidChange(_ notification: Notification) {
-        if self.itemRepository.allowedApplications.indices.contains(self.tableView.selectedRow) {
-            let selectedApp = self.itemRepository.allowedApplications[self.tableView.selectedRow]
-
-            self.itemRepository.openApplication(selectedApp)
-            PeerCommunicationService.instance.updateStatus("Running \(selectedApp.name)")
-
-            self.tableView.deselectRow(self.tableView.selectedRow)
-        }
     }
 }
 
