@@ -72,7 +72,7 @@ struct Partition: FileSystemItem, Codable {
     }
 
     var installable: Bool {
-        return self.size.gigabytes >= 120.0 && !self.nonInstallableDriveNames.contains(self.volumeName) && self.isMounted
+        return self.size.gigabytes >= 120.0 && !self.nonInstallableDriveNames.contains(self.volumeName) && self.isMounted && !self.volumeName.contains(" - Data")
     }
 
     var containsInstaller: Bool {

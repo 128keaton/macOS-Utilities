@@ -47,6 +47,8 @@ class DiskUtility: NSObject, NSFilePresenter {
             self.addDisk(self.generateFakeDisk(withPartition: true))
             self.addDisk(self.generateFakeDisk(withPartition: false))
         #endif
+        
+        self.cachedDisks = []
 
         TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["list", "-plist"]) { (output) in
             if let listOutput = output {
