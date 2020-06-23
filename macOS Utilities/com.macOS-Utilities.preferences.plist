@@ -32,62 +32,6 @@
 	<array>
 		<dict>
 			<key>appDescription</key>
-			<string>Securely erase disks with KillDisk</string>
-			<key>isInvalid</key>
-			<true/>
-			<key>isUtility</key>
-			<false/>
-			<key>name</key>
-			<string>KillDisk</string>
-			<key>path</key>
-			<string>/Applications/KillDisk.app</string>
-			<key>showInApplicationsWindow</key>
-			<true/>
-		</dict>
-		<dict>
-			<key>appDescription</key>
-			<string>Perform load tests with the CPU to check fans and thermals</string>
-			<key>isInvalid</key>
-			<true/>
-			<key>isUtility</key>
-			<false/>
-			<key>name</key>
-			<string>Prime95</string>
-			<key>path</key>
-			<string>/Applications/Prime95.app</string>
-			<key>showInApplicationsWindow</key>
-			<true/>
-		</dict>
-		<dict>
-			<key>appDescription</key>
-			<string>Perform benchmarks on the GPU to check fans, thermals, and system stability</string>
-			<key>isInvalid</key>
-			<true/>
-			<key>isUtility</key>
-			<false/>
-			<key>name</key>
-			<string>FurMark</string>
-			<key>path</key>
-			<string>/Applications/FurMark.app</string>
-			<key>showInApplicationsWindow</key>
-			<true/>
-		</dict>
-		<dict>
-			<key>appDescription</key>
-			<string>Test sound, microphone, and webcam</string>
-			<key>isInvalid</key>
-			<true/>
-			<key>isUtility</key>
-			<false/>
-			<key>name</key>
-			<string>AVTest</string>
-			<key>path</key>
-			<string>/Applications/AVTest.app</string>
-			<key>showInApplicationsWindow</key>
-			<true/>
-		</dict>
-		<dict>
-			<key>appDescription</key>
 			<string>Repair or erase a disk using Disk Utility</string>
 			<key>isInvalid</key>
 			<false/>
@@ -97,20 +41,6 @@
 			<string>Disk Utility</string>
 			<key>path</key>
 			<string>/Applications/Utilities/Disk Utility.app</string>
-			<key>showInApplicationsWindow</key>
-			<true/>
-		</dict>
-		<dict>
-			<key>appDescription</key>
-			<string>Print a system specification label</string>
-			<key>isInvalid</key>
-			<true/>
-			<key>isUtility</key>
-			<false/>
-			<key>name</key>
-			<string>Print Label</string>
-			<key>path</key>
-			<string>/Applications/Print Label.app</string>
 			<key>showInApplicationsWindow</key>
 			<true/>
 		</dict>
