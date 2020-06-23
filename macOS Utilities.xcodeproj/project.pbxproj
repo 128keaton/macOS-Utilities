@@ -100,6 +100,8 @@
 		8AA841CC22659260009C5948 /* DiskImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841CB22659260009C5948 /* DiskImage.swift */; };
 		8AA841D02265A509009C5948 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841CF2265A509009C5948 /* Units.swift */; };
 		8AA841D322664276009C5948 /* PaddedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841D222664276009C5948 /* PaddedTextField.swift */; };
+		8AB1B64924A2640F002D96C3 /* AudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AB1B64824A2640F002D96C3 /* AudioKit.framework */; };
+		8AB1B64B24A2649A002D96C3 /* AudioKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AB1B64A24A2649A002D96C3 /* AudioKitUI.framework */; };
 		8ABA1D03231A0A1700DBCAC3 /* Example_Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABA1D02231A0A1700DBCAC3 /* Example_Secrets.swift */; };
 		8ABA1D05231A0A6900DBCAC3 /* BSApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABA1D04231A0A6900DBCAC3 /* BSApplication.swift */; };
 		8ABAE3112252A46300E537D3 /* DiskSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE3102252A46300E537D3 /* DiskSelectionViewController.swift */; };
@@ -229,6 +231,8 @@
 		8AA841CB22659260009C5948 /* DiskImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskImage.swift; sourceTree = "<group>"; };
 		8AA841CF2265A509009C5948 /* Units.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Units.swift; sourceTree = "<group>"; };
 		8AA841D222664276009C5948 /* PaddedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddedTextField.swift; sourceTree = "<group>"; };
+		8AB1B64824A2640F002D96C3 /* AudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AudioKit.framework; sourceTree = "<group>"; };
+		8AB1B64A24A2649A002D96C3 /* AudioKitUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AudioKitUI.framework; sourceTree = "<group>"; };
 		8AB65A8B231EF4D2006C7112 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		8ABA1D02231A0A1700DBCAC3 /* Example_Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Example_Secrets.swift; sourceTree = "<group>"; };
 		8ABA1D04231A0A6900DBCAC3 /* BSApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BSApplication.swift; sourceTree = "<group>"; };
@@ -269,6 +273,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8AB1B64B24A2649A002D96C3 /* AudioKitUI.framework in Frameworks */,
+				8AB1B64924A2640F002D96C3 /* AudioKit.framework in Frameworks */,
 				4B87EE4A123D4EE1F26E61A2 /* Pods_macOS_Utilities.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -279,6 +285,8 @@
 		1FAA8275C03D6F1149C6C2C2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8AB1B64A24A2649A002D96C3 /* AudioKitUI.framework */,
+				8AB1B64824A2640F002D96C3 /* AudioKit.framework */,
 				7D34D0D826F1DE150B6BEB3E /* Pods_macOS_UtilitiesTests.framework */,
 				02F50B1561E3062ADD7CE4B7 /* Pods_macOS_Utilities.framework */,
 			);
@@ -1217,6 +1225,10 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_ACTIVITY_MODE = enable;
 				DEVELOPMENT_TEAM = 52B5TC74Y7;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = "macOS Utilities/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
@@ -1240,6 +1252,10 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_ACTIVITY_MODE = disable;
 				DEVELOPMENT_TEAM = 52B5TC74Y7;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "macOS Utilities/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";

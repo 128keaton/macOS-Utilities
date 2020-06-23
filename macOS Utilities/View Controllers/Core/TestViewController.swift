@@ -61,7 +61,7 @@ class TestViewController: NSViewController {
         }
 
         do {
-            try AudioKit.stop()
+            try AKManager.stop()
         } catch {
             self.hasMicrophone = false
             AKLog("AudioKit did not stop!")
@@ -122,9 +122,9 @@ class TestViewController: NSViewController {
     }
 
     private func startAudioKit() {
-        AudioKit.output = silence
+        AKManager.output = silence
         do {
-            try AudioKit.start()
+            try AKManager.start()
         } catch {
             self.hasMicrophone = false
             AKLog("AudioKit did not start!")

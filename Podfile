@@ -13,7 +13,7 @@ target 'macOS Utilities' do
  pod "STPrivilegedTask"
  pod 'XMLParsing', :git => 'https://github.com/128keaton/XMLParsing.git'
  pod 'MultiPeer', :git => 'https://github.com/128keaton/MultiPeer.git', :tag => '0.1.2'
- pod 'AudioKit', :git => 'https://github.com/AudioKit/AudioKit.git', :branch => 'v5-develop'
+# pod 'AudioKit', :git => 'https://github.com/AudioKit/AudioKit.git', :branch => 'v5-develop'
  pod "XLFacility", "~> 1.0"
  pod 'Bugsnag'
 end
