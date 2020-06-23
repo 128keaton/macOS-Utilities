@@ -273,9 +273,7 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
             nextButton?.title = "Next"
             selectedPartition = nil
 
-            if #available(OSX 10.12.2, *) {
-                self.removeTouchBarNextButton()
-            }
+            self.removeTouchBarNextButton()
         }
     }
 
@@ -339,7 +337,7 @@ extension DiskSelectionViewController: NSTableViewDataSource {
     }
 }
 
-@available(OSX 10.12.2, *)
+
 extension DiskSelectionViewController: NSTouchBarDelegate {
     override func makeTouchBar() -> NSTouchBar? {
         let touchBar = NSTouchBar()
