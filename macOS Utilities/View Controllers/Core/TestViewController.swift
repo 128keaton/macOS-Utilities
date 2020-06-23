@@ -67,7 +67,7 @@ class TestViewController: NSViewController {
             AKLog("AudioKit did not stop!")
             return
         }
-        
+
         if let currentPlayer = audioPlayer, currentPlayer.isPlaying {
             stopAudioTest(withPlayer: currentPlayer)
         }
@@ -109,7 +109,7 @@ class TestViewController: NSViewController {
         if let currentPlayer = audioPlayer, currentPlayer.isPlaying {
             stopAudioTest(withPlayer: currentPlayer)
         }
-        
+
         // Get the new audio file from the selection
         if let selectedAudioFile = self.getSelectedAudioFilePath() {
             (NSApp.delegate as! AppDelegate).setupAudioPlayer(forFileAtPath: selectedAudioFile)
@@ -160,6 +160,19 @@ class TestViewController: NSViewController {
         previewLayer.frame = cameraPreview.bounds
         previewLayer.videoGravity = .resizeAspectFill
 
+
+        let blurLayer = AVCaptureVideoPreviewLayer(session: session)
+        blurLayer.frame = self.view.bounds
+        blurLayer.videoGravity = .resizeAspectFill
+
+        let blurView = NSVisualEffectView(frame: self.view.bounds)
+        self.view.wantsLayer = true
+        self.view.layer?.addSublayer(blurLayer)
+
+
+        blurView.blendingMode = .withinWindow
+
+        self.view.addSubview(blurView, positioned: .below, relativeTo: self.cameraPreview)
         self.cameraPreview.layer?.addSublayer(previewLayer)
 
         if session.canAddInput(deviceInput) {
@@ -170,6 +183,7 @@ class TestViewController: NSViewController {
         session.startRunning()
         self.currentCameraSession = session
     }
+
 
     private func setupAudioPreview() {
         let outputPlot = AKNodeOutputPlot(mic, frame: audioPreview.bounds)

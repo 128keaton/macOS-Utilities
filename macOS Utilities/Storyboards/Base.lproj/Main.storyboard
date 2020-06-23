@@ -1031,7 +1031,7 @@
                                     <constraint firstAttribute="height" constant="37" id="oOD-lc-XXA"/>
                                 </constraints>
                                 <textFieldCell key="cell" allowsUndo="NO" alignment="center" title="There are no NFS shares available to mount installers from" id="gtS-za-Y5G">
-                                    <font key="font" metaFont="menu" size="14"/>
+                                    <font key="font" metaFont="system" size="14"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
@@ -1969,7 +1969,7 @@
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YkR-DO-ZUX">
                                                                     <rect key="frame" x="73" y="35" width="169" height="17"/>
                                                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Table View Cell" id="w3V-wD-enj">
-                                                                        <font key="font" metaFont="menu" size="14"/>
+                                                                        <font key="font" metaFont="system" size="14"/>
                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
@@ -2719,7 +2719,7 @@ Gw
                 <customObject id="18O-E7-FWN" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <windowController id="bdh-fN-gsJ" userLabel="Hardware Test Window" sceneMemberID="viewController">
                     <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" titlebarAppearsTransparent="YES" titleVisibility="hidden" id="DdS-zV-bjk">
-                        <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" fullSizeContentView="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="294" y="362" width="671" height="528"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1577"/>
@@ -2792,14 +2792,6 @@ Gw
                                 </constraints>
                                 <font key="titleFont" metaFont="systemMedium" size="12"/>
                             </box>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="B1Y-MO-qCN">
-                                <rect key="frame" x="18" y="469" width="217" height="39"/>
-                                <textFieldCell key="cell" lineBreakMode="clipping" alignment="center" title="Hardware Test" id="mUf-oy-jTC">
-                                    <font key="font" metaFont="systemMedium" size="33"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
                             <box title="Testing Notes" translatesAutoresizingMaskIntoConstraints="NO" id="tKg-JF-kQx">
                                 <rect key="frame" x="343" y="45" width="311" height="145"/>
                                 <view key="contentView" id="Mee-dS-83o">
@@ -2911,24 +2903,44 @@ Gw
                                 <color key="borderColor" name="tertiaryLabelColor" catalog="System" colorSpace="catalog"/>
                                 <color key="fillColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                             </box>
+                            <visualEffectView blendingMode="behindWindow" material="titlebar" state="followsWindowActiveState" translatesAutoresizingMaskIntoConstraints="NO" id="j2Q-54-ujS">
+                                <rect key="frame" x="0.0" y="464" width="671" height="64"/>
+                                <subviews>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ky8-9w-JQw">
+                                        <rect key="frame" x="278" y="39" width="96" height="16"/>
+                                        <textFieldCell key="cell" lineBreakMode="clipping" alignment="center" title="Hardware Test" id="5hk-th-pJH">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" red="1" green="1" blue="1" alpha="0.46580655809859156" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="Ky8-9w-JQw" secondAttribute="bottom" constant="39" id="TrM-NS-CKd"/>
+                                    <constraint firstItem="Ky8-9w-JQw" firstAttribute="leading" secondItem="j2Q-54-ujS" secondAttribute="leading" constant="280" id="aFF-H3-8OK"/>
+                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Ky8-9w-JQw" secondAttribute="trailing" constant="20" symbolic="YES" id="ufI-Iq-35X"/>
+                                </constraints>
+                            </visualEffectView>
                         </subviews>
                         <constraints>
                             <constraint firstItem="95b-3I-mfY" firstAttribute="width" secondItem="9Rb-bR-9Uw" secondAttribute="width" id="8RJ-Kg-okG"/>
                             <constraint firstItem="95b-3I-mfY" firstAttribute="top" secondItem="QZ4-Oi-ULH" secondAttribute="top" constant="72" id="8oU-5P-28A"/>
-                            <constraint firstItem="ODV-1s-suV" firstAttribute="top" secondItem="B1Y-MO-qCN" secondAttribute="bottom" constant="12" id="95c-XC-YHV"/>
                             <constraint firstItem="9Rb-bR-9Uw" firstAttribute="leading" secondItem="95b-3I-mfY" secondAttribute="trailing" constant="-305" id="AXk-YA-mv0"/>
-                            <constraint firstItem="B1Y-MO-qCN" firstAttribute="centerX" secondItem="ODV-1s-suV" secondAttribute="centerX" constant="-370" id="EqK-Ag-bPH"/>
                             <constraint firstItem="9Rb-bR-9Uw" firstAttribute="top" secondItem="95b-3I-mfY" secondAttribute="bottom" constant="23" id="IsD-RQ-vdi"/>
-                            <constraint firstItem="B1Y-MO-qCN" firstAttribute="leading" secondItem="95b-3I-mfY" secondAttribute="trailing" constant="-305" id="Jfs-qz-OXf"/>
                             <constraint firstItem="tKg-JF-kQx" firstAttribute="centerY" secondItem="9Rb-bR-9Uw" secondAttribute="centerY" constant="56" id="KLr-2Y-Yht"/>
                             <constraint firstItem="95b-3I-mfY" firstAttribute="top" secondItem="9Rb-bR-9Uw" secondAttribute="top" constant="-218" id="KVN-gf-sQ4"/>
                             <constraint firstItem="tKg-JF-kQx" firstAttribute="height" secondItem="9Rb-bR-9Uw" secondAttribute="height" constant="16" id="Nnh-4W-GoH"/>
+                            <constraint firstItem="ODV-1s-suV" firstAttribute="top" secondItem="j2Q-54-ujS" secondAttribute="bottom" constant="7" id="PBq-pB-W0U"/>
+                            <constraint firstItem="j2Q-54-ujS" firstAttribute="centerX" secondItem="QZ4-Oi-ULH" secondAttribute="centerX" id="Pmq-Or-Bv6"/>
                             <constraint firstAttribute="trailing" secondItem="95b-3I-mfY" secondAttribute="trailing" constant="346" id="ZRK-44-OJ8"/>
+                            <constraint firstItem="ODV-1s-suV" firstAttribute="top" secondItem="QZ4-Oi-ULH" secondAttribute="top" constant="71" id="ZZr-PO-DWo"/>
                             <constraint firstItem="ODV-1s-suV" firstAttribute="leading" secondItem="9Rb-bR-9Uw" secondAttribute="trailing" constant="21" id="iXl-sw-rjP"/>
-                            <constraint firstItem="B1Y-MO-qCN" firstAttribute="centerY" secondItem="95b-3I-mfY" secondAttribute="centerY" constant="-130" id="jd5-qG-xNw"/>
+                            <constraint firstItem="j2Q-54-ujS" firstAttribute="top" secondItem="QZ4-Oi-ULH" secondAttribute="top" id="jch-tQ-GaZ"/>
                             <constraint firstItem="95b-3I-mfY" firstAttribute="leading" secondItem="QZ4-Oi-ULH" secondAttribute="leading" constant="20" symbolic="YES" id="njm-Bg-WRC"/>
                             <constraint firstAttribute="trailing" secondItem="tKg-JF-kQx" secondAttribute="trailing" constant="20" id="o1G-JK-Y46"/>
                             <constraint firstItem="tKg-JF-kQx" firstAttribute="width" secondItem="9Rb-bR-9Uw" secondAttribute="width" id="oiD-dq-HoS"/>
+                            <constraint firstAttribute="trailing" secondItem="ODV-1s-suV" secondAttribute="trailing" constant="24" id="rnY-OW-3QU"/>
+                            <constraint firstItem="j2Q-54-ujS" firstAttribute="width" secondItem="QZ4-Oi-ULH" secondAttribute="width" id="ujb-Ga-7zL"/>
                             <constraint firstAttribute="trailing" secondItem="9Rb-bR-9Uw" secondAttribute="trailing" constant="346" id="vmC-cR-wQf"/>
                             <constraint firstAttribute="bottom" secondItem="ODV-1s-suV" secondAttribute="bottom" constant="209" id="wZU-BF-snr"/>
                             <constraint firstItem="95b-3I-mfY" firstAttribute="baseline" secondItem="9Rb-bR-9Uw" secondAttribute="baseline" constant="-148" id="xhX-Qj-Ben"/>
@@ -2948,7 +2960,7 @@ Gw
                     </connections>
                 </viewController>
             </objects>
-            <point key="canvasLocation" x="-1542.5" y="1530"/>
+            <point key="canvasLocation" x="-1588" y="1530"/>
         </scene>
     </scenes>
     <resources>
