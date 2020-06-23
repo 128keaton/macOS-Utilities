@@ -95,7 +95,9 @@ class DiskSelectionViewController: NSViewController {
             }
 
             if showConfirmationAlert(question: "Do you want to continue?", text: "You have cancelled the erase on \"\(itemName)\". Do you want to continue with install?") {
-                self.showFinishPage(volumeName: itemName, preformatted: true)
+                DispatchQueue.main.async {
+                    self.showFinishPage(volumeName: itemName, preformatted: true)
+                }
             } else {
                 PageController.shared.dismissPageController()
             }
@@ -115,7 +117,9 @@ class DiskSelectionViewController: NSViewController {
                 DiskUtility.createFusionDrive { (message, didCreate) in
                     if didCreate {
                         DDLogVerbose(message)
-                        self.showFinishPage(volumeName: "Macintosh HD")
+                        DispatchQueue.main.async {
+                            self.showFinishPage(volumeName: "Macintosh HD")
+                        }
                     } else {
                         PageController.shared.goToPreviousPage()
                         DDLogError(message)
@@ -156,14 +160,12 @@ class DiskSelectionViewController: NSViewController {
         }
     }
 
-    @available(OSX 10.12.2, *)
     private func removeTouchBarNextButton() {
         if let touchBar = self.touchBar {
             touchBar.defaultItemIdentifiers = [.backPageController]
         }
     }
 
-    @available(OSX 10.12.2, *)
     private func addTouchBarNextButton() {
         if let touchBar = self.touchBar {
             touchBar.defaultItemIdentifiers = [.backPageController, .nextPageController]
@@ -252,10 +254,8 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
         }
 
         nextButton?.isEnabled = true
-
-        if #available(OSX 10.12.2, *) {
-            self.addTouchBarNextButton()
-        }
+        self.addTouchBarNextButton()
+        
 
         return true
     }
@@ -309,7 +309,9 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
 
                     partition.erase(newName: nil, forInstaller: selectedInstaller) { (didFinish, newVolumeName) in
                         if(didFinish), let volumeName = newVolumeName {
-                            self.showFinishPage(volumeName: volumeName)
+                            DispatchQueue.main.async {
+                                 self.showFinishPage(volumeName: volumeName)
+                            }
                         }
                     }
 
@@ -321,7 +323,9 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
 
                 disk.erase(newName: nil, forInstaller: selectedInstaller) { (didFinish, newDiskName) in
                     if(didFinish), let diskName = newDiskName {
-                        self.showFinishPage(volumeName: diskName)
+                        DispatchQueue.main.async {
+                            self.showFinishPage(volumeName: diskName)
+                        }
                     }
                 }
             }
