@@ -2714,8 +2714,8 @@ Gw
             <objects>
                 <customObject id="18O-E7-FWN" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <windowController id="bdh-fN-gsJ" userLabel="Hardware Test Window" sceneMemberID="viewController">
-                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" titlebarAppearsTransparent="YES" titleVisibility="hidden" id="DdS-zV-bjk">
-                        <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
+                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" titlebarAppearsTransparent="YES" toolbarStyle="expanded" titleVisibility="hidden" id="DdS-zV-bjk">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" fullSizeContentView="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="294" y="362" width="671" height="528"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1577"/>
@@ -2788,14 +2788,6 @@ Gw
                                 </constraints>
                                 <font key="titleFont" metaFont="systemMedium" size="12"/>
                             </box>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="B1Y-MO-qCN">
-                                <rect key="frame" x="18" y="469" width="217" height="39"/>
-                                <textFieldCell key="cell" lineBreakMode="clipping" alignment="center" title="Hardware Test" id="mUf-oy-jTC">
-                                    <font key="font" metaFont="systemMedium" size="33"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
                             <box title="Testing Notes" translatesAutoresizingMaskIntoConstraints="NO" id="tKg-JF-kQx">
                                 <rect key="frame" x="343" y="45" width="311" height="145"/>
                                 <view key="contentView" id="Mee-dS-83o">
@@ -2907,21 +2899,42 @@ Gw
                                 <color key="borderColor" name="tertiaryLabelColor" catalog="System" colorSpace="catalog"/>
                                 <color key="fillColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                             </box>
+                            <visualEffectView blendingMode="behindWindow" material="appearanceBased" state="followsWindowActiveState" translatesAutoresizingMaskIntoConstraints="NO" id="bVt-d0-mST">
+                                <rect key="frame" x="0.0" y="464" width="671" height="64"/>
+                                <subviews>
+                                    <textField wantsLayer="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9WC-or-9u6">
+                                        <rect key="frame" x="73" y="23" width="112" height="18"/>
+                                        <textFieldCell key="cell" lineBreakMode="clipping" title="Hardware Test" id="7aL-Ph-BTq">
+                                            <font key="font" metaFont="systemMedium" size="16"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="9WC-or-9u6" firstAttribute="leading" secondItem="bVt-d0-mST" secondAttribute="leading" constant="75" id="Kjc-zZ-bRl"/>
+                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="9WC-or-9u6" secondAttribute="trailing" constant="20" symbolic="YES" id="N4F-Ab-dov"/>
+                                    <constraint firstItem="9WC-or-9u6" firstAttribute="top" secondItem="bVt-d0-mST" secondAttribute="top" constant="23" id="aBb-2Z-P5g"/>
+                                    <constraint firstItem="9WC-or-9u6" firstAttribute="centerY" secondItem="bVt-d0-mST" secondAttribute="centerY" id="y4Z-QN-HXi"/>
+                                </constraints>
+                            </visualEffectView>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="ODV-1s-suV" firstAttribute="top" secondItem="bVt-d0-mST" secondAttribute="bottom" constant="7" id="2gF-5D-xE2"/>
+                            <constraint firstItem="ODV-1s-suV" firstAttribute="top" secondItem="QZ4-Oi-ULH" secondAttribute="top" constant="71" id="4W8-L8-E1U"/>
+                            <constraint firstAttribute="trailing" secondItem="ODV-1s-suV" secondAttribute="trailing" constant="24" id="4WO-Us-STv"/>
                             <constraint firstItem="95b-3I-mfY" firstAttribute="width" secondItem="9Rb-bR-9Uw" secondAttribute="width" id="8RJ-Kg-okG"/>
                             <constraint firstItem="95b-3I-mfY" firstAttribute="top" secondItem="QZ4-Oi-ULH" secondAttribute="top" constant="72" id="8oU-5P-28A"/>
-                            <constraint firstItem="ODV-1s-suV" firstAttribute="top" secondItem="B1Y-MO-qCN" secondAttribute="bottom" constant="12" id="95c-XC-YHV"/>
+                            <constraint firstItem="bVt-d0-mST" firstAttribute="width" secondItem="QZ4-Oi-ULH" secondAttribute="width" id="9RQ-SG-I8i"/>
                             <constraint firstItem="9Rb-bR-9Uw" firstAttribute="leading" secondItem="95b-3I-mfY" secondAttribute="trailing" constant="-305" id="AXk-YA-mv0"/>
-                            <constraint firstItem="B1Y-MO-qCN" firstAttribute="centerX" secondItem="ODV-1s-suV" secondAttribute="centerX" constant="-370" id="EqK-Ag-bPH"/>
+                            <constraint firstItem="bVt-d0-mST" firstAttribute="top" secondItem="QZ4-Oi-ULH" secondAttribute="top" id="HBF-0S-rwG"/>
                             <constraint firstItem="9Rb-bR-9Uw" firstAttribute="top" secondItem="95b-3I-mfY" secondAttribute="bottom" constant="23" id="IsD-RQ-vdi"/>
-                            <constraint firstItem="B1Y-MO-qCN" firstAttribute="leading" secondItem="95b-3I-mfY" secondAttribute="trailing" constant="-305" id="Jfs-qz-OXf"/>
                             <constraint firstItem="tKg-JF-kQx" firstAttribute="centerY" secondItem="9Rb-bR-9Uw" secondAttribute="centerY" constant="56" id="KLr-2Y-Yht"/>
                             <constraint firstItem="95b-3I-mfY" firstAttribute="top" secondItem="9Rb-bR-9Uw" secondAttribute="top" constant="-218" id="KVN-gf-sQ4"/>
                             <constraint firstItem="tKg-JF-kQx" firstAttribute="height" secondItem="9Rb-bR-9Uw" secondAttribute="height" constant="16" id="Nnh-4W-GoH"/>
                             <constraint firstAttribute="trailing" secondItem="95b-3I-mfY" secondAttribute="trailing" constant="346" id="ZRK-44-OJ8"/>
                             <constraint firstItem="ODV-1s-suV" firstAttribute="leading" secondItem="9Rb-bR-9Uw" secondAttribute="trailing" constant="21" id="iXl-sw-rjP"/>
-                            <constraint firstItem="B1Y-MO-qCN" firstAttribute="centerY" secondItem="95b-3I-mfY" secondAttribute="centerY" constant="-130" id="jd5-qG-xNw"/>
+                            <constraint firstItem="bVt-d0-mST" firstAttribute="centerX" secondItem="QZ4-Oi-ULH" secondAttribute="centerX" id="kpV-38-Tg2"/>
                             <constraint firstItem="95b-3I-mfY" firstAttribute="leading" secondItem="QZ4-Oi-ULH" secondAttribute="leading" constant="20" symbolic="YES" id="njm-Bg-WRC"/>
                             <constraint firstAttribute="trailing" secondItem="tKg-JF-kQx" secondAttribute="trailing" constant="20" id="o1G-JK-Y46"/>
                             <constraint firstItem="tKg-JF-kQx" firstAttribute="width" secondItem="9Rb-bR-9Uw" secondAttribute="width" id="oiD-dq-HoS"/>
