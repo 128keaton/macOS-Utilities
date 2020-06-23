@@ -33,10 +33,10 @@
 		8A3243CE22A1B8190042E6D9 /* Disk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9370CE2256B7F4002B3838 /* Disk.swift */; };
 		8A3243D122A1C8A80042E6D9 /* WKNoScrollWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A3243D022A1C8A80042E6D9 /* WKNoScrollWebView.swift */; };
 		8A3243D222A1CA2C0042E6D9 /* SelectInstallerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6F28EF221B9F5C00FF9DB3 /* SelectInstallerViewController.swift */; };
-		8A426BAD249D207000A38542 /* com.er2.applications.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8A39D35F2119E81B00437F4E /* com.er2.applications.plist */; };
+		8A32C4B624A244AD0048CE7E /* AppCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A32C4B524A244AD0048CE7E /* AppCellView.swift */; };
+		8A32C4BD24A24FD50048CE7E /* ApplicationDescriptionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A32C4BC24A24FD50048CE7E /* ApplicationDescriptionSheet.swift */; };
+		8A426BAD249D207000A38542 /* com.macOS-Utilities.preferences.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8A39D35F2119E81B00437F4E /* com.macOS-Utilities.preferences.plist */; };
 		8A426BAF249D37D300A38542 /* THX.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8A426BAE249D37D300A38542 /* THX.mp3 */; };
-		8A47DED9210A2D30003F5CC3 /* NSCollectionAppCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */; };
-		8A47DEDB210A3418003F5CC3 /* NSCollectionAppCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */; };
 		8A57BF402262A0C200719E74 /* LegacyPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A57BF3F2262A0C200719E74 /* LegacyPreferences.swift */; };
 		8A57BF432262A1AF00719E74 /* LoggerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A57BF422262A1AF00719E74 /* LoggerManager.swift */; };
 		8A584771226AAF67008E9DE8 /* Foundation-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A584770226AAF67008E9DE8 /* Foundation-Extensions.swift */; };
@@ -157,10 +157,10 @@
 		8A3243C922A1B75D0042E6D9 /* XMLParsing+Alamofire.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "XMLParsing+Alamofire.swift"; path = "macOS Utilities/Custom Classes/Extensions/XMLParsing+Alamofire.swift"; sourceTree = SOURCE_ROOT; };
 		8A3243CC22A1B7700042E6D9 /* KBBarcodePreviewItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KBBarcodePreviewItem.swift; path = "macOS Utilities/Helpers/Miscellaneous/KBBarcodePreviewItem.swift"; sourceTree = SOURCE_ROOT; };
 		8A3243D022A1C8A80042E6D9 /* WKNoScrollWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKNoScrollWebView.swift; sourceTree = "<group>"; };
-		8A39D35F2119E81B00437F4E /* com.er2.applications.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = com.er2.applications.plist; sourceTree = "<group>"; };
+		8A32C4B524A244AD0048CE7E /* AppCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCellView.swift; sourceTree = "<group>"; };
+		8A32C4BC24A24FD50048CE7E /* ApplicationDescriptionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationDescriptionSheet.swift; sourceTree = "<group>"; };
+		8A39D35F2119E81B00437F4E /* com.macOS-Utilities.preferences.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "com.macOS-Utilities.preferences.plist"; sourceTree = "<group>"; };
 		8A426BAE249D37D300A38542 /* THX.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = THX.mp3; sourceTree = "<group>"; };
-		8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSCollectionAppCell.swift; sourceTree = "<group>"; };
-		8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NSCollectionAppCell.xib; sourceTree = "<group>"; };
 		8A57BF3F2262A0C200719E74 /* LegacyPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyPreferences.swift; sourceTree = "<group>"; };
 		8A57BF422262A1AF00719E74 /* LoggerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerManager.swift; sourceTree = "<group>"; };
 		8A584770226AAF67008E9DE8 /* Foundation-Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Foundation-Extensions.swift"; sourceTree = "<group>"; };
@@ -319,14 +319,6 @@
 			path = Helpers;
 			sourceTree = "<group>";
 		};
-		8A0138C9221703D400C77DA0 /* NSCollectionAppCell */ = {
-			isa = PBXGroup;
-			children = (
-				8A47DED8210A2D30003F5CC3 /* NSCollectionAppCell.swift */,
-			);
-			path = NSCollectionAppCell;
-			sourceTree = "<group>";
-		};
 		8A0138D32217623200C77DA0 /* Storyboards */ = {
 			isa = PBXGroup;
 			children = (
@@ -352,6 +344,7 @@
 				8A800B382315DD7100037103 /* PreferencesViewController.swift */,
 				8A800B312315DD4400037103 /* PreferencesApplicationsViewController.swift */,
 				8A9D9A952262F24A00E4D36F /* IPAddressChooserDialog.swift */,
+				8A32C4BC24A24FD50048CE7E /* ApplicationDescriptionSheet.swift */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
@@ -486,6 +479,7 @@
 			isa = PBXGroup;
 			children = (
 				8A6C645B225D4E9900CD6DCF /* InstallerCellView.swift */,
+				8A32C4B524A244AD0048CE7E /* AppCellView.swift */,
 			);
 			path = NSTableCellView;
 			sourceTree = "<group>";
@@ -588,7 +582,6 @@
 			isa = PBXGroup;
 			children = (
 				8A6C645A225D4E8D00CD6DCF /* NSTableCellView */,
-				8A0138C9221703D400C77DA0 /* NSCollectionAppCell */,
 				8A6C6457225D305700CD6DCF /* NSPageController */,
 			);
 			path = Custom;
@@ -611,7 +604,6 @@
 				8A800B3C2315DEE500037103 /* LoadingView.xib */,
 				8A800B3B2315DEE500037103 /* MachineInformationView.xib */,
 				8A9D9A972262FB5F00E4D36F /* IPAddressChooserDialog.xib */,
-				8A47DEDA210A3418003F5CC3 /* NSCollectionAppCell.xib */,
 				8A9D9AAF2263370E00E4D36F /* KBTextFieldDialog */,
 			);
 			path = Xibs;
@@ -684,7 +676,7 @@
 		8A9D9AAA22632A7900E4D36F /* Default Settings */ = {
 			isa = PBXGroup;
 			children = (
-				8A39D35F2119E81B00437F4E /* com.er2.applications.plist */,
+				8A39D35F2119E81B00437F4E /* com.macOS-Utilities.preferences.plist */,
 			);
 			name = "Default Settings";
 			sourceTree = "<group>";
@@ -877,9 +869,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				8ACB65D921063E6F004B9C5A /* Assets.xcassets in Resources */,
-				8A47DEDB210A3418003F5CC3 /* NSCollectionAppCell.xib in Resources */,
 				8A9D9AAE2263370800E4D36F /* KBTextFieldDialog-large.xib in Resources */,
-				8A426BAD249D207000A38542 /* com.er2.applications.plist in Resources */,
+				8A426BAD249D207000A38542 /* com.macOS-Utilities.preferences.plist in Resources */,
 				8A9D9A982262FB5F00E4D36F /* IPAddressChooserDialog.xib in Resources */,
 				8A426BAF249D37D300A38542 /* THX.mp3 in Resources */,
 				8A9D9A9A226307CD00E4D36F /* KBTextFieldDialog-small.xib in Resources */,
@@ -987,6 +978,7 @@
 				8A800B2A2315DC5D00037103 /* NSView+Replacement.swift in Sources */,
 				8AD01F1122A16F5B00C722B6 /* ItemType.swift in Sources */,
 				8A3243CE22A1B8190042E6D9 /* Disk.swift in Sources */,
+				8A32C4BD24A24FD50048CE7E /* ApplicationDescriptionSheet.swift in Sources */,
 				8AD01F0D22A16F5600C722B6 /* HardwareItem.swift in Sources */,
 				8A2DB9542289FEFF00261B9E /* GlobalNotifications.swift in Sources */,
 				8A2DB9452289DF8800261B9E /* DiskUtilityInfo.swift in Sources */,
@@ -1066,11 +1058,11 @@
 				8ACB65D721063E6F004B9C5A /* ApplicationViewController.swift in Sources */,
 				8AA61A9E2316187000BB7B93 /* XLFacilityLogger.swift in Sources */,
 				8A584773226AB351008E9DE8 /* KBTableView.swift in Sources */,
-				8A47DED9210A2D30003F5CC3 /* NSCollectionAppCell.swift in Sources */,
 				8A800B362315DD5500037103 /* WizardViewController.swift in Sources */,
 				8A2DB93B2289DDA400261B9E /* OutputParser.swift in Sources */,
 				8A584776226ABDA5008E9DE8 /* CocoaLumberjack-Extensions.swift in Sources */,
 				8A800B372315DD5500037103 /* PageController.swift in Sources */,
+				8A32C4B624A244AD0048CE7E /* AppCellView.swift in Sources */,
 				8A2DB94E2289EAF600261B9E /* RawOutputType.swift in Sources */,
 				8A87B8B721A47DD8004496AA /* CwlSysctl.swift in Sources */,
 				8A27EF0122C56159005F45AF /* NetworkUtils.swift in Sources */,

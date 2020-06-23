@@ -31,6 +31,8 @@
 	<key>mappedApplications</key>
 	<array>
 		<dict>
+			<key>appDescription</key>
+			<string>Securely erase disks with KillDisk</string>
 			<key>isInvalid</key>
 			<true/>
 			<key>isUtility</key>
@@ -43,6 +45,8 @@
 			<true/>
 		</dict>
 		<dict>
+			<key>appDescription</key>
+			<string>Perform load tests with the CPU to check fans and thermals</string>
 			<key>isInvalid</key>
 			<true/>
 			<key>isUtility</key>
@@ -55,6 +59,8 @@
 			<true/>
 		</dict>
 		<dict>
+			<key>appDescription</key>
+			<string>Perform benchmarks on the GPU to check fans, thermals, and system stability</string>
 			<key>isInvalid</key>
 			<true/>
 			<key>isUtility</key>
@@ -67,6 +73,8 @@
 			<true/>
 		</dict>
 		<dict>
+			<key>appDescription</key>
+			<string>Test sound, microphone, and webcam</string>
 			<key>isInvalid</key>
 			<true/>
 			<key>isUtility</key>
@@ -79,6 +87,8 @@
 			<true/>
 		</dict>
 		<dict>
+			<key>appDescription</key>
+			<string>Repair or erase a disk using Disk Utility</string>
 			<key>isInvalid</key>
 			<false/>
 			<key>isUtility</key>
@@ -91,6 +101,8 @@
 			<true/>
 		</dict>
 		<dict>
+			<key>appDescription</key>
+			<string>Print a system specification label</string>
 			<key>isInvalid</key>
 			<true/>
 			<key>isUtility</key>
@@ -103,6 +115,8 @@
 			<true/>
 		</dict>
 		<dict>
+			<key>appDescription</key>
+			<string>Do advanced, super user things with Terminal</string>
 			<key>isInvalid</key>
 			<false/>
 			<key>isUtility</key>
@@ -115,6 +129,8 @@
 			<true/>
 		</dict>
 		<dict>
+			<key>appDescription</key>
+			<string>Browse Apple Support to get help with your Mac</string>
 			<key>isInvalid</key>
 			<false/>
 			<key>isUtility</key>

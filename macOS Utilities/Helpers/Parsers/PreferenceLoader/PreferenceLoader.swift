@@ -13,7 +13,7 @@ import PaperTrailLumberjack
 class PreferenceLoader {
     public static let libraryFolder = "\(AppFolder.Library.Application_Support.url.path)/macOS Utilities/"
     public static let bundle = Bundle.main
-    public static let propertyListName = "com.er2.applications"
+    public static let propertyListName = "com.macOS-Utilities.preferences"
 
     public let libraryPropertyListPath = "\(PreferenceLoader.libraryFolder)\(PreferenceLoader.propertyListName).plist"
     public let bundlePropertyListPath = Bundle.main.path(forResource: PreferenceLoader.propertyListName, ofType: "plist")

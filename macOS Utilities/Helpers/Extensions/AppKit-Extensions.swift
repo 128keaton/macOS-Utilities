@@ -151,7 +151,7 @@ extension NSImage {
         }
         return nil
     }
-    
+
     func resize(withSize targetSize: NSSize) -> NSImage? {
         let frame = NSRect(x: 0, y: 0, width: targetSize.width, height: targetSize.height)
         guard let representation = self.bestRepresentation(for: frame, context: nil, hints: nil) else {
@@ -299,5 +299,24 @@ extension NSViewController {
         alert.addButton(withTitle: "No")
 
         alert.beginSheetModal(for: window, completionHandler: completionHandler)
+    }
+}
+
+extension NSView {
+    func blink(toValue: CGFloat = 0.0) {
+        let animation = CABasicAnimation(keyPath: "opacity")
+        animation.fromValue = 1.0
+        animation.toValue = toValue
+        animation.duration = 0.9
+        animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        animation.autoreverses = true
+        animation.repeatCount = 9999999.0
+
+        self.wantsLayer = true
+        self.layer?.add(animation, forKey: "opacity")
+    }
+
+    func blinkOff() {
+        self.layer?.removeAnimation(forKey: "opacity")
     }
 }

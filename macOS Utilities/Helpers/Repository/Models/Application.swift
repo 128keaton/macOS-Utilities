@@ -17,6 +17,8 @@ import CocoaLumberjack
     var name: String
     var isUtility: Bool? = false
     var showInApplicationsWindow = true
+    var appVersion: String?
+    var appDescription: String?
 
     private (set) public var infoPath: String? = nil
     private (set) public var iconURL: URL? = nil
@@ -101,6 +103,7 @@ import CocoaLumberjack
         super.init()
 
         self.showInApplicationsWindow = showInApplicationsWindow
+        self.appVersion = self.getApplicationVersion()
     }
 
     public func open() -> Bool {
@@ -130,31 +133,6 @@ import CocoaLumberjack
         self.cachedPath = nil
     }
 
-    public func getCollectionViewItem(item: NSCollectionViewItem) -> NSCollectionViewItem {
-        if let newItem = item as? NSCollectionAppCell {
-            newItem.icon?.image = self.icon
-            newItem.regularImage = self.icon
-            newItem.darkenedImage = self.icon.darkened
-
-            newItem.application = self
-
-            if !self.isValid {
-                newItem.titleLabel?.textColor = NSColor.gray
-                newItem.titleLabel?.stringValue = "\(self.name)*"
-            } else {
-                if(NSApplication.shared.isDarkMode(view: newItem.view)) {
-                    newItem.titleLabel?.textColor = NSColor.white
-                } else {
-                    newItem.titleLabel?.textColor = NSColor.black
-                }
-                newItem.titleLabel?.stringValue = self.name
-            }
-            return newItem
-        }
-
-        return item
-    }
-
     public func getApplicationIcon() -> NSImage {
         guard let infoDictionary = self.infoDictionary else {
             return self.defaultIcon
@@ -179,6 +157,18 @@ import CocoaLumberjack
         }
         
         return self.defaultIcon
+    }
+    
+    public func getApplicationVersion() -> String {
+        guard let infoDictionary = self.infoDictionary else {
+            return "1.0"
+        }
+        
+        guard let version = (infoDictionary["CFBundleShortVersionString"] as? String) else {
+            return "1.0"
+        }
+        
+        return version
     }
 
 

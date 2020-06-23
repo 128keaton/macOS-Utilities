@@ -17,6 +17,7 @@ class PreferencesApplicationsViewController: NSViewController, NSMenuItemValidat
 
     private var dragDropType = NSPasteboard.PasteboardType(rawValue: "public.data")
     private var fileNameType = NSPasteboard.PasteboardType(rawValue: "NSFilenamesPboardType")
+    private var clickedApplication: Application?
 
     private let fileTypes = ["app", "plist"]
 
@@ -43,6 +44,13 @@ class PreferencesApplicationsViewController: NSViewController, NSMenuItemValidat
         addContextMenu()
     }
 
+    @objc private func editAppDescription(_ sender: AnyObject) {
+        guard self.tableView.clickedRow >= 0 else { return }
+
+        self.clickedApplication = self.applications[self.tableView.clickedRow]
+        self.performSegue(withIdentifier: "editApplicationDescription", sender: self)
+    }
+
     func addSortDescriptors() {
         let sortValid = NSSortDescriptor(key: "isValid", ascending: false, selector: #selector(NSNumber.compare(_:)))
         tableView.tableColumns[0].sortDescriptorPrototype = sortValid
@@ -67,9 +75,12 @@ class PreferencesApplicationsViewController: NSViewController, NSMenuItemValidat
 
         let deleteItem = NSMenuItem(title: "Delete", action: #selector(PreferencesApplicationsViewController.tableViewDeleteItemClicked(_:)), keyEquivalent: "")
         deleteItem.target = self
-
+        
+        let editDescriptionItem = NSMenuItem(title: "Edit Description", action: #selector(editAppDescription), keyEquivalent: "")
+        editDescriptionItem.target = self
 
         contextMenu.addItem(openInFinderItem)
+        contextMenu.addItem(editDescriptionItem)
         contextMenu.addItem(NSMenuItem.separator())
         contextMenu.addItem(deleteItem)
 
@@ -91,6 +102,26 @@ class PreferencesApplicationsViewController: NSViewController, NSMenuItemValidat
 
     @objc func sortByValid(_ a: AnyObject) {
         print(a)
+    }
+    
+    func appDescriptionUpdated(_ newDescription: String) {
+        if let clickedApplication = self.clickedApplication {
+            clickedApplication.appDescription = newDescription
+            
+            self.applications = self.applications.filter { $0.name != clickedApplication.name }
+            self.applications.append(clickedApplication)
+            
+            self.updateApplications()
+            self.clickedApplication = nil
+        }
+    }
+
+    
+    override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
+        if (segue.identifier == "editApplicationDescription") {
+            let appDescriptionSheet = segue.destinationController as! ApplicationDescriptionSheet
+            appDescriptionSheet.application = self.clickedApplication
+        }
     }
 
     private func updateApplications() {
@@ -305,7 +336,7 @@ extension PreferencesApplicationsViewController: NSTableViewDataSource, NSTableV
 
     private func editRowAt(_ position: Int) {
         if let cellAt = tableView.view(atColumn: 1, row: position, makeIfNecessary: false) {
-            if let textField = ( cellAt.subviews.first { type(of: $0) == NSTextField.self }) {
+            if let textField = (cellAt.subviews.first { type(of: $0) == NSTextField.self }) {
                 textField.becomeFirstResponder()
             }
         }

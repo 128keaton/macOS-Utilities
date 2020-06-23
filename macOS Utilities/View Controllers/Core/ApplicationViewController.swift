@@ -10,36 +10,20 @@ import Cocoa
 import AppFolder
 import CocoaLumberjack
 
-class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
-    @IBOutlet weak var collectionView: NSCollectionView!
+class ApplicationViewController: NSViewController {
+    @IBOutlet weak var tableView: NSTableView!
     @IBOutlet weak var installMacOSButton: NSButton?
     @IBOutlet weak var copyrightLabel: NSTextField!
     @IBOutlet weak var versionLabel: NSTextField!
+    @IBOutlet weak var errorButton: NSButton?
 
     private var preferenceLoader: PreferenceLoader? = nil
     private let itemRepository = ItemRepository.shared
     private var peerCommunicationService: PeerCommunicationService? = nil
-
-    private var disabledPaths: [IndexPath] = []
+    private var appRows: [AppCellView] = []
+    private var disabledRows: [Int] = []
     private let reloadQueue = DispatchQueue(label: "thread-safe-obj", attributes: .concurrent)
 
-    private var applicationsInSections: [[Application]] {
-        return itemRepository.allowedApplications.count > 4 ? itemRepository.allowedApplications.chunked(into: 4) : [itemRepository.allowedApplications]
-    }
-
-    private var allItems: [NSCollectionAppCell] {
-        var items: [NSCollectionAppCell] = []
-        self.applicationsInSections.enumerated().forEach {
-            let section = $0.offset
-            $0.element.enumerated().forEach {
-                let index = $0.offset
-                if let item = self.collectionView.item(at: IndexPath(item: index, section: section)) as? NSCollectionAppCell {
-                    items.append(item)
-                }
-            }
-        }
-        return items
-    }
 
     static let reloadApplications = Notification.Name("ReloadApplications")
 
@@ -50,13 +34,9 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
             self.versionLabel.stringValue = "Version \(appVersion)"
         }
 
-
+        self.errorButton?.blink(toValue: 0.3)
         self.registerForNotifications()
         self.showIPAddress()
-
-        if let collectionViewNib = NSNib(nibNamed: "NSCollectionAppCell", bundle: nil) {
-            collectionView.register(collectionViewNib, forItemWithIdentifier: NSUserInterfaceItemIdentifier(rawValue: "NSCollectionAppCell"))
-        }
     }
 
     override func viewDidAppear() {
@@ -96,13 +76,13 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
 
     private func showIPAddress() {
         guard let networkAddress = (NetworkUtils.getAllAddresses().first { (address) -> Bool in
-            let validIP = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
-            return (address.range(of: validIP, options: .regularExpression) != nil)
-        }) else {
+                let validIP = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
+                return (address.range(of: validIP, options: .regularExpression) != nil)
+            }) else {
             return
         }
 
-        self.copyrightLabel.stringValue = "Copyright 2018 ER2 - IP: \(networkAddress) - Remote Log: \(networkAddress):8080"
+        self.copyrightLabel.stringValue = "IP: \(networkAddress) - Remote Log: \(networkAddress):8080"
     }
 
     @objc private func addInstaller(_ aNotification: Notification? = nil) {
@@ -110,9 +90,13 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         if (notification.object as? Installer) != nil {
             DispatchQueue.main.async {
                 self.installMacOSButton?.isEnabled = true
+                self.addTouchBarInstallButton()
+                self.errorButton?.blinkOff()
 
-                if #available(OSX 10.12.2, *) {
-                    self.addTouchBarInstallButton()
+                NSAnimationContext.runAnimationGroup { (context) in
+                    context.duration = 0.5
+                    self.errorButton?.alphaValue = 0.0
+                    self.errorButton?.isEnabled = false
                 }
             }
         }
@@ -122,8 +106,7 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         guard let notification = aNotification else { return }
         if (notification.object as? Application) != nil {
             self.hideAllApplications()
-            self.collectionView.reloadData()
-            self.configureCollectionView()
+            self.tableView.reloadData()
             self.showAllApplications()
         }
     }
@@ -134,12 +117,7 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         DispatchQueue.main.async {
             KBLogDebug("Reloading all applications")
 
-
-            DispatchQueue.main.async {
-                self.configureCollectionView()
-            }
-
-            self.collectionView.reloadData()
+            self.tableView.reloadData()
 
             DispatchQueue.main.async {
                 self.showAllApplications()
@@ -148,49 +126,13 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     }
 
     private func hideAllApplications() {
-        allItems.forEach { $0.hide() }
+        self.appRows.forEach { $0.hide() }
     }
 
     private func showAllApplications() {
-        allItems.forEach { $0.show() }
+        self.appRows.forEach { $0.show() }
     }
 
-    private func configureCollectionView() {
-        if itemRepository.allowedApplications.count > 0 {
-            let flowLayout = NSCollectionViewFlowLayout()
-
-            let collectionViewWidth = 640
-            let collectionViewHeight = 270.0
-
-            let itemWidth = 100
-            let itemHeight = 120
-
-            let totalNumberOfItems = itemRepository.allowedApplications.count
-            let numberOfItemsInSections = self.applicationsInSections.map { $0.count }
-
-            let itemSpacing = (collectionViewWidth - (numberOfItemsInSections.first! * itemWidth)) / numberOfItemsInSections.first!
-
-            flowLayout.itemSize = NSSize(width: itemWidth, height: itemHeight)
-
-
-            if totalNumberOfItems < 3 {
-                flowLayout.minimumLineSpacing = 3.0
-                flowLayout.sectionInset = NSEdgeInsets(top: CGFloat(collectionViewHeight / 4.0), left: CGFloat(collectionViewWidth / 8), bottom: 10.0, right: CGFloat(collectionViewWidth / 8))
-            } else if totalNumberOfItems < 4 {
-                flowLayout.minimumLineSpacing = 3.0
-                flowLayout.sectionInset = NSEdgeInsets(top: CGFloat(collectionViewHeight / 4.0), left: CGFloat(collectionViewWidth / 12), bottom: 10.0, right: CGFloat(collectionViewWidth / 12))
-            } else if totalNumberOfItems == 4 {
-                flowLayout.minimumLineSpacing = 0.0
-                flowLayout.sectionInset = NSEdgeInsets(top: CGFloat(collectionViewHeight / 4.0), left: 10.0, bottom: 10.0, right: 10.0)
-            } else if totalNumberOfItems > 4 {
-                flowLayout.minimumLineSpacing = 0.0
-                flowLayout.sectionInset = NSEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0)
-            }
-
-            flowLayout.minimumInteritemSpacing = CGFloat(itemSpacing)
-            collectionView.collectionViewLayout = flowLayout
-        }
-    }
 
     @IBAction func ejectCDTray(_ sender: NSMenuItem) {
         let ejectProcess = Process()
@@ -219,14 +161,12 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
         }
     }
 
-    @available(OSX 10.12.2, *)
     func removeTouchBarInstallButton() {
         if let touchBar = self.touchBar {
             touchBar.defaultItemIdentifiers = [.getInfo, .openPreferences]
         }
     }
 
-    @available(OSX 10.12.2, *)
     func addTouchBarInstallButton() {
         if let touchBar = self.touchBar {
             touchBar.defaultItemIdentifiers = [.installMacOS, .getInfo, .openPreferences]
@@ -234,61 +174,45 @@ class ApplicationViewController: NSViewController, NSCollectionViewDelegate {
     }
 }
 
-extension ApplicationViewController: NSCollectionViewDataSource {
-    func collectionView(_ collectionView: NSCollectionView, didSelectItemsAt indexPaths: Set<IndexPath>) {
-        let indexPath = indexPaths.first!
-
-        let applicationsInSection = applicationsInSections[indexPath.section]
-        let applicationFromSection = applicationsInSection[indexPath.item]
-
-        if !applicationFromSection.isValid {
-            disabledPaths.append(indexPath)
-        }
-
-        itemRepository.openApplication(applicationFromSection)
-        PeerCommunicationService.instance.updateStatus("Running \(applicationFromSection.name)")
-        deselectAllItems(indexPaths)
-    }
-
-    func deselectAllItems(_ indexPaths: Set<IndexPath>) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.06) {
-            self.collectionView.deselectItems(at: indexPaths)
-        }
-    }
-
-    func numberOfSections(in collectionView: NSCollectionView) -> Int {
-        return applicationsInSections.count
-    }
-
-    func collectionView(_ collectionView: NSCollectionView, numberOfItemsInSection section: Int) -> Int {
-        if applicationsInSections.indices.contains(section) {
-            return applicationsInSections[section].count
-        }
+extension ApplicationViewController: NSTableViewDataSource, NSTableViewDelegate {
+    func numberOfRows(in tableView: NSTableView) -> Int {
         return itemRepository.allowedApplications.count
     }
 
-    func collectionView(_ collectionView: NSCollectionView, itemForRepresentedObjectAt indexPath: IndexPath) -> NSCollectionViewItem {
-        let item = collectionView.makeItem(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "NSCollectionAppCell"), for: indexPath)
-        var applicationsInSection = [Application]()
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        if let appCell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier("AppCell"), owner: nil) as? AppCellView {
+            appCell.application = self.itemRepository.allowedApplications[row]
 
-        if applicationsInSections.indices.contains(indexPath.section) {
-            applicationsInSection = applicationsInSections[indexPath.section]
+            self.appRows.append(appCell)
+            return appCell
         }
 
-        if applicationsInSection.indices.contains(indexPath.item) {
-            let applicationFromSection = applicationsInSection[indexPath.item]
+        return nil
+    }
 
-            if !applicationFromSection.isValid {
-                disabledPaths.append(indexPath)
-            }
+    func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
+        let app = self.itemRepository.allowedApplications[row]
 
-            return applicationFromSection.getCollectionViewItem(item: item)
+        if !app.isValid {
+            self.disabledRows.append(row)
+            return false
         }
-        return item
+
+        return true
+    }
+
+    func tableViewSelectionDidChange(_ notification: Notification) {
+        if self.itemRepository.allowedApplications.indices.contains(self.tableView.selectedRow) {
+            let selectedApp = self.itemRepository.allowedApplications[self.tableView.selectedRow]
+
+            self.itemRepository.openApplication(selectedApp)
+            PeerCommunicationService.instance.updateStatus("Running \(selectedApp.name)")
+
+            self.tableView.deselectRow(self.tableView.selectedRow)
+        }
     }
 }
 
-@available(OSX 10.12.2, *)
 extension NSTouchBarItem.Identifier {
     static let installMacOS = NSTouchBarItem.Identifier("com.keaton.utilities.installMacOS")
     static let getInfo = NSTouchBarItem.Identifier("com.keaton.utilities.getInfo")
@@ -298,7 +222,6 @@ extension NSTouchBarItem.Identifier {
     static let openPreferences = NSTouchBarItem.Identifier("com.keaton.utilities.openPreferences")
 }
 
-@available(OSX 10.12.2, *)
 extension ApplicationViewController: NSTouchBarDelegate {
 
     override func makeTouchBar() -> NSTouchBar? {
