@@ -720,7 +720,11 @@
                     </connections>
                 </customObject>
                 <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
-                <customObject id="FXb-Ej-UYn" customClass="MenuHandler" customModule="macOS_Utilities" customModuleProvider="target"/>
+                <customObject id="FXb-Ej-UYn" customClass="MenuHandler" customModule="macOS_Utilities" customModuleProvider="target">
+                    <connections>
+                        <outlet property="debugMenuItem" destination="1sU-Rk-1kE" id="qw5-iO-Pnv"/>
+                    </connections>
+                </customObject>
                 <customObject id="bdE-iv-NZw" customClass="ApplicationViewController" customModule="macOS_Utilities" customModuleProvider="target"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <customObject id="fhx-CL-3aL" customClass="NSPageController">
@@ -858,7 +862,7 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="85" horizontalPageScroll="10" verticalLineScroll="85" verticalPageScroll="10" usesPredominantAxisScrolling="NO" verticalScrollElasticity="none" translatesAutoresizingMaskIntoConstraints="NO" id="alX-ie-Mam">
+                            <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="85" horizontalPageScroll="10" verticalLineScroll="85" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" verticalScrollElasticity="none" translatesAutoresizingMaskIntoConstraints="NO" id="alX-ie-Mam">
                                 <rect key="frame" x="20" y="69" width="565" height="460"/>
                                 <clipView key="contentView" ambiguous="YES" drawsBackground="NO" copiesOnScroll="NO" id="IKK-As-RkG">
                                     <rect key="frame" x="0.0" y="0.0" width="565" height="460"/>
@@ -946,11 +950,11 @@
                                     <constraint firstAttribute="height" constant="460" id="ns1-pY-cjH"/>
                                 </constraints>
                                 <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="rSp-P4-ba2">
-                                    <rect key="frame" x="0.0" y="409" width="565" height="16"/>
+                                    <rect key="frame" x="-100" y="-100" width="565" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="b3J-TS-A7y">
-                                    <rect key="frame" x="224" y="17" width="15" height="102"/>
+                                    <rect key="frame" x="-100" y="-100" width="15" height="102"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>
@@ -1654,7 +1658,7 @@
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="QrD-Wk-x5W">
                                                                     <rect key="frame" x="0.0" y="0.0" width="458" height="14"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" placeholderString="Application Path" id="OtO-b9-UUS">
-                                                                        <font key="font" metaFont="message" size="11"/>
+                                                                        <font key="font" metaFont="controlContent" size="11"/>
                                                                         <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>

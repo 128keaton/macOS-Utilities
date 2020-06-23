@@ -52,6 +52,7 @@ class XLOverlayLog: XLLogger {
         scrollView.drawsBackground = false
         scrollView.hasHorizontalScroller = false
         scrollView.hasVerticalScroller = true
+        scrollView.scrollerKnobStyle = .dark
 
         logWindow.contentView?.addSubview(scrollView)
 

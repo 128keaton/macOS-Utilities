@@ -11,6 +11,8 @@ import Cocoa
 import CocoaLumberjack
 
 class MenuHandler: NSObject {
+    @IBOutlet var debugMenuItem: NSMenuItem?
+
     public var utilitiesMenu: NSMenu?
     public var infoMenu: NSMenu? {
         didSet {
@@ -36,8 +38,16 @@ class MenuHandler: NSObject {
 
     private override init() {
         super.init()
-        
+
         registerForNotifications()
+
+        #if DEBUG
+            self.debugMenuItem?.isEnabled = true
+            self.debugMenuItem?.isHidden = false
+        #else
+            self.debugMenuItem?.isEnabled = false
+            self.debugMenuItem?.isHidden = true
+        #endif
     }
 
     private func registerForNotifications() {
@@ -55,7 +65,7 @@ class MenuHandler: NSObject {
             if helpEmailAddress == nil {
                 helpMenu!.items.forEach {
                     if $0.title == "Send Log" {
-                         helpMenu!.removeItem($0)
+                        helpMenu!.removeItem($0)
                     }
                 }
                 DDLogInfo("Disabling 'Send Log' menu item. helpEmailAddress is nil")
@@ -242,10 +252,10 @@ class MenuHandler: NSObject {
             if let utility = validNotification.object as? Utility {
                 removeUtilityPlaceholder()
                 let newItem = NSMenuItem(title: "  \(utility.name)", action: #selector(MenuHandler.openApp(_:)), keyEquivalent: "")
-                
+
                 newItem.image = utility.icon.resize(withSize: NSSize(width: 20, height: 20))
                 newItem.target = self
-                
+
                 utilitiesMenu?.addItem(newItem)
             }
         }
