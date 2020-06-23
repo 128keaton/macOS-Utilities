@@ -44,9 +44,13 @@ class MenuHandler: NSObject {
         #if DEBUG
             self.debugMenuItem?.isEnabled = true
             self.debugMenuItem?.isHidden = false
-        #else
+            self.debugMenuItem?.allowsKeyEquivalentWhenHidden = true
+        #endif
+
+        #if RELEASE
             self.debugMenuItem?.isEnabled = false
             self.debugMenuItem?.isHidden = true
+            self.debugMenuItem?.allowsKeyEquivalentWhenHidden = false
         #endif
     }
 

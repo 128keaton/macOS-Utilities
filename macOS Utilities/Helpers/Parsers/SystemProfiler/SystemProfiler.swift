@@ -255,6 +255,7 @@ class SystemProfiler {
 
     public static var hasBootDisk: Bool {
         if let bootDisk = DiskUtility.bootDisk {
+            print("Boot Disk: \(bootDisk)")
             return bootDisk.volumeName == "Macintosh HD" && bootDisk.size.gigabytes >= 110.0
         }
 

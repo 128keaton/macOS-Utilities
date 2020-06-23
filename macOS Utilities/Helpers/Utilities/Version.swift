@@ -20,6 +20,7 @@ class Version: Equatable, ExpressibleByStringLiteral, CustomStringConvertible {
     static let sierra = Version.init(stringLiteral: "macOS Sierra,10.12")
     static let highSierra = Version.init(stringLiteral: "macOS High Sierra,10.13")
     static let mojave = Version.init(stringLiteral: "macOS Mojave,10.14")
+    static let catalina = Version.init(stringLiteral: "macOS Catalina,10.15")
 
 
     public static func == (lhs: Version, rhs: Version) -> Bool {
@@ -51,6 +52,8 @@ class Version: Equatable, ExpressibleByStringLiteral, CustomStringConvertible {
             self.number = 10.12
         } else if versionName.contains("Mojave") {
             self.number = 10.14
+        } else if versionName.contains("Catalina") {
+            self.number = 10.15
         } else if versionName.contains("Fake") {
             self.number = Double.random(in: 1.0 ... 9.0)
         } else {

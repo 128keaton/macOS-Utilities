@@ -67,7 +67,7 @@ class DiskUtility: NSObject, NSFilePresenter {
         cachedDisks.append(disk)
     }
 
-    // Gets the bootable or "first" disk installed on the machine
+    /// Gets the bootable or "first" disk installed on the machine
     public static var bootDisk: Disk? {
         let path = "/"
         let mountPoint = path.cString(using: .utf8)! as [Int8]

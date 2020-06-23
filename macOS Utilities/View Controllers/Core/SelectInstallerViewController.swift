@@ -38,10 +38,10 @@ class SelectInstallerViewController: NSViewController {
         updateStatusImages()
         getInstallableVersions()
     }
-    
+
     override func viewDidAppear() {
         super.viewDidAppear()
-        
+
         PeerCommunicationService.instance.updateStatus("Choosing Installer")
     }
 
@@ -78,14 +78,14 @@ class SelectInstallerViewController: NSViewController {
     private func deselectAllInstallers(shouldDisableInstallButton: Bool = true) {
         if(shouldDisableInstallButton && installButton.isEnabled) {
             installButton.isEnabled = false
-            if #available(OSX 10.12.2, *) {
-                removeTouchBarNextButton()
-            }
+
+            removeTouchBarNextButton()
+
         } else if (!shouldDisableInstallButton && !installButton.isEnabled) {
             installButton.isEnabled = true
-            if #available(OSX 10.12.2, *) {
-                addTouchBarNextButton()
-            }
+
+            addTouchBarNextButton()
+
         }
 
         ItemRepository.shared.unsetAllSelectedInstallers()
@@ -195,14 +195,14 @@ class SelectInstallerViewController: NSViewController {
         PageController.shared.goToNextPage()
     }
 
-    @available(OSX 10.12.2, *)
+
     func removeTouchBarNextButton() {
         if let touchBar = self.touchBar {
             touchBar.defaultItemIdentifiers = [.closeCurrentWindow]
         }
     }
 
-    @available(OSX 10.12.2, *)
+
     func addTouchBarNextButton() {
         if let touchBar = self.touchBar {
             touchBar.defaultItemIdentifiers = [.closeCurrentWindow, .nextPageController]
@@ -243,9 +243,8 @@ extension SelectInstallerViewController: NSTableViewDelegate, NSTableViewDelegat
             potentialInstaller.isSelected = true
         } else {
             installButton.isEnabled = false
-            if #available(OSX 10.12.2, *) {
-                removeTouchBarNextButton()
-            }
+            removeTouchBarNextButton()
+
             DDLogInfo("Unable to install \(potentialInstaller) on machine \(Sysctl.model) ")
         }
 
@@ -260,7 +259,7 @@ extension SelectInstallerViewController: NSTableViewDelegate, NSTableViewDelegat
     }
 }
 
-@available(OSX 10.12.2, *)
+
 extension SelectInstallerViewController: NSTouchBarDelegate {
 
     override func makeTouchBar() -> NSTouchBar? {
