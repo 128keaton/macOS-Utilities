@@ -25,7 +25,6 @@ class TestViewController: NSViewController {
 
     private var testAudioFiles: [String] = []
     private var mic: AKMicrophone!
-    private var tracker: AKFrequencyTracker!
     private var silence: AKBooster!
     private var currentCameraSession: AVCaptureSession?
     private var audioPlayer: AVAudioPlayer?
@@ -116,11 +115,6 @@ class TestViewController: NSViewController {
         }
     }
 
-    private func getSampleRate() -> Double {
-        let inputDevice = Audio.getDefaultInputDevice()
-        return Audio.getSampleRate(deviceID: inputDevice)
-    }
-
     private func startAudioKit() {
         AudioKit.output = silence
         do {
@@ -134,12 +128,11 @@ class TestViewController: NSViewController {
     }
 
     private func setupAudioKit() {
-        AKSettings.sampleRate = getSampleRate()
+        AKSettings.sampleRate = AudioKit.engine.inputNode.inputFormat(forBus: 0).sampleRate
         AKSettings.audioInputEnabled = true
 
         mic = AKMicrophone()
-        tracker = AKFrequencyTracker(mic)
-        silence = AKBooster(tracker, gain: 0)
+        silence = AKBooster(mic, gain: 0)
     }
 
     private func startCameraSession() {

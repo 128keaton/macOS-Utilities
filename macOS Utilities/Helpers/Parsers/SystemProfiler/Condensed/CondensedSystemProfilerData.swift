@@ -11,7 +11,7 @@ import Foundation
 struct CondensedSystemProfilerData: Encodable {
     var hardware: CondensedHardwareInfo?
     var notes: String = String()
-    
+
     enum CodingKeys: String, CodingKey {
         case hardware = "machineInfo"
         case notes = "testingNotes"
@@ -24,10 +24,10 @@ struct CondensedSystemProfilerData: Encodable {
         if let hardwareItem = (mappedData.first { $0.dataType == .hardware }) as? HardwareItem {
             self.hardware = CondensedHardwareInfo(from: hardwareItem)
             self.notes = notes
-            
+
             if let powerItems = allData.first(where: { $0.first != nil && $0.first!.dataType == .power }),
-                let batteryItem = powerItems.first(where: { type(of: $0) == BatteryItem.self }) as? BatteryItem,
-                let healthInfo = batteryItem.healthInfo {
+                let batteryItem = powerItems.first(where: { type(of: $0) == BatteryItem.self }),
+                let healthInfo = (batteryItem as! BatteryItem).healthInfo {
                 self.hardware!.batteryHealth = CondensedBatteryHealth(from: healthInfo)
             }
 

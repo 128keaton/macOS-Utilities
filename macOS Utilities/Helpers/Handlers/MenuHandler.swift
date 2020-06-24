@@ -143,6 +143,11 @@ class MenuHandler: NSObject {
     }
 
     @IBAction func ejectAll(_ sender: NSMenuItem) {
+        let ejectProcess = Process()
+        ejectProcess.launchPath = "/usr/bin/drutil"
+        ejectProcess.arguments = ["tray", "eject"]
+        ejectProcess.launch()
+
         DiskUtility.ejectAll() { (didComplete) in
             DDLogInfo("Finished ejecting? \(didComplete)")
         }

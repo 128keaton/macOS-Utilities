@@ -39,10 +39,7 @@
                             </textField>
                             <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="YUa-i4-KNf">
                                 <rect key="frame" x="-2" y="147" width="262" height="17"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="17" id="uHP-Rm-gub"/>
-                                </constraints>
-                                <textFieldCell key="cell" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" focusRingType="none" placeholderString="Machine Model" id="hgW-nf-dAZ">
+                                <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" focusRingType="none" placeholderString="Machine Model" usesSingleLineMode="YES" id="hgW-nf-dAZ">
                                     <font key="font" metaFont="systemMedium" size="14"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -61,9 +58,6 @@
                             </textField>
                             <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zf7-0v-FWb">
                                 <rect key="frame" x="-2" y="98" width="258" height="17"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="17" id="cb4-SF-tDc"/>
-                                </constraints>
                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" focusRingType="none" placeholderString="Machine CPU Info" id="lTC-gR-QFr">
                                     <font key="font" metaFont="systemMedium" size="14"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -83,10 +77,7 @@
                             </textField>
                             <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="KzU-V0-ESU">
                                 <rect key="frame" x="-2" y="49" width="258" height="17"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="17" id="H2b-xO-nWN"/>
-                                </constraints>
-                                <textFieldCell key="cell" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" focusRingType="none" placeholderString="Machine RAM Info" id="qxY-yV-ZTZ">
+                                <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" focusRingType="none" placeholderString="Machine RAM Info" usesSingleLineMode="YES" id="qxY-yV-ZTZ">
                                     <font key="font" metaFont="systemMedium" size="14"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -105,10 +96,7 @@
                             </textField>
                             <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="pcd-S5-VF7">
                                 <rect key="frame" x="-2" y="0.0" width="160" height="17"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="17" id="SZ9-id-eh7"/>
-                                </constraints>
-                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" focusRingType="none" placeholderString="Machine Battery Health" id="C5z-AE-yxe">
+                                <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" focusRingType="none" placeholderString="Machine Battery Health" usesSingleLineMode="YES" id="C5z-AE-yxe">
                                     <font key="font" metaFont="systemMedium" size="14"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -116,12 +104,9 @@
                             </textField>
                         </subviews>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="M8Q-6O-J7i" secondAttribute="trailing" id="OHY-Z6-p7B"/>
-                            <constraint firstAttribute="height" relation="lessThanOrEqual" constant="230" id="QRK-UI-s8K"/>
-                            <constraint firstAttribute="width" constant="270" id="SaU-pT-qfb"/>
-                            <constraint firstAttribute="trailing" secondItem="mtP-lh-FmL" secondAttribute="trailing" id="dnX-bJ-uek"/>
-                            <constraint firstAttribute="trailing" secondItem="y2l-uA-dAI" secondAttribute="trailing" id="r6D-SS-THh"/>
-                            <constraint firstItem="mtP-lh-FmL" firstAttribute="top" secondItem="48w-7l-k0a" secondAttribute="bottom" id="sGE-lp-8bi"/>
+                            <constraint firstAttribute="trailing" secondItem="YUa-i4-KNf" secondAttribute="trailing" constant="12" id="MGA-eV-ZKP"/>
+                            <constraint firstItem="zf7-0v-FWb" firstAttribute="trailing" secondItem="KzU-V0-ESU" secondAttribute="trailing" id="fPe-H7-CwM"/>
+                            <constraint firstAttribute="trailing" secondItem="zf7-0v-FWb" secondAttribute="trailing" constant="16" id="kwd-BF-AUS"/>
                         </constraints>
                         <visibilityPriorities>
                             <integer value="1000"/>
@@ -162,11 +147,11 @@
                     </button>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="8kw-Jc-e25" firstAttribute="trailing" secondItem="ZQj-Ry-4gm" secondAttribute="trailing" id="0hp-t5-O4n"/>
-                    <constraint firstAttribute="bottom" secondItem="8kw-Jc-e25" secondAttribute="bottom" constant="12" id="NpH-yl-3Sd"/>
-                    <constraint firstItem="ZQj-Ry-4gm" firstAttribute="top" secondItem="n7q-hs-qjG" secondAttribute="top" constant="12" id="Srw-W8-0dw"/>
-                    <constraint firstAttribute="trailing" secondItem="ZQj-Ry-4gm" secondAttribute="trailing" constant="12" id="dJn-Vs-BNf"/>
-                    <constraint firstItem="ZQj-Ry-4gm" firstAttribute="leading" secondItem="n7q-hs-qjG" secondAttribute="leading" constant="12" id="xbp-4N-jfh"/>
+                    <constraint firstItem="8kw-Jc-e25" firstAttribute="top" secondItem="ZQj-Ry-4gm" secondAttribute="bottom" constant="44" id="PHk-Ni-YdA"/>
+                    <constraint firstItem="ZQj-Ry-4gm" firstAttribute="centerX" secondItem="n7q-hs-qjG" secondAttribute="centerX" id="RA9-lQ-dDp"/>
+                    <constraint firstItem="ZQj-Ry-4gm" firstAttribute="trailing" secondItem="8kw-Jc-e25" secondAttribute="trailing" id="UFO-R9-Cly"/>
+                    <constraint firstItem="ZQj-Ry-4gm" firstAttribute="top" secondItem="n7q-hs-qjG" secondAttribute="top" constant="12" id="Z8p-3d-btI"/>
+                    <constraint firstItem="ZQj-Ry-4gm" firstAttribute="leading" secondItem="n7q-hs-qjG" secondAttribute="leading" constant="12" id="cxx-fA-mmk"/>
                 </constraints>
             </view>
             <font key="titleFont" metaFont="systemMedium" size="12"/>

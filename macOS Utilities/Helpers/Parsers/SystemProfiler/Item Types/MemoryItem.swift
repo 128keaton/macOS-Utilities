@@ -8,7 +8,9 @@
 
 import Foundation
 
-struct MemoryItem: ItemType {
+struct MemoryItem: ConcreteItemType {
+    typealias ItemType = MemoryItem
+    
     static var isNested: Bool = true
     var dataType: SPDataType = .memory
     var description: String {

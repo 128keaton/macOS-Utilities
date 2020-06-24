@@ -8,7 +8,13 @@
 
 import Foundation
 
-struct BatteryItem: Codable {
+struct BatteryItem: ConcreteItemType, Codable {
+    typealias ItemType = BatteryItem
+
+    var dataType: SPDataType  = .power
+
+    static var isNested: Bool = false
+    
     private var _installed: String
     
     var installed: Bool {

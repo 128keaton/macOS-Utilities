@@ -21,7 +21,6 @@ class ApplicationViewController: NSViewController {
     private let itemRepository = ItemRepository.shared
     private var peerCommunicationService: PeerCommunicationService? = nil
     private var appRows: [AppCellView] = []
-    private var disabledRows: [Int] = []
     private let reloadQueue = DispatchQueue(label: "thread-safe-obj", attributes: .concurrent)
 
     static let reloadApplications = Notification.Name("ReloadApplications")
@@ -133,22 +132,8 @@ class ApplicationViewController: NSViewController {
         self.appRows.forEach { $0.show() }
     }
 
-
-    @IBAction func ejectCDTray(_ sender: NSMenuItem) {
-        let ejectProcess = Process()
-        ejectProcess.launchPath = "/usr/bin/drutil"
-        ejectProcess.arguments = ["tray", "eject"]
-        ejectProcess.launch()
-    }
-
     @IBAction func installMacOSButtonClicked(_ sender: NSButton) {
         self.startMacOSInstall()
-    }
-
-    @IBAction func shutdownClicked(_ sender: NSButton) {
-        TaskHandler.createPrivilegedTask(command: "/sbin/shutdown", arguments: ["-h", "now"]) { (_, _) in
-            DDLogDebug("Shutting down..")
-        }
     }
 
     @objc private func startMacOSInstall() {
@@ -215,7 +200,6 @@ extension ApplicationViewController: NSTableViewDataSource, NSTableViewDelegate 
         let app = self.itemRepository.allowedApplications[row]
 
         if !app.isValid {
-            self.disabledRows.append(row)
             return false
         }
 

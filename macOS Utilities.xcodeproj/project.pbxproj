@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		4B87EE4A123D4EE1F26E61A2 /* Pods_macOS_Utilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02F50B1561E3062ADD7CE4B7 /* Pods_macOS_Utilities.framework */; };
 		8A00A46D24A113A30010DECD /* system_profiler_json in Resources */ = {isa = PBXBuildFile; fileRef = 8A00A46C24A113A20010DECD /* system_profiler_json */; };
+		8A00A47324A2D2030010DECD /* ConcreteItemTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A00A47224A2D2030010DECD /* ConcreteItemTypes.swift */; };
 		8A0138D1221749BD00C77DA0 /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0138D0221749BD00C77DA0 /* Version.swift */; };
 		8A0138D62217624700C77DA0 /* InfoPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0138D52217624700C77DA0 /* InfoPopoverViewController.swift */; };
 		8A175AAC225EFEE50018C977 /* ErrorAlertLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A175AAB225EFEE50018C977 /* ErrorAlertLogger.swift */; };
@@ -100,7 +101,6 @@
 		8AA841CC22659260009C5948 /* DiskImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841CB22659260009C5948 /* DiskImage.swift */; };
 		8AA841D02265A509009C5948 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841CF2265A509009C5948 /* Units.swift */; };
 		8AA841D322664276009C5948 /* PaddedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA841D222664276009C5948 /* PaddedTextField.swift */; };
-		8ABA1D03231A0A1700DBCAC3 /* Example_Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABA1D02231A0A1700DBCAC3 /* Example_Secrets.swift */; };
 		8ABA1D05231A0A6900DBCAC3 /* BSApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABA1D04231A0A6900DBCAC3 /* BSApplication.swift */; };
 		8ABAE3112252A46300E537D3 /* DiskSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE3102252A46300E537D3 /* DiskSelectionViewController.swift */; };
 		8ABAE3132252C1D800E537D3 /* TaskHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ABAE3122252C1D800E537D3 /* TaskHandler.swift */; };
@@ -134,6 +134,7 @@
 		7869FA87384CE89FE146572E /* Pods-macOS UtilitiesTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-macOS UtilitiesTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-macOS UtilitiesTests/Pods-macOS UtilitiesTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7D34D0D826F1DE150B6BEB3E /* Pods_macOS_UtilitiesTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_macOS_UtilitiesTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A00A46C24A113A20010DECD /* system_profiler_json */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = system_profiler_json; sourceTree = "<group>"; };
+		8A00A47224A2D2030010DECD /* ConcreteItemTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcreteItemTypes.swift; sourceTree = "<group>"; };
 		8A0138D0221749BD00C77DA0 /* Version.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
 		8A0138D52217624700C77DA0 /* InfoPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoPopoverViewController.swift; sourceTree = "<group>"; };
 		8A175AAB225EFEE50018C977 /* ErrorAlertLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorAlertLogger.swift; sourceTree = "<group>"; };
@@ -229,8 +230,6 @@
 		8AA841CB22659260009C5948 /* DiskImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskImage.swift; sourceTree = "<group>"; };
 		8AA841CF2265A509009C5948 /* Units.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Units.swift; sourceTree = "<group>"; };
 		8AA841D222664276009C5948 /* PaddedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddedTextField.swift; sourceTree = "<group>"; };
-		8AB65A8B231EF4D2006C7112 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
-		8ABA1D02231A0A1700DBCAC3 /* Example_Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Example_Secrets.swift; sourceTree = "<group>"; };
 		8ABA1D04231A0A6900DBCAC3 /* BSApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BSApplication.swift; sourceTree = "<group>"; };
 		8ABAE3102252A46300E537D3 /* DiskSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskSelectionViewController.swift; sourceTree = "<group>"; };
 		8ABAE3122252C1D800E537D3 /* TaskHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskHandler.swift; sourceTree = "<group>"; };
@@ -714,12 +713,10 @@
 			children = (
 				8A00A46B24A113950010DECD /* Binaries */,
 				8ACB65D421063E6F004B9C5A /* AppDelegate.swift */,
-				8ABA1D02231A0A1700DBCAC3 /* Example_Secrets.swift */,
 				8A0138C8221703CC00C77DA0 /* Helpers */,
 				8A0138D32217623200C77DA0 /* Storyboards */,
 				8A0138D42217623700C77DA0 /* View Controllers */,
 				8A9D9AA822632A2900E4D36F /* Resources */,
-				8AB65A8B231EF4D2006C7112 /* Secrets.swift */,
 				8A6B95652497FEEE00FAAFC8 /* Secrets.swift */,
 			);
 			path = "macOS Utilities";
@@ -764,6 +761,7 @@
 		8AD01EF622A16F0100C722B6 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
+				8A00A47224A2D2030010DECD /* ConcreteItemTypes.swift */,
 				8AD01F1822A1735900C722B6 /* NestedItemType.swift */,
 				8AD01EF722A16F0100C722B6 /* ItemType.swift */,
 				8AD01EF822A16F0100C722B6 /* StorageItem.swift */,
@@ -1036,7 +1034,6 @@
 				8A800AFD2315D6B500037103 /* CameraPreview.swift in Sources */,
 				8A808F732317314000B1A29F /* PeerCommunicationService.swift in Sources */,
 				8A3243CB22A1B75D0042E6D9 /* XMLParsing+Alamofire.swift in Sources */,
-				8ABA1D03231A0A1700DBCAC3 /* Example_Secrets.swift in Sources */,
 				8A2DB94A2289E09200261B9E /* DiskUtilityCoreStorageList.swift in Sources */,
 				8ABAE31D2252DA5800E537D3 /* Installer.swift in Sources */,
 				8A2DB9522289F77C00261B9E /* HardDriveImageUtility.swift in Sources */,
@@ -1046,6 +1043,7 @@
 				8A6C645C225D4E9900CD6DCF /* InstallerCellView.swift in Sources */,
 				8A9370D42256D5F6002B3838 /* ItemRepository.swift in Sources */,
 				8AD01F1222A16F5B00C722B6 /* StorageItem.swift in Sources */,
+				8A00A47324A2D2030010DECD /* ConcreteItemTypes.swift in Sources */,
 				8A2B05F32266888A0089F3A3 /* MenuHandler.swift in Sources */,
 				8A0138D62217624700C77DA0 /* InfoPopoverViewController.swift in Sources */,
 				8A2DB9502289F21900261B9E /* LogicalVolumeGroup.swift in Sources */,
