@@ -24,5 +24,5 @@
 
 # Usage
 
-* Bundle with AutoCasperNBI (or AutoNBI)
+* Bundle with AutoCasperNBI (or (builder)[https://github.com/128keaton/Builder])
 * Run from USB
