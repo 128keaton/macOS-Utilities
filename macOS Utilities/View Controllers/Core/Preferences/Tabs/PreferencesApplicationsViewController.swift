@@ -10,10 +10,8 @@ import Foundation
 import AppKit
 import CocoaLumberjack
 
-class PreferencesApplicationsViewController: NSViewController, NSMenuItemValidation {
+class PreferencesApplicationsViewController: PreferencesView, NSMenuItemValidation {
     @IBOutlet weak var tableView: NSTableView!
-
-    public var preferencesViewController: PreferencesViewController? = nil
 
     private var dragDropType = NSPasteboard.PasteboardType(rawValue: "public.data")
     private var fileNameType = NSPasteboard.PasteboardType(rawValue: "NSFilenamesPboardType")
@@ -31,7 +29,6 @@ class PreferencesApplicationsViewController: NSViewController, NSMenuItemValidat
         }
     }
 
-    public var preferences: Preferences? = nil
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -129,10 +126,6 @@ class PreferencesApplicationsViewController: NSViewController, NSMenuItemValidat
             currentPreferences.setApplications(self.applications)
 
             PreferenceLoader.save(currentPreferences, notify: false)
-            if let preferencesViewController = self.preferencesViewController {
-                preferencesViewController.applicationsCountLabel.stringValue = "\(self.applications.count) application(s)"
-            }
-
             ItemRepository.shared.addToRepository(newItems: self.applications, merge: true)
         }
     }

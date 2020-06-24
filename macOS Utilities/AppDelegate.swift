@@ -126,7 +126,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         if let preferences = PreferenceLoader.currentPreferences {
-            if let installerServer = preferences.installerServerPreferences {
+            if let installerServer = preferences.installerServerPreferences, (installerServer.serverEnabled && installerServer.mountPath != "") {
                 DiskUtility.mountNFSShare(shareURL: "\(installerServer.serverIP):\(installerServer.serverPath)", localPath: installerServer.mountPath) { (didSucceed) in
                     if(didSucceed) {
                         HardDriveImageUtility.mountDiskImagesAt(installerServer.mountPath)

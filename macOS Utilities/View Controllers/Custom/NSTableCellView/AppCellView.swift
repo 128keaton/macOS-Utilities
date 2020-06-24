@@ -13,6 +13,7 @@ class AppCellView: NSTableCellView {
     @IBOutlet weak var titleLabel: NSTextField?
     @IBOutlet weak var detailLabel: NSTextField?
 
+    private var didDraw = false
     public var regularImage: NSImage? = nil
     public var darkenedImage: NSImage? = nil
     public var isDisabled: Bool = false
@@ -40,9 +41,12 @@ class AppCellView: NSTableCellView {
     override func draw(_ dirtyRect: NSRect) {
         super.draw(dirtyRect)
 
-        self.icon?.alphaValue = 0.0
-        self.titleLabel?.alphaValue = 0.0
-        self.detailLabel?.alphaValue = 0.0
+        if (!self.didDraw) {
+            self.icon?.alphaValue = 0.0
+            self.titleLabel?.alphaValue = 0.0
+            self.detailLabel?.alphaValue = 0.0
+            self.didDraw = true
+        }
     }
 
     public func show() {

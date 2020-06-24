@@ -10,6 +10,11 @@
 		4B87EE4A123D4EE1F26E61A2 /* Pods_macOS_Utilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02F50B1561E3062ADD7CE4B7 /* Pods_macOS_Utilities.framework */; };
 		8A00A46D24A113A30010DECD /* system_profiler_json in Resources */ = {isa = PBXBuildFile; fileRef = 8A00A46C24A113A20010DECD /* system_profiler_json */; };
 		8A00A47324A2D2030010DECD /* ConcreteItemTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A00A47224A2D2030010DECD /* ConcreteItemTypes.swift */; };
+		8A00A47524A2D8FA0010DECD /* LoggingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A00A47424A2D8FA0010DECD /* LoggingViewController.swift */; };
+		8A00A47724A2D9DF0010DECD /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A00A47624A2D9DF0010DECD /* PreferencesView.swift */; };
+		8A00A47A24A2DC070010DECD /* RemoteInstallersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A00A47924A2DC060010DECD /* RemoteInstallersViewController.swift */; };
+		8A00A47C24A2DE4A0010DECD /* OtherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A00A47B24A2DE4A0010DECD /* OtherViewController.swift */; };
+		8A00A47E24A2DFB70010DECD /* TabbedPreferenceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A00A47D24A2DFB70010DECD /* TabbedPreferenceViewController.swift */; };
 		8A0138D1221749BD00C77DA0 /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0138D0221749BD00C77DA0 /* Version.swift */; };
 		8A0138D62217624700C77DA0 /* InfoPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0138D52217624700C77DA0 /* InfoPopoverViewController.swift */; };
 		8A175AAC225EFEE50018C977 /* ErrorAlertLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A175AAB225EFEE50018C977 /* ErrorAlertLogger.swift */; };
@@ -73,7 +78,6 @@
 		8A800B332315DD4500037103 /* PreferencesApplicationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A800B312315DD4400037103 /* PreferencesApplicationsViewController.swift */; };
 		8A800B362315DD5500037103 /* WizardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A800B342315DD5500037103 /* WizardViewController.swift */; };
 		8A800B372315DD5500037103 /* PageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A800B352315DD5500037103 /* PageController.swift */; };
-		8A800B392315DD7100037103 /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A800B382315DD7100037103 /* PreferencesViewController.swift */; };
 		8A800B3D2315DEE500037103 /* MachineInformationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A800B3B2315DEE500037103 /* MachineInformationView.xib */; };
 		8A800B3E2315DEE500037103 /* LoadingView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A800B3C2315DEE500037103 /* LoadingView.xib */; };
 		8A800B402315E58B00037103 /* NT Boot.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8A800B3F2315E58B00037103 /* NT Boot.mp3 */; };
@@ -135,6 +139,11 @@
 		7D34D0D826F1DE150B6BEB3E /* Pods_macOS_UtilitiesTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_macOS_UtilitiesTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A00A46C24A113A20010DECD /* system_profiler_json */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = system_profiler_json; sourceTree = "<group>"; };
 		8A00A47224A2D2030010DECD /* ConcreteItemTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcreteItemTypes.swift; sourceTree = "<group>"; };
+		8A00A47424A2D8FA0010DECD /* LoggingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingViewController.swift; sourceTree = "<group>"; };
+		8A00A47624A2D9DF0010DECD /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
+		8A00A47924A2DC060010DECD /* RemoteInstallersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteInstallersViewController.swift; sourceTree = "<group>"; };
+		8A00A47B24A2DE4A0010DECD /* OtherViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherViewController.swift; sourceTree = "<group>"; };
+		8A00A47D24A2DFB70010DECD /* TabbedPreferenceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabbedPreferenceViewController.swift; sourceTree = "<group>"; };
 		8A0138D0221749BD00C77DA0 /* Version.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
 		8A0138D52217624700C77DA0 /* InfoPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoPopoverViewController.swift; sourceTree = "<group>"; };
 		8A175AAB225EFEE50018C977 /* ErrorAlertLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorAlertLogger.swift; sourceTree = "<group>"; };
@@ -202,7 +211,6 @@
 		8A800B312315DD4400037103 /* PreferencesApplicationsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesApplicationsViewController.swift; sourceTree = "<group>"; };
 		8A800B342315DD5500037103 /* WizardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WizardViewController.swift; path = "macOS Utilities/View Controllers/Custom/NSPageController/WizardViewController.swift"; sourceTree = "<group>"; };
 		8A800B352315DD5500037103 /* PageController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PageController.swift; path = "macOS Utilities/View Controllers/Custom/NSPageController/PageController.swift"; sourceTree = "<group>"; };
-		8A800B382315DD7100037103 /* PreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesViewController.swift; sourceTree = "<group>"; };
 		8A800B3B2315DEE500037103 /* MachineInformationView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MachineInformationView.xib; sourceTree = "<group>"; };
 		8A800B3C2315DEE500037103 /* LoadingView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoadingView.xib; sourceTree = "<group>"; };
 		8A800B3F2315E58B00037103 /* NT Boot.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "NT Boot.mp3"; sourceTree = "<group>"; };
@@ -303,6 +311,26 @@
 			path = Binaries;
 			sourceTree = "<group>";
 		};
+		8A00A47824A2DA9D0010DECD /* Tabs */ = {
+			isa = PBXGroup;
+			children = (
+				8A800B312315DD4400037103 /* PreferencesApplicationsViewController.swift */,
+				8A00A47424A2D8FA0010DECD /* LoggingViewController.swift */,
+				8A00A47924A2DC060010DECD /* RemoteInstallersViewController.swift */,
+				8A00A47B24A2DE4A0010DECD /* OtherViewController.swift */,
+			);
+			path = Tabs;
+			sourceTree = "<group>";
+		};
+		8A00A47F24A2E1170010DECD /* Dialogs and Sheets */ = {
+			isa = PBXGroup;
+			children = (
+				8A9D9A952262F24A00E4D36F /* IPAddressChooserDialog.swift */,
+				8A32C4BC24A24FD50048CE7E /* ApplicationDescriptionSheet.swift */,
+			);
+			path = "Dialogs and Sheets";
+			sourceTree = "<group>";
+		};
 		8A0138C8221703CC00C77DA0 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -340,10 +368,10 @@
 		8A12391F226110A9008E551A /* Preferences */ = {
 			isa = PBXGroup;
 			children = (
-				8A800B382315DD7100037103 /* PreferencesViewController.swift */,
-				8A800B312315DD4400037103 /* PreferencesApplicationsViewController.swift */,
-				8A9D9A952262F24A00E4D36F /* IPAddressChooserDialog.swift */,
-				8A32C4BC24A24FD50048CE7E /* ApplicationDescriptionSheet.swift */,
+				8A00A47F24A2E1170010DECD /* Dialogs and Sheets */,
+				8A00A47824A2DA9D0010DECD /* Tabs */,
+				8A00A47624A2D9DF0010DECD /* PreferencesView.swift */,
+				8A00A47D24A2DFB70010DECD /* TabbedPreferenceViewController.swift */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
@@ -972,12 +1000,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				8A6F8D8A2263D35B00077172 /* Partition.swift in Sources */,
+				8A00A47E24A2DFB70010DECD /* TabbedPreferenceViewController.swift in Sources */,
 				8A9D9A962262F24A00E4D36F /* IPAddressChooserDialog.swift in Sources */,
 				8A800B2A2315DC5D00037103 /* NSView+Replacement.swift in Sources */,
 				8AD01F1122A16F5B00C722B6 /* ItemType.swift in Sources */,
 				8A3243CE22A1B8190042E6D9 /* Disk.swift in Sources */,
 				8A32C4BD24A24FD50048CE7E /* ApplicationDescriptionSheet.swift in Sources */,
 				8AD01F0D22A16F5600C722B6 /* HardwareItem.swift in Sources */,
+				8A00A47A24A2DC070010DECD /* RemoteInstallersViewController.swift in Sources */,
 				8A2DB9542289FEFF00261B9E /* GlobalNotifications.swift in Sources */,
 				8A2DB9452289DF8800261B9E /* DiskUtilityInfo.swift in Sources */,
 				8A27EF0622C566F8005F45AF /* ExceptionItem.swift in Sources */,
@@ -985,7 +1015,6 @@
 				8ABAE3132252C1D800E537D3 /* TaskHandler.swift in Sources */,
 				8A808F712317312800B1A29F /* MessageType.swift in Sources */,
 				8AA61AA22316277E00BB7B93 /* XLOverlayLog.swift in Sources */,
-				8A800B392315DD7100037103 /* PreferencesViewController.swift in Sources */,
 				8A3243D222A1CA2C0042E6D9 /* SelectInstallerViewController.swift in Sources */,
 				8A57BF432262A1AF00719E74 /* LoggerManager.swift in Sources */,
 				8A6B95662497FEEE00FAAFC8 /* Secrets.swift in Sources */,
@@ -1019,6 +1048,7 @@
 				8A3243CD22A1B7700042E6D9 /* KBBarcodePreviewItem.swift in Sources */,
 				8A662216226AA42B0072B3A4 /* AppKit-Extensions.swift in Sources */,
 				8A800B332315DD4500037103 /* PreferencesApplicationsViewController.swift in Sources */,
+				8A00A47524A2D8FA0010DECD /* LoggingViewController.swift in Sources */,
 				8A800B0A2315D8BA00037103 /* PrintHandler.swift in Sources */,
 				8A6C6477225EA19200CD6DCF /* InstallerServerPreferences.swift in Sources */,
 				8A2DB9432289DE7C00261B9E /* DiskUtilityList.swift in Sources */,
@@ -1039,6 +1069,7 @@
 				8A2DB9522289F77C00261B9E /* HardDriveImageUtility.swift in Sources */,
 				8A9370D12256BB5A002B3838 /* Share.swift in Sources */,
 				8AD01EFF22A16F0100C722B6 /* Root.swift in Sources */,
+				8A00A47724A2D9DF0010DECD /* PreferencesView.swift in Sources */,
 				8A6C6460225DB39500CD6DCF /* DeviceInformationViewController.swift in Sources */,
 				8A6C645C225D4E9900CD6DCF /* InstallerCellView.swift in Sources */,
 				8A9370D42256D5F6002B3838 /* ItemRepository.swift in Sources */,
@@ -1056,6 +1087,7 @@
 				8ACB65D721063E6F004B9C5A /* ApplicationViewController.swift in Sources */,
 				8AA61A9E2316187000BB7B93 /* XLFacilityLogger.swift in Sources */,
 				8A584773226AB351008E9DE8 /* KBTableView.swift in Sources */,
+				8A00A47C24A2DE4A0010DECD /* OtherViewController.swift in Sources */,
 				8A800B362315DD5500037103 /* WizardViewController.swift in Sources */,
 				8A2DB93B2289DDA400261B9E /* OutputParser.swift in Sources */,
 				8A584776226ABDA5008E9DE8 /* CocoaLumberjack-Extensions.swift in Sources */,
