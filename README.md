@@ -24,5 +24,5 @@
 
 # Usage
 
-* Bundle with AutoCasperNBI
+* Bundle with AutoCasperNBI (or AutoNBI)
 * Run from USB
