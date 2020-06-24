@@ -83,7 +83,7 @@ class DiskUtility: NSObject, NSFilePresenter {
                 let daDisk = DADiskCreateFromVolumePath(kCFAllocatorDefault, daSession, fileURL) {
                 if let description = DADiskCopyDescription(daDisk) {
                     if let volumeName = (description as NSDictionary)[kDADiskDescriptionVolumeNameKey] as? String {
-                        if let disk = (self.cachedDisks.first { ($0).volumeName == volumeName }) {
+                        if let disk = (self.cachedDisks.first { ($0).volumeName == volumeName && $0.volumeName != "Preboot" && !$0.volumeName.contains(" - Data") }) {
                             bootDisk = disk
                         }
                     }
