@@ -6,6 +6,9 @@
     <p align="center">A custom macOS Utilities app.</p>
  </p>
   
+<p align="center">
+  <img align="center" src="https://github.com/128keaton/macOS-Utilities/blob/master/main-view.png?raw=true">
+</p>
 
 # Features
 * Remote NFS installer support
