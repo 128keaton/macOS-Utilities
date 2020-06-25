@@ -16,6 +16,7 @@ target 'macOS Utilities' do
  pod 'AudioKit'
  pod "XLFacility", "~> 1.0"
  pod 'Bugsnag'
+ pod 'SwiftDisks', :git => 'https://github.com/128keaton/SwiftDisks.git'
 end
 
 post_install do |installer|

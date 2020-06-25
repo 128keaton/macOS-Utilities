@@ -41,6 +41,11 @@
 		8A3243D222A1CA2C0042E6D9 /* SelectInstallerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6F28EF221B9F5C00FF9DB3 /* SelectInstallerViewController.swift */; };
 		8A32C4B624A244AD0048CE7E /* AppCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A32C4B524A244AD0048CE7E /* AppCellView.swift */; };
 		8A32C4BD24A24FD50048CE7E /* ApplicationDescriptionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A32C4BC24A24FD50048CE7E /* ApplicationDescriptionSheet.swift */; };
+		8A32C4CE24A3D8C00048CE7E /* APFSPhysicalStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A32C4CA24A3D8BF0048CE7E /* APFSPhysicalStore.swift */; };
+		8A32C4CF24A3D8C00048CE7E /* DiskList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A32C4CB24A3D8C00048CE7E /* DiskList.swift */; };
+		8A32C4D024A3D8C00048CE7E /* DisksAndPartitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A32C4CC24A3D8C00048CE7E /* DisksAndPartitions.swift */; };
+		8A32C4D124A3D8C00048CE7E /* APFSVolume.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A32C4CD24A3D8C00048CE7E /* APFSVolume.swift */; };
+		8A32C4D424A3D8FF0048CE7E /* list-disks-json.sh in Resources */ = {isa = PBXBuildFile; fileRef = 8A32C4D324A3D8FF0048CE7E /* list-disks-json.sh */; };
 		8A426BAD249D207000A38542 /* com.macOS-Utilities.preferences.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8A39D35F2119E81B00437F4E /* com.macOS-Utilities.preferences.plist */; };
 		8A426BAF249D37D300A38542 /* THX.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8A426BAE249D37D300A38542 /* THX.mp3 */; };
 		8A57BF402262A0C200719E74 /* LegacyPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A57BF3F2262A0C200719E74 /* LegacyPreferences.swift */; };
@@ -169,6 +174,11 @@
 		8A3243D022A1C8A80042E6D9 /* WKNoScrollWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKNoScrollWebView.swift; sourceTree = "<group>"; };
 		8A32C4B524A244AD0048CE7E /* AppCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCellView.swift; sourceTree = "<group>"; };
 		8A32C4BC24A24FD50048CE7E /* ApplicationDescriptionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationDescriptionSheet.swift; sourceTree = "<group>"; };
+		8A32C4CA24A3D8BF0048CE7E /* APFSPhysicalStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APFSPhysicalStore.swift; sourceTree = "<group>"; };
+		8A32C4CB24A3D8C00048CE7E /* DiskList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiskList.swift; sourceTree = "<group>"; };
+		8A32C4CC24A3D8C00048CE7E /* DisksAndPartitions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisksAndPartitions.swift; sourceTree = "<group>"; };
+		8A32C4CD24A3D8C00048CE7E /* APFSVolume.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APFSVolume.swift; sourceTree = "<group>"; };
+		8A32C4D324A3D8FF0048CE7E /* list-disks-json.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "list-disks-json.sh"; sourceTree = "<group>"; };
 		8A39D35F2119E81B00437F4E /* com.macOS-Utilities.preferences.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "com.macOS-Utilities.preferences.plist"; sourceTree = "<group>"; };
 		8A426BAE249D37D300A38542 /* THX.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = THX.mp3; sourceTree = "<group>"; };
 		8A57BF3F2262A0C200719E74 /* LegacyPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyPreferences.swift; sourceTree = "<group>"; };
@@ -388,6 +398,7 @@
 		8A2B05F1226685E90089F3A3 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				8A32C4C924A3D8AE0048CE7E /* Disks */,
 				8ADFB00E226A76D900B637E5 /* FileSystemItem.swift */,
 				8A9370CE2256B7F4002B3838 /* Disk.swift */,
 				8A9370D02256BB5A002B3838 /* Share.swift */,
@@ -445,6 +456,25 @@
 				8A2DB9512289F77C00261B9E /* HardDriveImageUtility.swift */,
 			);
 			path = Filesystem;
+			sourceTree = "<group>";
+		};
+		8A32C4C924A3D8AE0048CE7E /* Disks */ = {
+			isa = PBXGroup;
+			children = (
+				8A32C4CA24A3D8BF0048CE7E /* APFSPhysicalStore.swift */,
+				8A32C4CD24A3D8C00048CE7E /* APFSVolume.swift */,
+				8A32C4CB24A3D8C00048CE7E /* DiskList.swift */,
+				8A32C4CC24A3D8C00048CE7E /* DisksAndPartitions.swift */,
+			);
+			path = Disks;
+			sourceTree = "<group>";
+		};
+		8A32C4D224A3D8EB0048CE7E /* Scripts */ = {
+			isa = PBXGroup;
+			children = (
+				8A32C4D324A3D8FF0048CE7E /* list-disks-json.sh */,
+			);
+			path = Scripts;
 			sourceTree = "<group>";
 		};
 		8A57BF412262A1A300719E74 /* Logger */ = {
@@ -739,6 +769,7 @@
 		8ACB65D321063E6F004B9C5A /* macOS Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				8A32C4D224A3D8EB0048CE7E /* Scripts */,
 				8A00A46B24A113950010DECD /* Binaries */,
 				8ACB65D421063E6F004B9C5A /* AppDelegate.swift */,
 				8A0138C8221703CC00C77DA0 /* Helpers */,
@@ -895,6 +926,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8ACB65D921063E6F004B9C5A /* Assets.xcassets in Resources */,
+				8A32C4D424A3D8FF0048CE7E /* list-disks-json.sh in Resources */,
 				8A9D9AAE2263370800E4D36F /* KBTextFieldDialog-large.xib in Resources */,
 				8A426BAD249D207000A38542 /* com.macOS-Utilities.preferences.plist in Resources */,
 				8A9D9A982262FB5F00E4D36F /* IPAddressChooserDialog.xib in Resources */,
@@ -931,6 +963,7 @@
 				"${BUILT_PRODUCTS_DIR}/MultiPeer/MultiPeer.framework",
 				"${BUILT_PRODUCTS_DIR}/PaperTrailLumberjack/PaperTrailLumberjack.framework",
 				"${BUILT_PRODUCTS_DIR}/STPrivilegedTask/STPrivilegedTask.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftDisks/SwiftDisks.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 				"${BUILT_PRODUCTS_DIR}/XLFacility/XLFacility.framework",
 				"${BUILT_PRODUCTS_DIR}/XMLParsing/XMLParsing.framework",
@@ -948,6 +981,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MultiPeer.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PaperTrailLumberjack.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/STPrivilegedTask.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftDisks.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XLFacility.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XMLParsing.framework",
@@ -1012,6 +1046,7 @@
 				8A2DB9452289DF8800261B9E /* DiskUtilityInfo.swift in Sources */,
 				8A27EF0622C566F8005F45AF /* ExceptionItem.swift in Sources */,
 				8AA841D02265A509009C5948 /* Units.swift in Sources */,
+				8A32C4D124A3D8C00048CE7E /* APFSVolume.swift in Sources */,
 				8ABAE3132252C1D800E537D3 /* TaskHandler.swift in Sources */,
 				8A808F712317312800B1A29F /* MessageType.swift in Sources */,
 				8AA61AA22316277E00BB7B93 /* XLOverlayLog.swift in Sources */,
@@ -1032,7 +1067,9 @@
 				8A6C6479225EA1EA00CD6DCF /* PreferenceLoader.swift in Sources */,
 				8AA61AD423175BCC00BB7B93 /* ClientInfo.swift in Sources */,
 				8A808F6D231730A500B1A29F /* Client.swift in Sources */,
+				8A32C4D024A3D8C00048CE7E /* DisksAndPartitions.swift in Sources */,
 				8A800B022315D77F00037103 /* CoreAudio.swift in Sources */,
+				8A32C4CE24A3D8C00048CE7E /* APFSPhysicalStore.swift in Sources */,
 				8A800B1F2315DA9500037103 /* CondensedSystemProfilerData.swift in Sources */,
 				8AA841CC22659260009C5948 /* DiskImage.swift in Sources */,
 				8AD01F1322A16F5F00C722B6 /* SerialATAItem.swift in Sources */,
@@ -1056,6 +1093,7 @@
 				8A800AFE2315D6B500037103 /* LoadingView.swift in Sources */,
 				8AD01F0C22A16F5600C722B6 /* BatteryItem.swift in Sources */,
 				8A800B1E2315DA9500037103 /* CondensedStorageItem.swift in Sources */,
+				8A32C4CF24A3D8C00048CE7E /* DiskList.swift in Sources */,
 				8A6C6475225EA0CE00CD6DCF /* LoggingPreferences.swift in Sources */,
 				8A3243CA22A1B75D0042E6D9 /* NSTextField+Autosizing.swift in Sources */,
 				8A800B2F2315DCDB00037103 /* GenericWebViewController.swift in Sources */,

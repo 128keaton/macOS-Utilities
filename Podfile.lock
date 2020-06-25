@@ -28,6 +28,7 @@ PODS:
     - CocoaLumberjack/Swift (~> 3.4)
     - PaperTrailLumberjack/Core
   - STPrivilegedTask (1.0.1)
+  - SwiftDisks (0.0.8)
   - SwiftyJSON (4.0.0)
   - XLFacility (1.5.18):
     - XLFacility/Core (= 1.5.18)
@@ -58,6 +59,7 @@ DEPENDENCIES:
   - MultiPeer (from `https://github.com/128keaton/MultiPeer.git`, tag `0.1.2`)
   - PaperTrailLumberjack/Swift (from `https://github.com/128keaton/PaperTrailLumberjack`)
   - STPrivilegedTask
+  - SwiftDisks (from `https://github.com/128keaton/SwiftDisks.git`)
   - XLFacility (~> 1.0)
   - XMLParsing (from `https://github.com/128keaton/XMLParsing.git`)
 
@@ -83,6 +85,8 @@ EXTERNAL SOURCES:
     :tag: 0.1.2
   PaperTrailLumberjack:
     :git: https://github.com/128keaton/PaperTrailLumberjack
+  SwiftDisks:
+    :git: https://github.com/128keaton/SwiftDisks.git
   XMLParsing:
     :git: https://github.com/128keaton/XMLParsing.git
 
@@ -96,6 +100,9 @@ CHECKOUT OPTIONS:
   PaperTrailLumberjack:
     :commit: d469aa89e0023dcacc549a605f58669053ac7d5a
     :git: https://github.com/128keaton/PaperTrailLumberjack
+  SwiftDisks:
+    :commit: fd408475cf2cfb33dc66882f2776b882bc9f96c0
+    :git: https://github.com/128keaton/SwiftDisks.git
   XMLParsing:
     :commit: f173abf8f782bd7072b0b423aa154358ef6a7ae7
     :git: https://github.com/128keaton/XMLParsing.git
@@ -113,10 +120,11 @@ SPEC CHECKSUMS:
   MultiPeer: f28c91b749ad595e02283a2822334ff8f6fb5059
   PaperTrailLumberjack: 7a89283286f82da814a3b5748630b6002ae160a3
   STPrivilegedTask: 103f97827454e786074640cf89d303be344498c7
+  SwiftDisks: 75bf2ff4ce4aab575b99d6b4db6a32b720fd572e
   SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
   XLFacility: f24747c4f586372bddae3525d837ef42b0e26339
   XMLParsing: 5b2e061ac61c95eb246f169f89ffb049f8bff668
 
-PODFILE CHECKSUM: 6fb433997d04477b7ec1cc0bc6a761deec910e51
+PODFILE CHECKSUM: 0c9523f300b210d6af2c45ee1a70737d36365228
 
 COCOAPODS: 1.9.3

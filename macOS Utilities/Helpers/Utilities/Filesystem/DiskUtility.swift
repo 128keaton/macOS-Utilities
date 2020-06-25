@@ -49,14 +49,15 @@ class DiskUtility: NSObject, NSFilePresenter {
         #endif
         
         self.cachedDisks = []
+        
+        let scriptPath = "\(Bundle.main.resourcePath!)/list-disks-json.sh"
 
-        TaskHandler.createTask(command: "/usr/sbin/diskutil", arguments: ["list", "-plist"]) { (output) in
-            if let listOutput = output {
+        TaskHandler.createTask(command: "/bin/bash", arguments: [scriptPath]) { (output) in
+            if let jsonString = output {
                 do {
-                    let diskUtilityList: DiskUtilityList = try OutputParser().parseOutput(listOutput, toolType: OutputToolType.diskUtility, outputType: OutputType.list)
-                    diskUtilityList.disks.forEach {
-                        self.addDisk($0)
-                    }
+                    let jsonData = Data(jsonString.utf8)
+                    let listDisks = try JSONDecoder().decode(DiskList.self, from: jsonData)
+                    print(String(describing: listDisks))
                 } catch {
                     DDLogError("Error parsing Disk Utility output: \(error.localizedDescription)")
                 }
