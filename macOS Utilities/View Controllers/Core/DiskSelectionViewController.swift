@@ -20,6 +20,7 @@ class DiskSelectionViewController: NSViewController {
 
     private var selectedInstaller: Installer? = nil
     private var selectedDisk: DiskNode? = nil
+    private var selectedDiskContainer: ChildDiskNode? = nil
 
     private var alreadyAppeared = false
     private var disks: [DiskNode] = [] {
@@ -210,11 +211,11 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
                 }) {
                     if tableColumn == tableView.tableColumns[0] {
                         if (mountedDevice.volumeName != "None") {
-                            text = mountedDevice.volumeName
+                            text = "\(mountedDevice.volumeName) - (\(storageDevice.deviceID))"
                         } else {
                             text = mountedDevice.deviceID
                         }
-                        cellIdentifier = CellIdentifiers.DiskNameCell
+                        cellIdentifier = CellIdentifiers.PartitionNameCell
                     } else if tableColumn == tableView.tableColumns[1] {
                         text = "\(mountedDevice.size / 1024 / 1024 / 1024) GB"
                         cellIdentifier = CellIdentifiers.DiskSizeCell
@@ -238,13 +239,19 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
 
         DDLogVerbose("Disk/Partition Selected: \(storageDevice)")
         print("Disk/Partition Selected: \(storageDevice)")
+        let invalidVolumeNames = ["VM", "Preboot", "Recovery"]
 
-        if let physicalDisk = storageDevice.physicalDisk {
+        if let physicalDisk = storageDevice.physicalDisk,
+            let mountedDevice = storageDevice.children.first(where: { (childDisk) -> Bool in
+                return childDisk.type == .apfsVolume && !childDisk.volumeName.contains(" - Data") && !invalidVolumeNames.contains(childDisk.volumeName)
+            })
+        {
+            self.selectedDiskContainer = mountedDevice
             self.selectedDisk = physicalDisk
             nextButton?.isEnabled = true
             self.addTouchBarNextButton()
         }
-    
+
 
         return true
     }
@@ -272,8 +279,15 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
             let command = "\(selectedInstaller.installerPath)/Contents/Resources/startosinstall"
             let arguments = ["--agreetolicense", "--volume", "/Volumes/Macintosh HD"]
 
-            TaskHandler.createTask(command: command, arguments: arguments) { (result) in
-                DDLogVerbose("Result of startosinstall: \(result ?? "No Output")")
+            TaskHandler.createTask(command: command, arguments: arguments) { (standardOutput, standardError) in
+                DDLogVerbose("macOS startosinstall output: \(standardOutput)")
+                
+                if let error = standardError {
+                    DDLogError("Could not install macOS: \(error)")
+                    self.showErrorAlert(title: "Could not install macOS", message: error)
+
+                    return
+                }
             }
 
             DDLogVerbose("Opened installer \(selectedInstaller.installerPath)")
@@ -290,13 +304,13 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
 
     @IBAction func nextButtonClicked(_ sender: NSButton) {
         PeerCommunicationService.instance.updateStatus("Erasing Disk")
-        if let disk = self.selectedDisk {
+        if let disk = self.selectedDisk, let containerDisk = self.selectedDiskContainer {
 
-            let userConfirmedErase = self.showConfirmationAlert(question: "Confirm Disk Destruction", text: "Are you sure you want to erase disk \(disk.volumeName)? This will make all the data on \(disk.volumeName) unrecoverable.")
+            let userConfirmedErase = self.showConfirmationAlert(question: "Confirm Disk Destruction", text: "Are you sure you want to erase disk \(containerDisk.volumeName) (\(disk.deviceID))? This will make all the data on \(containerDisk.volumeName) unrecoverable.")
 
             if (userConfirmedErase) {
                 let deviceIdentifier = disk.deviceID
-                PageController.shared.goToLoadingPage(loadingText: "Erasing Disk \"\(deviceIdentifier)\"", cancelButtonIdentifier: "cancelErase")
+                PageController.shared.goToLoadingPage(loadingText: "Erasing Disk \"\(containerDisk.volumeName)\"", cancelButtonIdentifier: "cancelErase")
                 sender.isEnabled = false
 
                 SwiftDisks.safeMode = false

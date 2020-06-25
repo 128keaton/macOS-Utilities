@@ -221,4 +221,39 @@ class TaskHandler {
 
         return true
     }
+
+    public static func createTask(command: String, arguments: [String], callback: @escaping (String, String?) -> Void) {
+        let task = Process()
+        let errorPipe = Pipe()
+        let standardPipe = Pipe()
+
+        task.standardError = errorPipe
+        task.standardOutput = standardPipe
+
+        task.launchPath = command
+        task.arguments = arguments
+
+        lastTask = task
+        task.launch()
+        task.waitUntilExit()
+
+        let errorHandle = errorPipe.fileHandleForReading
+        let errorData = errorHandle.readDataToEndOfFile()
+        let taskErrorOutput = String (data: errorData, encoding: String.Encoding.utf8)
+
+        let standardHandle = standardPipe.fileHandleForReading
+        let standardData = standardHandle.readDataToEndOfFile()
+        let taskStandardOutput = String (data: standardData, encoding: String.Encoding.utf8)
+
+        if let errorOutput = taskErrorOutput, let standardOutput = taskStandardOutput {
+            if (errorOutput.count == 0) {
+                callback(standardOutput, nil)
+                return
+            }
+            callback(standardOutput, errorOutput)
+            return
+        }
+
+        callback("No output", "No output")
+    }
 }
