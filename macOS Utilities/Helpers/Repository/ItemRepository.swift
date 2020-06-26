@@ -59,7 +59,7 @@ class ItemRepository {
     }
 
     @objc public func reloadAllItems() {
-        DiskUtility.getAllDisks()
+        self.scanForMountedInstallers()
         Utility.getFromUtilitiesFolder()
     }
 

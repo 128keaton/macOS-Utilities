@@ -38,6 +38,9 @@ class DiskSelectionViewController: NSViewController {
         updateBackButton()
         getSelectedInstaller()
 
+        #if DEBUG
+        self.nextButton?.isEnabled = true
+        #endif
         NotificationCenter.default.addObserver(self, selector: #selector(handleCancelButtonFromLoadingPage(_:)), name: WizardViewController.cancelButtonNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(newDisksHandler), name: GlobalNotifications.newDisks, object: nil)
     }
@@ -274,21 +277,12 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
 
     @objc public func openInstaller() {
         PageController.shared.dismissPageController()
+        let storyboard = NSStoryboard(name: "OSInstall", bundle: Bundle.main)
 
-        if let selectedInstaller = ItemRepository.shared.selectedInstaller {
-            let command = "\(selectedInstaller.installerPath)/Contents/Resources/startosinstall"
-            let arguments = ["--agreetolicense", "--volume", "/Volumes/Macintosh HD"]
-
-            TaskHandler.createTask(command: command, arguments: arguments) { (standardOutput, standardError) in
-                DDLogVerbose("macOS startosinstall output: \(standardOutput)")
-                
-                if let error = standardError {
-                    DDLogError("Could not install macOS: \(error)")
-                    self.showErrorAlert(title: "Could not install macOS", message: error)
-
-                    return
-                }
-            }
+        if let selectedInstaller = ItemRepository.shared.selectedInstaller,
+            let installWindow = storyboard.instantiateController(withIdentifier: "OSInstallWindow") as? OSInstallWindow {
+            installWindow.chosenInstaller = selectedInstaller
+            installWindow.showWindow(self)
 
             DDLogVerbose("Opened installer \(selectedInstaller.installerPath)")
         } else if ItemRepository.shared.selectedInstaller == nil {
@@ -309,7 +303,6 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
             let userConfirmedErase = self.showConfirmationAlert(question: "Confirm Disk Destruction", text: "Are you sure you want to erase disk \(containerDisk.volumeName) (\(disk.deviceID))? This will make all the data on \(containerDisk.volumeName) unrecoverable.")
 
             if (userConfirmedErase) {
-                let deviceIdentifier = disk.deviceID
                 PageController.shared.goToLoadingPage(loadingText: "Erasing Disk \"\(containerDisk.volumeName)\"", cancelButtonIdentifier: "cancelErase")
                 sender.isEnabled = false
 
@@ -323,6 +316,10 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
                 }
             }
         }
+        
+        #if DEBUG
+            self.showFinishPage(volumeName: "None")
+        #endif
     }
 }
 

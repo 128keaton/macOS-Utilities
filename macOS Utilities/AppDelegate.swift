@@ -155,8 +155,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func checkIfReadyToTerminate() {
-        if applicationShouldTerminate(NSApplication.shared) == .terminateNow {
-            NSApplication.shared.terminate(self)
+        DispatchQueue.main.async {
+            if self.applicationShouldTerminate(NSApplication.shared) == .terminateNow {
+                NSApplication.shared.terminate(self)
+            }
         }
     }
 

@@ -42,28 +42,6 @@ class DiskUtility: NSObject, NSFilePresenter {
         DDLogInfo("Disk Utility Instance Created")
     }
 
-    public static func getAllDisks() {
-        #if DEBUG
-            self.addDisk(self.generateFakeDisk(withPartition: true))
-            self.addDisk(self.generateFakeDisk(withPartition: false))
-        #endif
-        
-        self.cachedDisks = []
-        
-        let scriptPath = "\(Bundle.main.resourcePath!)/list-disks-json.sh"
-
-        TaskHandler.createTask(command: "/bin/bash", arguments: [scriptPath]) { (output) in
-            if let jsonString = output {
-                do {
-                    let jsonData = Data(jsonString.utf8)
-                    let listDisks = try JSONDecoder().decode(DiskList.self, from: jsonData)
-                    print(String(describing: listDisks))
-                } catch {
-                    DDLogError("Error parsing Disk Utility output: \(error.localizedDescription)")
-                }
-            }
-        }
-    }
 
     /// Used for fake disks and other manual disks
     public static func addDisk(_ disk: Disk) {
@@ -497,8 +475,6 @@ class DiskUtility: NSObject, NSFilePresenter {
         if let volumePath = notification.userInfo!["NSDevicePath"] as? String {
             if (volumePath.contains("Install macOS") || volumePath.contains("Install OS X")) {
                 ItemRepository.shared.scanForMountedInstallers()
-            } else if !(DiskUtility.cachedDisks.contains { $0.installablePartition?.volumeName == volumePath }) {
-                DiskUtility.getAllDisks()
             } else {
                 print("Other?")
             }
@@ -517,9 +493,7 @@ class DiskUtility: NSObject, NSFilePresenter {
                 } else {
                     DDLogVerbose("Could not find installer to remove from name: \(installerName)")
                 }
-            } else if !(DiskUtility.cachedDisks.contains { $0.installablePartition?.volumeName == volumePath }) {
-                DiskUtility.getAllDisks()
-            }
+            } 
         }
     }
 }
