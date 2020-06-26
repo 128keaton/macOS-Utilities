@@ -11,15 +11,14 @@ import Foundation
 class ConfirmViewController: OSInstallStep {
     @IBOutlet var versionLabel: NSTextField?
 
-    var versionToInstall: String = "" {
-        didSet {
-            self.versionLabel?.stringValue = "Installing macOS \(self.versionToInstall)"
-        }
-    }
+   
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.versionLabel?.stringValue = "Installing macOS \(self.versionToInstall)"
+        if let installer = OSInstallHelper.getInstaller() {
+            self.versionLabel?.stringValue = "Installing \(installer.version.name)"
+        }
+
     }
 }

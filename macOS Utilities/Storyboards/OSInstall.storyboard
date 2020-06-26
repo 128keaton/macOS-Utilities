@@ -241,18 +241,27 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BwY-cE-OYz">
-                                <rect key="frame" x="20" y="59" width="564" height="249"/>
+                                <rect key="frame" x="20" y="91" width="564" height="217"/>
                                 <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="Fzg-FK-pBz">
-                                    <rect key="frame" x="0.0" y="0.0" width="564" height="249"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="564" height="217"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" spellingCorrection="YES" smartInsertDelete="YES" id="AJJ-Q3-vLv">
-                                            <rect key="frame" x="0.0" y="0.0" width="564" height="249"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="564" height="217"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                            <size key="minSize" width="564" height="249"/>
+                                            <size key="minSize" width="564" height="217"/>
                                             <size key="maxSize" width="575" height="10000000"/>
+                                            <attributedString key="textStorage">
+                                                <fragment content="Test">
+                                                    <attributes>
+                                                        <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                        <font key="NSFont" metaFont="system"/>
+                                                        <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                                    </attributes>
+                                                </fragment>
+                                            </attributedString>
                                             <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                         </textView>
                                     </subviews>
@@ -262,21 +271,30 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="Df6-9l-BZb">
-                                    <rect key="frame" x="548" y="0.0" width="16" height="249"/>
+                                    <rect key="frame" x="548" y="0.0" width="16" height="217"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>
+                            <progressIndicator wantsLayer="YES" maxValue="100" indeterminate="YES" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="wub-sh-fIP">
+                                <rect key="frame" x="124" y="6" width="357" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="357" id="gFX-Co-NgE"/>
+                                </constraints>
+                            </progressIndicator>
                         </subviews>
                         <constraints>
                             <constraint firstItem="BwY-cE-OYz" firstAttribute="top" secondItem="v01-xe-cD8" secondAttribute="top" constant="60" id="4SF-1G-7da"/>
+                            <constraint firstItem="wub-sh-fIP" firstAttribute="top" secondItem="BwY-cE-OYz" secondAttribute="bottom" constant="66" id="7ox-UT-pY8"/>
                             <constraint firstAttribute="trailing" secondItem="BwY-cE-OYz" secondAttribute="trailing" constant="20" id="TgT-E6-Cbm"/>
                             <constraint firstItem="BwY-cE-OYz" firstAttribute="leading" secondItem="v01-xe-cD8" secondAttribute="leading" constant="20" id="dOo-ot-L23"/>
                             <constraint firstItem="BwY-cE-OYz" firstAttribute="centerX" secondItem="v01-xe-cD8" secondAttribute="centerX" id="iJl-tr-sOO"/>
-                            <constraint firstAttribute="bottom" secondItem="BwY-cE-OYz" secondAttribute="bottom" constant="59" id="y7F-8F-Lvg"/>
+                            <constraint firstItem="wub-sh-fIP" firstAttribute="centerX" secondItem="v01-xe-cD8" secondAttribute="centerX" id="rEX-pu-0HA"/>
+                            <constraint firstAttribute="bottom" secondItem="BwY-cE-OYz" secondAttribute="bottom" constant="91" id="y7F-8F-Lvg"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="outputTextView" destination="AJJ-Q3-vLv" id="beP-HX-D9X"/>
+                        <outlet property="progressIndicator" destination="wub-sh-fIP" id="oXo-2o-tD0"/>
                     </connections>
                 </viewController>
                 <customObject id="oeH-6I-jr9" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

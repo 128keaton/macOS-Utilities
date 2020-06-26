@@ -11,13 +11,6 @@ class OSInstallWindow: NSWindowController {
     var installController: OSInstall?
     var backdropWindow: OSInstallBackdrop?
 
-    var chosenInstaller: Installer? {
-        didSet {
-             self.installController?.chosenInstaller = chosenInstaller
-        }
-    }
-    
-
     override func windowDidLoad() {
         let storyboard = NSStoryboard(name: "OSInstall", bundle: Bundle.main)
 

@@ -39,7 +39,7 @@ class DiskSelectionViewController: NSViewController {
         getSelectedInstaller()
 
         #if DEBUG
-        self.nextButton?.isEnabled = true
+            self.nextButton?.isEnabled = true
         #endif
         NotificationCenter.default.addObserver(self, selector: #selector(handleCancelButtonFromLoadingPage(_:)), name: WizardViewController.cancelButtonNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(newDisksHandler), name: GlobalNotifications.newDisks, object: nil)
@@ -279,10 +279,11 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
         PageController.shared.dismissPageController()
         let storyboard = NSStoryboard(name: "OSInstall", bundle: Bundle.main)
 
-        if let selectedInstaller = ItemRepository.shared.selectedInstaller,
-            let installWindow = storyboard.instantiateController(withIdentifier: "OSInstallWindow") as? OSInstallWindow {
-            installWindow.chosenInstaller = selectedInstaller
-            installWindow.showWindow(self)
+        if let selectedInstaller = ItemRepository.shared.selectedInstaller {
+            OSInstallHelper.setInstaller(selectedInstaller)
+
+            let installWindow = storyboard.instantiateController(withIdentifier: "OSInstallWindow") as? OSInstallWindow
+            installWindow?.showWindow(self)
 
             DDLogVerbose("Opened installer \(selectedInstaller.installerPath)")
         } else if ItemRepository.shared.selectedInstaller == nil {
@@ -316,7 +317,7 @@ extension DiskSelectionViewController: NSTableViewDelegate, NSTableViewDelegateD
                 }
             }
         }
-        
+
         #if DEBUG
             self.showFinishPage(volumeName: "None")
         #endif

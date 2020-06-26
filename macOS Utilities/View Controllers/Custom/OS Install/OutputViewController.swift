@@ -10,6 +10,12 @@ import Foundation
 
 class OutputViewController: OSInstallStep {
     @IBOutlet var outputTextView: NSTextView?
+    @IBOutlet var progressIndicator: NSProgressIndicator?
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.progressIndicator?.startAnimation(self)
+        OSInstallHelper.kickoffInstaller()
+    }
     
 }

@@ -15,8 +15,6 @@ class OSInstall: NSViewController, OSInstallDelegate {
     @IBOutlet var nextButton: NSButton?
     @IBOutlet var backButton: NSButton?
 
-    var chosenInstaller: Installer?
-
     var currentStep: OSInstallStep?
     var currentStepIndex: Int = 0
     var stepController: NSTabViewController?
@@ -39,21 +37,20 @@ class OSInstall: NSViewController, OSInstallDelegate {
 
     func updateOutput(_ newline: String) {
         if let currentStep = self.currentStep as? OutputViewController {
+            let attributedLine = NSMutableAttributedString(string: newline)
+            attributedLine.addAttribute(.foregroundColor, value: NSColor.labelColor, range: NSRange(location: 0, length: newline.count))
             currentStep.outputTextView?.textStorage?.append(NSAttributedString(string: newline))
         }
     }
-    
+
+    func didError(_ error: String) {
+        self.showErrorSheet(message: error)
+    }
+
     func updateStep() {
         if let stepController = self.stepController {
-            if let confirmViewController = self.currentStep as? ConfirmViewController {
-                confirmViewController.versionToInstall = self.chosenInstaller!.version.name
-                
-                stepController.selectedTabViewItemIndex = currentStepIndex
-                self.currentStep = self.getAllSteps()[currentStepIndex]
-            } else {
-                OSInstallHelper.setInstaller(self.chosenInstaller!)
-                OSInstallHelper.kickoffInstaller()
-            }
+            stepController.selectedTabViewItemIndex = currentStepIndex
+            self.currentStep = self.getAllSteps()[currentStepIndex]
         }
     }
 
@@ -72,6 +69,21 @@ class OSInstall: NSViewController, OSInstallDelegate {
 
     @IBAction func goBack(_ sender: NSButton) {
         self.view.window?.close()
+    }
+
+    private func showErrorSheet(message: String) {
+        let errorAlert = NSAlert()
+
+        errorAlert.messageText = "Error"
+        errorAlert.informativeText = message.replacingOccurrences(of: "Error: ", with: "")
+        errorAlert.alertStyle = .critical
+        errorAlert.addButton(withTitle: "OK")
+
+        errorAlert.beginSheetModal(for: self.view.window!) { (_) in
+            DispatchQueue.main.async {
+                self.view.window?.close()
+            }
+        }
     }
 }
 
