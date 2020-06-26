@@ -39,7 +39,7 @@ class OSInstall: NSViewController, OSInstallDelegate {
         if let currentStep = self.currentStep as? OutputViewController {
             let attributedLine = NSMutableAttributedString(string: newline)
             attributedLine.addAttribute(.foregroundColor, value: NSColor.labelColor, range: NSRange(location: 0, length: newline.count))
-            currentStep.outputTextView?.textStorage?.append(NSAttributedString(string: newline))
+            currentStep.outputTextView?.textStorage?.append(attributedLine)
         }
     }
 
